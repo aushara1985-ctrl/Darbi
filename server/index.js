@@ -85,26 +85,43 @@ app.post('/api/darbi/analyze', authMiddleware, async (req, res) => {
     const OpenAI = require('openai');
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-    const prompt = `أنت محلل سيرة ذاتية محترف للسوق السعودي.
+    const prompt = `أنت محلل سيرة ذاتية خبير للسوق السعودي والعالمي.
 
 الوظيفة المستهدفة: ${targetRole}
-${jobDescription ? `وصف الوظيفة: ${jobDescription.substring(0, 500)}` : ''}
+${jobDescription ? `وصف الوظيفة:\n${jobDescription.substring(0, 1500)}` : ''}
 
 السيرة الذاتية:
-${cvText.substring(0, 2000)}
+${cvText.substring(0, 3000)}
 
-حلّل السيرة الذاتية وأرجع JSON فقط:
+مهم جداً:
+1. لا تخلط قوة السيرة مع المتطلبات الإلزامية
+2. سيرة قوية مع مدير CS ذو خبرة 10+ سنين يجب أن تحصل على cv_strength >= 70
+3. المتطلبات الإلزامية (ألماني/تصريح عمل) تؤثر على job_fit فقط وليس cv_strength
+4. لا تستخرج كلمات عامة مثل please/position/requires كـ keywords
+
+أرجع JSON فقط:
 {
-  "readinessScore": 35,
-  "readinessRange": "30-40%",
-  "whyNotGetting": "سبب عدم الحصول على مقابلات",
-  "confidence": "high|medium|low",
-  "problems": [{"title": "المشكلة", "desc": "التفاصيل", "quote": "من السيرة", "fix": "الحل"}],
-  "improvedSummary": "ملخص محسّن",
-  "recommendedKeywords": ["كلمة1", "كلمة2"],
-  "matchedSkills": ["مهارة موجودة"],
-  "missingKeywords": ["كلمة ناقصة"],
-  "jobMatches": [{"role": "دور مناسب", "type": "best|train|pivot", "why": "السبب", "action": "الإجراء"}]
+  "cvStrengthScore": 75,
+  "jobFitScore": 60,
+  "hardRequirementStatus": "pass|missing|unknown",
+  "hardRequirementIssues": ["German fluency not shown"],
+  "interviewReadinessScore": 25,
+  "readinessScore": 68,
+  "readinessRange": "70-80%",
+  "confidence": "high",
+  "seniority": "executive|senior|mid|junior",
+  "whyNotGetting": "تفسير واضح",
+  "problems": [{"title": "المشكلة", "desc": "التفاصيل", "quote": null, "fix": "الحل"}],
+  "improvedSummary": "ملخص محسّن مناسب للمستوى",
+  "recommendedKeywords": ["health scoring", "segmentation", "gross retention"],
+  "matchedSkills": ["customer success leadership", "retention"],
+  "missingKeywords": ["German fluency", "work authorization Germany"],
+  "careerPath": [
+    {"role": "Head of CS", "readinessNeeded": 35, "daysFromNow": 0, "isCurrent": true, "isTarget": false},
+    {"role": "Director CS", "readinessNeeded": 55, "daysFromNow": 14, "isCurrent": false, "isTarget": false},
+    {"role": "VP Customer Success", "readinessNeeded": 70, "daysFromNow": 30, "isCurrent": false, "isTarget": true}
+  ],
+  "jobMatches": [{"role": "VP CS في شركات خليجية", "type": "best", "why": "سيرتك قوية بدون قيود جغرافية", "action": "قدّم هذا الأسبوع"}]
 }`;
 
     const response = await openai.chat.completions.create({
@@ -332,47 +349,118 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// ─── Heuristic fallback (no AI) ───────────────────────────────────────────────
+// ─── Smart JD Parser ──────────────────────────────────────────────────────────
+const JD_STOPLIST = new Set(['please','note','position','requires','about','company','click','apply','details','benefits','team','process','table','mission','activities','language','work','job','role','responsibilities','requirements','experience','years','fluent','nice','have','that','this','with','will','your','their','from','into','what','they','which','when','been','also','well','each','both','very','here','then','than','some','make','many','more','most','over','such','used','use','able','our','you','all','its','can','may','are','has','was','the','and','for','not','but','who','how','new','one','two','day','way','get','set','put','run','let','say','see','try','own','org','ceo','inc','llc','ltd','gmbh']);
+
+function parseJD(jdText) {
+  if (!jdText || jdText.length < 50) return { hardRequirements:[], roleSkills:[], domainContext:[], leadershipScope:[], csSystems:[], keywords:[] };
+  const result = { hardRequirements:[], roleSkills:[], domainContext:[], leadershipScope:[], csSystems:[], keywords:[] };
+  if (/work authorization|visa|right to work/i.test(jdText)) { const m=jdText.match(/authorization (?:for |in )?([A-Z][a-z]+)/); result.hardRequirements.push('work authorization'+(m?' for '+m[1]:'')); }
+  const langM=jdText.match(/(?:german|deutsch|arabic|french|spanish)\s*[-–]?\s*(?:fluent|c2|native|required|c1)/gi)||[];
+  langM.forEach(l=>result.hardRequirements.push(l.trim()));
+  const skillPatterns=[{p:/customer success|cs leadership/i,s:'customer success leadership'},{p:/pre-?sales|sales engineering/i,s:'pre-sales'},{p:/discovery|storytelling|presentation/i,s:'discovery & storytelling'},{p:/ai|machine learning/i,s:'AI knowledge'},{p:/api|integration/i,s:'APIs & integrations'},{p:/team lead|lead.*team/i,s:'team leadership'},{p:/board|exec.*team/i,s:'executive communication'}];
+  skillPatterns.forEach(({p,s})=>{ if(p.test(jdText)) result.roleSkills.push(s); });
+  if (/healthcare|hospital|nursing/i.test(jdText)) result.domainContext.push('healthcare');
+  if (/saas|software.*service/i.test(jdText)) result.domainContext.push('SaaS');
+  if (/50\+?\s*fte|scale.*org/i.test(jdText)) result.leadershipScope.push('scale org 50+ FTE');
+  if (/manager of manager/i.test(jdText)) result.leadershipScope.push('manager of managers');
+  if (/board.*quarterly/i.test(jdText)) result.leadershipScope.push('board reporting');
+  if (/health score|health.*signal/i.test(jdText)) result.csSystems.push('customer health scoring');
+  if (/segmentation|high.touch/i.test(jdText)) result.csSystems.push('customer segmentation');
+  if (/onboarding|time.to.value/i.test(jdText)) result.csSystems.push('onboarding & time-to-value');
+  if (/gross retention|grr/i.test(jdText)) result.csSystems.push('gross retention');
+  if (/voc|voice of.*customer/i.test(jdText)) result.csSystems.push('voice of customer');
+  const words=jdText.split(/\s+/); const kc={};
+  words.forEach(w=>{ const c=w.toLowerCase().replace(/[^a-z]/g,''); if(c.length>4&&!JD_STOPLIST.has(c)){kc[c]=(kc[c]||0)+1;} });
+  result.keywords=Object.entries(kc).filter(([,v])=>v>=2).sort(([,a],[,b])=>b-a).slice(0,10).map(([w])=>w);
+  return result;
+}
+
+function detectSeniority(cvText) {
+  let score=0; const signals=[];
+  if (/vp|vice president|director|head of/i.test(cvText)){score+=30;signals.push('executive title');}
+  if (/(?:10|eleven|\d{2})\+?\s*years?\s*(?:of\s*)?experience/i.test(cvText)){score+=20;signals.push('10+ years');}
+  else if (/[7-9]\+?\s*years/i.test(cvText)){score+=10;signals.push('7-9 years');}
+  if (/arr|mrr|\$\d+m|sar\s*\d+m|\d+m\s*sar/i.test(cvText)){score+=20;signals.push('ARR ownership');}
+  if (/managed.*team|team.*\d+|led.*team/i.test(cvText)){score+=15;signals.push('team leadership');}
+  if (/playbook|framework|strategy|org design/i.test(cvText)){score+=10;signals.push('strategic thinking');}
+  if(score>=50) return {level:'executive',score,signals};
+  if(score>=30) return {level:'senior',score,signals};
+  if(score>=15) return {level:'mid',score,signals};
+  return {level:'junior',score,signals};
+}
+
 function computeHeuristicScore(cv, job, jd) {
-  const cvL = cv.toLowerCase();
-  const src = (jd || job).toLowerCase().split(/\s+/).filter(w => w.length > 3);
-  const hits = src.filter(w => cvL.includes(w)).length;
-  const kwScore = Math.min((hits / Math.max(src.length, 1)) * 100, 100);
-  const hasNumbers = /\d+%|\d+ ريال|\d+ مليون/i.test(cv);
-  const hasAction = /قاد|حقق|طور|نفذ|led|managed|improved/i.test(cv);
-  const evScore = (hasNumbers ? 40 : 0) + (hasAction ? 30 : 0) + (cv.length > 1000 ? 30 : 15);
-  const total = Math.round(kwScore * 0.4 + evScore * 0.4 + Math.min(cv.length / 30, 20) * 0.2);
-  const score = Math.min(Math.max(total, 15), 70);
+  const cvL=cv.toLowerCase();
+  const jdP=parseJD(jd);
+  const sen=detectSeniority(cv);
+  let cvStrength=30;
+  if(/\d+%|\d+ sar|\d+m\s*sar|arr|mrr/i.test(cv)) cvStrength+=20;
+  if(/led|managed|built|launched|grew|improved|delivered/i.test(cv)) cvStrength+=10;
+  if(cv.length>1500) cvStrength+=8;
+  if(cv.length>3000) cvStrength+=5;
+  if(/customer success|churn|retention|health score|playbook|renewal/i.test(cv)) cvStrength+=15;
+  if(/arr|mrr|portfolio|account/i.test(cv)) cvStrength+=8;
+  if(sen.level==='executive') cvStrength+=20;
+  else if(sen.level==='senior') cvStrength+=12;
+  else if(sen.level==='mid') cvStrength+=5;
+  cvStrength=Math.min(Math.max(cvStrength,15),92);
+  let jobFit=cvStrength*0.7;
+  const skillMatches=jdP.roleSkills.filter(s=>s.split(/\s+/).some(w=>w.length>3&&cvL.includes(w)));
+  jobFit+=skillMatches.length*5;
+  jobFit+=jdP.csSystems.filter(s=>s.split(/\s+/).some(w=>w.length>4&&cvL.includes(w))).length*4;
+  let hardReqStatus='unknown'; const hardReqIssues=[];
+  jdP.hardRequirements.forEach(req=>{ if(/german|deutsch/i.test(req)&&!/german|deutsch/i.test(cv)){hardReqIssues.push('German fluency not shown');hardReqStatus='missing';} if(/work authorization/i.test(req)){const m=req.match(/for\s+(\w+)/);if(m&&!cvL.includes(m[1].toLowerCase())){hardReqIssues.push('Work authorization for '+m[1]+' not shown');hardReqStatus='missing';}} });
+  if(hardReqIssues.length===0&&jdP.hardRequirements.length>0) hardReqStatus='pass';
+  if(hardReqStatus==='missing') jobFit=Math.round(jobFit*0.7);
+  jobFit=Math.min(Math.max(Math.round(jobFit),15),88);
+  const careerPath=buildCareerPath(job,sen.level);
+  const problems=[];
+  if(hardReqIssues.length>0) problems.push({title:'متطلبات إلزامية غير مستوفاة',desc:hardReqIssues.join('. '),quote:null,fix:'تحقق من هذه الشروط — سيرتك قوية لأدوار مشابهة بدون قيود جغرافية.'});
+  if(!/\d+%|\d+x|\d+m\s*sar|arr/i.test(cv)) problems.push({title:'إنجازات بدون أرقام',desc:'أضف ARR أو retention % أو team size.',quote:null,fix:'مثال: "أدرت محفظة X ريال ARR" أو "رفعت retention من X% إلى Y%"'});
   return {
-    readinessScore: score,
-    readinessRange: `${score - 5}–${score + 8}%`,
-    whyNotGetting: score < 40 ? 'السيرة تفتقر للكلمات المفتاحية والإنجازات القابلة للقياس' : 'السيرة كويسة لكن تحتاج تخصيص أكثر للوظيفة',
-    confidence: jd ? 'medium' : 'low',
-    problems: [
-      !hasNumbers && { title: 'ما في أرقام أو إنجازات قابلة للقياس', desc: 'أضف أرقاماً لكل إنجاز', quote: null, fix: 'حوّل المهام لنتائج: "زادت بـ X%"' },
-      !hasAction && { title: 'أفعال ضعيفة', desc: 'استخدم أفعال قوية', quote: null, fix: 'قاد / طوّر / حقّق / نفّذ' },
-    ].filter(Boolean),
-    improvedSummary: `متخصص في ${job} يتميز بخبرة عملية وقدرة على تحقيق نتائج قابلة للقياس.`,
-    recommendedKeywords: src.slice(0, 6),
-    matchedSkills: [],
-    missingKeywords: src.filter(w => !cvL.includes(w)).slice(0, 5),
-    jobMatches: [{ role: job, type: 'best', why: 'يناسب خلفيتك', action: 'قدّم مع تحسين السيرة' }],
+    readinessScore:Math.round((cvStrength*0.5+jobFit*0.5)),
+    cvStrengthScore:Math.round(cvStrength),
+    jobFitScore:Math.round(jobFit),
+    hardRequirementStatus:hardReqStatus,
+    hardRequirementIssues:hardReqIssues,
+    interviewReadinessScore:25,
+    readinessRange:`${Math.round(cvStrength)-5}–${Math.round(cvStrength)+8}%`,
+    confidence:jd?'high':'medium',
+    whyNotGetting:hardReqIssues.length>0?`سيرتك قوية لهذا المسار، لكن هذه الوظيفة تحديداً فيها شروط قد تمنعك: ${hardReqIssues.join(' + ')}`:cvStrength<50?'السيرة تحتاج تقوية في الإنجازات والأرقام':'السيرة كويسة — ركّز على تحسين تحضير المقابلة',
+    seniority:sen.level,
+    problems:problems.slice(0,4),
+    improvedSummary:`قائد ${job} بخبرة ${sen.level==='executive'?'تنفيذية':'عملية'} في تحقيق نتائج قابلة للقياس ومتميزة.`,
+    recommendedKeywords:[...jdP.csSystems,...jdP.roleSkills].slice(0,8),
+    matchedSkills:skillMatches,
+    missingKeywords:hardReqIssues.concat(jdP.csSystems.filter(s=>!cvL.includes(s.split(' ')[0]))).slice(0,6),
+    careerPath,
+    hardRequirements:jdP.hardRequirements,
+    jobMatches:hardReqIssues.length>0?[{role:job+' (بدون قيود جغرافية)',type:'best',why:'سيرتك قوية — ابحث في السوق السعودي والخليجي',action:'قدّم على أدوار CS leadership في السعودية والإمارات'},{role:'هدفك منطقي لمسارك',type:'pivot',why:'لكن هذه الشركة تحديداً عندها شروط محددة',action:'استمر في التدريب وابحث عن أدوار بدون قيود لغوية'}]:[{role:job,type:'best',why:`تطابق ${jobFit}% مع المتطلبات`,action:'قدّم بعد تحسين السيرة'},{role:'Director of Customer Success',type:'train',why:'مشابه بمسؤوليات أقل',action:'تدرّب أسبوعين أولاً'}],
   };
 }
 
+function buildCareerPath(job, seniorityLevel) {
+  if (/vp|vice president|director|head/i.test(job)) {
+    return [{role:seniorityLevel==='executive'?'Head of CS / Director CS':'Senior CS Manager',readinessNeeded:35,daysFromNow:0,isCurrent:true,isTarget:false},{role:'Director of Customer Success',readinessNeeded:55,daysFromNow:14,isCurrent:false,isTarget:false},{role:job,readinessNeeded:70,daysFromNow:30,isCurrent:false,isTarget:true}];
+  }
+  return [{role:'CS Specialist',readinessNeeded:35,daysFromNow:0,isCurrent:seniorityLevel==='junior',isTarget:false},{role:'CS Manager',readinessNeeded:50,daysFromNow:14,isCurrent:seniorityLevel==='mid',isTarget:false},{role:job,readinessNeeded:65,daysFromNow:30,isCurrent:false,isTarget:true}];
+}
+
 function localEvaluate(answer) {
-  const words = answer.trim().split(/\s+/).length;
-  const hasN = /\d+/.test(answer);
-  const hasResult = /نتيجة|حقق|وفّر|زاد|achieved|improved/i.test(answer);
-  const score = Math.min(20 + (words > 30 ? 15 : 0) + (hasN ? 20 : 0) + (hasResult ? 20 : 0), 75);
+  const words=answer.trim().split(/\s+/).length;
+  const hasN=/\d+/.test(answer);
+  const hasResult=/نتيجة|حقق|وفّر|زاد|achieved|improved|reduced/i.test(answer);
+  const hasStructure=/أولاً|ثانياً|then|first|second|star|situation|action|result/i.test(answer);
+  const score=Math.min(15+(words>50?20:words>25?10:0)+(hasN?20:0)+(hasResult?20:0)+(hasStructure?15:0),80);
   return {
-    overallScore: score,
-    verdict: score >= 60 ? 'إجابة قوية' : score >= 40 ? 'إجابة متوسطة' : 'إجابة تحتاج تطوير',
-    whyFail: score < 40 ? 'الإجابة عامة — تحتاج مثال حقيقي بأرقام' : 'الإجابة كويسة — أضف رقماً واحداً لتكون أقوى',
-    weakPoints: [!hasN && 'ما في أرقام أو نتائج قابلة للقياس', words < 20 && 'الإجابة قصيرة جداً'].filter(Boolean),
-    improvedAnswer: 'في [الشركة]، واجهنا [مشكلة]. دوري كان [ما فعلت]. النتيجة: [رقم أو نتيجة محددة].',
-    oneFix: 'أضف رقماً واحداً أو نتيجة محددة لإجابتك',
-    readinessGain: score >= 50 ? 3 : 1,
+    overallScore:score,
+    verdict:score>=65?'إجابة قوية ✓':score>=45?'إجابة متوسطة — تحتاج تطوير':'إجابة ضعيفة',
+    whyFail:score<40?'الإجابة عامة — تحتاج مثال حقيقي بسياق + دور + خطوات + رقم':score<60?'محتوى جيد لكن يفتقر لأرقام أو هيكل STAR':'إجابة جيدة — أضف رقماً واحداً محدداً',
+    weakPoints:[!hasN&&'ما في أرقام أو نتائج قابلة للقياس',words<30&&'الإجابة قصيرة — أضف سياقاً أكثر',!hasStructure&&'اتبع STAR: موقف → دور → خطوات → نتيجة'].filter(Boolean),
+    improvedAnswer:'في [الشركة]، واجهنا [مشكلة]. دوري كان [ما فعلت]. النتيجة: [X% تحسن أو Y ريال توفير].',
+    oneFix:'ابدأ بـ "في [المكان]" وأضف نتيجة واحدة بأرقام في النهاية',
+    readinessGain:score>=60?3:score>=40?2:1,
   };
 }
 
