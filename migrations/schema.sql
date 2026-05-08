@@ -72,3 +72,35 @@ CREATE TABLE IF NOT EXISTS user_roadmaps (
   roadmap_data     JSONB NOT NULL,
   updated_at       TIMESTAMP DEFAULT NOW()
 );
+
+-- Phase 4: Training Attempts
+CREATE TABLE IF NOT EXISTS training_attempts (
+  id               SERIAL PRIMARY KEY,
+  user_id          INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  training_day     INTEGER NOT NULL DEFAULT 1,
+  question_text    TEXT,
+  mode             TEXT DEFAULT 'written', -- written | voice | video | mock
+  transcript       TEXT,
+  scores_json      JSONB DEFAULT '{}',
+  feedback_json    JSONB DEFAULT '{}',
+  attempt_number   INTEGER DEFAULT 1,
+  created_at       TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, training_day, attempt_number)
+);
+CREATE INDEX IF NOT EXISTS idx_training_attempts_user ON training_attempts(user_id, training_day);
+
+-- Audit trail for any change to users.access_status. Sources today:
+--   'stripe_webhook'         — Stripe checkout.session.completed
+--   'stripe_session_verify'  — POST /api/darbi/payment/success (Stripe-verified)
+--   'admin_grant' / 'admin_revoke' — reserved for future admin tooling
+CREATE TABLE IF NOT EXISTS access_audit (
+  id                  SERIAL PRIMARY KEY,
+  user_id             INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  source              TEXT NOT NULL,
+  status_to           TEXT NOT NULL,
+  stripe_session_id   TEXT,
+  actor               TEXT,
+  note                TEXT,
+  created_at          TIMESTAMP DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_access_audit_user ON access_audit(user_id, created_at DESC);

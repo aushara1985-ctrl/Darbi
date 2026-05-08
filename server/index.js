@@ -1,13 +1,51 @@
 require('dotenv').config();
 const express = require('express');
 const path    = require('path');
+const fs      = require('fs');
 const cors    = require('cors');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
+const IS_PROD = process.env.NODE_ENV === 'production';
 
-app.use(cors());
-app.use(express.json({ limit: '2mb' }));
+// ─── JWT secret (fail loud in production if missing) ─────────────────────────
+if (IS_PROD && !process.env.JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET is required in production. Set it in Railway Variables.');
+  process.exit(1);
+}
+const JWT_SECRET = process.env.JWT_SECRET || 'darbi_dev_only_secret_DO_NOT_USE_IN_PROD';
+
+// ─── CORS ─────────────────────────────────────────────────────────────────────
+const ALLOWED_ORIGINS = [
+  'https://darbi-production.up.railway.app',
+  'http://localhost:3000',
+  'http://localhost:5173',
+  process.env.APP_URL,
+].filter(Boolean);
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // No-origin requests (curl, same-origin server-to-server) are allowed.
+    if (!origin) return callback(null, true);
+    if (ALLOWED_ORIGINS.includes(origin) || origin.endsWith('.railway.app')) {
+      return callback(null, true);
+    }
+    if (IS_PROD) {
+      // Drop the Access-Control-Allow-Origin header. Browsers will block;
+      // non-browser callers can still hit the endpoint, which is fine because
+      // CORS is not an authn/authz boundary — JWT auth is.
+      return callback(null, false);
+    }
+    // Dev only: allow anything to ease local frontend work.
+    callback(null, true);
+  },
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true,
+}));
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ─── Serve frontend ────────────────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, '../public')));
@@ -19,7 +57,6 @@ const db = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectU
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'darbi_secret_2025';
 
 function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.replace('Bearer ', '');
@@ -74,6 +111,14 @@ app.get('/api/darbi/me', authMiddleware, async (req, res) => {
 app.post('/api/darbi/analyze', authMiddleware, async (req, res) => {
   const { targetRole, cvText, jobDescription = '' } = req.body;
   if (!targetRole || !cvText) return res.status(400).json({ error: 'Missing fields' });
+
+  console.log('[DARBI_ANALYZE_ACTIVE]', {
+    route: '/api/darbi/analyze',
+    parserVersion: 'v2_fixed_parser',
+    timestamp: new Date().toISOString(),
+    targetRole,
+    hasJD: !!jobDescription,
+  });
 
   if (!process.env.OPENAI_API_KEY) {
     // Heuristic fallback
@@ -274,23 +319,53 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
     const userId = session.metadata?.userId;
     if (userId) {
       await db.query(
-        `UPDATE users SET access_status = 'paid', paid_at = NOW() WHERE id = $1`,
+        `UPDATE users SET access_status = 'paid', paid_at = COALESCE(paid_at, NOW()) WHERE id = $1`,
         [userId]
+      ).catch((e) => console.error('[webhook] update user paid failed:', e.message));
+      await db.query(
+        `INSERT INTO access_audit (user_id, source, status_to, stripe_session_id, note)
+         VALUES ($1, 'stripe_webhook', 'paid', $2, NULL)`,
+        [userId, session.id]
       ).catch(() => {});
     }
   }
   res.json({ received: true });
 });
 
+// Confirms a Stripe Checkout Session and grants paid access ONLY if Stripe
+// itself reports payment_status === 'paid' AND session.metadata.userId matches
+// the authenticated user. This is a defence-in-depth path used when the user
+// returns from Stripe; the webhook is still the source of truth.
 app.post('/api/darbi/payment/success', authMiddleware, async (req, res) => {
-  const { stripeSessionId } = req.body;
+  const { stripeSessionId } = req.body || {};
+  if (!stripeSessionId) return res.status(400).json({ error: 'stripeSessionId required' });
+  if (!process.env.STRIPE_SECRET_KEY) return res.status(503).json({ error: 'Stripe not configured' });
+
   try {
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const session = await stripe.checkout.sessions.retrieve(stripeSessionId);
+
+    const isPaid = session && (session.payment_status === 'paid' || session.status === 'complete');
+    const ownerId = session && session.metadata && session.metadata.userId;
+    if (!isPaid) return res.status(402).json({ success: false, error: 'session not paid' });
+    if (String(ownerId) !== String(req.user.id)) {
+      return res.status(403).json({ success: false, error: 'session does not belong to user' });
+    }
+
     await db.query(
-      `UPDATE users SET access_status = 'paid', paid_at = NOW() WHERE id = $1`,
+      `UPDATE users SET access_status = 'paid', paid_at = COALESCE(paid_at, NOW()) WHERE id = $1`,
       [req.user.id]
     );
+    await db.query(
+      `INSERT INTO access_audit (user_id, source, status_to, stripe_session_id, note)
+       VALUES ($1, 'stripe_session_verify', 'paid', $2, NULL)`,
+      [req.user.id, stripeSessionId]
+    ).catch(() => {});
     res.json({ success: true });
-  } catch (e) { res.json({ success: false }); }
+  } catch (e) {
+    console.error('[payment/success] verify error:', e.message);
+    res.status(500).json({ success: false, error: 'verification failed' });
+  }
 });
 
 // ─── UGC ──────────────────────────────────────────────────────────────────────
@@ -344,10 +419,60 @@ app.post('/api/darbi/feedback', async (req, res) => {
 // ─── HEALTH ───────────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ ok: true, ts: new Date().toISOString() }));
 
-// ─── SPA fallback ─────────────────────────────────────────────────────────────
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+// ─── DEBUG ENDPOINT ───────────────────────────────────────────────────────────
+app.get('/api/debug/analysis-version', (req, res) => {
+  res.json({
+    parserVersion: 'v2_fixed_parser',
+    analysisEngineName: 'computeHeuristicScore -> parseJD + detectSeniority + 4-score',
+    activeAnalyzeRoute: 'POST /api/darbi/analyze',
+    stoplistSize: JD_STOPLIST.size,
+    sampleStoplistWords: [...JD_STOPLIST].slice(0, 10),
+    deployedAt: new Date().toISOString(),
+    note: 'Keywords are NEVER raw words — only structured categories from parseJD()',
+  });
 });
+
+// ─── FORCE TEST ───────────────────────────────────────────────────────────────
+app.get('/api/debug/test-vp-cs', (req, res) => {
+  const sampleCV = `VP Customer Success | 12 years experience
+Led CS org managing 80M SAR ARR portfolio across 100+ enterprise accounts.
+Built health scoring framework, playbooks, and segmentation model.
+Improved gross retention from 78% to 92% over 18 months.
+Led team of 15 CSMs and 3 managers. Presented to board quarterly.
+Managed renewals, expansion, and VOC loop into product roadmap.
+Tools: Salesforce, Gainsight, Tableau.`;
+  
+  const sampleJD = `VP of Customer Success (m/f/d) at Voize GmbH
+Please note that this position requires work authorization for Germany.
+Language: English - Fluent, German - Fluent
+Build and lead the Customer Success & Support org (CX)
+Customer health: measurement philosophy, signals, early-warning system
+Onboarding & rollouts from pilots to multi-site deployments
+Gross retention: protecting the base through deep product usage
+Voice of the customer: feedback loop into product, engineering, and GTM
+Scale org from today team to 50+ FTE across CS, Implementation, Support
+Manager of managers. Present to the board quarterly. GTM leadership team.`;
+
+  const result = computeHeuristicScore(sampleCV, 'VP Customer Success', sampleJD);
+  
+  const tests = {
+    'cv_strength >= 70': result.cvStrengthScore >= 70,
+    'job_fit 45-65': result.jobFitScore >= 45 && result.jobFitScore <= 65,
+    'interview_readiness 20-35': result.interviewReadinessScore >= 20 && result.interviewReadinessScore <= 35,
+    'hard_req = missing': result.hardRequirementStatus === 'missing',
+    'no garbage keywords': !result.missingKeywords.some(k => ['about','customer','success','position','requires','voize','mfd'].includes(k.toLowerCase())),
+    'career path has Head of CS': result.careerPath && result.careerPath[0].role.includes('Head'),
+    'career path has Director': result.careerPath && result.careerPath[1].role.includes('Director'),
+    'career path target = VP': result.careerPath && result.careerPath[2].isTarget,
+  };
+
+  const passed = Object.values(tests).filter(Boolean).length;
+  res.json({ passed: passed + '/' + Object.keys(tests).length, tests, result });
+});
+
+// SPA fallback is registered at the very bottom of this file, AFTER all
+// /api/* routes — Express matches in registration order and a top-level
+// `app.get('*')` will swallow any later GETs (e.g. /api/training/status).
 
 // ─── Smart JD Parser ──────────────────────────────────────────────────────────
 const JD_STOPLIST = new Set(['please','note','position','requires','about','company','click','apply','details','benefits','team','process','table','mission','activities','language','work','job','role','responsibilities','requirements','experience','years','fluent','nice','have','that','this','with','will','your','their','from','into','what','they','which','when','been','also','well','each','both','very','here','then','than','some','make','many','more','most','over','such','used','use','able','our','you','all','its','can','may','are','has','was','the','and','for','not','but','who','how','new','one','two','day','way','get','set','put','run','let','say','see','try','own','org','ceo','inc','llc','ltd','gmbh']);
@@ -464,4 +589,369 @@ function localEvaluate(answer) {
   };
 }
 
-app.listen(PORT, () => console.log(`Darbi running on port ${PORT}`));
+// ══════ PHASE 4 — TRAINING ENGINE (Voice + Video + Transcription) ══════
+
+// ─── Multer setup for file uploads ───────────────────────────────────────────
+let multer;
+try {
+  multer = require('multer');
+} catch(e) {
+  console.warn('[phase4] multer not installed — run: npm install multer');
+}
+
+function getMulter() {
+  if (!multer) return null;
+  return multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 25 * 1024 * 1024 }, // 25MB max
+    fileFilter: (req, file, cb) => {
+      const allowed = ['audio/webm','audio/ogg','audio/mp4','audio/wav','audio/mpeg',
+                       'video/webm','video/mp4','application/octet-stream'];
+      // Accept any audio/video
+      if (file.mimetype.startsWith('audio/') || file.mimetype.startsWith('video/') || allowed.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('File type not allowed: ' + file.mimetype));
+      }
+    },
+  });
+}
+
+// ─── Training DB helpers ───────────────────────────────────────────────────────
+async function saveTrainingAttempt(data) {
+  try {
+    await db.query(
+      `INSERT INTO training_attempts
+        (user_id, training_day, question_text, mode, transcript, scores_json, feedback_json, attempt_number, created_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW())
+       ON CONFLICT DO NOTHING`,
+      [data.userId, data.trainingDay, data.question, data.mode,
+       data.transcript, JSON.stringify(data.scores), JSON.stringify(data.feedback), data.attemptNumber || 1]
+    );
+  } catch(e) { console.error('[training] save attempt:', e.message); }
+}
+
+async function getUserAttemptCount(userId, trainingDay) {
+  try {
+    const { rows } = await db.query(
+      'SELECT COUNT(*) as cnt FROM training_attempts WHERE user_id=$1 AND training_day=$2',
+      [userId, trainingDay]
+    );
+    return parseInt(rows[0]?.cnt || '0');
+  } catch(e) { return 0; }
+}
+
+// ─── OpenAI Transcription ─────────────────────────────────────────────────────
+async function transcribeAudio(audioBuffer, mimeType, filename) {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY not set');
+  }
+
+  const { OpenAI } = require('openai');
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+  // OpenAI Whisper requires a File-like object
+  const { File } = require('buffer');
+  const ext = mimeType.includes('mp4') ? 'mp4' : mimeType.includes('ogg') ? 'ogg' : 'webm';
+  const fname = filename || ('recording.' + ext);
+
+  const file = new File([audioBuffer], fname, { type: mimeType });
+
+  const response = await openai.audio.transcriptions.create({
+    file: file,
+    model: 'whisper-1',
+    language: 'ar', // Arabic first, Whisper auto-detects if wrong
+    response_format: 'json',
+  });
+
+  return response.text || '';
+}
+
+// ─── GPT Evaluation ────────────────────────────────────────────────────────────
+async function evaluateTranscript(transcript, question, roleFamily, mode) {
+  if (!process.env.OPENAI_API_KEY) {
+    return localEvaluate(transcript);
+  }
+
+  const { OpenAI } = require('openai');
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+  const roleDimensions = {
+    customer_service: '- التعاطف (empathy)\n- وضوح خطوات الحل (action_clarity)\n- الهدوء تحت الضغط (calmness)',
+    sales_entry:      '- الإقناع (persuasion)\n- التعامل مع الاعتراضات (objection_handling)',
+    reception_front_desk: '- الاحترافية (professionalism)\n- أسلوب الترحيب (welcoming_tone)',
+  };
+  const extraDims = roleDimensions[roleFamily] || '';
+
+  const prompt = `أنت مقيّم مقابلات عمل خبير للسوق السعودي.
+
+السؤال: ${question}
+إجابة المتقدم: ${transcript}
+طريقة الإجابة: ${mode === 'voice' ? 'صوتية (نص محوّل)' : mode === 'video' ? 'فيديو (نص محوّل)' : 'مكتوبة'}
+
+مهم: لا تدّعي تحليل نبرة الصوت أو لغة الجسد — قيّم النص فقط.
+
+قيّم الإجابة على الأبعاد التالية وأرجع JSON فقط:
+{
+  "overallScore": 55,
+  "dimensions": {
+    "relevance_to_question": 60,
+    "answer_structure": 50,
+    "evidence_examples": 40,
+    "communication_clarity": 65,
+    "language_quality": 60,
+    "role_fit": 55${extraDims ? ',\n    ' + extraDims.split('\n').map(d => '"' + d.split('(')[1]?.replace(')','') + '": 50').join(',\n    ') : ''}
+  },
+  "verdict": "إجابة متوسطة",
+  "whyFail": "لماذا ستضعف في مقابلة حقيقية — 1-2 جملة",
+  "improvedAnswer": "إجابة محسّنة بـ STAR وتفاصيل محددة",
+  "oneFix": "إصلاح واحد محدد للتطبيق الفوري",
+  "readinessGain": 2,
+  "strengths": ["نقطة قوة 1"],
+  "weaknesses": ["نقطة ضعف 1"]
+}`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: prompt }],
+      response_format: { type: 'json_object' },
+      max_tokens: 800,
+      temperature: 0.3,
+    });
+    return JSON.parse(response.choices[0].message.content);
+  } catch(e) {
+    console.error('[eval] GPT error:', e.message);
+    return localEvaluate(transcript);
+  }
+}
+
+// ─── POST /api/training/transcribe ────────────────────────────────────────────
+app.post('/api/training/transcribe', authMiddleware, async (req, res) => {
+  const upload = getMulter();
+  if (!upload) {
+    return res.status(503).json({
+      error: 'multer_not_installed',
+      message: 'Run: npm install multer on server',
+      fallback: true,
+    });
+  }
+
+  upload.single('recording')(req, res, async (err) => {
+    if (err) {
+      console.error('[transcribe] upload error:', err.message);
+      return res.status(400).json({ error: err.message, fallback: true });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: 'no_file',
+        message: 'No recording file received',
+        fallback: true,
+      });
+    }
+
+    console.log('[transcribe] received:', {
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+      userId: req.user.id,
+    });
+
+    // File size check
+    if (req.file.size < 1000) {
+      return res.status(400).json({
+        error: 'file_too_small',
+        message: 'Recording too short or empty',
+        fallback: true,
+      });
+    }
+
+    try {
+      const transcript = await transcribeAudio(
+        req.file.buffer,
+        req.file.mimetype,
+        req.file.originalname || 'recording.webm'
+      );
+
+      if (!transcript || transcript.trim().length < 5) {
+        return res.json({
+          success: false,
+          fallback: true,
+          message: 'تعذّر تحويل الصوت تلقائياً — اكتب إجابتك لتقييمها',
+          transcript: '',
+        });
+      }
+
+      res.json({ success: true, transcript, fallback: false });
+
+    } catch(e) {
+      console.error('[transcribe] OpenAI error:', e.message);
+      res.json({
+        success: false,
+        fallback: true,
+        message: 'تعذّر تحويل الصوت تلقائياً — اكتب إجابتك لتقييمها',
+        transcript: '',
+        error: e.message,
+      });
+    }
+  });
+});
+
+// ─── POST /api/training/evaluate ─────────────────────────────────────────────
+app.post('/api/training/evaluate', authMiddleware, async (req, res) => {
+  const { transcript, question, mode, roleFamily, trainingDay, isFallback } = req.body;
+
+  if (!transcript || transcript.trim().length < 3) {
+    return res.status(400).json({ error: 'transcript required' });
+  }
+  if (!question) {
+    return res.status(400).json({ error: 'question required' });
+  }
+
+  console.log('[evaluate] userId:', req.user.id, 'day:', trainingDay, 'mode:', mode);
+
+  // Check access limits
+  const user = req.user;
+  const attemptCount = await getUserAttemptCount(user.id, trainingDay || 1);
+
+  // Access gating
+  const userData = await db.query('SELECT access_status FROM users WHERE id=$1', [user.id]).catch(() => ({rows:[]}));
+  const accessStatus = userData.rows[0]?.access_status || 'free';
+  const isPaid = accessStatus === 'paid';
+  const is24h  = accessStatus === 'ugc_24h';
+
+  if (!isPaid && !is24h && attemptCount >= 1) {
+    return res.status(403).json({
+      error: 'limit_reached',
+      message: 'وصلت للحد المجاني — فعّل 24h أو Premium لمزيد من التقييمات',
+      upgradeRequired: true,
+    });
+  }
+  if (is24h && attemptCount >= 3) {
+    return res.status(403).json({
+      error: 'limit_reached',
+      message: 'وصلت لحد 24h — ترقية Premium للمزيد',
+      upgradeRequired: true,
+    });
+  }
+
+  try {
+    const evaluation = await evaluateTranscript(transcript, question, roleFamily || 'customer_service', mode || 'written');
+
+    // Add fallback label if needed
+    if (isFallback) {
+      evaluation.note = 'تم التقييم من النص المكتوب بدلاً من الصوت المحوّل';
+    }
+
+    // Save attempt
+    await saveTrainingAttempt({
+      userId:       user.id,
+      trainingDay:  trainingDay || 1,
+      question:     question,
+      mode:         mode || 'written',
+      transcript:   transcript,
+      scores:       evaluation.dimensions || {},
+      feedback:     { verdict: evaluation.verdict, whyFail: evaluation.whyFail, oneFix: evaluation.oneFix },
+      attemptNumber: attemptCount + 1,
+    });
+
+    // Update user readiness
+    const gain = evaluation.readinessGain || 2;
+    await db.query(
+      `UPDATE users SET interview_readiness = LEAST(interview_readiness + $1, 92), last_activity = NOW() WHERE id = $2`,
+      [gain, user.id]
+    ).catch(() => {});
+
+    res.json({ success: true, evaluation, attemptNumber: attemptCount + 1 });
+
+  } catch(e) {
+    console.error('[evaluate] error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─── GET /api/training/history ────────────────────────────────────────────────
+app.get('/api/training/history', authMiddleware, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      `SELECT id, training_day, question_text, mode, transcript, scores_json, feedback_json, attempt_number, created_at
+       FROM training_attempts WHERE user_id=$1 ORDER BY created_at DESC LIMIT 20`,
+      [req.user.id]
+    );
+    res.json({ success: true, history: rows });
+  } catch(e) { res.json({ success: true, history: [] }); }
+});
+
+// ─── Demo transcription (no auth needed, no save) ─────────────────────────────
+app.post('/api/training/demo-transcribe', async (req, res) => {
+  const upload = getMulter();
+  if (!upload) return res.json({ success: false, fallback: true, transcript: '' });
+
+  upload.single('recording')(req, res, async (err) => {
+    if (err || !req.file) return res.json({ success: false, fallback: true, transcript: '' });
+    try {
+      const transcript = await transcribeAudio(req.file.buffer, req.file.mimetype);
+      res.json({ success: true, transcript: transcript || '', fallback: !transcript });
+    } catch(e) {
+      res.json({ success: false, fallback: true, transcript: '', error: e.message });
+    }
+  });
+});
+
+// ─── Debug endpoint ────────────────────────────────────────────────────────────
+app.get('/api/training/status', (req, res) => {
+  res.json({
+    phase: 4,
+    endpoints: [
+      'POST /api/training/transcribe',
+      'POST /api/training/evaluate',
+      'GET  /api/training/history',
+      'POST /api/training/demo-transcribe',
+    ],
+    openaiConfigured: !!process.env.OPENAI_API_KEY,
+    multerAvailable: !!multer,
+    corsOrigins: ALLOWED_ORIGINS,
+    dbConfigured: !!process.env.DATABASE_URL,
+  });
+});
+
+// ══════ JSON 404 for any unmatched /api/* request ═══════════════════════════
+// Must come BEFORE the SPA catch-all so API typos surface as JSON, not HTML.
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'not_found', path: req.originalUrl });
+});
+
+// ══════ SPA catch-all (registered last on purpose) ══════════════════════════
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
+// ══════ Schema bootstrap + listen ═══════════════════════════════════════════
+async function bootstrapSchema() {
+  if (!process.env.DATABASE_URL) {
+    console.warn('[startup] DATABASE_URL not set — skipping schema bootstrap (server will boot, but DB calls will fail)');
+    return;
+  }
+  const schemaPath = path.join(__dirname, '..', 'migrations', 'schema.sql');
+  if (!fs.existsSync(schemaPath)) {
+    console.warn('[startup] schema.sql not found at', schemaPath, '— skipping bootstrap');
+    return;
+  }
+  try {
+    const sql = fs.readFileSync(schemaPath, 'utf8');
+    await db.query(sql);
+    console.log('[startup] schema bootstrap ok');
+  } catch (e) {
+    console.error('[startup] schema bootstrap FAILED:', e.message);
+    if (IS_PROD) {
+      console.error('[startup] refusing to start in production with broken schema');
+      process.exit(1);
+    }
+  }
+}
+
+bootstrapSchema().finally(() => {
+  app.listen(PORT, () => {
+    console.log('[startup] darbi listening on port', PORT, '(NODE_ENV=' + (process.env.NODE_ENV || 'development') + ')');
+  });
+});

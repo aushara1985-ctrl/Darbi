@@ -1020,9 +1020,37 @@ img,video,iframe{max-width:100%}
 
   <div class="readiness-card">
     <div class="rd-pct" id="rdPct">0%</div>
-    <div class="rd-label">جاهزيتك الحالية للحصول على مقابلات</div>
+    <div class="rd-label">قوة سيرتك الذاتية</div>
     <div class="rd-bar"><div class="rd-bar-fill" id="rdFill" style="width:0"></div></div>
     <div class="rd-note" id="rdNote">جاري التحليل...</div>
+  </div>
+
+  <!-- 4-Score Panel -->
+  <div class="card" style="padding:16px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px" id="fourScorePanel">
+    <div style="background:#f0f0ff;border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:10px;font-weight:700;color:#4f46e5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">قوة السيرة</div>
+      <div style="font-size:22px;font-weight:900;color:#4f46e5" id="scoreCVStrength">--</div>
+    </div>
+    <div style="background:#f0fff4;border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:10px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">مطابقة الوظيفة</div>
+      <div style="font-size:22px;font-weight:900;color:#166534" id="scoreJobFit">--</div>
+    </div>
+    <div style="background:#fef9f0;border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:10px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">الشروط الإلزامية</div>
+      <div style="font-size:16px;font-weight:800;color:#92400e" id="scoreHardReq">--</div>
+    </div>
+    <div style="background:#f5f5f8;border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">جاهزية المقابلة</div>
+      <div style="font-size:22px;font-weight:900;color:#666" id="scoreInterview">--</div>
+    </div>
+  </div>
+
+  <!-- Hard req warning -->
+  <div id="hardReqWarn" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#b91c1c;line-height:1.6"></div>
+
+  <!-- Career path strip -->
+  <div style="overflow-x:auto;scrollbar-width:none;margin-bottom:14px;padding:2px 0">
+    <div id="careerPathStrip" style="display:flex;align-items:center;gap:0;white-space:nowrap"></div>
   </div>
 
   <div class="card" style="padding:22px;margin-bottom:14px">
@@ -1622,17 +1650,35 @@ img,video,iframe{max-width:100%}
 </div>
 
 <script>
+// ══════ apiFetch — single entry point for backend calls ══════
+// Attaches `Authorization: Bearer <token>` from localStorage.darbi_token.
+// JSON requests: pass body as a plain object and apiFetch will stringify
+// and set the Content-Type header. For multipart (FormData) callers should
+// pass the FormData directly — apiFetch will not touch the headers.
+function apiFetch(path, opts){
+  opts = opts || {};
+  var headers = Object.assign({}, opts.headers || {});
+  var body = opts.body;
+  if (body && !(body instanceof FormData) && typeof body !== 'string') {
+    body = JSON.stringify(body);
+    if (!headers['Content-Type']) headers['Content-Type'] = 'application/json';
+  }
+  var token = localStorage.getItem('darbi_token');
+  if (token && !headers['Authorization']) headers['Authorization'] = 'Bearer ' + token;
+  return fetch(path, Object.assign({}, opts, { headers: headers, body: body }));
+}
+
 // ══════ DARBI API CLIENT ══════
-// Persists all state to server DB. localStorage = fallback for unauthenticated demo only.
+// All state persists to server DB once the user has a JWT.
 var API = {
-  async me(){ try{ var r=await fetch('/api/darbi/me'); if(r.status===401) return null; return await r.json(); }catch(e){return null;} },
-  async analyze(d){ try{ await fetch('/api/darbi/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}); }catch(e){} },
-  async startTraining(isBaseline){ try{ var r=await fetch('/api/darbi/training/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({isBaseline})}); return r.ok?await r.json():null; }catch(e){return null;} },
-  async saveAnswer(d){ try{ var r=await fetch('/api/darbi/training/answer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}); return r.ok?await r.json():null; }catch(e){return null;} },
-  async finalizeSession(d){ try{ var r=await fetch('/api/darbi/training/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}); return r.ok?await r.json():null; }catch(e){return null;} },
-  async submitUgc(scriptType,videoUrl){ try{ var r=await fetch('/api/darbi/ugc/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scriptType,videoUrl})}); return await r.json(); }catch(e){return null;} },
-  async applyReferral(code){ try{ await fetch('/api/darbi/referral/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})}); }catch(e){} },
-  async paymentSuccess(sid){ try{ var r=await fetch('/api/darbi/payment/success',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stripeSessionId:sid})}); return r.ok?await r.json():null; }catch(e){return null;} }
+  async me(){ try{ var r=await apiFetch('/api/darbi/me'); if(r.status===401) return null; return await r.json(); }catch(e){return null;} },
+  async analyze(d){ try{ await apiFetch('/api/darbi/analyze',{method:'POST',body:d}); }catch(e){} },
+  async startTraining(isBaseline){ try{ var r=await apiFetch('/api/darbi/training/start',{method:'POST',body:{isBaseline:isBaseline}}); return r.ok?await r.json():null; }catch(e){return null;} },
+  async saveAnswer(d){ try{ var r=await apiFetch('/api/darbi/training/answer',{method:'POST',body:d}); return r.ok?await r.json():null; }catch(e){return null;} },
+  async finalizeSession(d){ try{ var r=await apiFetch('/api/darbi/training/finalize',{method:'POST',body:d}); return r.ok?await r.json():null; }catch(e){return null;} },
+  async submitUgc(scriptType,videoUrl){ try{ var r=await apiFetch('/api/darbi/ugc/submit',{method:'POST',body:{scriptType:scriptType,videoUrl:videoUrl}}); return await r.json(); }catch(e){return null;} },
+  async applyReferral(code){ try{ await apiFetch('/api/darbi/referral/apply',{method:'POST',body:{code:code}}); }catch(e){} },
+  async paymentSuccess(sid){ try{ var r=await apiFetch('/api/darbi/payment/success',{method:'POST',body:{stripeSessionId:sid}}); return r.ok?await r.json():null; }catch(e){return null;} }
 };
 
 // ══════ STATE ══════
@@ -1692,8 +1738,8 @@ var isBaseline = tReadiness === 0;
     try{ var s=JSON.parse(localStorage.getItem('darbi_skills')||'{}'); Object.keys(s).forEach(function(k){if(SKILL_MAP[k])SKILL_MAP[k].score=s[k];}); }catch(e){}
     tReadiness=parseInt(localStorage.getItem('darbi_t_readiness')||'0');
   }
-  // Restore demo session
-  restoreSession();
+  // Restore session (validates JWT against server, drops stale tokens)
+  await restoreSession();
   updateNavForUser();
 })();
 
@@ -1793,10 +1839,9 @@ function startAnalysis(){
 
 async function runAnalysisAI(job, cv, jd){
   try {
-    var res = await fetch('/api/darbi/analyze', {
+    var res = await apiFetch('/api/darbi/analyze', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ targetRole: job, cvText: cv, jobDescription: jd })
+      body: { targetRole: job, cvText: cv, jobDescription: jd }
     });
     if(!res.ok) throw new Error('API error');
     var data = await res.json();
@@ -1911,67 +1956,344 @@ async function runAnalysisAI(job, cv, jd){
 }
 
 // ══════ SCORING ENGINE (weighted, honest) ══════
-function computeScore(cv, job, jd){
+// ══════ SINGLE SOURCE OF TRUTH — analyzeCareerFit ══════
+// All analysis routes MUST go through this function.
+// Old computeScore / extractJDKeywords are DISABLED.
+
+var FRONTEND_STOPLIST = new Set(['please','note','position','requires','about','company','click','apply','details','benefits','process','mission','activities','language','work','job','role','responsibilities','requirements','experience','years','fluent','nice','have','that','this','with','will','your','their','from','into','what','they','which','when','been','also','well','each','both','very','here','then','than','some','make','many','more','most','over','such','used','use','able','our','you','all','its','can','may','are','has','was','the','and','for','not','but','who','how','new','one','two','day','way','get','set','put','run','let','say','see','try','own','team','voize','gmbh','mfd','click','table','success','customer','about']);
+
+function parseJDFrontend(jdText) {
+  if (!jdText || jdText.length < 30) return { hardRequirements:[], roleSkills:[], csSystems:[], domainContext:[], leadershipScope:[], keywords:[] };
+  var r = { hardRequirements:[], roleSkills:[], csSystems:[], domainContext:[], leadershipScope:[], keywords:[] };
+
+  // Hard requirements
+  if (/work authorization|arbeitserlaubnis|visa required/i.test(jdText)) {
+    var cm = jdText.match(/authorization (?:for |in )?([A-Z][a-z]+)/);
+    r.hardRequirements.push(cm ? 'Work authorization for ' + cm[1] : 'Work authorization required');
+  }
+  var langM = (jdText.match(/(?:german|deutsch|arabic|french|spanish|mandarin)\s*[-–:—]?\s*(?:fluent|c2|native|required|c1)/gi) || []);
+  langM.forEach(function(l){ r.hardRequirements.push(l.trim()); });
+
+  // Role skills
+  if (/customer success.*lead|cs.*leader|vp.*cs|head.*cs/i.test(jdText)) r.roleSkills.push('Customer Success Leadership');
+  if (/pre-?sales|sales engineering|solutions engineer/i.test(jdText)) r.roleSkills.push('Pre-Sales / Solutions Engineering');
+  if (/discovery|storytelling|presenting/i.test(jdText)) r.roleSkills.push('Discovery & Storytelling');
+  if (/\bai\b|machine learning|llm/i.test(jdText)) r.roleSkills.push('AI Knowledge');
+  if (/\bapi\b|integration|webhook/i.test(jdText)) r.roleSkills.push('APIs & Integrations');
+  if (/team lead|lead.*team|manager of manager/i.test(jdText)) r.roleSkills.push('Team Leadership');
+  if (/board|exec.*team|quarterly.*board/i.test(jdText)) r.roleSkills.push('Board Communication');
+  if (/gtm|go-to-market/i.test(jdText)) r.roleSkills.push('GTM Leadership');
+
+  // CS systems
+  if (/health score|health.*signal|early.warning/i.test(jdText)) r.csSystems.push('Customer Health Scoring');
+  if (/segmentation|high.touch|tech.touch/i.test(jdText)) r.csSystems.push('Customer Segmentation');
+  if (/onboarding|time.to.value|time-to-value/i.test(jdText)) r.csSystems.push('Onboarding & Time-to-Value');
+  if (/gross retention|grr|net retention|nrr/i.test(jdText)) r.csSystems.push('Gross Retention');
+  if (/voc|voice of.*customer|feedback loop/i.test(jdText)) r.csSystems.push('Voice of Customer');
+  if (/self.serve|knowledge base|faq/i.test(jdText)) r.csSystems.push('Self-Serve Motion');
+  if (/support.*24|customer support|support org/i.test(jdText)) r.csSystems.push('Support Operating Model');
+
+  // Domain
+  if (/healthcare|hospital|clinic|nursing|patient/i.test(jdText)) r.domainContext.push('Healthcare / Clinical');
+  if (/saas|software.*service/i.test(jdText)) r.domainContext.push('SaaS / B2B Software');
+  if (/european|eu.*market|emea/i.test(jdText)) r.domainContext.push('European Market');
+  if (/startup|ycombinator|seed|series [abc]/i.test(jdText)) r.domainContext.push('Startup Environment');
+  if (/ai.*document|voice.*ai|documentation.*ai/i.test(jdText)) r.domainContext.push('AI Documentation');
+
+  // Leadership scope
+  if (/50\+?\s*fte|scale.*org/i.test(jdText)) r.leadershipScope.push('Scale Org to 50+ FTE');
+  if (/manager of manager/i.test(jdText)) r.leadershipScope.push('Manager of Managers');
+  if (/board.*quarterly|present.*board/i.test(jdText)) r.leadershipScope.push('Board Reporting');
+
+  // Safe keywords only — filter stoplist
+  var wordCounts = {};
+  (jdText.split(/\s+/) || []).forEach(function(w) {
+    var clean = w.toLowerCase().replace(/[^a-z]/g,'');
+    if (clean.length > 5 && !FRONTEND_STOPLIST.has(clean)) {
+      wordCounts[clean] = (wordCounts[clean] || 0) + 1;
+    }
+  });
+  r.keywords = Object.keys(wordCounts).filter(function(k){ return wordCounts[k] >= 2; }).sort(function(a,b){ return wordCounts[b]-wordCounts[a]; }).slice(0,8);
+
+  return r;
+}
+
+function detectSeniorityFrontend(cv) {
+  var score = 0;
+  if (/vp|vice president|director|head of/i.test(cv)) score += 30;
+  if (/(?:10|eleven|\d{2})\+?\s*years?/i.test(cv)) score += 20;
+  else if (/[7-9]\+?\s*years?/i.test(cv)) score += 10;
+  if (/arr|mrr|\$\d+m|sar\s*\d+m|\d+m\s*sar/i.test(cv)) score += 20;
+  if (/managed.*team|team.*\d+|led.*team/i.test(cv)) score += 15;
+  if (/playbook|framework|strategy|org design/i.test(cv)) score += 10;
+  if (score >= 50) return 'executive';
+  if (score >= 30) return 'senior';
+  if (score >= 15) return 'mid';
+  return 'junior';
+}
+
+function analyzeCareerFit(cv, job, jd) {
+  // THIS IS THE ONLY ANALYSIS FUNCTION. All others are disabled.
   var cvL = cv.toLowerCase();
+  var jdP = parseJDFrontend(jd);
+  var seniority = detectSeniorityFrontend(cv);
 
-  // 30% — Keyword match
-  var sourceWords = jd
-    ? jd.toLowerCase().split(/\s+/).filter(function(w){ return w.length > 3; })
-    : job.toLowerCase().split(/\s+/).filter(function(w){ return w.length > 2; });
-  var hits = sourceWords.filter(function(w){ return cvL.includes(w); }).length;
-  var kwScore = Math.min((hits / Math.max(sourceWords.length, 1)) * 100, 100);
+  // CV STRENGTH — seniority + evidence, NEVER penalized by hard reqs
+  var cvStrength = 30;
+  if (/\d+%|\d+m\s*sar|arr|mrr/i.test(cv)) cvStrength += 20;
+  if (/led|managed|built|launched|grew|improved|delivered|قاد|أدار|طوّر/i.test(cv)) cvStrength += 10;
+  if (cv.length > 1500) cvStrength += 8;
+  if (cv.length > 3000) cvStrength += 5;
+  if (/customer success|churn|retention|health score|playbook|renewal|onboarding/i.test(cv)) cvStrength += 15;
+  if (/arr|mrr|portfolio|account.*\d/i.test(cv)) cvStrength += 8;
+  if (seniority === 'executive') cvStrength += 20;
+  else if (seniority === 'senior') cvStrength += 12;
+  else if (seniority === 'mid') cvStrength += 5;
+  cvStrength = Math.min(Math.max(cvStrength, 15), 92);
 
-  // 25% — Evidence strength
-  var evScore = 0;
-  if(/\d+%/.test(cv))                              evScore += 35;
-  if(/\d+ مليون|\d+ ألف|\d+ ريال|\d+k/i.test(cv)) evScore += 25;
-  if(/زاد|قلّل|حسّن|وفّر|حقق|نجح|increased|reduced|improved|saved|achieved/i.test(cv)) evScore += 25;
-  if(/قاد|أدار|أطلق|طوّر|led|managed|launched|developed/i.test(cv)) evScore += 15;
-  evScore = Math.min(evScore, 100);
+  // JOB FIT — match to this specific job
+  var jobFit = cvStrength * 0.7;
+  var skillMatches = jdP.roleSkills.filter(function(s){
+    return s.toLowerCase().split(/\s+/).some(function(w){ return w.length > 3 && cvL.includes(w.toLowerCase()); });
+  });
+  var csMatches = jdP.csSystems.filter(function(s){
+    return s.toLowerCase().split(/\s+/).some(function(w){ return w.length > 4 && cvL.includes(w.toLowerCase()); });
+  });
+  jobFit += skillMatches.length * 5;
+  jobFit += csMatches.length * 4;
 
-  // 20% — Structure
-  var stScore = 0;
-  if(/ملخص|summary|objective/i.test(cv))  stScore += 30;
-  if(/خبرة|experience/i.test(cv))          stScore += 25;
-  if(/مهارات|skills/i.test(cv))            stScore += 25;
-  if(/تعليم|education/i.test(cv))          stScore += 20;
-  stScore = Math.min(stScore, 100);
+  // HARD REQUIREMENTS
+  var hardReqStatus = jdP.hardRequirements.length > 0 ? 'unknown' : 'pass';
+  var hardReqIssues = [];
+  jdP.hardRequirements.forEach(function(req) {
+    if (/german|deutsch/i.test(req) && !/german|deutsch/i.test(cv)) { hardReqIssues.push('German fluency not shown'); hardReqStatus = 'missing'; }
+    if (/work authorization/i.test(req)) {
+      var m = req.match(/for\s+(\w+)/i);
+      if (m && !cvL.includes(m[1].toLowerCase())) { hardReqIssues.push('Work authorization for ' + m[1] + ' not shown'); hardReqStatus = 'missing'; }
+    }
+  });
+  if (hardReqStatus === 'missing') jobFit = Math.round(jobFit * 0.7);
+  jobFit = Math.min(Math.max(Math.round(jobFit), 15), 88);
 
-  // 15% — Relevance (CV length + role alignment)
-  var lenScore = cv.length > 1500 ? 100 : cv.length > 800 ? 70 : cv.length > 400 ? 40 : 20;
-  var relScore = jd
-    ? Math.round((kwScore * 0.7 + lenScore * 0.3))
-    : Math.round((lenScore + kwScore) / 2);
+  // CAREER PATH — seniority-aware
+  var careerPath;
+  if (/vp|vice president|director|head/i.test(job)) {
+    careerPath = [
+      { role: seniority === 'executive' ? 'Head of Customer Success' : 'Senior CS Manager', readinessNeeded:35, daysFromNow:0, isCurrent:true, isTarget:false },
+      { role: 'Director of Customer Success', readinessNeeded:55, daysFromNow:14, isCurrent:false, isTarget:false },
+      { role: job, readinessNeeded:70, daysFromNow:30, isCurrent:false, isTarget:true }
+    ];
+  } else if (/customer success|cs\b/i.test(job)) {
+    careerPath = [
+      { role: 'CS Specialist', readinessNeeded:35, daysFromNow:0, isCurrent:seniority==='junior', isTarget:false },
+      { role: 'CS Manager', readinessNeeded:50, daysFromNow:14, isCurrent:seniority==='mid', isTarget:false },
+      { role: job, readinessNeeded:65, daysFromNow:30, isCurrent:false, isTarget:true }
+    ];
+  } else {
+    careerPath = [
+      { role: 'دور جونيور في ' + job, readinessNeeded:35, daysFromNow:0, isCurrent:seniority==='junior', isTarget:false },
+      { role: 'دور سينيور في ' + job, readinessNeeded:55, daysFromNow:14, isCurrent:seniority==='mid'||seniority==='senior', isTarget:false },
+      { role: job, readinessNeeded:70, daysFromNow:30, isCurrent:false, isTarget:true }
+    ];
+  }
 
-  // 10% — Language (checks for proper sentence structure)
-  var langScore = /[A-Za-z]/.test(cv) ? 60 : 50;
-  if(cv.split('.').length > 5) langScore = Math.min(langScore + 20, 100);
+  // MISSING KEYWORDS — structured categories ONLY, never raw words
+  var missingKeywords = [];
+  hardReqIssues.forEach(function(i){ missingKeywords.push(i); });
+  jdP.csSystems.filter(function(s){ return !cvL.includes(s.split(' ')[0].toLowerCase()); }).slice(0,3).forEach(function(s){ missingKeywords.push(s); });
+  jdP.roleSkills.filter(function(s){ return skillMatches.indexOf(s) === -1; }).slice(0,3).forEach(function(s){ missingKeywords.push(s); });
 
-  var total = Math.round(
-    kwScore  * 0.30 +
-    evScore  * 0.25 +
-    stScore  * 0.20 +
-    relScore * 0.15 +
-    langScore * 0.10
-  );
-
-  // Referral bonus
-  if(localStorage.getItem('darbi_ref')) total += 3;
-  // JD bonus — more accurate when JD provided
-  var boost = jd ? 0 : -5;  // slight penalty when no JD (less precise)
+  // PROBLEMS
+  var problems = [];
+  if (hardReqIssues.length > 0) problems.push({ title:'متطلبات إلزامية', desc:hardReqIssues.join('. ') + '. هذه شروط قاطعة في هذه الوظيفة.', quote:null, fix:'سيرتك قوية لأدوار مشابهة بدون هذه القيود.' });
+  if (!/\d+%|\d+m|arr/i.test(cv)) problems.push({ title:'إنجازات بدون أرقام', desc:'أضف ARR أو retention% أو team size', quote:null, fix:'مثال: "أدرت محفظة 80M SAR ARR"' });
 
   return {
-    total: Math.min(Math.max(total + boost, 12), 72),
-    kwScore, evScore, stScore, relScore,
-    confidence: jd ? 'عالية' : cv.length > 1000 ? 'متوسطة' : 'منخفضة',
-    hasJD: !!jd
+    total: Math.round((cvStrength * 0.5 + jobFit * 0.5)),
+    cvStrengthScore: Math.round(cvStrength),
+    jobFitScore: Math.round(jobFit),
+    hardRequirementStatus: hardReqStatus,
+    hardRequirementIssues: hardReqIssues,
+    interviewReadinessScore: 25,
+    readinessScore: Math.round((cvStrength * 0.5 + jobFit * 0.5)),
+    confidence: jd ? 'high' : 'medium',
+    seniority: seniority,
+    whyNotGetting: hardReqIssues.length > 0
+      ? 'سيرتك قوية لهذا المسار، لكن هذه الوظيفة فيها شروط قد تمنعك: ' + hardReqIssues.join(' + ')
+      : cvStrength < 50 ? 'السيرة تحتاج تقوية في الإنجازات والأرقام' : 'ركّز على تحضير المقابلة',
+    problems: problems.slice(0, 4),
+    recommendedKeywords: [].concat(jdP.csSystems, jdP.roleSkills).slice(0, 8),
+    matchedSkills: skillMatches,
+    missingKeywords: missingKeywords.slice(0, 6),
+    careerPath: careerPath,
+    hardRequirements: jdP.hardRequirements,
+    jdParsed: jdP,
+    improvedSummary: seniority === 'executive'
+      ? 'قائد ' + job + ' بخبرة تنفيذية في بناء المنظمات وتحقيق نتائج ARR قابلة للقياس.'
+      : 'متخصص في ' + job + ' مع سجل موثّق في تحقيق نتائج مقاسة.',
+    jobMatches: hardReqIssues.length > 0
+      ? [{ role: job + ' (سوق الخليج)', type:'best', why:'سيرتك قوية — ابحث عن نفس الدور بدون قيود جغرافية', action:'قدّم في السعودية والإمارات' }, { role:'هدفك منطقي', type:'pivot', why:'لكن هذه الشركة تحديداً عندها شروط محددة', action:'استمر في التدريب' }]
+      : [{ role: job, type:'best', why:'تطابق ' + jobFit + '%', action:'قدّم بعد تحسين السيرة' }],
   };
 }
 
+// DISABLED — old broken functions kept as stubs only
+function computeScore(cv, job, jd){ return analyzeCareerFit(cv, job, jd); }
+function extractJDKeywords(jd){ return []; } // DISABLED — never call this
+function extractKeywords(job, jd){ return []; } // DISABLED
+
+
+
 // ══════ MAIN ANALYSIS ENGINE ══════
 function runAnalysis(job, cv, jd){
-  var result = computeScore(cv, job, jd);
-  var score  = result.total;
+  // SINGLE SOURCE OF TRUTH — only analyzeCareerFit is used
+  var r = analyzeCareerFit(cv, job, jd);
+  var score = r.cvStrengthScore;
+
+  // Animate readiness
+  var cur = 0;
+  var fill = document.getElementById('rdFill');
+  var pct  = document.getElementById('rdPct');
+  var t = setInterval(function(){
+    cur += 2;
+    if(pct) pct.textContent = cur + '%';
+    if(fill) fill.style.width = cur + '%';
+    if(cur >= score){ clearInterval(t); }
+  }, 25);
+
+  // Note
+  var note = r.hardRequirementIssues && r.hardRequirementIssues.length > 0
+    ? 'سيرتك قوية لهذا المسار — لكن هذه الوظيفة تحديداً فيها شروط قاطعة.'
+    : score >= 65 ? 'سيرتك قوية — ركّز على تحضير المقابلة.'
+    : score >= 45 ? 'سيرتك كويسة — فيه فجوات يمكن سدّها بسرعة.'
+    : 'السيرة تحتاج تقوية في الإنجازات والأرقام.';
+  setTimeout(function(){ var el=document.getElementById('rdNote'); if(el) el.textContent = note; }, 1200);
+
+  // Problems from analyzeCareerFit
+  var pList = document.getElementById('problemsList');
+  if(pList){
+    pList.innerHTML = '';
+    (r.problems || []).forEach(function(p){
+      pList.innerHTML += '<div class="problem-item"><div class="problem-ic">⚠️</div>'
+        + '<div><div class="problem-title">' + p.title + '</div>'
+        + '<div class="problem-desc">' + p.desc + '</div>'
+        + (p.fix ? '<div style="background:#f0fdf4;border-radius:6px;padding:7px 10px;margin-top:4px;font-size:12px;color:#166534">' + p.fix + '</div>' : '')
+        + '</div></div>';
+    });
+  }
+
+  // Before/After
+  var baBefore = document.getElementById('baBeforeText');
+  var baAfter  = document.getElementById('baAfterText');
+  if(baBefore) baBefore.textContent = getBeforeText(cv, r);
+  if(baAfter)  baAfter.textContent = r.improvedSummary || ('سيرة مطابقة لمتطلبات ' + job + ' — كلمات مفتاحية + إنجازات قابلة للقياس');
+
+  // Store — use structured keywords ONLY
+  localStorage.setItem('darbi_job', job);
+  localStorage.setItem('darbi_jd', jd || '');
+  localStorage.setItem('darbi_kw', JSON.stringify(r.recommendedKeywords || []));
+  localStorage.setItem('darbi_t_readiness', String(r.cvStrengthScore || score));
+
+  // Render 4-score display
+  renderAnalysisScores(r);
+
+  // JD structured evidence — structured categories, never raw words
+  if(jd) renderStructuredEvidence(r);
+  else {
+    var ec = document.getElementById('evidenceCard');
+    if(ec) ec.style.display = 'none';
+  }
+
+  // Career path
+  renderCareerPath(r.careerPath || []);
+
+  // Sync
+  tReadiness = r.cvStrengthScore || score;
+  syncUserState();
+}
+
+// Render 4 scores on analysis screen
+function renderAnalysisScores(r){
+  // Update main score display
+  var rdPct = document.getElementById('rdPct');
+  if(rdPct) rdPct.textContent = (r.cvStrengthScore || r.readinessScore || 0) + '%';
+
+  // If we have a 4-score panel, populate it
+  var cvS = document.getElementById('scoreCVStrength');
+  var jfS = document.getElementById('scoreJobFit');
+  var hrS = document.getElementById('scoreHardReq');
+  var irS = document.getElementById('scoreInterview');
+  if(cvS) cvS.textContent = (r.cvStrengthScore || 0) + '%';
+  if(jfS) jfS.textContent = (r.jobFitScore || 0) + '%';
+  if(hrS) hrS.textContent = r.hardRequirementStatus === 'missing' ? '⚠ مفقود' : r.hardRequirementStatus === 'pass' ? '✓ مستوفى' : '؟ غير محدد';
+  if(irS) irS.textContent = (r.interviewReadinessScore || 25) + '%';
+
+  // Hard requirement warning
+  var hrWarn = document.getElementById('hardReqWarn');
+  if(hrWarn){
+    if(r.hardRequirementIssues && r.hardRequirementIssues.length > 0){
+      hrWarn.style.display = 'block';
+      hrWarn.innerHTML = '⚠ <strong>شروط إلزامية غير مستوفاة:</strong> ' + r.hardRequirementIssues.join(' • ');
+    } else {
+      hrWarn.style.display = 'none';
+    }
+  }
+}
+
+// Render structured evidence — NEVER raw words
+function renderStructuredEvidence(r){
+  var ec = document.getElementById('evidenceCard');
+  var el = document.getElementById('evidenceList');
+  if(!ec || !el) return;
+
+  ec.style.display = 'block';
+  el.innerHTML = '';
+
+  // Hard requirements first
+  (r.hardRequirementIssues || []).forEach(function(issue){
+    el.innerHTML += '<div style="border-bottom:1px solid #f0f0f0;padding:10px 0">'
+      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+      + '<span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#fee2e2;color:#b91c1c">✗ شرط إلزامي</span>'
+      + '<span style="font-size:13px;font-weight:700;color:#b91c1c">' + issue + '</span></div>'
+      + '<div style="font-size:12px;color:#666">هذا شرط قاطع في هذه الوظيفة</div></div>';
+  });
+
+  // CS systems missing
+  (r.jdParsed && r.jdParsed.csSystems || []).filter(function(s){
+    return !r.matchedSkills || r.matchedSkills.indexOf(s) === -1;
+  }).slice(0,4).forEach(function(sys){
+    el.innerHTML += '<div style="border-bottom:1px solid #f0f0f0;padding:10px 0">'
+      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+      + '<span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#fef3c7;color:#92400e">△ مهارة مطلوبة</span>'
+      + '<span style="font-size:13px;font-weight:600">' + sys + '</span></div>'
+      + '<div style="font-size:12px;color:#4f46e5;font-weight:600">أضفها لسيرتك بمثال حقيقي</div></div>';
+  });
+
+  // Matched skills
+  (r.matchedSkills || []).slice(0,3).forEach(function(skill){
+    el.innerHTML += '<div style="border-bottom:1px solid #f0f0f0;padding:10px 0">'
+      + '<div style="display:flex;align-items:center;gap:8px">'
+      + '<span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#dcfce7;color:#166534">✓ موجود</span>'
+      + '<span style="font-size:13px;font-weight:600">' + skill + '</span></div></div>';
+  });
+
+  if(el.innerHTML === '') ec.style.display = 'none';
+}
+
+// Render career path
+function renderCareerPath(careerPath){
+  var cp = document.getElementById('careerPathStrip');
+  if(!cp || !careerPath || !careerPath.length) return;
+  cp.innerHTML = '';
+  careerPath.forEach(function(step, i){
+    if(i > 0) cp.innerHTML += '<span style="color:#aaa;margin:0 6px;font-size:11px">←</span>';
+    var bg = step.isTarget ? '#dcfce7' : step.isCurrent ? '#e0e7ff' : '#f5f5f8';
+    var color = step.isTarget ? '#166534' : step.isCurrent ? '#4f46e5' : '#666';
+    cp.innerHTML += '<span style="background:' + bg + ';color:' + color + ';padding:4px 11px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap">'
+      + (step.isCurrent ? '● ' : step.isTarget ? '🎯 ' : '') + step.role + '</span>';
+  });
+}
+
 
   // Animate readiness — show range not fixed number
   var lo = Math.max(score - 8, 10), hi = Math.min(score + 5, 78);
@@ -2224,12 +2546,11 @@ function logOutcome(type){
     conf.textContent    = labels[type] || 'تم التسجيل ✓';
   }
 
-  // Persist to DB
+  // Persist to DB (auth-gated — silently no-ops if logged out)
   try{
-    fetch('/api/darbi/outcomes', {
+    apiFetch('/api/darbi/outcomes', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ job, type, timestamp: new Date().toISOString() })
+      body: { job: job, type: type, timestamp: new Date().toISOString() }
     });
   }catch(e){}
 }
@@ -2350,12 +2671,25 @@ function selectPay(opt){
   var params = new URL(window.location.href).searchParams;
   if(params.get('payment_success')==='true'){
     var sid = params.get('session_id');
-    // Confirm with server
+    // Server verifies the session against Stripe before flipping access.
+    // If verification fails, we do NOT mark paid client-side — the webhook
+    // is the source of truth and will update on its own when the payment
+    // actually settles.
     try{
-      var r = await fetch('/api/darbi/payment/success',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stripeSessionId:sid})});
-      if(r.ok){ var d=await r.json(); if(d.success){ isPaid=true; if(currentUser){currentUser.paid=true;saveUser(currentUser);} updateNavForUser(); showNotif('تم الدفع ✓','','مرحباً في Darbi Premium!'); goScreen('s-dashboard'); } }
-    }catch(e){ /* fallback */ isPaid=true; updateNavForUser(); }
-    // Clean URL
+      var r = await apiFetch('/api/darbi/payment/success',{method:'POST',body:{stripeSessionId:sid}});
+      var d = await r.json().catch(function(){ return {}; });
+      if(r.ok && d.success){
+        isPaid=true;
+        if(currentUser){ currentUser.paid=true; currentUser.access_status='paid'; saveUser(currentUser); }
+        updateNavForUser();
+        showNotif('تم الدفع ✓','','مرحباً في Darbi Premium!');
+        goScreen('s-dashboard');
+      } else {
+        showNotif('جاري تأكيد الدفع','','سيتم تفعيل اشتراكك خلال دقيقة عبر Stripe — حدّث الصفحة بعد قليل.');
+      }
+    }catch(e){
+      showNotif('جاري تأكيد الدفع','','سيتم تفعيل اشتراكك خلال دقيقة عبر Stripe — حدّث الصفحة بعد قليل.');
+    }
     history.replaceState({}, '', '/');
   }
   if(params.get('payment_cancelled')==='true'){
@@ -2369,12 +2703,11 @@ function triggerCheckout(plan){
     requireAuth(function(){ triggerCheckout(plan); }, 'سجّل دخولك عشان تكمل الدفع');
     return;
   }
-  // Try real API
-  fetch('/api/payment/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan})})
+  apiFetch('/api/payment/checkout',{method:'POST',body:{plan:plan}})
   .then(function(r){return r.json();})
   .then(function(data){
     if(data.url){ window.location.href=data.url; }
-    else { showNotif('خطأ في الدفع','','حدث خطأ في الاتصال بصفحة الدفع. حاول مرة ثانية.'); }
+    else { showNotif('خطأ في الدفع','',data.error || 'حدث خطأ في الاتصال بصفحة الدفع. حاول مرة ثانية.'); }
   })
   .catch(function(){ showNotif('خطأ','','تعذّر الاتصال بخادم الدفع. حاول لاحقاً.'); });
 }
@@ -2782,10 +3115,10 @@ function submitAnswer(){
 
     // AI evaluation — replaces local scoring when logged in
     if(isLoggedIn() && activeSessionId){
-      fetch('/api/darbi/training/answer',{
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ sessionId:activeSessionId, questionText:q.q, questionType:q.type,
-          targetSkill:q.skill, answerText:ans, answerLang:q.type==='diagnostic_en'?'en':'ar' })
+      apiFetch('/api/darbi/training/answer',{
+        method:'POST',
+        body:{ sessionId:activeSessionId, questionText:q.q, questionType:q.type,
+          targetSkill:q.skill, answerText:ans, answerLang:q.type==='diagnostic_en'?'en':'ar' }
       }).then(function(r2){ return r2.ok?r2.json():null; }).then(function(d2){
         if(!d2||!d2.evaluation) return;
         var ev=d2.evaluation;
@@ -3286,22 +3619,52 @@ function clearUser(){ localStorage.removeItem('darbi_user'); }
 
 function isLoggedIn(){ return !!(currentUser && currentUser.loggedIn); }
 
-// Called on page load — restore session
-function restoreSession(){
+// Called on page load — restore session.
+// If there's a token, verify it with the server and drop it if rejected.
+async function restoreSession(){
   currentUser = loadUser();
+  var token = localStorage.getItem('darbi_token');
+
+  if (token) {
+    try {
+      var r = await apiFetch('/api/darbi/me');
+      if (r.status === 401) {
+        // Stale/invalid token: clear it and any cached "logged in" demo user.
+        localStorage.removeItem('darbi_token');
+        clearUser();
+        currentUser = null;
+      } else if (r.ok) {
+        var data = await r.json();
+        if (data && data.user) {
+          currentUser = Object.assign(currentUser || {}, {
+            id: data.user.id,
+            email: data.user.email,
+            loggedIn: true,
+            access_status: data.user.access_status || 'free',
+            paid: data.user.access_status === 'paid',
+            referral_code: data.user.referral_code || (currentUser && currentUser.referral_code) || null,
+          });
+          saveUser(currentUser);
+        }
+      }
+    } catch (e) { /* offline — fall through to local cache */ }
+  } else if (currentUser && currentUser.loggedIn) {
+    // Cached "loggedIn" but no token = legacy demo session. Clear it.
+    clearUser(); currentUser = null;
+  }
+
   if(isLoggedIn()){
     isPaid = currentUser.paid || false;
     is24h  = currentUser.access_status === 'ugc_24h' && currentUser.access_expires_at
              && new Date(currentUser.access_expires_at) > new Date();
     tReadiness = currentUser.readiness || 0;
-    // Restore skills
     if(currentUser.skills){
       Object.keys(currentUser.skills).forEach(function(k){
         if(SKILL_MAP[k]) SKILL_MAP[k].score = currentUser.skills[k];
       });
     }
-    updateNavForUser();
   }
+  updateNavForUser();
 }
 
 function updateNavForUser(){
@@ -3371,7 +3734,7 @@ function switchTab(tab){
   document.getElementById('authLoginForm').style.display  = tab==='login'?'block':'none';
 }
 
-function doSignup(){
+async function doSignup(){
   var email = document.getElementById('signupEmail').value.trim();
   var pass  = document.getElementById('signupPass').value;
   var err   = document.getElementById('signupErr');
@@ -3379,61 +3742,84 @@ function doSignup(){
   if(pass.length < 6){ err.textContent='كلمة المرور يجب أن تكون 6 أحرف على الأقل'; err.style.display='block'; return; }
   err.style.display='none';
 
-  // Demo: create user in localStorage
-  var refCode2 = 'D' + Math.random().toString(36).substr(2,6).toUpperCase();
-  var user = {
-    id: Date.now(),
-    email: email,
-    loggedIn: true,
-    paid: false,
-    access_status: 'free',
-    access_expires_at: null,
-    referral_code: refCode2,
-    referred_by: localStorage.getItem('darbi_ref') || null,
-    training_day: 0,
-    readiness: 0,
-    target_role: localStorage.getItem('darbi_job') || '',
-    streak: 0,
-    skills: {},
-    last_activity: new Date().toISOString(),
-  };
-
-  currentUser = user;
-  saveUser(user);
-  closeModal();
-  updateNavForUser();
-  if(pendingAction){ var fn=pendingAction; pendingAction=null; fn(); }
-  else goScreen('s-dashboard');
+  try {
+    var r = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass }),
+    });
+    var data = await r.json();
+    if (!r.ok || !data.token) {
+      err.textContent = data.error || 'تعذّر إنشاء الحساب';
+      err.style.display = 'block';
+      return;
+    }
+    // Persist real auth.
+    localStorage.setItem('darbi_token', data.token);
+    onLoginSuccess(data.user);
+  } catch (e) {
+    err.textContent = 'تعذّر الاتصال بالخادم';
+    err.style.display = 'block';
+  }
 }
 
-function doLogin(){
+async function doLogin(){
   var email = document.getElementById('loginEmail').value.trim();
   var pass  = document.getElementById('loginPass').value;
   var err   = document.getElementById('loginErr');
   if(!email){ err.textContent='أدخل بريدك الإلكتروني'; err.style.display='block'; return; }
+  if(!pass){ err.textContent='أدخل كلمة المرور'; err.style.display='block'; return; }
   err.style.display='none';
 
-  // Demo: load or create user
-  var existing = loadUser();
-  if(existing && existing.email === email){
-    currentUser = { ...existing, loggedIn: true };
-  } else {
-    // New demo login
-    currentUser = {
-      id: Date.now(), email, loggedIn: true, paid: false,
-      access_status: 'free', access_expires_at: null,
-      referral_code: 'D'+Math.random().toString(36).substr(2,6).toUpperCase(),
-      training_day: 0, readiness: 0, target_role: '', streak: 0, skills: {},
-      last_activity: new Date().toISOString(),
-    };
+  try {
+    var r = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass }),
+    });
+    var data = await r.json();
+    if (!r.ok || !data.token) {
+      err.textContent = data.error || 'البريد أو كلمة المرور غير صحيحة';
+      err.style.display = 'block';
+      return;
+    }
+    localStorage.setItem('darbi_token', data.token);
+    onLoginSuccess(data.user);
+  } catch (e) {
+    err.textContent = 'تعذّر الاتصال بالخادم';
+    err.style.display = 'block';
   }
+}
+
+// Shared post-auth handler — merges server user into local state and continues
+// any pending UI action that triggered the auth modal.
+function onLoginSuccess(serverUser) {
+  currentUser = Object.assign({
+    id: serverUser.id,
+    email: serverUser.email,
+    loggedIn: true,
+    paid: serverUser.access_status === 'paid',
+    access_status: serverUser.access_status || 'free',
+    access_expires_at: serverUser.access_expires_at || null,
+    referral_code: serverUser.referral_code || null,
+    training_day: 0, readiness: 0, target_role: localStorage.getItem('darbi_job') || '',
+    streak: 0, skills: {},
+    last_activity: new Date().toISOString(),
+  }, loadUser() || {});
+  // Server values take precedence over any stale localStorage cache.
+  currentUser.id = serverUser.id;
+  currentUser.email = serverUser.email;
+  currentUser.access_status = serverUser.access_status || 'free';
+  currentUser.paid = serverUser.access_status === 'paid';
+  currentUser.referral_code = serverUser.referral_code || currentUser.referral_code;
+  currentUser.loggedIn = true;
   saveUser(currentUser);
-  isPaid = currentUser.paid || false;
+  isPaid = currentUser.paid;
   is24h  = currentUser.access_status === 'ugc_24h' && currentUser.access_expires_at
            && new Date(currentUser.access_expires_at) > new Date();
   closeModal();
   updateNavForUser();
-  if(pendingAction){ var fn=pendingAction; pendingAction=null; fn(); }
+  if (pendingAction){ var fn=pendingAction; pendingAction=null; fn(); }
   else goScreen('s-dashboard');
 }
 
@@ -3443,6 +3829,7 @@ function doGooglePlaceholder(){
 }
 
 function logoutUser(){
+  localStorage.removeItem('darbi_token');
   clearUser(); currentUser=null; isPaid=false; is24h=false;
   updateNavForUser();
   showLanding();
