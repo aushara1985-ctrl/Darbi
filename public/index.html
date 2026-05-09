@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<!-- pdf.js (Mozilla) for client-side PDF text extraction. UMD build, no bundler. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Cairo',sans-serif;background:#f8f8fc;color:#0a0a0a}
@@ -1788,11 +1790,102 @@ function focusAnalyze(){
 }
 
 // ══════ FILE UPLOAD ══════
+// Real PDF text extraction via Mozilla's pdf.js. We deliberately do NOT
+// pretend to support DOC/DOCX — those need server-side parsing libraries
+// (mammoth, docx) which are out of scope for now. If extraction fails or
+// the PDF is image-only (no embedded text layer), we fall back to a plain
+// "paste your CV text" message rather than feeding the analyzer garbage.
 function handleUpload(e){
-  var f=e.target.files[0]; if(!f) return;
-  var z=document.getElementById('uploadZone');
-  z.classList.add('has-file'); z.innerHTML='✅ '+f.name+' — جاهز للتحليل';
-  document.getElementById('cvText').value='[ملف مرفوع: '+f.name+']';
+  var f = e.target.files[0]; if(!f) return;
+  var z = document.getElementById('uploadZone');
+  var ta = document.getElementById('cvText');
+  var inp = document.getElementById('cvFile');
+  var nm = f.name || 'الملف';
+  var ext = (nm.split('.').pop() || '').toLowerCase();
+
+  // Reset visual state.
+  z.classList.remove('has-file');
+
+  // DOC/DOCX — explicitly unsupported (paste-only path).
+  if (ext === 'doc' || ext === 'docx' || (f.type && /word|officedocument|msword/i.test(f.type))) {
+    z.innerHTML = 'حالياً ندعم PDF أو لصق النص';
+    if (inp) inp.value = '';
+    return;
+  }
+
+  // Anything that isn't a PDF — same paste-only path.
+  var isPdf = ext === 'pdf' || (f.type === 'application/pdf');
+  if (!isPdf) {
+    z.innerHTML = 'حالياً ندعم PDF أو لصق النص';
+    if (inp) inp.value = '';
+    return;
+  }
+
+  // pdf.js may not be loaded yet (CDN slow / blocked). Surface honestly.
+  if (typeof pdfjsLib === 'undefined') {
+    z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.';
+    if (inp) inp.value = '';
+    return;
+  }
+  if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  z.innerHTML = '⏳ جاري استخراج النص من ' + nm + '…';
+
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var data;
+    try { data = new Uint8Array(ev.target.result); }
+    catch(_) { data = null; }
+    if (!data) {
+      z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.';
+      return;
+    }
+    pdfjsLib.getDocument({ data: data }).promise
+      .then(function(pdf){
+        var promises = [];
+        for (var i = 1; i <= pdf.numPages; i++) {
+          promises.push(
+            pdf.getPage(i)
+              .then(function(p){ return p.getTextContent(); })
+              .then(function(c){
+                return (c.items || []).map(function(it){ return it.str; }).join(' ');
+              })
+          );
+        }
+        return Promise.all(promises);
+      })
+      .then(function(pages){
+        var text = pages.join('\n').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+        if (!text || text.length < 50) {
+          // Likely a scanned/image-only PDF with no text layer.
+          z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.';
+          ta.value = '';
+          if (inp) inp.value = '';
+          return;
+        }
+        ta.value = text;
+        z.classList.add('has-file');
+        if (text.length < 300) {
+          z.innerHTML = '⚠️ تم استخراج ' + text.length + ' حرف فقط — قد يكون النص ناقصاً. الصق المحتوى الكامل لتحليل أدق.';
+        } else {
+          z.innerHTML = '✅ تم استخراج السيرة — جاهزة للتحليل (' + text.length + ' حرف)';
+        }
+      })
+      .catch(function(err){
+        console.error('[pdf] extract failed:', err && err.message);
+        z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.';
+        ta.value = '';
+        if (inp) inp.value = '';
+      });
+  };
+  reader.onerror = function(){
+    z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.';
+    if (inp) inp.value = '';
+  };
+  reader.readAsArrayBuffer(f);
 }
 
 // ══════ ANALYSIS ENGINE ══════
