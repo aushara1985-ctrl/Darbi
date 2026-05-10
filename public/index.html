@@ -389,6 +389,77 @@ body{font-family:'Cairo',sans-serif;background:#f8f8fc;color:#0a0a0a}
   .dbv2-score{padding:11px}
   .dbv2-score-val{font-size:20px}
 }
+
+/* ══════ Diagnosis-first flow (s-dream / s-diag-quiz / s-diagnosis) ══════ */
+.diag-wrap{max-width:720px;margin:0 auto;padding:32px 18px 60px}
+.diag-step-pill{display:inline-block;font-size:11px;font-weight:700;color:#4f46e5;letter-spacing:.5px;background:#eef2ff;padding:5px 12px;border-radius:99px;margin-bottom:14px}
+.diag-h1{font-size:30px;font-weight:900;line-height:1.25;letter-spacing:-1px;color:#0a0a0a;margin-bottom:10px}
+.diag-h1 span{color:#4f46e5}
+.diag-sub{font-size:15px;color:#555;line-height:1.7;margin-bottom:22px;max-width:580px}
+.diag-card{background:#fff;border:1px solid #ececf4;border-radius:16px;padding:22px;margin-bottom:14px}
+.diag-q-label{font-size:14px;font-weight:700;color:#0a0a0a;margin-bottom:10px}
+.diag-input{width:100%;padding:13px 14px;border:1.5px solid #e6e6f0;border-radius:11px;font-size:15px;font-family:inherit;outline:none;background:#fafafe;color:#0a0a0a;direction:rtl}
+.diag-input:focus{border-color:#4f46e5;background:#fff}
+.diag-textarea{min-height:160px;resize:vertical;line-height:1.6}
+.diag-options{display:flex;flex-direction:column;gap:8px}
+.diag-option{padding:12px 14px;border:1.5px solid #e6e6f0;border-radius:10px;background:#fff;cursor:pointer;font-family:inherit;font-size:14px;text-align:right;transition:.12s;color:#1f2937;font-weight:500}
+.diag-option:hover{border-color:#c7d2fe;background:#fafafe}
+.diag-option.selected{border-color:#4f46e5;background:#eef2ff;color:#4f46e5;font-weight:700}
+.diag-cta-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.diag-btn-back{background:none;border:none;color:#666;font-size:13px;cursor:pointer;padding:10px 0;font-family:inherit;font-weight:600}
+.diag-btn-back:hover{color:#4f46e5}
+.diag-btn-p{padding:13px 24px;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;border:none;background:#4f46e5;color:#fff;flex:1;min-width:160px}
+.diag-btn-p:hover{background:#4338ca}
+.diag-btn-p:disabled{opacity:.45;cursor:not-allowed}
+
+/* Diagnosis result page */
+.diag-hero{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);color:#fff;border-radius:18px;padding:30px 24px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden}
+.diag-hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.85;margin-bottom:8px}
+.diag-hero-line{font-size:17px;font-weight:800;line-height:1.5;margin-bottom:6px}
+.diag-hero-line b{font-weight:900}
+.diag-hero-target{font-size:24px;font-weight:900;letter-spacing:-.5px}
+.diag-result-card{background:#fff;border:1px solid #ececf4;border-radius:14px;padding:18px;margin-bottom:12px}
+.diag-result-h{font-size:11px;font-weight:700;color:#4f46e5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.diag-result-body{font-size:14.5px;color:#1f2937;line-height:1.75}
+.diag-roles-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.diag-role-chip{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:11px 14px;border-radius:10px;font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+.diag-role-chip::before{content:'✓';color:#16a34a;font-size:12px;font-weight:900;width:18px;height:18px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.diag-bridge-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.diag-bridge-step{font-size:13.5px;color:#1f2937;padding:10px 12px;background:#fafafe;border:1px solid #ececf4;border-radius:9px;line-height:1.6;display:flex;gap:9px;align-items:flex-start}
+.diag-bridge-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#4f46e5;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.diag-firstfix{background:#fef3c7;border:1.5px solid #fcd34d;border-radius:12px;padding:16px}
+.diag-firstfix-eyebrow{font-size:10px;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.diag-firstfix-body{font-size:14.5px;color:#78350f;line-height:1.7;font-weight:600}
+.diag-supporting{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+.diag-support{background:#fafafe;border:1px solid #ececf4;border-radius:10px;padding:11px}
+.diag-support-label{font-size:10.5px;color:#888;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.diag-support-val{font-size:18px;font-weight:900;color:#0a0a0a;letter-spacing:-.5px}
+.diag-cta-primary{margin-top:14px;width:100%;padding:14px;background:#4f46e5;color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}
+.diag-cta-primary:hover{background:#4338ca}
+
+/* Unlock card */
+.diag-unlock{background:#0f172a;border-radius:18px;padding:24px;color:#fff;margin-top:16px}
+.diag-unlock-eyebrow{font-size:11px;font-weight:700;color:#fbbf24;letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
+.diag-unlock-h{font-size:18px;font-weight:900;margin-bottom:6px}
+.diag-unlock-sub{font-size:13px;color:#cbd5e1;margin-bottom:16px;line-height:1.7}
+.diag-unlock-opt{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:16px;margin-bottom:10px}
+.diag-unlock-opt h4{font-size:14px;font-weight:800;margin-bottom:5px}
+.diag-unlock-opt p{font-size:12.5px;color:#cbd5e1;line-height:1.6;margin-bottom:11px}
+.diag-unlock-btn{width:100%;padding:11px;border-radius:9px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;border:none}
+.diag-unlock-btn-share{background:#fff;color:#0f172a}
+.diag-unlock-btn-share:hover{background:#f5f5f5}
+.diag-unlock-btn-pay{background:#fbbf24;color:#0f172a}
+.diag-unlock-btn-pay:hover{background:#f59e0b}
+.diag-unlock-fineprint{font-size:11px;color:#94a3b8;margin-top:10px;line-height:1.6}
+
+@media (max-width:600px){
+  .diag-wrap{padding:18px 14px 50px}
+  .diag-h1{font-size:25px}
+  .diag-card{padding:16px;border-radius:14px}
+  .diag-hero{padding:24px 18px}
+  .diag-hero-target{font-size:21px}
+  .diag-supporting{grid-template-columns:repeat(2,1fr);gap:7px}
+}
 .auth-modal{background:#fff;border-radius:20px;max-width:360px;width:calc(100% - 32px);box-shadow:0 24px 60px rgba(0,0,0,.18);overflow:hidden}
 .auth-tabs{display:grid;grid-template-columns:1fr 1fr}
 .auth-tab{padding:13px;text-align:center;font-size:14px;font-weight:700;cursor:pointer;color:#aaa;border-bottom:2px solid #f0f0f0;transition:.12s;font-family:'Cairo',sans-serif}
@@ -717,11 +788,16 @@ img,video,iframe{max-width:100%}
 ═══════════════════════════════════════════ -->
 <div id="page-landing">
 
-  <!-- HERO -->
+  <!-- HERO — diagnosis-first hook. Old "paste job + CV" form is preserved
+       below as a secondary path; primary CTA is now the diagnosis flow. -->
   <section class="hero">
-    <div class="hero-badge"><div class="hero-pulse"></div>AI Career Engine — مو مجرد CV Builder</div>
-    <h1>جيب الوظيفة اللي تبغاها —<br><span>وأنا أجهزك لها يوم بيوم</span></h1>
-    <p>ألصق سيرتك الذاتية والوظيفة التي تريدها — ودربي يوضح لك ليش ما تجيك مقابلات ويعطيك خطة تحسين واضحة.</p>
+    <div class="hero-badge"><div class="hero-pulse"></div>قدمت ١٠ مرات وما رد ولا واحد؟ تعال نشوف وين الخلل.</div>
+    <h1>قدمت وما <span>جاك رد؟</span></h1>
+    <p>يمكن المشكلة مو فيك. يمكن أنت تقدم على الطريق الغلط. اكتب الوظيفة اللي تحلم فيها وارفع سيرتك، ودربي يقول لك وين أنت الآن، وش أقرب وظيفة تناسبك، وش تحتاج عشان توصل لهدفك.</p>
+    <div style="margin:0 auto 28px;max-width:380px">
+      <button class="btn btn-p btn-full" onclick="startDiagnosis()" style="padding:16px;font-size:17px;font-weight:800">ابدأ التشخيص ←</button>
+      <p style="font-size:11.5px;color:#aaa;text-align:center;margin-top:8px">دقيقة واحدة. مجاني. بدون تسجيل في البداية.</p>
+    </div>
 
     <!-- INPUT FORM -->
     <div class="hero-form" id="heroForm">
@@ -1751,6 +1827,206 @@ img,video,iframe{max-width:100%}
 </div>
 </div><!-- /s-dashboard -->
 
+<!-- ════ DIAGNOSIS-FIRST FLOW ═══════════════════════════════════════════ -->
+<!-- s-dream → dream role + CV in one screen, two questions, one CTA. -->
+<div id="s-dream" class="app-screen">
+<div class="diag-wrap">
+  <span class="diag-step-pill">الخطوة 1 من 3</span>
+  <h1 class="diag-h1">وش الوظيفة اللي <span>تحلم</span> فيها؟</h1>
+  <p class="diag-sub">لا تكتب اللي تقدمت عليه. اكتب اللي تبيه فعلاً. دربي يقارن بين حلمك وسيرتك ويعطيك أقرب طريق له.</p>
+
+  <div class="diag-card">
+    <div class="diag-q-label">حلمك المهني الآن</div>
+    <input class="diag-input" id="diagDreamRole" placeholder="مثال: تسويق، موارد بشرية، أمن سيبراني، خدمة عملاء، مبيعات، محاسبة" />
+  </div>
+
+  <div class="diag-card">
+    <div class="diag-q-label">ارفع سيرتك أو الصقها</div>
+    <p style="font-size:12.5px;color:#888;margin-bottom:11px;line-height:1.6">عشان نعرف وضعك الحالي بدقة. لا نحلل اسم الملف فقط — نحلل المحتوى.</p>
+    <textarea class="diag-input diag-textarea" id="diagCvText" placeholder="الصق محتوى سيرتك هنا..."></textarea>
+    <div class="hf-divider" style="padding:8px 0;font-size:12px;color:#bbb;text-align:center;position:relative"><span style="background:#fff;padding:0 10px;position:relative;z-index:1">أو</span></div>
+    <div class="upload-zone" id="diagUploadZone" onclick="document.getElementById('diagCvFile').click()">
+      📄 ارفع ملف PDF
+      <div style="font-size:11px;margin-top:3px;color:#ccc">PDF فقط — حجم أقصى 5MB</div>
+    </div>
+    <input type="file" id="diagCvFile" accept=".pdf,.docx,.doc" style="display:none" onchange="handleDiagUpload(event)">
+  </div>
+
+  <div class="diag-cta-row">
+    <button class="diag-btn-back" onclick="showLanding()">← رجوع</button>
+    <button class="diag-btn-p" onclick="diagSubmitDream()">متابعة ←</button>
+  </div>
+</div>
+</div><!-- /s-dream -->
+
+<!-- s-diag-quiz → 5 quick questions. -->
+<div id="s-diag-quiz" class="app-screen">
+<div class="diag-wrap">
+  <span class="diag-step-pill">الخطوة 2 من 3</span>
+  <h1 class="diag-h1">5 أسئلة سريعة</h1>
+  <p class="diag-sub">عشان نفهم وضعك أكثر ونعطيك تشخيص دقيق، مو عام.</p>
+
+  <div class="diag-card">
+    <div class="diag-q-label">قدمت على كم وظيفة آخر 6 أشهر؟</div>
+    <div class="diag-options" data-qid="appsCount">
+      <button class="diag-option" onclick="diagPickOption(this,'appsCount','lt5')">أقل من 5</button>
+      <button class="diag-option" onclick="diagPickOption(this,'appsCount','5_20')">5 إلى 20</button>
+      <button class="diag-option" onclick="diagPickOption(this,'appsCount','20_50')">20 إلى 50</button>
+      <button class="diag-option" onclick="diagPickOption(this,'appsCount','gt50')">أكثر من 50</button>
+    </div>
+  </div>
+
+  <div class="diag-card">
+    <div class="diag-q-label">كم رد جاك؟</div>
+    <div class="diag-options" data-qid="repliesCount">
+      <button class="diag-option" onclick="diagPickOption(this,'repliesCount','none')">ولا رد</button>
+      <button class="diag-option" onclick="diagPickOption(this,'repliesCount','1_2')">رد واحد أو اثنين</button>
+      <button class="diag-option" onclick="diagPickOption(this,'repliesCount','interview')">دخلت مقابلة</button>
+      <button class="diag-option" onclick="diagPickOption(this,'repliesCount','final')">وصلت للمرحلة النهائية</button>
+    </div>
+  </div>
+
+  <div class="diag-card">
+    <div class="diag-q-label">الإنجليزي عندك بصراحة؟</div>
+    <div class="diag-options" data-qid="english">
+      <button class="diag-option" onclick="diagPickOption(this,'english','weak')">ضعيف</button>
+      <button class="diag-option" onclick="diagPickOption(this,'english','write')">أكتب أفضل من الكلام</button>
+      <button class="diag-option" onclick="diagPickOption(this,'english','good')">جيد</button>
+      <button class="diag-option" onclick="diagPickOption(this,'english','excellent')">ممتاز</button>
+    </div>
+  </div>
+
+  <div class="diag-card">
+    <div class="diag-q-label">وش أكثر شي يحبطك؟</div>
+    <div class="diag-options" data-qid="frustration">
+      <button class="diag-option" onclick="diagPickOption(this,'frustration','no_reply')">ما يردون علي</button>
+      <button class="diag-option" onclick="diagPickOption(this,'frustration','no_target')">ما أعرف وش أقدم عليه</button>
+      <button class="diag-option" onclick="diagPickOption(this,'frustration','no_exp')">ما عندي خبرة أكتبها</button>
+      <button class="diag-option" onclick="diagPickOption(this,'frustration','english')">الإنجليزي</button>
+      <button class="diag-option" onclick="diagPickOption(this,'frustration','no_results')">أقدم كثير وما يصير شي</button>
+    </div>
+  </div>
+
+  <!-- Status — only shown if we couldn't infer from CV. -->
+  <div class="diag-card" id="diagStatusCard" style="display:none">
+    <div class="diag-q-label">أنت الآن؟</div>
+    <div class="diag-options" data-qid="status">
+      <button class="diag-option" onclick="diagPickOption(this,'status','student')">طالب جامعة</button>
+      <button class="diag-option" onclick="diagPickOption(this,'status','fresh_grad')">خريج جديد</button>
+      <button class="diag-option" onclick="diagPickOption(this,'status','experienced')">عندي خبرة</button>
+    </div>
+  </div>
+
+  <div class="diag-cta-row">
+    <button class="diag-btn-back" onclick="goScreen('s-dream')">← رجوع</button>
+    <button class="diag-btn-p" id="diagQuizSubmit" onclick="diagSubmitQuiz()" disabled>أرني التشخيص ←</button>
+  </div>
+</div>
+</div><!-- /s-diag-quiz -->
+
+<!-- s-diagnosis → wow result. Populated by renderDiagnosisScreen() from Diagnosis.get(). -->
+<div id="s-diagnosis" class="app-screen">
+<div class="diag-wrap">
+  <span class="diag-step-pill">تشخيصك</span>
+
+  <div class="diag-hero">
+    <div class="diag-hero-eyebrow">حلمك</div>
+    <div class="diag-hero-target" id="diagResDream">—</div>
+  </div>
+
+  <div class="diag-result-card">
+    <div class="diag-result-h">وضعك الحالي من سيرتك</div>
+    <div class="diag-result-body" id="diagResReality">—</div>
+  </div>
+
+  <div class="diag-result-card">
+    <div class="diag-result-h">أكبر سبب محتمل لعدم الرد</div>
+    <div class="diag-result-body" id="diagResGap">—</div>
+  </div>
+
+  <div class="diag-result-card">
+    <div class="diag-result-h">أقرب وظيفة تقدر تفوز فيها الآن</div>
+    <div class="diag-roles-list" id="diagResRoles"></div>
+  </div>
+
+  <div class="diag-result-card">
+    <div class="diag-result-h">الجسر بينك وبين وظيفة الحلم</div>
+    <div class="diag-bridge-list" id="diagResBridge"></div>
+  </div>
+
+  <div class="diag-firstfix">
+    <div class="diag-firstfix-eyebrow">أول خطوة اليوم</div>
+    <div class="diag-firstfix-body" id="diagResFirstFix">—</div>
+  </div>
+
+  <button class="diag-cta-primary" id="diagResMainCta" onclick="diagRouteFromBranch()">ابدأ الآن →</button>
+
+  <!-- Supporting evidence (scores) — appears below, NOT as the hero. -->
+  <div class="diag-supporting">
+    <div class="diag-support">
+      <div class="diag-support-label">قوة السيرة</div>
+      <div class="diag-support-val"><span id="diagSupCV">0</span>%</div>
+    </div>
+    <div class="diag-support">
+      <div class="diag-support-label">مطابقة الحلم</div>
+      <div class="diag-support-val"><span id="diagSupFit">0</span>%</div>
+    </div>
+    <div class="diag-support">
+      <div class="diag-support-label">جاهزية المقابلة</div>
+      <div class="diag-support-val"><span id="diagSupInt">0</span>%</div>
+    </div>
+    <div class="diag-support">
+      <div class="diag-support-label">وضوح الطريق</div>
+      <div class="diag-support-val"><span id="diagSupPath">0</span>%</div>
+    </div>
+  </div>
+
+  <!-- Unlock card — appears AFTER the wow, never before. -->
+  <div class="diag-unlock" id="diagUnlockCard">
+    <div class="diag-unlock-eyebrow">افتح خطتك الكاملة</div>
+    <div class="diag-unlock-h">عندك 24 ساعة وصول مجاني</div>
+    <div class="diag-unlock-sub" id="diagUnlockSub">شفت أقرب طريق لحلمك. بعد 24 ساعة، تقدر تكمل بطريقتين:</div>
+
+    <div class="diag-unlock-opt">
+      <h4>اكسب وصول مجاني</h4>
+      <p>شارك كارد التشخيص أو ادعُ صديقًا — وخذ وقت إضافي.</p>
+      <button class="diag-unlock-btn diag-unlock-btn-share" onclick="diagOpenShareCard()">شارك نتيجتك — +24 ساعة</button>
+    </div>
+
+    <div class="diag-unlock-opt">
+      <h4>وصول المؤسسين — $199</h4>
+      <p>ادفع مرة واحدة. استخدم دربي بدون اشتراك شهري.</p>
+      <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="diagTriggerFounderLTD()">فعّل وصول المؤسسين — $199</button>
+    </div>
+
+    <div class="diag-unlock-fineprint">الاستخدام العادل مطبق لحماية جودة الخدمة. لا اشتراك شهري.</div>
+  </div>
+</div>
+</div><!-- /s-diagnosis -->
+
+<!-- Share card modal -->
+<div class="modal-bg" id="diagShareModal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-head"><h2>شارك نتيجتك</h2><p>اكسب 24 ساعة وصول إضافية.</p></div>
+    <div class="modal-body">
+      <div id="diagShareCardPreview" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:14px;padding:22px;color:#fff;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px">حلمي</div>
+        <div id="diagShareDream" style="font-size:18px;font-weight:900;margin-bottom:14px">—</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:4px">أقرب مدخل لي الآن</div>
+        <div id="diagShareNearest" style="font-size:14px;font-weight:700;margin-bottom:14px">—</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:4px">أول خطوة</div>
+        <div id="diagShareFirstFix" style="font-size:13px;font-weight:600;line-height:1.6;margin-bottom:14px">—</div>
+        <div style="font-size:11px;opacity:.7;text-align:left;direction:ltr">Powered by Darbi</div>
+      </div>
+      <p style="font-size:12.5px;color:#666;line-height:1.6;text-align:center">"اكتشفت أقرب طريق لوظيفتي مع دربي."</p>
+    </div>
+    <div class="modal-foot" style="flex-direction:column;gap:8px">
+      <button class="btn btn-p btn-full" onclick="diagShareDoCopy()">نسخ النص + أحصل على 24 ساعة</button>
+      <button class="btn btn-s btn-full" onclick="closeModal()">إغلاق</button>
+    </div>
+  </div>
+</div>
+
 <!-- Full plan modal (60-day phase list) -->
 <div class="modal-bg" id="dbv2FullPlanModal">
   <div class="modal" style="max-width:520px">
@@ -1825,11 +2101,16 @@ var API = {
 // Bumping APP_STATE_VERSION clears stale per-analysis localStorage keys that
 // could leak old roles / scores / roadmaps into the new dashboard. Keeps the
 // auth token, user profile, referrals, and outcomes — never logs anyone out.
-var APP_STATE_VERSION = 'darbi-dashboard-v2';
+var APP_STATE_VERSION = 'darbi-diagnosis-v1';
 (function migrateAppState(){
   try {
     var current = localStorage.getItem('darbi_app_version');
     if (current === APP_STATE_VERSION) return;
+    // We deliberately drop darbi_analysis too — its old shape predates the
+    // diagnosis flow and would confuse renderDashboard's branching.
+    // Keeps: darbi_token, darbi_user, darbi_referrals, darbi_ref,
+    //        darbi_outcomes, darbi_feedback, darbi_24h*, darbi_paid,
+    //        darbi_access_state (Access.state survives), darbi_diagnosis.
     var STALE = ['darbi_analysis','darbi_job','darbi_jd','darbi_kw',
                  'darbi_t_readiness','darbi_skill_profile','darbi_skills',
                  'darbi_ans_history','darbi_last_q','darbi_last_analysis',
@@ -1961,6 +2242,644 @@ function detectRoleFamily(role){
   return 'generic';
 }
 
+// ══════ DREAM_ROLE_LIBRARY — handcrafted content per dream family ═══════════
+// Used by buildDiagnosis() to produce the wow output. Each entry is the
+// "playbook" for one dream family: matchers, family label, nearest entry
+// roles, common gaps, bridge-plan steps, an interview-prep prompt, and the
+// CTA copy for the Branch B/C result. Hand-curated for the Saudi market —
+// resist the urge to generate this from a prompt; that's how we'd lose the
+// "ChatGPT can't say this" edge.
+var DREAM_ROLE_LIBRARY = {
+  marketing: {
+    familyAr: 'تسويق',
+    keywords: ['تسويق','marketing','social media','digital marketing','seo','content','إعلانات','تسويق رقمي'],
+    nearestRoles: ['Marketing Assistant','Social Media Assistant','Content Coordinator','Sales/Marketing Assistant'],
+    commonGaps: ['ما عندك Portfolio يثبت تسويق','ما في حملات أو أمثلة فعلية','ما تذكر أدوات التسويق (Canva, Meta, Analytics)','الإنجازات بدون أرقام أو نتائج'],
+    bridgePlan: [
+      'ابني 3 أمثلة حملات بسيطة (post + ad + tiny analytics)',
+      'أعد كتابة مشاريع الجامعة بلغة تسويقية مع نتائج',
+      'أضف أدوات: Canva, Excel, Meta basics, content calendar',
+      'جهّز إجابة سؤال: "ليش التسويق؟" في ٣ جمل قوية'
+    ],
+    interviewPrep: 'ليش التسويق؟ + مثال حملة قمت بها أو تتمنى تعمل مثلها',
+    ctaB: 'ابنِ طريقي للتسويق',
+  },
+  hr: {
+    familyAr: 'موارد بشرية',
+    keywords: ['hr','موارد بشرية','تنمية بشرية','recruitment','توظيف','talent','موظفين','استقطاب'],
+    nearestRoles: ['HR Assistant','Recruitment Coordinator','Admin Assistant','Talent Acquisition Assistant'],
+    commonGaps: ['ما في أمثلة عمليات HR (تنظيم، متابعة، سرية)','ما في أدلة على Excel أو Reporting','ما في خبرة تواصل مع موظفين أو متقدمين','السيرة عامة بدون لغة HR'],
+    bridgePlan: [
+      'حوّل مشاريع التنسيق/تنظيم في الجامعة لأمثلة HR',
+      'أضف Excel + admin keywords + reporting',
+      'تعلّم اساسيات Saudization و GOSI و Mudad',
+      'جهّز إجابة: "ليش HR؟" مع مثال موقف من حياتك'
+    ],
+    interviewPrep: 'ليش HR؟ + موقف نظّمت فيه ناس أو حليت مشكلة بينهم',
+    ctaB: 'ابنِ طريقي للـ HR',
+  },
+  accounting: {
+    familyAr: 'محاسبة',
+    keywords: ['محاسبة','accounting','محاسب','finance','مالية','بنوك','banking','audit','تدقيق'],
+    nearestRoles: ['Accounting Assistant','Junior Accountant','Finance Assistant','Data Entry / Accounts Clerk'],
+    commonGaps: ['ما في أمثلة Excel متقدم','ما تذكر invoices/reconciliation/GL','ما في تعرض على برامج محاسبية (SAP, QuickBooks, Zoho)','الانتباه للتفاصيل غير مثبت'],
+    bridgePlan: [
+      'حوّل مواد الجامعة (cost, financial, audit) لإنجازات على السيرة',
+      'أضف Excel + accounting terms (AP, AR, GL, reconciliation)',
+      'سجّل في Zoho Books تجريبي وعمل 3 invoices',
+      'جهّز إجابة: "كيف تحافظ على الدقة تحت الضغط؟"'
+    ],
+    interviewPrep: 'كيف تتعامل مع الأرقام تحت الضغط؟ + لماذا اخترت المحاسبة؟',
+    ctaB: 'ابنِ طريقي للمحاسبة',
+  },
+  sales: {
+    familyAr: 'مبيعات',
+    keywords: ['sales','مبيعات','account executive','مندوب مبيعات','telesales','بيع'],
+    nearestRoles: ['Sales Representative','Retail Sales Associate','Telesales Agent','Sales Coordinator'],
+    commonGaps: ['ما في أمثلة إقناع أو تعامل مع عملاء','ما في targets أو أرقام مبيعات','ما في follow-up قابل للقياس','مهارات التواصل غير مثبتة'],
+    bridgePlan: [
+      'حوّل أي تجربة عميل/مشروع للغة المبيعات (target → effort → result)',
+      'أضف objection handling + follow-up + CRM keywords',
+      'جهّز قصة "أقنعت شخص بشي صعب" في ٤٥ ثانية',
+      'استمع لـ 5 مكالمات مبيعات على YouTube ودوّن العبارات'
+    ],
+    interviewPrep: 'بعني هذا القلم + موقف اقنعت فيه عميل صعب',
+    ctaB: 'ابنِ طريقي للمبيعات',
+  },
+  customer_service: {
+    familyAr: 'خدمة عملاء',
+    keywords: ['خدمة عملاء','customer service','call center','دعم العملاء','customer support','موظف فرع'],
+    nearestRoles: ['Customer Service Representative','Call Center Agent','Branch Customer Service','Reception / Front Desk'],
+    commonGaps: ['ما في أمثلة على حل شكاوى','ما في أدلة تواصل تحت الضغط','ما تذكر CRM أو ticketing','السيرة عامة بدون لغة الخدمة'],
+    bridgePlan: [
+      'اكتب سيناريو "عميل غاضب يطلب refund خارج السياسة" + خطوات حلك',
+      'أضف complaint resolution + de-escalation + communication keywords',
+      'تعرّف على أدوات تذاكر شائعة (Zendesk, Freshdesk demo)',
+      'جهّز إجابة: "أصعب عميل واجهته"'
+    ],
+    interviewPrep: 'عميل غاضب — كيف تتعامل؟ + ليش الخدمة؟',
+    ctaB: 'ابنِ طريقي لخدمة العملاء',
+  },
+  it_cyber: {
+    familyAr: 'تقنية / أمن سيبراني',
+    keywords: ['it','cybersecurity','أمن سيبراني','تقنية','helpdesk','soc','it support','شبكات','networking'],
+    nearestRoles: ['IT Support Trainee','Helpdesk Agent','SOC Trainee','Technical Support Assistant'],
+    commonGaps: ['ما في مشاريع labs أو home setup','ما في certificates (CompTIA, Security+, Cisco)','ما في GitHub/portfolio','ما في أمثلة troubleshooting'],
+    bridgePlan: [
+      'ابني 2-3 home labs (TryHackMe, HackTheBox starter)',
+      'احصل على شهادة واحدة on-track (Google IT Support أو Security+)',
+      'وثّق troubleshooting examples على GitHub بسيط',
+      'جهّز إجابة: "كيف تتعلم تقنية جديدة؟" مع مثال حقيقي'
+    ],
+    interviewPrep: 'كيف تتعلم تقنية جديدة؟ + اشرح فيشينج لشخص غير تقني',
+    ctaB: 'ابنِ طريقي للتقنية',
+  },
+  design: {
+    familyAr: 'تصميم',
+    keywords: ['design','تصميم','graphic','ui/ux','ui','ux','مصمم','figma','adobe'],
+    nearestRoles: ['Junior Designer','Social Media Designer','Canva Designer','UI/UX Trainee'],
+    commonGaps: ['ما في portfolio منشور','ما في عينات بصرية','ما تشرح process التصميم','ما تذكر أدوات (Figma, Adobe, Canva)'],
+    bridgePlan: [
+      'ابني 3 مشاريع portfolio (post + UI screen + branding)',
+      'انشر على Behance أو Google Drive وضع اللينك في السيرة',
+      'أضف أدوات + design process بكل مشروع',
+      'جهّز "ليش هذا التصميم؟" — تشرح قراراتك بدل ما تعرضها'
+    ],
+    interviewPrep: 'اشرح قرار تصميم اتخذته + كيف تتعامل مع feedback صعب',
+    ctaB: 'ابنِ طريقي للتصميم',
+  },
+  admin_office: {
+    familyAr: 'إداري / مكتبي',
+    keywords: ['إداري','admin','office','coordinator','منسق','executive assistant','سكرتير','data entry'],
+    nearestRoles: ['Admin Assistant','Office Coordinator','Operations Assistant','Data Entry'],
+    commonGaps: ['ما في أمثلة تنظيم','ما في Excel/reporting evidence','ما في scheduling/follow-up','المهام مذكورة كقائمة عامة'],
+    bridgePlan: [
+      'حوّل أي تنظيم سابق (جامعة، عائلة، تطوع) لإنجاز مهني',
+      'أضف Excel + scheduling tools + reporting',
+      'تعلم أساسيات Microsoft 365 (Outlook, Teams, OneDrive)',
+      'جهّز "كيف تنظّم وقتك تحت ضغط؟" مع مثال'
+    ],
+    interviewPrep: 'كيف تنظّم وقتك تحت الضغط؟ + موقف أنقذ فيه التنظيم خطأ',
+    ctaB: 'ابنِ طريقي للإداري',
+  },
+};
+
+// Detect which DREAM_ROLE_LIBRARY family a free-text dream maps to. Returns
+// 'unknown' when nothing matches — the diagnosis still works in that case
+// (generic fallbacks live in buildDiagnosis).
+function detectDreamFamily(dreamText){
+  if (!dreamText) return 'unknown';
+  var t = String(dreamText).toLowerCase();
+  for (var family in DREAM_ROLE_LIBRARY){
+    var lib = DREAM_ROLE_LIBRARY[family];
+    if (lib.keywords && lib.keywords.some(function(k){ return t.indexOf(k.toLowerCase()) !== -1; })) {
+      return family;
+    }
+  }
+  return 'unknown';
+}
+
+// Detect "simple job" intent — shifts user into Branch A even if they're
+// students or fresh grads. e.g. کاشير، باريستا، ماكدونالدز، فرع.
+function detectSimpleJobIntent(dreamText){
+  if (!dreamText) return false;
+  var t = String(dreamText).toLowerCase();
+  var kw = ['كاشير','cashier','باريستا','barista','ماكدونالد','starbucks','retail','تجزئة','فرع','مطعم','استقبال','reception','مقهى','وظيفة بسيطة','وظيفه بسيطه','بسيط'];
+  return kw.some(function(k){ return t.indexOf(k.toLowerCase()) !== -1; });
+}
+
+// Heuristic: infer status (student / fresh_grad / experienced) from CV text.
+// Returns 'unknown' when we can't tell — the quiz then asks the user.
+function inferStatusFromCV(cvText){
+  if (!cvText || cvText.length < 80) return 'unknown';
+  var t = cvText.toLowerCase();
+  // Strong "experienced" signals first
+  if (/\bmanager\b|\bdirector\b|\bhead of\b|\blead\b|managed [a-z]+ team|led [a-z]+ team|years.* experience|سنوات خبرة|سنين خبرة|\b(5|6|7|8|9|10|11|12|13|14|15|20)\+?\s*(year|years|سنة|سنوات|سنين)/i.test(cvText)) {
+    return 'experienced';
+  }
+  // Student signals
+  if (/\b(student|طالب|طالبة|undergraduate|سنة ثالثة|سنة رابعة|year\s*3|year\s*4)\b/i.test(cvText)) {
+    return 'student';
+  }
+  // Fresh grad — graduation year within last 2 years OR "fresh graduate" / تخرّج / "تخرج 202X"
+  var thisYear = new Date().getFullYear();
+  var freshYears = [thisYear, thisYear - 1, thisYear - 2];
+  for (var i = 0; i < freshYears.length; i++) {
+    if (cvText.indexOf(String(freshYears[i])) !== -1 && /(graduat|تخرّج|تخرج|بكالوريوس|دبلوم|ماجستير|bachelor|master|degree)/i.test(cvText)) {
+      return 'fresh_grad';
+    }
+  }
+  if (/\b(intern|تدريب|fresh graduate|خريج جديد)\b/i.test(cvText)) return 'fresh_grad';
+  return 'unknown';
+}
+
+// Pick branch A/B/C from quiz answers + CV signal.
+function determineBranch(answers, cvText){
+  var status = answers.status || inferStatusFromCV(cvText);
+  if (detectSimpleJobIntent(answers.dreamRole)) return 'A';
+  if (status === 'experienced') return 'C';
+  // Default: Branch B (student/fresh grad targeting a career role).
+  return 'B';
+}
+
+// Build the wow diagnosis. Pulls library content for the family, injects
+// answers, and runs analyzeCareerFit() in the background to fill supporting
+// scores. Returns a fully-shaped diagnosis object.
+function buildDiagnosis(dreamRole, cvText, answers){
+  var family = detectDreamFamily(dreamRole);
+  var branch = determineBranch(answers, cvText);
+  var lib = DREAM_ROLE_LIBRARY[family] || null;
+
+  // Run heuristic CV analyzer for supporting scores.
+  var rec = (typeof analyzeCareerFit === 'function')
+    ? analyzeCareerFit(cvText, dreamRole, '')
+    : { cvStrengthScore: 30, jobFitScore: 30, interviewReadinessScore: 25, readinessScore: 30 };
+
+  // currentReality copy
+  var currentReality;
+  if (branch === 'A') {
+    currentReality = 'سيرتك بسيطة، وهذا في الواقع مناسب لوظيفة مباشرة. ما تحتاج تعقّدها — تحتاج طريقة تقديم أذكى.';
+  } else if (branch === 'B') {
+    currentReality = lib
+      ? 'أنت في بداية مسار ' + lib.familyAr + '. سيرتك ما تثبت بعد الدليل المطلوب لدور متخصص كامل، لكن الهدف ممكن.'
+      : 'أنت في بداية المسار. هدفك ممكن، لكن نحتاج نوضح اتجاهك أولاً ونبني الدليل من اللي عندك.';
+  } else {
+    currentReality = lib
+      ? 'عندك خبرة في ' + lib.familyAr + '. السيرة موجودة، لكن لا تطابق لغة الإعلانات بسرعة كافية، أو تستهدف أدوار أعلى من أقرب مدخل.'
+      : 'عندك خبرة. السيرة تحتاج تطابق لغة الإعلانات وتبرز النتائج بسرعة، مو وصف مهام عام.';
+  }
+
+  // biggestGap copy — pick the leading reason for silence
+  var biggestGap;
+  if (branch === 'A') {
+    biggestGap = 'لو قدمت أونلاين فقط، صعب يردون. مدير الفرع يشوف 50 وجه باليوم ونسي اسمك. الحل: روح بنفسك للفروع.';
+  } else if (branch === 'B') {
+    if (lib && lib.commonGaps && lib.commonGaps.length) {
+      biggestGap = 'سيرتك ' + lib.commonGaps[0] + '. لما الـ HR يفتحها لـ 7 ثواني، ما يلقى الدليل اللي يحتاجه يوصلك للمقابلة.';
+    } else {
+      biggestGap = 'سيرتك ما تثبت بعد المهارات اللي تطلبها هذي الوظيفة. الـ HR لا يستنتج، يبحث عن دليل واضح.';
+    }
+  } else {
+    // Distinguish funnel issues (low applications) from match issues (low replies).
+    if (answers.appsCount === 'lt5') {
+      biggestGap = 'المشكلة غالباً مو في سيرتك — في عدد تقديماتك. 5 تقديمات في 6 أشهر مو funnel، خبر بسيط. تحتاج 30+ تقديم بأسبوع لتلقى رد واحد.';
+    } else if (answers.repliesCount === 'none' && (answers.appsCount === 'gt50' || answers.appsCount === '20_50')) {
+      biggestGap = 'قدمت كثير وما يردون = إشارة قوية إن السيرة لا تطابق لغة الإعلانات، أو تستهدف أدوار أعلى من أقرب مدخل واقعي لك.';
+    } else {
+      biggestGap = 'سيرتك تصف مهام، ما تثبت نتائج. + غالباً تقدم على أدوار أعلى من أقرب مدخل واقعي لك الآن.';
+    }
+  }
+
+  // nearestWinnableRoles
+  var nearestRoles;
+  if (branch === 'A') {
+    nearestRoles = ['كاشير','باريستا','موظف خدمة عملاء فرع','استقبال','مبيعات تجزئة'];
+  } else if (lib) {
+    nearestRoles = lib.nearestRoles.slice(0, 4);
+  } else {
+    nearestRoles = ['Junior ' + dreamRole, 'Trainee ' + dreamRole, 'Assistant ' + dreamRole];
+  }
+
+  // bridgePlan
+  var bridgePlan;
+  if (branch === 'A') {
+    bridgePlan = [
+      'سيرة من صفحة واحدة (الاسم، التواصل، التعليم، المهارات الحياتية، أي شغل بسيط/تطوع)',
+      'سكربت ٣٠ ثانية تقوله للمسؤول في الفرع',
+      'حدد ٥ فروع قريبة منك وروح لها بكرة الصبح',
+      'لا تعتمد على البريد. التقديم وجهاً لوجه يفتح الباب أسرع'
+    ];
+  } else if (branch === 'B' && lib) {
+    bridgePlan = lib.bridgePlan.slice();
+  } else if (branch === 'C') {
+    bridgePlan = [
+      'حدد إعلان واحد محدد تستهدفه — مو 10',
+      'عدّل سيرتك تطابق لغة الإعلان (3 تعديلات جراحية: ملخص + كلمات + ترتيب الإنجازات)',
+      'بدّل من 5 تقديمات لـ 30 تقديم بأسبوع — وسّع قنواتك',
+      'لا تعتمد على بوابة واحدة. LinkedIn + Bayt + معارف + تقديم مباشر للشركة'
+    ];
+  } else {
+    bridgePlan = [
+      'حدد اتجاهك بدقة أكثر (تخصصك + ٣ أدوار محتملة)',
+      'حسّن ملخص السيرة ليعكس هدفك الواضح',
+      'أضف كلمات الأدوار اللي تستهدفها',
+      'ابدأ تقديم منظم: ٣ شركات اليوم'
+    ];
+  }
+
+  // firstFix — the ONE thing for today
+  var firstFix;
+  if (branch === 'A') {
+    firstFix = 'اطبع سيرتك من صفحة واحدة الليلة + روح ٣ فروع غدا الصبح. هذا أسرع من ١٠٠ تقديم أونلاين.';
+  } else if (branch === 'B' && lib) {
+    firstFix = 'الخطوة الأولى: ' + lib.bridgePlan[0] + '. تأخذ ٣٠ دقيقة، تغيّر شكل سيرتك بالكامل.';
+  } else if (branch === 'C') {
+    firstFix = 'اختر إعلان واحد فقط الليلة + أعد ترتيب أعلى ٣ إنجازات في سيرتك بحيث تظهر الأرقام أولاً. ٢٠ دقيقة شغل.';
+  } else {
+    firstFix = 'اكتب اتجاهك بسطر واحد + ٣ أدوار محتملة. لما تعرف وين رايح، نعرف وش نصلح.';
+  }
+
+  // pathClarity score: how clear is the path from current to dream?
+  var pathClarity;
+  if (branch === 'A') pathClarity = 80;
+  else if (branch === 'B' && lib) pathClarity = 65;
+  else if (branch === 'C') pathClarity = 70;
+  else pathClarity = 35;
+
+  // Calibrated supporting scores — capped to honesty bands per branch.
+  var sup = {
+    cvStrength: rec.cvStrengthScore || 30,
+    dreamMatch: Math.min(rec.jobFitScore || 30, branch === 'C' ? 80 : (branch === 'B' ? 55 : 70)),
+    interviewReadiness: rec.interviewReadinessScore || 25,
+    pathClarity: pathClarity,
+  };
+
+  return {
+    dreamRole: dreamRole,
+    family: family,
+    branch: branch,
+    inferredStatus: answers.status || inferStatusFromCV(cvText),
+    cvTextLength: (cvText || '').length,
+    applicationsCount: answers.appsCount || null,
+    repliesCount: answers.repliesCount || null,
+    englishLevel: answers.english || null,
+    frustration: answers.frustration || null,
+    currentReality: currentReality,
+    biggestGap: biggestGap,
+    nearestWinnableRoles: nearestRoles,
+    bridgePlan: bridgePlan,
+    firstFix: firstFix,
+    supportingScores: sup,
+    interviewPrep: lib ? lib.interviewPrep : 'ليش هذا المسار؟ + موقف يثبت قدراتك',
+    cvText: cvText,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+// ══════ Diagnosis namespace — single source of truth for the wow result ════
+var Diagnosis = (function(){
+  var KEY = 'darbi_diagnosis';
+  return {
+    get: function(){
+      try { return JSON.parse(localStorage.getItem(KEY) || 'null'); }
+      catch(e){ return null; }
+    },
+    set: function(d){
+      try { localStorage.setItem(KEY, JSON.stringify(d)); } catch(e){}
+    },
+    clear: function(){ try { localStorage.removeItem(KEY); } catch(e){} },
+    has: function(){ return !!this.get(); },
+  };
+})();
+
+// ══════ Access namespace — Free 24h / Earned / Founder LTD / Expired ══════
+// Uses localStorage.darbi_access_state. Admin override via
+// localStorage.darbi_access_status === 'admin' OR ADMIN_EMAILS match.
+var ADMIN_EMAILS = ['aushara1985@gmail.com'];
+var Access = (function(){
+  var KEY = 'darbi_access_state';
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); }
+    catch(e){ return null; }
+  }
+  function write(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+  return {
+    isAdmin: function(){
+      try {
+        if (localStorage.getItem('darbi_access_status') === 'admin') return true;
+      } catch(e){}
+      if (currentUser && currentUser.email && ADMIN_EMAILS.indexOf(String(currentUser.email).toLowerCase()) !== -1) return true;
+      return false;
+    },
+    state: function(){
+      if (this.isAdmin()) return { status: 'admin', founderLTD: false, expiresAt: null, earnedHours: 0, referralsCount: 0 };
+      var s = read();
+      if (!s) return { status: 'none', founderLTD: false, expiresAt: null, earnedHours: 0, referralsCount: 0 };
+      if (s.founderLTD) return Object.assign({}, s, { status: 'founder_ltd' });
+      if (s.expiresAt && Date.now() > s.expiresAt) return Object.assign({}, s, { status: 'expired' });
+      return s;
+    },
+    startFree24h: function(){
+      var existing = read() || {};
+      if (existing.founderLTD) return; // founders never get downgraded
+      var s = {
+        status: 'free_24h',
+        startedAt: Date.now(),
+        expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+        earnedHours: existing.earnedHours || 0,
+        referralsCount: existing.referralsCount || 0,
+        founderLTD: false,
+      };
+      write(s);
+      return s;
+    },
+    earn: function(hours){
+      var s = read();
+      if (!s) s = { status: 'free_24h', startedAt: Date.now(), expiresAt: Date.now(), earnedHours: 0, referralsCount: 0, founderLTD: false };
+      s.earnedHours = (s.earnedHours || 0) + hours;
+      var base = s.expiresAt && s.expiresAt > Date.now() ? s.expiresAt : Date.now();
+      s.expiresAt = base + hours * 60 * 60 * 1000;
+      // Cap earned-access window at 30 days from now per spec.
+      var max = Date.now() + 30 * 24 * 60 * 60 * 1000;
+      if (s.expiresAt > max) s.expiresAt = max;
+      s.status = 'free_24h'; // earned hours still appear under free umbrella in UI
+      write(s);
+      return s;
+    },
+    setFounderLTD: function(){
+      var s = read() || {};
+      s.founderLTD = true;
+      s.status = 'founder_ltd';
+      s.expiresAt = null;
+      write(s);
+      return s;
+    },
+    canUse: function(){
+      var st = this.state();
+      return st.status === 'admin' || st.status === 'founder_ltd' || st.status === 'free_24h';
+    },
+  };
+})();
+
+// ══════ Diagnosis flow — handlers ══════════════════════════════════════════
+// Quiz answers held during the flow; reset each time we re-enter s-dream.
+var _diagDraft = { dreamRole: '', cvText: '', answers: {} };
+
+function startDiagnosis(){
+  _diagDraft = { dreamRole: '', cvText: '', answers: {} };
+  goScreen('s-dream');
+}
+
+// PDF upload handler dedicated to the diagnosis screen — same engine as
+// handleUpload() above, just writes into diagCvText instead of cvText.
+function handleDiagUpload(e){
+  var f = e.target.files[0]; if (!f) return;
+  var z = document.getElementById('diagUploadZone');
+  var ta = document.getElementById('diagCvText');
+  var inp = document.getElementById('diagCvFile');
+  var nm = f.name || 'الملف';
+  var ext = (nm.split('.').pop() || '').toLowerCase();
+  z.classList.remove('has-file');
+
+  if (ext === 'doc' || ext === 'docx' || (f.type && /word|officedocument|msword/i.test(f.type))) {
+    z.innerHTML = 'حالياً ندعم PDF أو لصق النص';
+    if (inp) inp.value = ''; return;
+  }
+  var isPdf = ext === 'pdf' || (f.type === 'application/pdf');
+  if (!isPdf) { z.innerHTML = 'حالياً ندعم PDF أو لصق النص'; if (inp) inp.value = ''; return; }
+  if (typeof pdfjsLib === 'undefined') {
+    z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.'; if (inp) inp.value = ''; return;
+  }
+  if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  z.innerHTML = '⏳ جاري استخراج النص من ' + nm + '…';
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var data; try { data = new Uint8Array(ev.target.result); } catch(_){ data = null; }
+    if (!data) { z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.'; return; }
+    pdfjsLib.getDocument({ data: data }).promise
+      .then(function(pdf){
+        var promises = [];
+        for (var i = 1; i <= pdf.numPages; i++){
+          promises.push(pdf.getPage(i).then(function(p){ return p.getTextContent(); })
+            .then(function(c){ return (c.items || []).map(function(it){ return it.str; }).join(' '); }));
+        }
+        return Promise.all(promises);
+      })
+      .then(function(pages){
+        var text = pages.join('\n').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+        if (!text || text.length < 50) {
+          z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.';
+          ta.value = ''; if (inp) inp.value = ''; return;
+        }
+        ta.value = text;
+        z.classList.add('has-file');
+        z.innerHTML = text.length < 300
+          ? '⚠️ تم استخراج ' + text.length + ' حرف فقط — قد يكون النص ناقصاً.'
+          : '✅ تم استخراج السيرة — جاهزة (' + text.length + ' حرف)';
+      })
+      .catch(function(err){
+        console.error('[diag-pdf] extract failed:', err && err.message);
+        z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.';
+        ta.value = ''; if (inp) inp.value = '';
+      });
+  };
+  reader.onerror = function(){
+    z.innerHTML = 'لم نقدر نقرأ الملف. انسخ نص السيرة والصقه هنا.';
+    if (inp) inp.value = '';
+  };
+  reader.readAsArrayBuffer(f);
+}
+
+function diagSubmitDream(){
+  var dream = (document.getElementById('diagDreamRole').value || '').trim();
+  var cv    = (document.getElementById('diagCvText').value || '').trim();
+  if (!dream){
+    showNotif('ناقص','','اكتب الوظيفة اللي تحلم فيها.');
+    return;
+  }
+  if (!cv || cv.length < 50){
+    showNotif('ناقص','','الصق سيرتك أو ارفع PDF فيه نص. ٥٠ حرف على الأقل.');
+    return;
+  }
+  _diagDraft.dreamRole = dream;
+  _diagDraft.cvText = cv;
+  _diagDraft.answers = {};
+  // If we can already infer status from CV, hide the status question; else show it.
+  var inferred = inferStatusFromCV(cv);
+  var statusCard = document.getElementById('diagStatusCard');
+  if (statusCard) statusCard.style.display = inferred === 'unknown' ? 'block' : 'none';
+  // Reset selected option styles + the submit button.
+  Array.prototype.forEach.call(document.querySelectorAll('#s-diag-quiz .diag-option.selected'),
+    function(b){ b.classList.remove('selected'); });
+  document.getElementById('diagQuizSubmit').disabled = true;
+  goScreen('s-diag-quiz');
+}
+
+function diagPickOption(btn, qid, value){
+  // Single-select per question.
+  var siblings = btn.parentNode.querySelectorAll('.diag-option');
+  Array.prototype.forEach.call(siblings, function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  _diagDraft.answers[qid] = value;
+  _diagDraft.answers.dreamRole = _diagDraft.dreamRole;
+  // Enable submit when 4 required answers are present (status only required if shown).
+  var required = ['appsCount','repliesCount','english','frustration'];
+  var statusCard = document.getElementById('diagStatusCard');
+  if (statusCard && statusCard.style.display !== 'none') required.push('status');
+  var ok = required.every(function(k){ return !!_diagDraft.answers[k]; });
+  document.getElementById('diagQuizSubmit').disabled = !ok;
+}
+
+function diagSubmitQuiz(){
+  var diag = buildDiagnosis(_diagDraft.dreamRole, _diagDraft.cvText, _diagDraft.answers);
+  Diagnosis.set(diag);
+  // Mirror into Analysis namespace so the dashboard / CV improvement / training
+  // can all keep reading from one place.
+  if (typeof Analysis !== 'undefined' && Analysis.set){
+    Analysis.set({
+      targetRole: diag.dreamRole,
+      roleFamily: diag.family === 'unknown' ? 'generic' : diag.family,
+      seniorityLevel: diag.branch === 'C' ? 'senior' : (diag.branch === 'B' ? 'junior' : 'mid'),
+      scores: {
+        cvStrength: diag.supportingScores.cvStrength,
+        jobMatch:   diag.supportingScores.dreamMatch,
+        interviewReadiness: diag.supportingScores.interviewReadiness,
+        englishReadiness: 0,
+        overallReadiness: Math.round((diag.supportingScores.cvStrength + diag.supportingScores.dreamMatch) / 2),
+      },
+      gaps: [diag.biggestGap],
+      recommendations: diag.bridgePlan,
+      cvText: _diagDraft.cvText,
+      jobDescription: '',
+      source: 'diagnosis',
+    });
+  }
+  // Start the 24h free access window on first diagnosis only.
+  var st = Access.state();
+  if (st.status === 'none') Access.startFree24h();
+  renderDiagnosisScreen();
+  goScreen('s-diagnosis');
+}
+
+function renderDiagnosisScreen(){
+  var d = Diagnosis.get();
+  if (!d) return;
+  document.getElementById('diagResDream').textContent = d.dreamRole;
+  document.getElementById('diagResReality').textContent = d.currentReality;
+  document.getElementById('diagResGap').textContent = d.biggestGap;
+
+  var rolesEl = document.getElementById('diagResRoles');
+  rolesEl.innerHTML = '';
+  d.nearestWinnableRoles.forEach(function(r){
+    rolesEl.innerHTML += '<div class="diag-role-chip">' + r + '</div>';
+  });
+
+  var bridgeEl = document.getElementById('diagResBridge');
+  bridgeEl.innerHTML = '';
+  d.bridgePlan.forEach(function(s, i){
+    bridgeEl.innerHTML += '<div class="diag-bridge-step"><span class="diag-bridge-num">'+(i+1)+'</span><span>'+s+'</span></div>';
+  });
+
+  document.getElementById('diagResFirstFix').textContent = d.firstFix;
+
+  // Branch-specific main CTA copy
+  var ctaBtn = document.getElementById('diagResMainCta');
+  if (d.branch === 'A') ctaBtn.textContent = 'ابنِ سيرتي البسيطة →';
+  else if (d.branch === 'B') {
+    var lib = DREAM_ROLE_LIBRARY[d.family];
+    ctaBtn.textContent = (lib && lib.ctaB) ? (lib.ctaB + ' →') : 'ابنِ طريقي للوظيفة →';
+  }
+  else if (d.branch === 'C') ctaBtn.textContent = 'حلّل سيرتي بعمق →';
+  else ctaBtn.textContent = 'ابدأ الآن →';
+
+  // Supporting scores
+  document.getElementById('diagSupCV').textContent  = d.supportingScores.cvStrength;
+  document.getElementById('diagSupFit').textContent = d.supportingScores.dreamMatch;
+  document.getElementById('diagSupInt').textContent = d.supportingScores.interviewReadiness;
+  document.getElementById('diagSupPath').textContent = d.supportingScores.pathClarity;
+
+  // Unlock card subtitle reflects access state
+  var sub = document.getElementById('diagUnlockSub');
+  var st = Access.state();
+  if (st.status === 'admin') sub.textContent = 'حسابك Admin — كل الميزات مفتوحة.';
+  else if (st.status === 'founder_ltd') sub.textContent = 'لديك Founder Lifetime Access. كل شي مفتوح.';
+  else if (st.status === 'expired') sub.textContent = 'انتهت فترة الوصول. تقدر تكمل بطريقتين:';
+  else sub.textContent = 'شفت أقرب طريق لحلمك. وصولك المجاني ٢٤ ساعة. بعدها:';
+}
+
+// Branch CTA on diagnosis result routes to the right next screen.
+function diagRouteFromBranch(){
+  var d = Diagnosis.get();
+  if (!d) { focusAnalyze(); return; }
+  if (d.branch === 'A')      goTool('cv');         // simple CV path
+  else if (d.branch === 'B') goTool('cv');         // build CV / projects
+  else if (d.branch === 'C') goTool('cv');         // surgical fixes (CV improvement)
+  else                        goTool('cv');
+}
+
+// Founder LTD CTA on the unlock card. Reuses the existing Stripe path.
+function diagTriggerFounderLTD(){
+  if (typeof triggerCheckout === 'function') {
+    triggerCheckout('lifetime');
+  } else {
+    showNotif('الدفع غير متاح','','تواصل معنا لتفعيل وصول المؤسسين.');
+  }
+}
+
+// Share card — populates preview and shows modal.
+function diagOpenShareCard(){
+  var d = Diagnosis.get();
+  if (!d) return;
+  document.getElementById('diagShareDream').textContent = d.dreamRole;
+  document.getElementById('diagShareNearest').textContent = (d.nearestWinnableRoles && d.nearestWinnableRoles[0]) || '—';
+  document.getElementById('diagShareFirstFix').textContent = d.firstFix;
+  document.getElementById('diagShareModal').classList.add('open');
+}
+
+function diagShareDoCopy(){
+  var d = Diagnosis.get();
+  if (!d) return;
+  var text = 'اكتشفت أقرب طريق لوظيفتي مع دربي 🚀\n\n'
+    + 'حلمي: ' + d.dreamRole + '\n'
+    + 'أقرب مدخل لي الآن: ' + ((d.nearestWinnableRoles && d.nearestWinnableRoles[0]) || '—') + '\n'
+    + 'أول خطوة: ' + d.firstFix + '\n\n'
+    + 'جرّبه على darbi-production.up.railway.app';
+  var done = function(){
+    Access.earn(24);
+    showNotif('تم النسخ ✓','','+24 ساعة وصول إضافية.');
+    closeModal();
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(done);
+  } else {
+    done();
+  }
+}
+
+// ══════ Career path helpers (existing — buildCareerPathForFamily below) ════
 // Build a career path appropriate to the role family. Replaces the previous
 // regex-based branching that mis-routed customer service to the CS-leadership
 // path. seniority is one of 'junior'|'mid'|'senior'|'executive'.
@@ -4121,6 +5040,8 @@ function closeModal(){
   document.getElementById('authModal').classList.remove('open');
   var fp = document.getElementById('dbv2FullPlanModal');
   if (fp) fp.classList.remove('open');
+  var sh = document.getElementById('diagShareModal');
+  if (sh) sh.classList.remove('open');
 }
 function showNotif(t,s,b){ document.getElementById('modalTitle').textContent=t||'تنبيه';document.getElementById('modalSub').textContent=s||'';document.getElementById('modalBody').textContent=b||'';document.getElementById('notifModal').classList.add('open'); }
 document.getElementById('notifModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
@@ -4514,7 +5435,35 @@ function dbv2FmtDate(iso){
 function renderDashboard(){
   var u = currentUser;
   if(!u) return;
+  // Prefer Diagnosis (the new wow result) over the older Analysis. If no
+  // diagnosis exists yet, fall back to Analysis. Either populates a target
+  // role / supporting scores / a "biggest gap" — the dashboard speaks both.
+  var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
   var a = Analysis.get();
+  // Synthesise an Analysis-shaped object from the diagnosis if needed,
+  // so the rest of this function works unchanged.
+  if (d && (!a || a.source !== 'diagnosis')){
+    a = a || {};
+    a.targetRole       = d.dreamRole;
+    a.roleFamily       = d.family === 'unknown' ? 'generic' : d.family;
+    a.seniorityLevel   = d.branch === 'C' ? 'senior' : (d.branch === 'B' ? 'junior' : 'mid');
+    a.scores = {
+      cvStrength:        d.supportingScores.cvStrength,
+      jobMatch:          d.supportingScores.dreamMatch,
+      interviewReadiness:d.supportingScores.interviewReadiness,
+      englishReadiness:  0,
+      overallReadiness:  Math.round((d.supportingScores.cvStrength + d.supportingScores.dreamMatch) / 2),
+    };
+    a.gaps = [d.biggestGap];
+    a.recommendations = d.bridgePlan;
+    a.createdAt = d.createdAt;
+    a.source = 'diagnosis';
+    a.problems = a.problems || [{ title: d.biggestGap }];
+    a.careerPath = a.careerPath && a.careerPath.length ? a.careerPath
+      : (typeof buildCareerPathForFamily === 'function'
+          ? buildCareerPathForFamily(a.roleFamily, a.targetRole, a.seniorityLevel)
+          : []);
+  }
 
   var emptyEl = document.getElementById('dbv2Empty');
   var liveEl  = document.getElementById('dbv2Live');
@@ -4530,23 +5479,32 @@ function renderDashboard(){
   // ── 1. Header ────────────────────────────────────────────────────────
   document.getElementById('dbv2Name').textContent = u.email ? u.email.split('@')[0] : 'مستخدم';
 
-  // Access badge (Free / 24h / Premium / Expired)
+  // Access badge — Free 24h / Earned access / Founder LTD / Expired / Admin.
+  // Reads from Access.state() (canonical) and falls back to legacy currentUser
+  // flags only if Access has nothing — so Founder LTD via Stripe webhook,
+  // earned hours via share, and admin override all show correctly.
   var badgeEl = document.getElementById('dbv2AccessBadge');
   var expiredNoteEl = document.getElementById('dbv2ExpiredNote');
   if (expiredNoteEl) expiredNoteEl.style.display = 'none';
-  if (u.paid || isPaid) {
-    badgeEl.textContent = '✓ Premium';
+  var accSt = (typeof Access !== 'undefined' && Access.state) ? Access.state() : { status: 'none' };
+  var legacyPaid = (u.paid || isPaid);
+  if (accSt.status === 'admin') {
+    badgeEl.textContent = '🛡 Admin';
     badgeEl.className = 'dbv2-badge dbv2-badge-paid';
-  } else if (u.access_status === 'ugc_24h' && u.access_expires_at){
-    var rem = new Date(u.access_expires_at) - new Date();
-    if (rem > 0){
-      var hrs = Math.floor(rem/3600000), mins = Math.floor((rem%3600000)/60000);
-      badgeEl.textContent = '⏱ ' + hrs + 'h ' + mins + 'm';
-      badgeEl.className = 'dbv2-badge dbv2-badge-24h';
-    } else {
-      badgeEl.textContent = 'انتهى الوصول';
-      badgeEl.className = 'dbv2-badge dbv2-badge-expired';
-      if (expiredNoteEl) expiredNoteEl.style.display = 'block';
+  } else if (accSt.status === 'founder_ltd' || legacyPaid){
+    badgeEl.textContent = '✓ Founder LTD';
+    badgeEl.className = 'dbv2-badge dbv2-badge-paid';
+  } else if (accSt.status === 'free_24h' && accSt.expiresAt && accSt.expiresAt > Date.now()){
+    var rem2 = accSt.expiresAt - Date.now();
+    var hrs2 = Math.floor(rem2/3600000), mins2 = Math.floor((rem2%3600000)/60000);
+    badgeEl.textContent = '⏱ ' + hrs2 + 'h ' + mins2 + 'm';
+    badgeEl.className = 'dbv2-badge dbv2-badge-24h';
+  } else if (accSt.status === 'expired'){
+    badgeEl.textContent = 'انتهى الوصول';
+    badgeEl.className = 'dbv2-badge dbv2-badge-expired';
+    if (expiredNoteEl) {
+      expiredNoteEl.textContent = 'انتهت فترة الوصول. تقدر تكمل بطريقتين: شارك دربي وخذ وقت إضافي، أو فعّل وصول المؤسسين مرة واحدة.';
+      expiredNoteEl.style.display = 'block';
     }
   } else {
     badgeEl.textContent = 'معاينة مجانية';
