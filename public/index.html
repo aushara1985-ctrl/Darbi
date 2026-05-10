@@ -460,6 +460,29 @@ body{font-family:'Cairo',sans-serif;background:#f8f8fc;color:#0a0a0a}
   .diag-hero-target{font-size:21px}
   .diag-supporting{grid-template-columns:repeat(2,1fr);gap:7px}
 }
+
+/* Bridge plan — 7-day list + CTA stack */
+.bp-day-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.bp-day-row{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:#fafafe;border:1px solid #ececf4;border-radius:10px}
+.bp-day-num{flex-shrink:0;width:34px;height:34px;border-radius:9px;background:#eef2ff;color:#4f46e5;font-size:12px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.bp-day-num span{font-size:9px;font-weight:600;color:#888;letter-spacing:.4px}
+.bp-day-body{flex:1;font-size:13.5px;color:#1f2937;line-height:1.6;font-weight:600}
+.bp-cta-stack{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.bp-cta{padding:13px 14px;border-radius:11px;font-size:14.5px;font-weight:800;cursor:pointer;font-family:inherit;border:none;text-align:right;display:flex;align-items:center;justify-content:space-between}
+.bp-cta-primary{background:#4f46e5;color:#fff}
+.bp-cta-primary:hover{background:#4338ca}
+.bp-cta-secondary{background:#fff;color:#0a0a0a;border:1.5px solid #e6e6f0}
+.bp-cta-secondary:hover{background:#fafafe;border-color:#c7d2fe}
+.bp-cta-tertiary{background:#fafafe;color:#4f46e5;border:1px dashed #c7d2fe}
+.bp-cta-tertiary:hover{background:#f0f0ff}
+.bp-cta-founder{background:#fbbf24;color:#0f172a}
+.bp-cta-founder:hover{background:#f59e0b}
+.bp-empty{background:#fff;border:1px solid #ececf4;border-radius:18px;padding:40px 22px;text-align:center}
+.bp-empty h3{font-size:17px;font-weight:800;color:#0a0a0a;margin-bottom:8px}
+.bp-empty p{font-size:13.5px;color:#666;margin-bottom:18px;line-height:1.7;max-width:420px;margin-left:auto;margin-right:auto}
+.bp-back-row{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+.bp-back-link{background:none;border:none;color:#666;font-size:13px;cursor:pointer;padding:8px 0;font-family:inherit;font-weight:600}
+.bp-back-link:hover{color:#4f46e5}
 .auth-modal{background:#fff;border-radius:20px;max-width:360px;width:calc(100% - 32px);box-shadow:0 24px 60px rgba(0,0,0,.18);overflow:hidden}
 .auth-tabs{display:grid;grid-template-columns:1fr 1fr}
 .auth-tab{padding:13px;text-align:center;font-size:14px;font-weight:700;cursor:pointer;color:#aaa;border-bottom:2px solid #f0f0f0;transition:.12s;font-family:'Cairo',sans-serif}
@@ -1806,7 +1829,8 @@ img,video,iframe{max-width:100%}
       </div>
       <div class="dbv2-latest-gap" id="dbv2LatestGap" style="display:none">—</div>
       <div class="dbv2-latest-ctas">
-        <button class="dbv2-btn dbv2-btn-s" onclick="goScreen('s-analysis')">عرض التحليل</button>
+        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2OpenBridge()">عرض الطريق</button>
+        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2OpenDiagnosis()">عرض التشخيص</button>
         <button class="dbv2-btn dbv2-btn-s" onclick="goTool('cv')">تحسين السيرة</button>
         <button class="dbv2-btn dbv2-btn-s" onclick="focusAnalyze()">تحليل جديد</button>
       </div>
@@ -2003,6 +2027,81 @@ img,video,iframe{max-width:100%}
   </div>
 </div>
 </div><!-- /s-diagnosis -->
+
+<!-- s-bridge-plan → the dedicated "your road to the dream role" screen.
+     Branch CTAs from s-diagnosis route HERE, not directly to CV improvement. -->
+<div id="s-bridge-plan" class="app-screen">
+<div class="diag-wrap">
+
+  <!-- Empty state — shown when no Diagnosis exists yet. -->
+  <div id="bpEmpty" class="bp-empty" style="display:none">
+    <div style="font-size:28px;margin-bottom:6px">🗺️</div>
+    <h3>ابدأ التشخيص أولاً عشان نبني طريقك.</h3>
+    <p>الطريق يُبنى بناءً على حلمك + سيرتك. شغّل تشخيص في دقيقة وارجع هنا.</p>
+    <button class="diag-btn-p" onclick="startDiagnosis()" style="flex:none;min-width:200px">ابدأ التشخيص ←</button>
+  </div>
+
+  <!-- Live state — shown when Diagnosis.get() returns a result. -->
+  <div id="bpLive" style="display:none">
+    <span class="diag-step-pill" id="bpEyebrow">طريقك</span>
+    <h1 class="diag-h1">طريقك إلى <span id="bpDream">—</span></h1>
+    <p class="diag-sub">بناءً على سيرتك، هذا أقرب طريق عملي لهدفك.</p>
+
+    <div class="diag-result-card">
+      <div class="diag-result-h">حلمك</div>
+      <div class="diag-result-body" id="bpDreamLine">—</div>
+    </div>
+
+    <div class="diag-result-card">
+      <div class="diag-result-h">وضعك الحالي</div>
+      <div class="diag-result-body" id="bpReality">—</div>
+    </div>
+
+    <div class="diag-result-card">
+      <div class="diag-result-h">أقرب مدخل لك الآن</div>
+      <div class="diag-roles-list" id="bpNearest"></div>
+    </div>
+
+    <div class="diag-result-card">
+      <div class="diag-result-h">الجسر</div>
+      <div class="diag-bridge-list" id="bpBridge"></div>
+    </div>
+
+    <div class="diag-result-card">
+      <div class="diag-result-h">خطة أول 7 أيام</div>
+      <div class="bp-day-list" id="bp7Days"></div>
+    </div>
+
+    <div class="diag-result-card" style="background:#fef3c7;border-color:#fcd34d">
+      <div class="diag-result-h" style="color:#92400e">الخطوة التالية</div>
+      <div class="bp-cta-stack">
+        <button class="bp-cta bp-cta-primary" id="bpPrimaryCta" onclick="bpRoutePrimary()">
+          <span id="bpPrimaryLabel">ابدأ بإصلاح السيرة</span>
+          <span>←</span>
+        </button>
+        <button class="bp-cta bp-cta-secondary" onclick="bpRouteTraining()">
+          <span>ابدأ أول تدريب</span>
+          <span>←</span>
+        </button>
+        <button class="bp-cta bp-cta-tertiary" onclick="bpShare()">
+          <span>شارك خطتي وخذ وقت إضافي</span>
+          <span>+24 ساعة</span>
+        </button>
+        <button class="bp-cta bp-cta-founder" onclick="diagTriggerFounderLTD()" id="bpFounderCta">
+          <span>افتح الخطة كاملة — Founder LTD</span>
+          <span>$199</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="bp-back-row">
+      <button class="bp-back-link" onclick="goScreen('s-diagnosis')">← عرض التشخيص</button>
+      <button class="bp-back-link" onclick="goScreen('s-dashboard');renderDashboard();">→ لوحتي</button>
+    </div>
+  </div>
+
+</div>
+</div><!-- /s-bridge-plan -->
 
 <!-- Share card modal -->
 <div class="modal-bg" id="diagShareModal">
@@ -2830,14 +2929,116 @@ function renderDiagnosisScreen(){
   else sub.textContent = 'شفت أقرب طريق لحلمك. وصولك المجاني ٢٤ ساعة. بعدها:';
 }
 
-// Branch CTA on diagnosis result routes to the right next screen.
+// Branch CTA on the diagnosis result. Per spec these buttons
+// ("ابنِ طريقي للوظيفة", "ابنِ سيرتي البسيطة", "حلّل سيرتي بعمق") must NOT
+// jump straight into CV improvement — they open the dedicated bridge plan
+// screen, which is where the user picks: improve CV / start training /
+// share / Founder LTD.
 function diagRouteFromBranch(){
   var d = Diagnosis.get();
   if (!d) { focusAnalyze(); return; }
-  if (d.branch === 'A')      goTool('cv');         // simple CV path
-  else if (d.branch === 'B') goTool('cv');         // build CV / projects
-  else if (d.branch === 'C') goTool('cv');         // surgical fixes (CV improvement)
-  else                        goTool('cv');
+  renderBridgePlan();
+  goScreen('s-bridge-plan');
+}
+
+// ══════ Bridge plan — populated from Diagnosis.get() only ═══════════════════
+// 7-day plans, hardcoded per the brief. Branch A is the simple-job track
+// (in-person retail). Branch B/C share the career track.
+var BRIDGE_7DAYS_BY_BRANCH = {
+  A: [
+    'بناء CV صفحة واحدة',
+    'تجهيز سكربت ٣٠ ثانية',
+    'اختيار ١٠ فروع/أماكن',
+    'زيارة أول ٣ أماكن',
+    'متابعة',
+    'تحسين الكلام',
+    'إعادة المحاولة',
+  ],
+  career: [
+    'إصلاح الملخص المهني',
+    'تحويل خبراتك/مشاريعك إلى نقاط قوية',
+    'إضافة كلمات الدور',
+    'تجهيز إجابة "ليش هذا المجال؟"',
+    'تجهيز ٣ وظائف مناسبة للتقديم',
+    'تطبيق على أول وظيفة',
+    'متابعة النتيجة وتعديل الخطة',
+  ],
+};
+
+// Branch-specific copy for the primary "Step Next" CTA on the bridge screen.
+function bpPrimaryLabelForBranch(branch){
+  if (branch === 'A') return 'ابنِ سيرتي البسيطة';
+  if (branch === 'C') return 'ابدأ بالتعديلات الجراحية';
+  return 'ابدأ بإصلاح السيرة';
+}
+
+function renderBridgePlan(){
+  var emptyEl = document.getElementById('bpEmpty');
+  var liveEl  = document.getElementById('bpLive');
+  var d = Diagnosis.get();
+  if (!d){
+    if (emptyEl) emptyEl.style.display = 'block';
+    if (liveEl)  liveEl.style.display  = 'none';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (liveEl)  liveEl.style.display  = 'block';
+
+  // 1. Dream
+  document.getElementById('bpDream').textContent     = d.dreamRole || '—';
+  document.getElementById('bpDreamLine').textContent = d.dreamRole || '—';
+
+  // 2. Current reality
+  document.getElementById('bpReality').textContent = d.currentReality || '—';
+
+  // 3. Nearest entry roles
+  var nearestEl = document.getElementById('bpNearest');
+  nearestEl.innerHTML = '';
+  (d.nearestWinnableRoles || []).forEach(function(r){
+    nearestEl.innerHTML += '<div class="diag-role-chip">' + r + '</div>';
+  });
+
+  // 4. Bridge steps (from buildDiagnosis)
+  var bridgeEl = document.getElementById('bpBridge');
+  bridgeEl.innerHTML = '';
+  (d.bridgePlan || []).forEach(function(s, i){
+    bridgeEl.innerHTML += '<div class="diag-bridge-step"><span class="diag-bridge-num">'+(i+1)+'</span><span>'+s+'</span></div>';
+  });
+
+  // 5. 7-day plan (Branch A vs career track)
+  var days = (d.branch === 'A') ? BRIDGE_7DAYS_BY_BRANCH.A : BRIDGE_7DAYS_BY_BRANCH.career;
+  var daysEl = document.getElementById('bp7Days');
+  daysEl.innerHTML = '';
+  days.forEach(function(label, i){
+    daysEl.innerHTML += ''
+      + '<div class="bp-day-row">'
+      +   '<div class="bp-day-num">' + (i+1) + '<span>يوم</span></div>'
+      +   '<div class="bp-day-body">' + label + '</div>'
+      + '</div>';
+  });
+
+  // 6. Primary CTA copy by branch
+  document.getElementById('bpPrimaryLabel').textContent = bpPrimaryLabelForBranch(d.branch);
+
+  // Hide founder CTA for users who already have unlocked access.
+  var founderBtn = document.getElementById('bpFounderCta');
+  if (founderBtn){
+    var st = (typeof Access !== 'undefined' && Access.state) ? Access.state() : { status: 'none' };
+    var hideFounder = (st.status === 'admin' || st.status === 'founder_ltd');
+    founderBtn.style.display = hideFounder ? 'none' : 'flex';
+  }
+}
+
+// Bridge plan CTAs — explicit one-screen-per-action routing per the spec.
+function bpRoutePrimary(){
+  // Primary action depends on branch but in all 3 cases it goes to CV.
+  goTool('cv');
+}
+function bpRouteTraining(){ goTool('interview'); }
+function bpShare(){
+  var d = Diagnosis.get();
+  if (!d) { showNotif('','','شغّل تشخيص أولاً.'); return; }
+  diagOpenShareCard();
 }
 
 // Founder LTD CTA on the unlock card. Reuses the existing Stripe path.
@@ -5357,13 +5558,34 @@ function dbv2ScoreNote(key, val){
 }
 
 // Routes the "ابدأ الآن" button under the next-step card to the right screen.
+// When a diagnosis exists, the next step IS "open the bridge plan" — that's
+// the single screen where the user picks CV / training / share. Falls back
+// to the lowest-score logic only when there's no diagnosis to lean on.
 function dbv2RouteNextStep(){
+  var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+  if (d) { renderBridgePlan(); goScreen('s-bridge-plan'); return; }
   var a = Analysis.get();
   var low = dbv2LowestScore(a);
   if (!low) { focusAnalyze(); return; }
   if (low.route === 'cv') goTool('cv');
   else if (low.route === 'interview') goTool('interview');
   else focusAnalyze();
+}
+
+// "عرض الطريق" / "عرض التشخيص" buttons on the dashboard. If no diagnosis
+// has run yet, both push the user into the diagnosis flow — the bridge
+// plan and result pages have empty states that say so explicitly.
+function dbv2OpenBridge(){
+  var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+  if (!d) { startDiagnosis(); return; }
+  renderBridgePlan();
+  goScreen('s-bridge-plan');
+}
+function dbv2OpenDiagnosis(){
+  var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+  if (!d) { startDiagnosis(); return; }
+  renderDiagnosisScreen();
+  goScreen('s-diagnosis');
 }
 
 // Today plan — max 3 tasks, derived from Analysis state. Per-task done state
