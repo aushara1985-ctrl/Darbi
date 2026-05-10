@@ -314,6 +314,81 @@ body{font-family:'Cairo',sans-serif;background:#f8f8fc;color:#0a0a0a}
 .db-roadmap-day{font-size:12px;color:#94a3b8;margin-bottom:12px}
 .db-roadmap-bar{height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin-bottom:12px}
 .db-roadmap-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a5b4fc);border-radius:3px;transition:width .8s ease}
+
+/* ══════ Dashboard v2 — clean cards, max-width 980, mobile-first ══════ */
+.dbv2-wrap{max-width:980px;margin:0 auto;padding:24px 18px 60px}
+.dbv2-header{background:#fff;border:1px solid #ececf4;border-radius:18px;padding:22px 22px 18px;margin-bottom:14px}
+.dbv2-greet{font-size:13px;color:#666;margin-bottom:4px}
+.dbv2-name{font-size:22px;font-weight:900;color:#0a0a0a;letter-spacing:-.5px;margin-bottom:14px}
+.dbv2-h-row{display:flex;flex-wrap:wrap;gap:14px 32px;margin-bottom:18px}
+.dbv2-h-cell{font-size:13px;color:#444}
+.dbv2-h-cell b{font-weight:700;color:#0a0a0a}
+.dbv2-h-readiness-bar{height:6px;background:#f0f0f5;border-radius:3px;overflow:hidden;margin:6px 0 14px}
+.dbv2-h-readiness-fill{height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);border-radius:3px;transition:width .8s ease}
+.dbv2-h-ctas{display:flex;gap:10px;flex-wrap:wrap}
+.dbv2-btn{padding:11px 18px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;border:none;transition:.12s}
+.dbv2-btn-p{background:#4f46e5;color:#fff}
+.dbv2-btn-p:hover{background:#4338ca}
+.dbv2-btn-s{background:#fff;color:#0a0a0a;border:1.5px solid #e6e6f0}
+.dbv2-btn-s:hover{background:#fafafe;border-color:#c7d2fe}
+.dbv2-card{background:#fff;border:1px solid #ececf4;border-radius:16px;padding:18px;margin-bottom:14px}
+.dbv2-card-h{font-size:11px;font-weight:700;color:#4f46e5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.dbv2-card-t{font-size:15px;font-weight:800;color:#0a0a0a;margin-bottom:10px}
+.dbv2-scores{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.dbv2-score{background:#fff;border:1px solid #ececf4;border-radius:14px;padding:14px}
+.dbv2-score-label{font-size:11px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.dbv2-score-val{font-size:24px;font-weight:900;color:#0a0a0a;letter-spacing:-1px;line-height:1}
+.dbv2-score-note{font-size:11px;color:#888;margin-top:5px;line-height:1.5}
+.dbv2-step{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:16px;padding:18px;margin-bottom:14px}
+.dbv2-step-t{font-size:11px;font-weight:700;color:#4f46e5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.dbv2-step-body{font-size:14px;color:#1e1b4b;line-height:1.7;margin-bottom:12px}
+.dbv2-path{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dbv2-path-step{padding:8px 14px;border-radius:99px;font-size:13px;font-weight:700;border:1px solid #e6e6f0;background:#fafafe;color:#444;white-space:nowrap}
+.dbv2-path-step.is-current{background:#eef2ff;border-color:#c7d2fe;color:#4f46e5}
+.dbv2-path-step.is-target{background:#dcfce7;border-color:#86efac;color:#166534}
+.dbv2-path-arrow{color:#bbb;font-size:13px}
+.dbv2-task{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid #f3f3f8}
+.dbv2-task:first-child{border-top:none}
+.dbv2-task-tick{width:22px;height:22px;border-radius:50%;border:1.5px solid #e0e0ec;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:#fff}
+.dbv2-task-tick.done{background:#dcfce7;border-color:#86efac;color:#166534;font-size:12px;font-weight:700}
+.dbv2-task-label{flex:1;font-size:13.5px;color:#1f2937;font-weight:600}
+.dbv2-task.done .dbv2-task-label{color:#999;text-decoration:line-through}
+.dbv2-task-cta{font-size:12px;font-weight:700;color:#4f46e5;background:none;border:none;cursor:pointer;font-family:'Cairo',sans-serif;padding:6px 10px;border-radius:8px}
+.dbv2-task-cta:hover{background:#f0f0ff}
+.dbv2-fullplan-btn{margin-top:8px;width:100%;padding:9px;border-radius:9px;background:#fafafe;border:1px dashed #c7d2fe;color:#4f46e5;font-size:12px;font-weight:600;cursor:pointer;font-family:'Cairo',sans-serif}
+.dbv2-fullplan-btn:hover{background:#f0f0ff}
+.dbv2-latest-row{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.dbv2-latest-role{font-size:15px;font-weight:800;color:#0a0a0a}
+.dbv2-latest-date{font-size:12px;color:#888}
+.dbv2-latest-gap{font-size:13px;color:#444;background:#fef2f2;border:1px solid #fecaca;border-radius:9px;padding:9px 11px;margin-bottom:11px}
+.dbv2-latest-ctas{display:flex;gap:8px;flex-wrap:wrap}
+.dbv2-latest-ctas .dbv2-btn{padding:8px 14px;font-size:13px}
+.dbv2-ref{background:#fafafe;border:1px solid #ececf4;border-radius:14px;padding:14px}
+.dbv2-ref-h{font-size:13px;font-weight:700;color:#0a0a0a;margin-bottom:6px}
+.dbv2-ref-sub{font-size:12px;color:#888;margin-bottom:10px}
+.dbv2-ref-row{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid #ececf4;border-radius:9px;padding:7px 11px}
+.dbv2-ref-link{flex:1;font-size:12px;color:#4f46e5;font-weight:700;direction:ltr;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dbv2-ref-copy{background:#4f46e5;color:#fff;border:none;border-radius:7px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif}
+.dbv2-ref-stats{font-size:11px;color:#888;margin-top:8px}
+.dbv2-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:99px;font-size:12px;font-weight:700}
+.dbv2-badge-free{background:#f5f5f8;color:#666}
+.dbv2-badge-24h{background:#fef3c7;color:#92400e}
+.dbv2-badge-paid{background:#dcfce7;color:#166534}
+.dbv2-badge-expired{background:#fee2e2;color:#b91c1c}
+.dbv2-empty{background:#fff;border:1px solid #ececf4;border-radius:18px;padding:40px 22px;text-align:center}
+.dbv2-empty h3{font-size:17px;font-weight:800;color:#0a0a0a;margin-bottom:8px}
+.dbv2-empty p{font-size:13.5px;color:#666;margin-bottom:18px;line-height:1.7;max-width:420px;margin-left:auto;margin-right:auto}
+.dbv2-expired-note{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;color:#991b1b}
+@media (max-width:600px){
+  .dbv2-wrap{padding:16px 12px 48px}
+  .dbv2-header{padding:18px;border-radius:14px}
+  .dbv2-name{font-size:19px}
+  .dbv2-h-row{gap:10px 20px}
+  .dbv2-card{padding:14px;border-radius:14px}
+  .dbv2-scores{grid-template-columns:repeat(2,1fr);gap:8px}
+  .dbv2-score{padding:11px}
+  .dbv2-score-val{font-size:20px}
+}
 .auth-modal{background:#fff;border-radius:20px;max-width:360px;width:calc(100% - 32px);box-shadow:0 24px 60px rgba(0,0,0,.18);overflow:hidden}
 .auth-tabs{display:grid;grid-template-columns:1fr 1fr}
 .auth-tab{padding:13px;text-align:center;font-size:14px;font-weight:700;cursor:pointer;color:#aaa;border-bottom:2px solid #f0f0f0;transition:.12s;font-family:'Cairo',sans-serif}
@@ -1557,71 +1632,133 @@ img,video,iframe{max-width:100%}
   </div>
 </div>
 
-<!-- DASHBOARD SCREEN -->
+<!-- DASHBOARD SCREEN — v2 layout (darbi-dashboard-v2). 8 sections per spec.
+     Empty state shown when Analysis.get() returns null. -->
 <div id="s-dashboard" class="app-screen">
-<div class="c"><div class="db-section">
-  <div class="db-header">
-    <div><div style="font-size:12px;font-weight:700;color:#4f46e5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">لوحة التحكم</div><div class="db-title">أهلاً، <span id="dbUserName">—</span> 👋</div></div>
-    <div id="dbAccessPill"></div>
+<div class="dbv2-wrap">
+
+  <!-- ▸ Empty state (shown when no analysis exists) ─────────────────────── -->
+  <div id="dbv2Empty" class="dbv2-empty" style="display:none">
+    <div style="font-size:28px;margin-bottom:6px">📊</div>
+    <h3>ابدأ بتحليل سيرتك عشان نبني لك لوحة مخصصة.</h3>
+    <p>بنقيس قوة سيرتك ومطابقتها للوظيفة وجاهزيتك للمقابلة، ونقترح خطوة محددة لك كل يوم.</p>
+    <button class="dbv2-btn dbv2-btn-p" onclick="focusAnalyze()">ابدأ تحليل جديد</button>
   </div>
 
-  <!-- Expired state -->
-  <div class="expired-card" id="expiredCard" style="display:none">
-    <div style="font-size:28px;margin-bottom:10px">⏰</div>
-    <h3 style="font-size:17px;font-weight:800;margin-bottom:6px;color:#b91c1c">انتهى وصولك المجاني</h3>
-    <p style="font-size:13px;color:#666;margin-bottom:14px;line-height:1.6">تقدمك محفوظ — تقدر تكمل بالترقية أو تحصل على وصول جديد.</p>
-    <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-p" style="padding:10px 20px;font-size:13px" onclick="requireAuth(function(){triggerCheckout('lifetime');})">ترقية Premium — $199</button>
-      <button class="btn btn-s" style="padding:10px 18px;font-size:13px" onclick="goScreen('s-paywall');selectPay('ugc')">فيديو جديد → 24 ساعة</button>
+  <!-- ▸ Live dashboard (shown when an analysis exists) ──────────────────── -->
+  <div id="dbv2Live">
+
+    <!-- 1. HEADER CARD -->
+    <div class="dbv2-header">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+        <div>
+          <div class="dbv2-greet">أهلاً،</div>
+          <div class="dbv2-name"><span id="dbv2Name">—</span></div>
+        </div>
+        <span id="dbv2AccessBadge" class="dbv2-badge dbv2-badge-free">معاينة مجانية</span>
+      </div>
+
+      <div id="dbv2ExpiredNote" class="dbv2-expired-note" style="display:none">
+        انتهت فترة الوصول. تقدر تكمل بنسخ محدود أو ترقية.
+      </div>
+
+      <div class="dbv2-h-row">
+        <div class="dbv2-h-cell">هدفك الحالي: <b id="dbv2TargetRole">—</b></div>
+        <div class="dbv2-h-cell">جاهزيتك الآن: <b id="dbv2Readiness">0%</b></div>
+        <div class="dbv2-h-cell">خطة تجهيزك: <b id="dbv2RoadmapLen">—</b></div>
+        <div class="dbv2-h-cell">اليوم: <b id="dbv2CurrentDay">1</b></div>
+      </div>
+      <div class="dbv2-h-readiness-bar"><div id="dbv2ReadinessFill" class="dbv2-h-readiness-fill" style="width:0%"></div></div>
+      <div class="dbv2-h-ctas">
+        <button class="dbv2-btn dbv2-btn-p" onclick="goTool('interview')">ابدأ تدريب اليوم</button>
+        <button class="dbv2-btn dbv2-btn-s" onclick="goTool('cv')">حسّن سيرتي</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Roadmap widget -->
-  <div class="db-roadmap" id="dbRoadmapWidget" style="display:none">
-    <div class="db-roadmap-head">خطة التدريب</div>
-    <div class="db-roadmap-phase" id="dbRmPhase">—</div>
-    <div class="db-roadmap-day" id="dbRmDay">—</div>
-    <div class="db-roadmap-bar"><div class="db-roadmap-fill" id="dbRmBar" style="width:10%"></div></div>
-    <!-- Role path -->
-    <div id="dbRmRolePath" style="display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;margin-bottom:10px"></div>
-    <div id="dbRmRetention" style="font-size:12px;color:#94a3b8"></div>
-  </div>
-
-  <!-- Stats -->
-  <div class="db-cards">
-    <div class="db-card"><div class="db-card-label">الجاهزية</div><div class="db-card-val" id="dbReadiness" style="color:#4f46e5">--%</div><div class="db-card-note" id="dbReadinessNote">ابدأ التدريب أولاً</div><div style="height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin-top:9px"><div id="dbReadBar" style="height:100%;background:linear-gradient(135deg,#4f46e5,#7c3aed);width:0%;border-radius:3px;transition:width .8s ease"></div></div></div>
-    <div class="db-card"><div class="db-card-label">يوم التدريب</div><div class="db-card-val" id="dbDay">0</div><div class="db-card-note" id="dbLastActivity">لم تبدأ بعد</div><div class="db-card-action" onclick="goTool('interview')">تابع التدريب ←</div></div>
-    <div class="db-card"><div class="db-card-label">الوظيفة المستهدفة</div><div style="font-size:16px;font-weight:700;margin-top:4px" id="dbTargetRole">—</div><div class="db-card-action" onclick="focusAnalyze()">غيّر الوظيفة ←</div></div>
-    <div class="db-card"><div class="db-card-label">Streak</div><div class="db-card-val" id="dbStreak">🔥 0</div><div class="db-card-note">يوم متواصل</div></div>
-  </div>
-
-  <!-- Skills -->
-  <div class="db-card" style="margin-bottom:14px">
-    <div class="db-card-label" style="margin-bottom:12px">خريطة المهارات</div>
-    <div class="skills-list" id="dbSkillsList"></div>
-  </div>
-
-  <!-- Referral -->
-  <div class="db-card" style="margin-bottom:14px">
-    <div class="db-card-label">رابط الإحالة</div>
-    <p style="font-size:13px;color:#666;margin-bottom:0">شارك رابطك — +24 ساعة لكل صديق يسجّل</p>
-    <div class="ref-dash-box"><span class="ref-dash-link" id="dbRefLink">darbi.ai/join/—</span><button class="ref-copy" onclick="copyRef()">نسخ</button></div>
-    <div id="dbRefStats" style="font-size:12px;color:#aaa;margin-top:7px"></div>
-  </div>
-
-  <!-- Actions -->
-  <div class="db-card">
-    <div class="db-card-label" style="margin-bottom:12px">الإجراءات السريعة</div>
-    <button class="db-cta-btn db-cta-primary btn-full" style="margin-bottom:9px;padding:13px;font-size:15px" onclick="goTool('interview')">▶ تابع من حيث توقفت</button>
-    <div class="db-cta-grid">
-      <button class="db-cta-btn db-cta-sec" onclick="goTool('cv')">📝 تحسين CV</button>
-      <button class="db-cta-btn db-cta-sec" onclick="focusAnalyze()">📊 تحليل جديد</button>
-      <button class="db-cta-btn db-cta-sec" id="dbUpgradeBtn" onclick="requireAuth(function(){triggerCheckout('lifetime');})">⭐ ترقية Premium</button>
-      <button class="db-cta-btn db-cta-sec" onclick="requireAuth(function(){goScreen('s-paywall');selectPay('ugc');})">🎥 24 ساعة بفيديو</button>
+    <!-- 2. SCORE CARDS (4) -->
+    <div class="dbv2-scores">
+      <div class="dbv2-score">
+        <div class="dbv2-score-label">قوة السيرة</div>
+        <div class="dbv2-score-val"><span id="dbv2ScoreCV">0</span>%</div>
+        <div class="dbv2-score-note" id="dbv2ScoreCVNote">—</div>
+      </div>
+      <div class="dbv2-score">
+        <div class="dbv2-score-label">مطابقة الوظيفة</div>
+        <div class="dbv2-score-val"><span id="dbv2ScoreFit">0</span>%</div>
+        <div class="dbv2-score-note" id="dbv2ScoreFitNote">—</div>
+      </div>
+      <div class="dbv2-score">
+        <div class="dbv2-score-label">جاهزية المقابلة</div>
+        <div class="dbv2-score-val"><span id="dbv2ScoreInt">0</span>%</div>
+        <div class="dbv2-score-note" id="dbv2ScoreIntNote">—</div>
+      </div>
+      <div class="dbv2-score">
+        <div class="dbv2-score-label">اللغة الإنجليزية</div>
+        <div class="dbv2-score-val"><span id="dbv2ScoreEn">0</span>%</div>
+        <div class="dbv2-score-note" id="dbv2ScoreEnNote">—</div>
+      </div>
     </div>
-  </div>
-</div></div>
+
+    <!-- 3. NEXT STEP CARD -->
+    <div class="dbv2-step">
+      <div class="dbv2-step-t">خطوتك التالية</div>
+      <div id="dbv2NextStepBody" class="dbv2-step-body">—</div>
+      <button class="dbv2-btn dbv2-btn-p" id="dbv2NextStepBtn" onclick="dbv2RouteNextStep()">ابدأ الآن</button>
+    </div>
+
+    <!-- 4. CAREER PATH CARD -->
+    <div class="dbv2-card">
+      <div class="dbv2-card-h">المسار الوظيفي المتوقع</div>
+      <div id="dbv2CareerPath" class="dbv2-path"></div>
+    </div>
+
+    <!-- 5. TODAY PLAN -->
+    <div class="dbv2-card">
+      <div class="dbv2-card-h">خطة اليوم</div>
+      <div id="dbv2TodayList"></div>
+      <button class="dbv2-fullplan-btn" onclick="dbv2OpenFullPlan()">عرض الخطة كاملة</button>
+    </div>
+
+    <!-- 6. LATEST ANALYSIS CARD -->
+    <div class="dbv2-card">
+      <div class="dbv2-card-h">آخر تحليل</div>
+      <div class="dbv2-latest-row">
+        <div>
+          <div class="dbv2-latest-role" id="dbv2LatestRole">—</div>
+          <div class="dbv2-latest-date" id="dbv2LatestDate">—</div>
+        </div>
+      </div>
+      <div class="dbv2-latest-gap" id="dbv2LatestGap" style="display:none">—</div>
+      <div class="dbv2-latest-ctas">
+        <button class="dbv2-btn dbv2-btn-s" onclick="goScreen('s-analysis')">عرض التحليل</button>
+        <button class="dbv2-btn dbv2-btn-s" onclick="goTool('cv')">تحسين السيرة</button>
+        <button class="dbv2-btn dbv2-btn-s" onclick="focusAnalyze()">تحليل جديد</button>
+      </div>
+    </div>
+
+    <!-- 7. REFERRAL (compact, lower) -->
+    <div class="dbv2-ref">
+      <div class="dbv2-ref-h">شارك دربي واحصل على وقت إضافي</div>
+      <div class="dbv2-ref-sub">+24 ساعة وصول لكل صديق يسجّل برابطك.</div>
+      <div class="dbv2-ref-row">
+        <span class="dbv2-ref-link" id="dbRefLink">darbi.ai/join/—</span>
+        <button class="dbv2-ref-copy" onclick="copyRef()">نسخ</button>
+      </div>
+      <div class="dbv2-ref-stats" id="dbRefStats">—</div>
+    </div>
+
+  </div><!-- /dbv2Live -->
+</div>
 </div><!-- /s-dashboard -->
+
+<!-- Full plan modal (60-day phase list) -->
+<div class="modal-bg" id="dbv2FullPlanModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head"><h2>خطتك الكاملة</h2><p>المراحل من اليوم الأول لجاهزية المقابلة.</p></div>
+    <div class="modal-body" id="dbv2FullPlanBody" style="max-height:60vh;overflow-y:auto"></div>
+    <div class="modal-foot"><button class="btn btn-p btn-full" onclick="closeModal()">إغلاق</button></div>
+  </div>
+</div>
 
 <!-- MODAL: quick notification -->
 <div class="modal-bg" id="notifModal">
@@ -1683,6 +1820,25 @@ var API = {
   async applyReferral(code){ try{ await apiFetch('/api/darbi/referral/apply',{method:'POST',body:{code:code}}); }catch(e){} },
   async paymentSuccess(sid){ try{ var r=await apiFetch('/api/darbi/payment/success',{method:'POST',body:{stripeSessionId:sid}}); return r.ok?await r.json():null; }catch(e){return null;} }
 };
+
+// ══════ App state version migration ════════════════════════════════════════
+// Bumping APP_STATE_VERSION clears stale per-analysis localStorage keys that
+// could leak old roles / scores / roadmaps into the new dashboard. Keeps the
+// auth token, user profile, referrals, and outcomes — never logs anyone out.
+var APP_STATE_VERSION = 'darbi-dashboard-v2';
+(function migrateAppState(){
+  try {
+    var current = localStorage.getItem('darbi_app_version');
+    if (current === APP_STATE_VERSION) return;
+    var STALE = ['darbi_analysis','darbi_job','darbi_jd','darbi_kw',
+                 'darbi_t_readiness','darbi_skill_profile','darbi_skills',
+                 'darbi_ans_history','darbi_last_q','darbi_last_analysis',
+                 'darbi_roadmap','darbi_analyses','darbi_today_tasks','darbi_sess'];
+    STALE.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    localStorage.setItem('darbi_app_version', APP_STATE_VERSION);
+    console.log('[migrate] app state →', APP_STATE_VERSION);
+  } catch(e) { /* private mode etc — non-fatal */ }
+})();
 
 // ══════ STATE ══════
 var isPaid     = false;
@@ -1816,21 +1972,21 @@ function buildCareerPathForFamily(family, targetRole, seniority){
   switch(family){
     case 'customer_service':
       return [
-        step('Customer Service Representative', 30, 0, seniority==='junior'||seniority==='mid', false),
-        step('Senior Customer Service Representative', 50, 14, seniority==='senior', false),
-        step('Customer Service Supervisor / Team Lead', 70, 30, false, true),
+        step('خدمة عملاء مبتدئ', 30, 0, seniority==='junior'||seniority==='mid', false),
+        step('ممثل خدمة عملاء',   50, 14, seniority==='senior', false),
+        step('مشرف خدمة عملاء',   70, 30, false, true),
       ];
     case 'reception_front_desk':
       return [
-        step('Receptionist', 30, 0, seniority==='junior'||seniority==='mid', false),
-        step('Senior Receptionist', 50, 14, seniority==='senior', false),
-        step('Front Desk Supervisor', 70, 30, false, true),
+        step('موظف استقبال', 30, 0, seniority==='junior'||seniority==='mid', false),
+        step('استقبال أول',  50, 14, seniority==='senior', false),
+        step('مشرف استقبال', 70, 30, false, true),
       ];
     case 'sales_entry':
       return [
-        step('Sales Representative', 30, 0, seniority==='junior'||seniority==='mid', false),
-        step('Senior Sales Representative', 50, 14, seniority==='senior', false),
-        step('Sales Team Lead', 70, 30, false, true),
+        step('مندوب مبيعات مبتدئ', 30, 0, seniority==='junior'||seniority==='mid', false),
+        step('مندوب مبيعات',        50, 14, seniority==='senior', false),
+        step('مشرف مبيعات',         70, 30, false, true),
       ];
     case 'cs_leadership':
       if (seniority === 'executive' || /vp|vice president|head of|chief/i.test(t)) {
@@ -3963,6 +4119,8 @@ function closeModal(){
   document.getElementById('upgradeModal').classList.remove('open');
   document.getElementById('notifModal').classList.remove('open');
   document.getElementById('authModal').classList.remove('open');
+  var fp = document.getElementById('dbv2FullPlanModal');
+  if (fp) fp.classList.remove('open');
 }
 function showNotif(t,s,b){ document.getElementById('modalTitle').textContent=t||'تنبيه';document.getElementById('modalSub').textContent=s||'';document.getElementById('modalBody').textContent=b||'';document.getElementById('notifModal').classList.add('open'); }
 document.getElementById('notifModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
@@ -4217,94 +4375,258 @@ function syncUserState(){
 // Single source of truth: Analysis.get(). If no analysis has run yet, the
 // dashboard shows "—" placeholders and prompts the user to run one — it
 // never substitutes a default role like "CSM Head" or "System Engineer".
+// ══════ Dashboard v2 helpers (darbi-dashboard-v2) ════════════════════════
+// All dashboard content reads from Analysis.get(). When that returns null
+// the dashboard hides every "live" card and shows a single empty state.
+
+// Returns { key:'cv'|'fit'|'interview'|'english', label, route } for the
+// lowest score in the analysis. Used to drive the "خطوتك التالية" card.
+function dbv2LowestScore(a){
+  if (!a || !a.scores) return null;
+  var s = a.scores;
+  var arr = [
+    { key:'cv',        val:s.cvStrength||0,         label:'قوة السيرة',    route:'cv' },
+    { key:'fit',       val:s.jobMatch||0,           label:'مطابقة الوظيفة', route:'cv' },
+    { key:'interview', val:s.interviewReadiness||0, label:'جاهزية المقابلة', route:'interview' },
+    { key:'english',   val:s.englishReadiness||0,   label:'اللغة الإنجليزية', route:'interview' },
+  ];
+  // Ignore zero-by-default categories (e.g. interview/english on a brand-new
+  // analysis where they haven't been measured yet) — pick the lowest *non-zero*
+  // when at least one non-zero exists.
+  var nonzero = arr.filter(function(x){ return x.val > 0; });
+  var pool = nonzero.length ? nonzero : arr;
+  pool.sort(function(x,y){ return x.val - y.val; });
+  return pool[0];
+}
+
+// Static copy per lowest-score branch — exact spec wording.
+function dbv2NextStepCopy(key){
+  switch(key){
+    case 'cv':        return 'نبدأ بتحسين السيرة لأن هذا أكبر سبب يمنعك من الوصول للمقابلة.';
+    case 'fit':       return 'نبدأ بتحسين السيرة لأن هذا أكبر سبب يمنعك من الوصول للمقابلة.';
+    case 'interview': return 'نبدأ بسؤال مقابلة قصير عشان نرفع جاهزيتك.';
+    case 'english':   return 'نبدأ بتدريب إجابة بسيطة بالعربي والإنجليزي.';
+    default:          return 'ابدأ بأي خطوة من خطة اليوم.';
+  }
+}
+
+// Per-score short explanation. Kept generic — not user data, just bands.
+function dbv2ScoreNote(key, val){
+  if (key === 'cv'){
+    if (val < 40) return 'سيرتك ضعيفة — أصلح أولاً';
+    if (val < 65) return 'فيها فجوات يمكن سدّها';
+    return 'سيرة قوية — جاهزة للتقديم';
+  }
+  if (key === 'fit'){
+    if (val < 40) return 'مطابقة ضعيفة — أضف كلمات الوظيفة';
+    if (val < 65) return 'مطابقة متوسطة — قابلة للتحسين';
+    return 'مطابقة عالية';
+  }
+  if (key === 'interview'){
+    if (val < 35) return 'تحتاج تدريب أكثر قبل المقابلة';
+    if (val < 65) return 'في تقدم — استمر';
+    return 'قريب من الجاهزية';
+  }
+  if (key === 'english'){
+    if (val === 0)  return 'لم يتم القياس بعد';
+    if (val < 50)   return 'تحتاج تدريب باللغة الإنجليزية';
+    return 'مستوى مقبول';
+  }
+  return '';
+}
+
+// Routes the "ابدأ الآن" button under the next-step card to the right screen.
+function dbv2RouteNextStep(){
+  var a = Analysis.get();
+  var low = dbv2LowestScore(a);
+  if (!low) { focusAnalyze(); return; }
+  if (low.route === 'cv') goTool('cv');
+  else if (low.route === 'interview') goTool('interview');
+  else focusAnalyze();
+}
+
+// Today plan — max 3 tasks, derived from Analysis state. Per-task done state
+// stored under darbi_today_tasks; tasks reset whenever a new analysis is set
+// (Analysis.set wipes per-analysis keys, including this one).
+function dbv2BuildTodayPlan(a){
+  if (!a) return [];
+  var tasks = [];
+  var s = a.scores || {};
+  // Task 1 — CV summary if it's still the weakest
+  if ((s.cvStrength||0) < 70) {
+    tasks.push({ id:'cv-summary',  label:'تحسين الملخص المهني', cta:'افتح',  action:'goTool("cv")' });
+  }
+  // Task 2 — keyword alignment if there are missing keywords or jobMatch is low
+  if ((a.missingKeywords||[]).length > 0 || (s.jobMatch||0) < 70) {
+    tasks.push({ id:'cv-keywords', label:'إضافة كلمات الوظيفة',  cta:'افتح',  action:'goTool("cv")' });
+  }
+  // Task 3 — always at least one training session
+  tasks.push({   id:'training',     label:'تدريب سؤال: عرف بنفسك', cta:'تدرّب', action:'goTool("interview")' });
+  return tasks.slice(0, 3);
+}
+
+function dbv2GetTaskDone(){
+  try { return JSON.parse(localStorage.getItem('darbi_today_tasks') || '{}'); }
+  catch(e){ return {}; }
+}
+function dbv2SaveTaskDone(map){
+  try { localStorage.setItem('darbi_today_tasks', JSON.stringify(map)); } catch(e){}
+}
+function dbv2ToggleTask(id, action){
+  var done = dbv2GetTaskDone();
+  done[id] = !done[id];
+  dbv2SaveTaskDone(done);
+  renderDashboard();
+  // If the user marked the task done by clicking the tick, also let the
+  // CTA fire normally (handled by separate button).
+}
+function dbv2RunTask(action){
+  // action is a small JS expression like 'goTool("cv")'
+  try { (new Function(action))(); } catch(e){ console.error('[dbv2] task action:', e); }
+}
+
+// Full plan modal — lists ROADMAP_PHASES from the existing engine.
+function dbv2OpenFullPlan(){
+  var body = document.getElementById('dbv2FullPlanBody');
+  if (body && typeof ROADMAP_PHASES !== 'undefined') {
+    body.innerHTML = ROADMAP_PHASES.map(function(p){
+      return '<div style="padding:11px 0;border-bottom:1px solid #f0f0f5">'
+        + '<div style="font-size:13px;font-weight:700;color:#0a0a0a;margin-bottom:3px">'
+        + 'المرحلة ' + p.id + ' — ' + p.nameAr + ' <span style="color:#888;font-weight:500">(' + p.days + ' أيام)</span></div>'
+        + '<div style="font-size:12px;color:#666">' + p.goal + '</div>'
+        + '</div>';
+    }).join('');
+  }
+  document.getElementById('dbv2FullPlanModal').classList.add('open');
+}
+
+// Renders Arabic-localised date for a YYYY-MM-DD or ISO string.
+function dbv2FmtDate(iso){
+  if (!iso) return '—';
+  try {
+    var d = new Date(iso);
+    return d.toLocaleDateString('ar-SA', { year:'numeric', month:'long', day:'numeric' });
+  } catch(e){ return iso.substring(0,10); }
+}
+
+// Single source of truth: Analysis.get(). If no analysis has run yet, the
+// dashboard shows an empty state ONLY (no card grid, no defaults).
 function renderDashboard(){
   var u = currentUser;
   if(!u) return;
   var a = Analysis.get();
 
-  // Roadmap widget — only renders when an analysis exists; otherwise the
-  // widget stays hidden so we don't show stale "CSM Head" / "System Engineer"
-  // placeholder paths.
-  var widget = document.getElementById('dbRoadmapWidget');
-  if (a && a.targetRole) {
-    if (widget) widget.style.display = 'block';
-    renderDashboardRoadmap();
-  } else {
-    if (widget) widget.style.display = 'none';
+  var emptyEl = document.getElementById('dbv2Empty');
+  var liveEl  = document.getElementById('dbv2Live');
+
+  if (!a || !a.targetRole){
+    if (emptyEl) emptyEl.style.display = 'block';
+    if (liveEl)  liveEl.style.display  = 'none';
+    return;
   }
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (liveEl)  liveEl.style.display  = 'block';
 
-  // Name
-  document.getElementById('dbUserName').textContent = u.email ? u.email.split('@')[0] : 'مستخدم';
+  // ── 1. Header ────────────────────────────────────────────────────────
+  document.getElementById('dbv2Name').textContent = u.email ? u.email.split('@')[0] : 'مستخدم';
 
-  // Access pill
-  var pillEl = document.getElementById('dbAccessPill');
-  var expiredEl = document.getElementById('expiredCard');
-  var upgradeBtn = document.getElementById('dbUpgradeBtn');
-  var expired = false;
-
-  if(u.paid || isPaid){
-    pillEl.innerHTML = '<span class="access-pill access-paid">✓ Premium مدى الحياة</span>';
-    if(upgradeBtn) upgradeBtn.style.display = 'none';
-  } else if(u.access_status === 'ugc_24h' && u.access_expires_at){
+  // Access badge (Free / 24h / Premium / Expired)
+  var badgeEl = document.getElementById('dbv2AccessBadge');
+  var expiredNoteEl = document.getElementById('dbv2ExpiredNote');
+  if (expiredNoteEl) expiredNoteEl.style.display = 'none';
+  if (u.paid || isPaid) {
+    badgeEl.textContent = '✓ Premium';
+    badgeEl.className = 'dbv2-badge dbv2-badge-paid';
+  } else if (u.access_status === 'ugc_24h' && u.access_expires_at){
     var rem = new Date(u.access_expires_at) - new Date();
-    if(rem > 0){
+    if (rem > 0){
       var hrs = Math.floor(rem/3600000), mins = Math.floor((rem%3600000)/60000);
-      pillEl.innerHTML = '<span class="access-pill access-ugc">⏱ '+hrs+'h '+mins+'m متبقي</span>';
+      badgeEl.textContent = '⏱ ' + hrs + 'h ' + mins + 'm';
+      badgeEl.className = 'dbv2-badge dbv2-badge-24h';
     } else {
-      expired = true;
-      pillEl.innerHTML = '<span class="access-pill access-free">انتهى الوصول</span>';
+      badgeEl.textContent = 'انتهى الوصول';
+      badgeEl.className = 'dbv2-badge dbv2-badge-expired';
+      if (expiredNoteEl) expiredNoteEl.style.display = 'block';
     }
   } else {
-    pillEl.innerHTML = '<span class="access-pill access-free">معاينة مجانية</span>';
+    badgeEl.textContent = 'معاينة مجانية';
+    badgeEl.className = 'dbv2-badge dbv2-badge-free';
   }
-  expiredEl.style.display = expired ? 'block' : 'none';
 
-  // Stats — readiness comes from Analysis (canonical) when present, falls
-  // back to the in-memory tReadiness only if no analysis exists yet.
-  var readiness = (a && a.scores && (a.scores.cvStrength || a.scores.overallReadiness)) || tReadiness || 0;
-  document.getElementById('dbReadiness').textContent = readiness + '%';
-  document.getElementById('dbReadBar').style.width = readiness + '%';
-  document.getElementById('dbReadinessNote').textContent = !a
-    ? 'شغّل تحليلاً لرؤية جاهزيتك'
-    : readiness < 35 ? 'تحتاج تدريب أكثر قبل المقابلة'
-    : readiness < 65 ? 'في تقدم — استمر'
-    : 'قريب من الجاهزية';
+  document.getElementById('dbv2TargetRole').textContent = a.targetRole;
+  var readiness = (a.scores && (a.scores.overallReadiness || a.scores.cvStrength)) || 0;
+  document.getElementById('dbv2Readiness').textContent = readiness + '%';
+  document.getElementById('dbv2ReadinessFill').style.width = readiness + '%';
+  var rmLen = (a.roadmap && a.roadmap.lengthDays) || 60;
+  document.getElementById('dbv2RoadmapLen').textContent = rmLen + ' يوم';
+  var curDay = (a.roadmap && a.roadmap.currentDay) || parseInt(localStorage.getItem('darbi_sess')||'1');
+  document.getElementById('dbv2CurrentDay').textContent = curDay;
 
-  var day = parseInt(localStorage.getItem('darbi_sess')||'0');
-  document.getElementById('dbDay').textContent = day || 0;
+  // ── 2. Score cards ───────────────────────────────────────────────────
+  var s = a.scores || {};
+  document.getElementById('dbv2ScoreCV').textContent  = s.cvStrength || 0;
+  document.getElementById('dbv2ScoreFit').textContent = s.jobMatch || 0;
+  document.getElementById('dbv2ScoreInt').textContent = s.interviewReadiness || 0;
+  document.getElementById('dbv2ScoreEn').textContent  = s.englishReadiness || 0;
+  document.getElementById('dbv2ScoreCVNote').textContent  = dbv2ScoreNote('cv',        s.cvStrength||0);
+  document.getElementById('dbv2ScoreFitNote').textContent = dbv2ScoreNote('fit',       s.jobMatch||0);
+  document.getElementById('dbv2ScoreIntNote').textContent = dbv2ScoreNote('interview', s.interviewReadiness||0);
+  document.getElementById('dbv2ScoreEnNote').textContent  = dbv2ScoreNote('english',   s.englishReadiness||0);
 
-  var lastActivity = u.last_activity ? new Date(u.last_activity).toLocaleDateString('ar-SA') : '—';
-  var lastQ = localStorage.getItem('darbi_last_q');
-  document.getElementById('dbLastActivity').textContent = day > 0
-    ? 'آخر جلسة: ' + lastActivity + (lastQ ? ' — س' + lastQ : '')
-    : 'لم تبدأ بعد';
+  // ── 3. Next step card ────────────────────────────────────────────────
+  var low = dbv2LowestScore(a);
+  document.getElementById('dbv2NextStepBody').textContent = dbv2NextStepCopy(low ? low.key : null);
 
-  // Target role — from latest Analysis only. No fallback to a stale legacy key.
-  document.getElementById('dbTargetRole').textContent = (a && a.targetRole) || '—';
-  document.getElementById('dbStreak').textContent = '🔥 ' + (parseInt(localStorage.getItem('darbi_streak')||'0'));
-
-  // Skills
-  var skillsEl = document.getElementById('dbSkillsList');
-  skillsEl.innerHTML = '';
-  Object.keys(SKILL_MAP).forEach(function(k){
-    var s = SKILL_MAP[k];
-    var col = s.score<35?'#dc2626':s.score<55?'#d97706':'#16a34a';
-    skillsEl.innerHTML += '<div class="skill-r">'
-      +'<span class="skill-nm">'+s.ar+'</span>'
-      +'<div class="skill-trk"><div class="skill-fill" style="width:'+s.score+'%;background:'+col+'"></div></div>'
-      +'<span class="skill-v">'+s.score+'%</span>'
-      +'</div>';
+  // ── 4. Career path card ──────────────────────────────────────────────
+  var pathEl = document.getElementById('dbv2CareerPath');
+  pathEl.innerHTML = '';
+  var path = (a.careerPath && a.careerPath.length)
+    ? a.careerPath
+    : buildCareerPathForFamily(a.roleFamily || 'generic', a.targetRole, a.seniorityLevel || 'mid');
+  path.forEach(function(step, i){
+    if (i > 0) pathEl.innerHTML += '<span class="dbv2-path-arrow">→</span>';
+    var cls = 'dbv2-path-step' + (step.isTarget ? ' is-target' : (step.isCurrent ? ' is-current' : ''));
+    pathEl.innerHTML += '<span class="' + cls + '">' + step.role + '</span>';
   });
 
-  // Referral
+  // ── 5. Today plan ────────────────────────────────────────────────────
+  var todayEl = document.getElementById('dbv2TodayList');
+  var done = dbv2GetTaskDone();
+  todayEl.innerHTML = '';
+  dbv2BuildTodayPlan(a).forEach(function(t){
+    var isDone = !!done[t.id];
+    todayEl.innerHTML += ''
+      + '<div class="dbv2-task' + (isDone ? ' done' : '') + '">'
+      +   '<button class="dbv2-task-tick' + (isDone ? ' done' : '') + '" '
+      +     'aria-label="تم/لم يتم" '
+      +     'onclick="dbv2ToggleTask(\'' + t.id + '\')">' + (isDone ? '✓' : '') + '</button>'
+      +   '<div class="dbv2-task-label">' + t.label + '</div>'
+      +   (isDone ? '' : '<button class="dbv2-task-cta" onclick=\'dbv2RunTask("' + t.action + '")\'>' + t.cta + ' ←</button>')
+      + '</div>';
+  });
+
+  // ── 6. Latest analysis card ──────────────────────────────────────────
+  document.getElementById('dbv2LatestRole').textContent = a.targetRole;
+  document.getElementById('dbv2LatestDate').textContent = dbv2FmtDate(a.createdAt);
+  var topGap = (a.gaps && a.gaps[0]) || (a.problems && a.problems[0] && a.problems[0].title);
+  var gapEl = document.getElementById('dbv2LatestGap');
+  if (topGap) {
+    gapEl.style.display = 'block';
+    gapEl.textContent = '⚠ أكبر فجوة: ' + topGap;
+  } else {
+    gapEl.style.display = 'none';
+  }
+
+  // ── 7. Referral (compact) ────────────────────────────────────────────
   var refCode3 = u.referral_code || 'XXXXX';
   document.getElementById('dbRefLink').textContent = 'darbi.ai/join/' + refCode3;
-  var refs = JSON.parse(localStorage.getItem('darbi_referrals')||'[]');
+  var refs = [];
+  try { refs = JSON.parse(localStorage.getItem('darbi_referrals')||'[]') || []; } catch(e){}
   document.getElementById('dbRefStats').textContent = refs.length > 0
-    ? refs.length + ' صديق انضم · ' + refs.reduce(function(s,r){return s+r.hours;},0) + ' ساعة مكسبة'
-    : 'لا أحد انضم بعد';
+    ? refs.length + ' صديق انضم · ' + refs.reduce(function(s,r){return s+(r.hours||0);},0) + ' ساعة مكسبة'
+    : 'لم ينضم أحد بعد';
 
-  // Setup ref link in access screen too
+  // Mirror to access screen ref display (if present elsewhere)
   var rl = document.getElementById('refLinkText');
   if(rl) rl.textContent = 'darbi.ai/join/' + refCode3;
 }
