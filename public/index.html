@@ -1092,13 +1092,14 @@ img,video,iframe{max-width:100%}
 
   <!-- Outcome tracking — appears after analysis -->
   <div class="card" id="outcomeCard" style="padding:18px;margin-bottom:20px;background:#f8f8fc;border:1px dashed #c7d2fe">
-    <div style="font-size:12px;font-weight:700;color:#4f46e5;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">تتبع نتائجك — اختياري</div>
-    <p style="font-size:13px;color:#666;margin-bottom:12px">ساعدنا نحسّن دربي بإخبارنا بنتائج تقديمك</p>
+    <div style="font-size:12px;font-weight:700;color:#4f46e5;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">تابع تقديماتك عشان نطور تدريبك</div>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">كل ما أخبرتنا بنتيجة تقديمك، عدّلنا تدريبك ليلائم وضعك الفعلي.</p>
     <div style="display:flex;flex-wrap:wrap;gap:8px" id="outcomeButtons">
       <button onclick="logOutcome('applied')"    class="btn btn-s" style="font-size:12px;padding:7px 13px">قدّمت على الوظيفة</button>
       <button onclick="logOutcome('got_reply')"  class="btn btn-s" style="font-size:12px;padding:7px 13px">جاني رد</button>
       <button onclick="logOutcome('interview')"  class="btn btn-s" style="font-size:12px;padding:7px 13px">دخلت مقابلة</button>
-      <button onclick="logOutcome('success')"    class="btn btn-s" style="font-size:12px;padding:7px 13px">قُبلت 🎉</button>
+      <button onclick="logOutcome('rejected')"   class="btn btn-s" style="font-size:12px;padding:7px 13px">انرفضت</button>
+      <button onclick="logOutcome('success')"    class="btn btn-s" style="font-size:12px;padding:7px 13px">انقبلت 🎉</button>
     </div>
     <div id="outcomeConfirm" style="display:none;font-size:13px;color:#16a34a;margin-top:8px;font-weight:600"></div>
   </div>
@@ -1302,7 +1303,7 @@ img,video,iframe{max-width:100%}
     <!-- Improved bullets -->
     <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;margin-bottom:10px">
       <div style="font-size:10px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">بعد التحسين ✓</div>
-      <div style="font-size:13px;color:#14532d;line-height:1.8" id="cvS3strong">• أدار محفظة عملاء تضم [X] حساباً بقيمة [Y] ريال سنوياً<br>• حسّن معدل الاحتفاظ بالعملاء من [X]% إلى [Y]%<br>• أعدّ تقارير أسبوعية وفّرت [Z] ساعة من العمل اليدوي</div>
+      <div style="font-size:13px;color:#14532d;line-height:1.8" id="cvS3strong"><!-- populated by initCVScreen() based on role family + analysis. Never contains raw [X]/[Y]/[Z]. --></div>
     </div>
 
     <!-- Guided question if no numbers -->
@@ -1692,6 +1693,167 @@ var timerInt   = null;
 var cvStepDone = 0;
 var activeSessionId = null;
 
+// ══════ Analysis — single source of truth for the latest CV analysis ════════
+// Every screen (post-analysis, dashboard, CV improvement, training, roadmap)
+// reads from Analysis.get(). When a new analysis runs, Analysis.set(...) is
+// called and stale per-analysis localStorage keys are cleared so we don't
+// leak the previous role into the next session (was the "CSM Head shows
+// after analyzing خدمة عملاء" bug).
+var Analysis = (function(){
+  var KEY = 'darbi_analysis';
+  // Keys that describe a SINGLE analysis. They get wiped on every set().
+  // Keys that survive: darbi_token, darbi_user, darbi_sess, darbi_streak,
+  //                    darbi_referrals, darbi_ref, darbi_outcomes,
+  //                    darbi_feedback, darbi_24h*, darbi_paid.
+  var STALE = ['darbi_job','darbi_jd','darbi_kw','darbi_t_readiness',
+               'darbi_skill_profile','darbi_skills','darbi_ans_history',
+               'darbi_last_q','darbi_last_analysis','darbi_roadmap',
+               'darbi_analyses'];
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); }
+    catch(e){ return null; }
+  }
+  function write(v){
+    try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(e){}
+  }
+  return {
+    get: read,
+    set: function(data){
+      // Wipe stale keys so dashboard / CV improvement / training never read
+      // values from the previous analysis.
+      STALE.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+      var now = new Date().toISOString();
+      var safe = {
+        analysisId: data.analysisId || ('local-' + Date.now()),
+        targetRole: data.targetRole || '',
+        roleFamily: data.roleFamily || detectRoleFamily(data.targetRole || ''),
+        seniorityLevel: data.seniorityLevel || 'mid',
+        scores: {
+          cvStrength:        data.scores && data.scores.cvStrength        != null ? data.scores.cvStrength        : 0,
+          jobMatch:          data.scores && data.scores.jobMatch          != null ? data.scores.jobMatch          : 0,
+          interviewReadiness:data.scores && data.scores.interviewReadiness!= null ? data.scores.interviewReadiness: 0,
+          englishReadiness:  data.scores && data.scores.englishReadiness  != null ? data.scores.englishReadiness  : 0,
+          overallReadiness:  data.scores && data.scores.overallReadiness  != null ? data.scores.overallReadiness  : 0,
+        },
+        roadmap: data.roadmap || { lengthDays: 60, currentDay: 1, currentPhase: 'foundation', nextUnlock: null },
+        gaps:            data.gaps            || [],
+        recommendations: data.recommendations || [],
+        careerPath:      data.careerPath      || [],
+        problems:        data.problems        || [],
+        matchedSkills:   data.matchedSkills   || [],
+        missingKeywords: data.missingKeywords || [],
+        recommendedKeywords: data.recommendedKeywords || [],
+        hardRequirementStatus: data.hardRequirementStatus || 'unknown',
+        hardRequirementIssues: data.hardRequirementIssues || [],
+        improvedSummary: data.improvedSummary || '',
+        whyNotGetting:   data.whyNotGetting   || '',
+        confidence:      data.confidence      || 'medium',
+        cvText:          data.cvText          || '',
+        jobDescription:  data.jobDescription  || '',
+        hasJD:           !!data.jobDescription,
+        source:          data.source          || 'heuristic',
+        createdAt:       now,
+      };
+      write(safe);
+      // Mirror a few keys for legacy code paths still reading them; eventually
+      // these can be deleted once every reader is migrated.
+      try {
+        localStorage.setItem('darbi_job', safe.targetRole);
+        localStorage.setItem('darbi_jd', safe.jobDescription);
+        localStorage.setItem('darbi_kw', JSON.stringify(safe.recommendedKeywords));
+        localStorage.setItem('darbi_t_readiness', String(safe.scores.cvStrength || safe.scores.overallReadiness || 0));
+      } catch(e){}
+      return safe;
+    },
+    clear: function(){
+      try { localStorage.removeItem(KEY); } catch(e){}
+      STALE.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    },
+    hasAnalysis: function(){ return !!read(); },
+  };
+})();
+
+// Map a free-text Arabic/English target role to a role-family enum. Used for
+// career path branching and for picking role-aware copy in CV improvement.
+// Order matters — most specific first. The CSM-Head leak happened because
+// 'customer service' fell through the original /customer success|cs\b/ regex
+// before this function existed.
+function detectRoleFamily(role){
+  if (!role) return 'generic';
+  var r = String(role).toLowerCase();
+  // Customer service / support — distinct from CS leadership.
+  if (/خدمة عملاء|خدمه عملاء|الدعم|دعم العملاء|customer service|cs(r| representative| agent)|customer support|tech support|help ?desk|call ?center/i.test(r)) {
+    return 'customer_service';
+  }
+  // Reception / front desk
+  if (/استقبال|موظف استقبال|reception|front[ -]?desk|concierge/i.test(r)) {
+    return 'reception_front_desk';
+  }
+  // Sales entry-level (not VP Sales etc.)
+  if (/مندوب مبيعات|مبيعات داخلية|sales (rep|representative|associate|executive)|inside sales|bdr|sdr/i.test(r)
+      && !/vp|director|head|lead/i.test(r)) {
+    return 'sales_entry';
+  }
+  // CS leadership (CSM, Head, Director, VP) — only AFTER customer_service.
+  if (/customer success|csm|head of cs|director.* customer|vp.* customer/i.test(r)) {
+    return 'cs_leadership';
+  }
+  if (/مهندس|engineer|developer|software/i.test(r))    return 'engineering';
+  if (/محاسب|accountant|finance/i.test(r))            return 'finance';
+  if (/ممرض|doctor|nurse|طبيب/i.test(r))               return 'healthcare';
+  if (/marketing|تسويق/i.test(r))                      return 'marketing';
+  return 'generic';
+}
+
+// Build a career path appropriate to the role family. Replaces the previous
+// regex-based branching that mis-routed customer service to the CS-leadership
+// path. seniority is one of 'junior'|'mid'|'senior'|'executive'.
+function buildCareerPathForFamily(family, targetRole, seniority){
+  function step(role, needed, days, isCurrent, isTarget){
+    return { role: role, readinessNeeded: needed, daysFromNow: days, isCurrent: !!isCurrent, isTarget: !!isTarget };
+  }
+  var t = targetRole || 'الدور المستهدف';
+  switch(family){
+    case 'customer_service':
+      return [
+        step('Customer Service Representative', 30, 0, seniority==='junior'||seniority==='mid', false),
+        step('Senior Customer Service Representative', 50, 14, seniority==='senior', false),
+        step('Customer Service Supervisor / Team Lead', 70, 30, false, true),
+      ];
+    case 'reception_front_desk':
+      return [
+        step('Receptionist', 30, 0, seniority==='junior'||seniority==='mid', false),
+        step('Senior Receptionist', 50, 14, seniority==='senior', false),
+        step('Front Desk Supervisor', 70, 30, false, true),
+      ];
+    case 'sales_entry':
+      return [
+        step('Sales Representative', 30, 0, seniority==='junior'||seniority==='mid', false),
+        step('Senior Sales Representative', 50, 14, seniority==='senior', false),
+        step('Sales Team Lead', 70, 30, false, true),
+      ];
+    case 'cs_leadership':
+      if (seniority === 'executive' || /vp|vice president|head of|chief/i.test(t)) {
+        return [
+          step('Head of Customer Success', 35, 0, true, false),
+          step('Director of Customer Success', 55, 14, false, false),
+          step(t, 70, 30, false, true),
+        ];
+      }
+      return [
+        step('CS Specialist', 35, 0, seniority==='junior', false),
+        step('CS Manager',   50, 14, seniority==='mid', false),
+        step(t,              65, 30, false, true),
+      ];
+    default:
+      return [
+        step('دور مبتدئ في ' + t, 30, 0, seniority==='junior'||seniority==='mid', false),
+        step('دور متوسط في ' + t, 50, 14, seniority==='senior', false),
+        step(t,                  70, 30, false, true),
+      ];
+  }
+}
+
 // ── Must be declared before init() uses them ──
 var SKILL_MAP={
   communication:{ar:'التواصل',score:30},
@@ -2035,9 +2197,35 @@ async function runAnalysisAI(job, cv, jd){
       });
     }
 
-    // Save keywords + cache result
-    localStorage.setItem('darbi_job', job);
-    localStorage.setItem('darbi_kw', JSON.stringify(r.recommendedKeywords || []));
+    // Persist to canonical Analysis state — wipes prior analysis keys.
+    Analysis.set({
+      analysisId: data.analysisId || null,
+      targetRole: job,
+      roleFamily: r.roleFamily || detectRoleFamily(job),
+      seniorityLevel: r.seniority || 'mid',
+      scores: {
+        cvStrength:        r.cvStrengthScore        || 0,
+        jobMatch:          r.jobFitScore            || 0,
+        interviewReadiness:r.interviewReadinessScore|| 0,
+        englishReadiness:  r.englishReadinessScore  || 0,
+        overallReadiness:  r.readinessScore         || 0,
+      },
+      careerPath: r.careerPath || [],
+      problems: r.problems || [],
+      gaps: (r.problems || []).map(function(p){ return p.title; }),
+      recommendations: r.recommendedKeywords || [],
+      recommendedKeywords: r.recommendedKeywords || [],
+      matchedSkills: r.matchedSkills || [],
+      missingKeywords: r.missingKeywords || [],
+      hardRequirementStatus: r.hardRequirementStatus || 'unknown',
+      hardRequirementIssues: r.hardRequirementIssues || [],
+      improvedSummary: r.improvedSummary || '',
+      whyNotGetting: r.whyNotGetting || '',
+      confidence: r.confidence || 'medium',
+      cvText: cv,
+      jobDescription: jd || '',
+      source: 'ai',
+    });
     setCachedAnalysis(cv, job, jd, r);
     updateSkillProfile({ targetRole: job, cvStrengths: r.matchedSkills || [], cvGaps: (r.problems || []).map(function(p){return p.title;}), readiness: score, hasJD: !!jd });
 
@@ -2168,27 +2356,10 @@ function analyzeCareerFit(cv, job, jd) {
   if (hardReqStatus === 'missing') jobFit = Math.round(jobFit * 0.7);
   jobFit = Math.min(Math.max(Math.round(jobFit), 15), 88);
 
-  // CAREER PATH — seniority-aware
-  var careerPath;
-  if (/vp|vice president|director|head/i.test(job)) {
-    careerPath = [
-      { role: seniority === 'executive' ? 'Head of Customer Success' : 'Senior CS Manager', readinessNeeded:35, daysFromNow:0, isCurrent:true, isTarget:false },
-      { role: 'Director of Customer Success', readinessNeeded:55, daysFromNow:14, isCurrent:false, isTarget:false },
-      { role: job, readinessNeeded:70, daysFromNow:30, isCurrent:false, isTarget:true }
-    ];
-  } else if (/customer success|cs\b/i.test(job)) {
-    careerPath = [
-      { role: 'CS Specialist', readinessNeeded:35, daysFromNow:0, isCurrent:seniority==='junior', isTarget:false },
-      { role: 'CS Manager', readinessNeeded:50, daysFromNow:14, isCurrent:seniority==='mid', isTarget:false },
-      { role: job, readinessNeeded:65, daysFromNow:30, isCurrent:false, isTarget:true }
-    ];
-  } else {
-    careerPath = [
-      { role: 'دور جونيور في ' + job, readinessNeeded:35, daysFromNow:0, isCurrent:seniority==='junior', isTarget:false },
-      { role: 'دور سينيور في ' + job, readinessNeeded:55, daysFromNow:14, isCurrent:seniority==='mid'||seniority==='senior', isTarget:false },
-      { role: job, readinessNeeded:70, daysFromNow:30, isCurrent:false, isTarget:true }
-    ];
-  }
+  // CAREER PATH — role-family + seniority aware (replaces regex branching that
+  // mis-routed customer service into the CS-leadership path).
+  var roleFamily = detectRoleFamily(job);
+  var careerPath = buildCareerPathForFamily(roleFamily, job, seniority);
 
   // MISSING KEYWORDS — structured categories ONLY, never raw words
   var missingKeywords = [];
@@ -2211,6 +2382,7 @@ function analyzeCareerFit(cv, job, jd) {
     readinessScore: Math.round((cvStrength * 0.5 + jobFit * 0.5)),
     confidence: jd ? 'high' : 'medium',
     seniority: seniority,
+    roleFamily: roleFamily,
     whyNotGetting: hardReqIssues.length > 0
       ? 'سيرتك قوية لهذا المسار، لكن هذه الوظيفة فيها شروط قد تمنعك: ' + hardReqIssues.join(' + ')
       : cvStrength < 50 ? 'السيرة تحتاج تقوية في الإنجازات والأرقام' : 'ركّز على تحضير المقابلة',
@@ -2281,11 +2453,34 @@ function runAnalysis(job, cv, jd){
   if(baBefore) baBefore.textContent = getBeforeText(cv, r);
   if(baAfter)  baAfter.textContent = r.improvedSummary || ('سيرة مطابقة لمتطلبات ' + job + ' — كلمات مفتاحية + إنجازات قابلة للقياس');
 
-  // Store — use structured keywords ONLY
-  localStorage.setItem('darbi_job', job);
-  localStorage.setItem('darbi_jd', jd || '');
-  localStorage.setItem('darbi_kw', JSON.stringify(r.recommendedKeywords || []));
-  localStorage.setItem('darbi_t_readiness', String(r.cvStrengthScore || score));
+  // Persist to canonical Analysis state — wipes prior analysis keys.
+  Analysis.set({
+    targetRole: job,
+    roleFamily: r.roleFamily || detectRoleFamily(job),
+    seniorityLevel: r.seniority || 'mid',
+    scores: {
+      cvStrength:        r.cvStrengthScore        || 0,
+      jobMatch:          r.jobFitScore            || 0,
+      interviewReadiness:r.interviewReadinessScore|| 0,
+      englishReadiness:  0,
+      overallReadiness:  r.readinessScore         || score || 0,
+    },
+    careerPath: r.careerPath || [],
+    problems: r.problems || [],
+    gaps: (r.problems || []).map(function(p){ return p.title; }),
+    recommendations: r.recommendedKeywords || [],
+    recommendedKeywords: r.recommendedKeywords || [],
+    matchedSkills: r.matchedSkills || [],
+    missingKeywords: r.missingKeywords || [],
+    hardRequirementStatus: r.hardRequirementStatus || 'unknown',
+    hardRequirementIssues: r.hardRequirementIssues || [],
+    improvedSummary: r.improvedSummary || '',
+    whyNotGetting: r.whyNotGetting || note,
+    confidence: r.confidence || 'medium',
+    cvText: cv,
+    jobDescription: jd || '',
+    source: 'heuristic',
+  });
 
   // Render 4-score display
   renderAnalysisScores(r);
@@ -2545,7 +2740,8 @@ function extractLineWithWord(cv, word){
 // ══════ OUTCOME TRACKING ══════
 function logOutcome(type){
   var outcomes = JSON.parse(localStorage.getItem('darbi_outcomes') || '{}');
-  var job = localStorage.getItem('darbi_job') || 'unknown';
+  var a = Analysis.get();
+  var job = (a && a.targetRole) || localStorage.getItem('darbi_job') || 'unknown';
   if(!outcomes[job]) outcomes[job] = {};
   outcomes[job][type] = true;
   outcomes[job].updatedAt = new Date().toISOString();
@@ -2554,7 +2750,13 @@ function logOutcome(type){
   // Visual feedback
   var btns = document.getElementById('outcomeButtons');
   var conf = document.getElementById('outcomeConfirm');
-  var labels = { applied:'سُجّل — شكراً! 👍', got_reply:'رائع! سنتابع معك.', interview:'ممتاز — جهّز نفسك للمقابلة', success:'مبروك! 🎉 شاركنا تجربتك' };
+  var labels = {
+    applied: 'سُجّل — شكراً! 👍',
+    got_reply: 'رائع! سنتابع معك.',
+    interview: 'ممتاز — جهّز نفسك للمقابلة',
+    rejected: 'مسجّل. سنعدّل تدريبك ليساعدك أكثر في التقديم القادم.',
+    success: 'مبروك! 🎉 شاركنا تجربتك',
+  };
   if(btns && conf){
     btns.style.opacity = '.4';
     conf.style.display  = 'block';
@@ -2700,9 +2902,11 @@ function selectPay(opt){
         showNotif('تم الدفع ✓','','مرحباً في Darbi Premium!');
         goScreen('s-dashboard');
       } else {
+        if (d && d.error) console.error('[payment/success] verify failed:', d.error);
         showNotif('جاري تأكيد الدفع','','سيتم تفعيل اشتراكك خلال دقيقة عبر Stripe — حدّث الصفحة بعد قليل.');
       }
     }catch(e){
+      console.error('[payment/success] network error:', e);
       showNotif('جاري تأكيد الدفع','','سيتم تفعيل اشتراكك خلال دقيقة عبر Stripe — حدّث الصفحة بعد قليل.');
     }
     history.replaceState({}, '', '/');
@@ -2713,6 +2917,11 @@ function selectPay(opt){
   }
 })();
 
+// Friendly, non-leaky message shown to users for any payment failure. Raw
+// Stripe errors (e.g. "Invalid API Key provided: sk_live_...") are written
+// to console.error for the developer but NEVER surfaced in UI text.
+var PAY_GENERIC_MSG = 'الدفع غير متاح حالياً. جرّب لاحقاً أو تواصل معنا.';
+
 function triggerCheckout(plan){
   if(!isLoggedIn()){
     requireAuth(function(){ triggerCheckout(plan); }, 'سجّل دخولك عشان تكمل الدفع');
@@ -2721,10 +2930,14 @@ function triggerCheckout(plan){
   apiFetch('/api/payment/checkout',{method:'POST',body:{plan:plan}})
   .then(function(r){return r.json();})
   .then(function(data){
-    if(data.url){ window.location.href=data.url; }
-    else { showNotif('خطأ في الدفع','',data.error || 'حدث خطأ في الاتصال بصفحة الدفع. حاول مرة ثانية.'); }
+    if(data.url){ window.location.href=data.url; return; }
+    if (data && data.error) console.error('[checkout] server error:', data.error);
+    showNotif('الدفع غير متاح', '', PAY_GENERIC_MSG);
   })
-  .catch(function(){ showNotif('خطأ','','تعذّر الاتصال بخادم الدفع. حاول لاحقاً.'); });
+  .catch(function(err){
+    console.error('[checkout] network error:', err);
+    showNotif('الدفع غير متاح', '', PAY_GENERIC_MSG);
+  });
 }
 
 function simulatePay(){ triggerCheckout('lifetime'); }
@@ -2814,11 +3027,13 @@ function goTool(tool){
     return;
   }
   if(tool==='interview'){
-    if(!isPaid && !is24h){
-      goScreen('s-paywall');
-      return;
-    }
-    loadInterviewQ(); goScreen('s-interview');
+    // Free users get written-mode training (the heuristic localEvaluate works
+    // without OpenAI). Per-attempt limits are still enforced by the backend
+    // (POST /api/training/evaluate returns 403 once free quota is hit). The
+    // paywall used to gate the entire screen, which made the dashboard
+    // "تابع التدريب" button feel broken — fixed.
+    loadInterviewQ();
+    goScreen('s-interview');
   }
 }
 
@@ -2863,6 +3078,95 @@ function p2(n){return n<10?'0'+n:n;}
 
 // ══════ CV IMPROVEMENT FUNCTIONS ══════
 
+// Role-family-aware bullet templates. The "withMetrics" version is rendered
+// only when we have at least one number; the "noMetrics" version is the
+// professional non-numeric fallback (per spec — "If user skips, generate
+// non-numeric professional bullets"). NEVER contains raw [X]/[Y]/[Z].
+var CV_BULLETS = {
+  customer_service: {
+    noMetrics: [
+      'دعمت العملاء في متابعة الطلبات وحل المشكلات اليومية مع الحفاظ على تجربة تواصل واضحة ومنظمة.',
+      'أحلت الحالات المعقّدة للقنوات المناسبة وتابعت حتى الإغلاق بدون فقد عميل في المنتصف.',
+      'وثّقت الأخطاء المتكررة وشاركت ملاحظات بنّاءة ساعدت الفريق على تقليل تكرارها.',
+    ],
+    metricsTemplate: function(n){
+      return [
+        'دعمت ما يقارب ' + n + ' عميل/طلب أسبوعياً مع الحفاظ على وقت استجابة قصير وتجربة تواصل منظمة.',
+        'أحلت الحالات المعقّدة للقنوات المناسبة وتابعت حتى الإغلاق.',
+        'وثّقت الأخطاء المتكررة وقدّمت ملاحظات ساعدت في تحسين العمليات.',
+      ];
+    },
+  },
+  reception_front_desk: {
+    noMetrics: [
+      'استقبلت الزوار والاتصالات بأسلوب احترافي ووجّهتهم للجهة المعنية.',
+      'نسّقت المواعيد وحدّثت السجلات للحفاظ على انضباط جدول الفريق.',
+      'تابعت طلبات الزوار حتى إنجازها وقدّمت تقارير دورية للإدارة.',
+    ],
+    metricsTemplate: function(n){
+      return [
+        'استقبلت ما يقارب ' + n + ' زائراً/اتصالاً يومياً ووجّهتهم بسرعة واحترافية.',
+        'نسّقت المواعيد وحدّثت السجلات لضمان انضباط الجدول.',
+        'تابعت طلبات الزوار حتى إنجازها وقدّمت تقارير دورية.',
+      ];
+    },
+  },
+  sales_entry: {
+    noMetrics: [
+      'بنيت علاقات مع عملاء محتملين وتابعت معهم حتى توقيع الصفقات.',
+      'حضّرت عروضاً مخصّصة بناءً على احتياج العميل وتوقعت الاعتراضات الشائعة.',
+      'حدّثت بيانات العملاء في النظام وحافظت على سجل دقيق للتواصل.',
+    ],
+    metricsTemplate: function(n){
+      return [
+        'تابعت محفظة من حوالي ' + n + ' عميل محتمل أسبوعياً مع تحديث منتظم لمراحل الصفقة.',
+        'حضّرت عروضاً مخصّصة وتعاملت مع الاعتراضات الشائعة بطرق منظمة.',
+        'حدّثت سجلات النظام وحافظت على دقة بيانات العملاء.',
+      ];
+    },
+  },
+  cs_leadership: {
+    noMetrics: [
+      'قُدت فريق نجاح العملاء عبر playbooks وممارسات موثّقة لرفع رضا العملاء وتقليل churn.',
+      'بنيت إطار عمل لقياس صحة العميل وتفعيل الإنذار المبكر للحسابات في خطر.',
+      'مثّلت صوت العميل في اجتماعات المنتج وساعدت في تحديد أولويات roadmap.',
+    ],
+    metricsTemplate: function(n){
+      return [
+        'قُدت محفظة بحوالي ' + n + ' حساباً enterprise مع تحسين retention عبر playbooks وحوكمة منتظمة.',
+        'بنيت إطار health scoring وفعّلت الإنذار المبكر للحسابات في خطر.',
+        'مثّلت صوت العميل في اجتماعات المنتج لرفع أولويات roadmap.',
+      ];
+    },
+  },
+  generic: {
+    noMetrics: [
+      'أنجزت مهامي بأسلوب منظم مع الالتزام بالمواعيد والمعايير المهنية.',
+      'تعاونت مع زملاء من فرق متعددة لإكمال المهام وتسليمها بجودة عالية.',
+      'وثّقت العمليات وقدّمت ملاحظات بنّاءة لتحسين الأداء العام.',
+    ],
+    metricsTemplate: function(n){
+      return [
+        'تابعت ما يقارب ' + n + ' مهمة/عميل بأسلوب منظم مع الالتزام بالمواعيد والمعايير المهنية.',
+        'تعاونت مع فرق متعددة لتسليم النتائج بجودة عالية.',
+        'وثّقت العمليات وقدّمت ملاحظات بنّاءة لتحسين الأداء.',
+      ];
+    },
+  },
+};
+
+function pickCVBullets(family, metricNumber){
+  var pack = CV_BULLETS[family] || CV_BULLETS.generic;
+  if (metricNumber && metricNumber > 0) return pack.metricsTemplate(metricNumber);
+  return pack.noMetrics.slice();
+}
+
+function renderCVStrongBullets(bullets){
+  var el = document.getElementById('cvS3strong');
+  if (!el) return;
+  el.innerHTML = bullets.map(function(b){ return '• ' + b; }).join('<br>');
+}
+
 function initCVScreen(){
   // Set access note
   var note = document.getElementById('cvAccessNote');
@@ -2875,28 +3179,45 @@ function initCVScreen(){
     if(subtitle) subtitle.textContent = 'حمّل نسخة نظيفة جاهزة للتقديم.';
     if(export24) export24.style.display = 'none';
     if(exportPrem) exportPrem.style.display = 'block';
-  } else {
+  } else if (is24h) {
     if(note) note.textContent = '⏱ 24 ساعة';
-    if(subtitle) subtitle.textContent = 'تقدر تنسخ الأقسام المحسنة الآن. تحميل PDF نظيف بدون علامة مائية متاح في Premium.';
+    if(subtitle) subtitle.textContent = 'تقدر تنسخ الأقسام المحسنة وتعاين القوالب. تحميل PDF نظيف بدون علامة مائية متاح في Premium فقط.';
+  } else {
+    if(note) note.textContent = 'معاينة مجانية';
+    if(subtitle) subtitle.textContent = 'تقدر تطّلع وتنسخ. لتحميل PDF نظيف فعّل 24 ساعة أو Premium.';
   }
 
-  // Populate suggested content from analysis
-  var job = localStorage.getItem('darbi_job') || 'الدور المستهدف';
-  var kw = JSON.parse(localStorage.getItem('darbi_kw') || '[]');
+  // Pull canonical Analysis state. CV improvement always reads from here so a
+  // dashboard with a stale role can never leak into the bullets shown here.
+  var a = Analysis.get();
+  var job = (a && a.targetRole) || localStorage.getItem('darbi_job') || 'الدور المستهدف';
+  var family = (a && a.roleFamily) || detectRoleFamily(job);
+  var kw = (a && a.recommendedKeywords) || [];
 
-  // Suggested summary
+  // Suggested summary — use AI-improved summary if available, else a
+  // role-aware fallback. No [X]/[Y]/[Z] tokens.
   var s1after = document.getElementById('cvS1after');
   if(s1after){
-    s1after.textContent = 'متخصص في ' + job + ' مع خبرة موثّقة في تحقيق نتائج ملموسة. أُحسّن العمليات وأُطوّر العلاقات مع أصحاب المصلحة بأسلوب يركز على البيانات والتأثير القابل للقياس.';
+    var summary = (a && a.improvedSummary) || ('متخصص في ' + job + ' مع التزام بتحقيق نتائج ملموسة وتجربة عميل منظمة.');
+    s1after.textContent = summary;
   }
 
   // Keywords
   var kwList = document.getElementById('kwList');
-  if(kwList && kw.length){
-    kwList.innerHTML = kw.map(function(k){
-      return '<span class="pill-b" style="cursor:pointer" onclick="this.style.background=\'#dcfce7\';this.style.color=\'#166534\'">+ '+k+'</span>';
-    }).join('');
+  if(kwList){
+    if (kw.length) {
+      kwList.innerHTML = kw.map(function(k){
+        return '<span class="pill-b" style="cursor:pointer" onclick="this.style.background=\'#dcfce7\';this.style.color=\'#166534\'">+ '+k+'</span>';
+      }).join('');
+    } else {
+      kwList.innerHTML = '<span style="font-size:12px;color:#888">شغّل تحليلاً لاقتراح كلمات مفتاحية مطابقة لسيرتك.</span>';
+    }
   }
+
+  // Strong bullets — never contains raw [X]/[Y]/[Z]. Default to non-numeric
+  // professional bullets; user can supply a number via the guide question to
+  // upgrade them to metric versions.
+  renderCVStrongBullets(pickCVBullets(family, null));
 
   // Step numbers
   document.getElementById('cvS2n').className = 'sn sn-active';
@@ -2954,12 +3275,21 @@ function saveEdit(stepId){
 }
 
 function applyGuide(){
-  var val = document.getElementById('cvGuideInput').value.trim();
+  var raw = (document.getElementById('cvGuideInput') || {}).value || '';
+  var val = raw.trim();
   if(!val) return;
-  var strong = document.getElementById('cvS3strong');
-  if(strong){
-    strong.innerHTML = strong.innerHTML.replace('[X]', val).replace('[X]', val);
+  // Pull the first integer the user typed; ignore the rest. We never blindly
+  // substitute the raw string into a template — that's how [X]/[Y]/[Z] used
+  // to leak through.
+  var m = val.match(/\d+/);
+  var n = m ? parseInt(m[0], 10) : 0;
+  if (!n) {
+    showNotif('','','أدخل رقماً تقديرياً (مثال: 20).');
+    return;
   }
+  var a = Analysis.get();
+  var family = (a && a.roleFamily) || detectRoleFamily(localStorage.getItem('darbi_job') || '');
+  renderCVStrongBullets(pickCVBullets(family, n));
   var guide = document.getElementById('cvGuideQ');
   if(guide) guide.style.display = 'none';
   showNotif('تم التطبيق ✓','','إنجازاتك تحسّنت بالرقم الذي أدخلته.');
@@ -3228,39 +3558,45 @@ function initRoadmap(targetRole, readiness){
 }
 
 function loadRoadmap(){
-  var saved=localStorage.getItem('darbi_roadmap');
-  if(saved){try{_roadmap=JSON.parse(saved);}catch(e){}}
-  if(!_roadmap){
-    var job=localStorage.getItem('darbi_job')||'الدور المستهدف';
-    _roadmap=initRoadmap(job, tReadiness||30);
+  // Prefer the canonical Analysis state — survives the legacy darbi_roadmap key.
+  // Always rebuild the role path from the latest analysis so a stale roadmap
+  // from a previous run can never bleed into the dashboard.
+  var a = Analysis.get();
+  if (a) {
+    var existing = null;
+    try { existing = JSON.parse(localStorage.getItem('darbi_roadmap') || 'null'); } catch(e){}
+    // Discard any saved roadmap whose target role doesn't match the current
+    // analysis — that's the previous-analysis leak.
+    if (existing && existing.targetRole !== a.targetRole) existing = null;
+    if (existing) { _roadmap = existing; }
+    else {
+      _roadmap = initRoadmap(a.targetRole, a.scores && a.scores.cvStrength || 30);
+    }
+    return _roadmap;
+  }
+  // No analysis yet — fall back to a generic placeholder roadmap.
+  var saved = localStorage.getItem('darbi_roadmap');
+  if (saved) { try { _roadmap = JSON.parse(saved); } catch(e){} }
+  if (!_roadmap) {
+    _roadmap = initRoadmap(localStorage.getItem('darbi_job') || 'الدور المستهدف', tReadiness || 30);
   }
   return _roadmap;
 }
 
+// buildFrontendRolePath now delegates to buildCareerPathForFamily so role
+// family detection lives in one place. Old per-role hardcoded map removed.
 function buildFrontendRolePath(targetRole, readiness){
-  var roleLower=(targetRole||'').toLowerCase();
-  var paths={
-    "product manager":  ["Product Analyst","Associate PM","Product Manager"],
-    "مدير منتج":        ["محلل منتج","مساعد مدير منتج","مدير منتج"],
-    "customer success": ["Customer Support","CS Specialist","CS Manager"],
-    "مبيعات":           ["مندوب مبيعات","أخصائي مبيعات","مدير مبيعات"],
-    "sales":            ["Sales Rep","Account Executive","Sales Manager"],
-    "مطور":             ["Junior Developer","Mid Developer","Senior Developer"],
-    "developer":        ["Junior Dev","Mid Developer","Senior Dev"],
-    "محاسب":            ["محاسب مالي","محاسب أول","مدير مالي"],
-    "مدير مشاريع":      ["منسق مشاريع","مدير مشاريع","مدير برامج"],
-    "project manager":  ["Coordinator","Project Manager","Program Manager"],
-  };
-  var found=null;
-  for(var key in paths){ if(roleLower.includes(key)){found=paths[key];break;} }
-  if(!found) found=["دور مبتدئ في مجالك","دور متوسط في مجالك",targetRole];
-  else found=[found[0],found[1],targetRole];
-
-  var rn=[35,55,70]; var df=[0,14,30];
-  return found.map(function(role,i){
-    return {role:role,readinessNeeded:rn[i],daysFromNow:df[i],
-      isCurrent:readiness>=(rn[i-1]||0)&&readiness<rn[i],
-      isTarget:i===found.length-1};
+  var a = Analysis.get();
+  var family = a ? a.roleFamily : detectRoleFamily(targetRole);
+  var seniority = a ? a.seniorityLevel : 'mid';
+  var path = buildCareerPathForFamily(family, targetRole, seniority);
+  // Re-mark isCurrent based on actual readiness (so the dashboard chip moves
+  // forward as the user trains, not just based on initial seniority).
+  return path.map(function(step, i, arr){
+    var prevReq = i === 0 ? 0 : arr[i-1].readinessNeeded;
+    return Object.assign({}, step, {
+      isCurrent: !step.isTarget && readiness >= prevReq && readiness < step.readinessNeeded,
+    });
   });
 }
 
@@ -3580,6 +3916,13 @@ function nextQuestion(){
 
 // Dashboard roadmap widget
 function renderDashboardRoadmap(){
+  // Skip entirely if no analysis exists — the dashboard hides the widget.
+  var a = Analysis.get();
+  if (!a || !a.targetRole) {
+    var hide = document.getElementById('dbRoadmapWidget');
+    if (hide) hide.style.display = 'none';
+    return;
+  }
   var rm=loadRoadmap();
   if(!rm) return;
   var widget=document.getElementById('dbRoadmapWidget');
@@ -3595,9 +3938,13 @@ function renderDashboardRoadmap(){
   var pct=Math.min(100,Math.round((dayInPhase/phase.days)*100));
   var bar=document.getElementById('dbRmBar'); if(bar) bar.style.width=pct+'%';
 
-  renderRolePath('dbRmRolePath', rm.rolePath, 'dark');
+  // Always rebuild role path from current Analysis to avoid stale roadmap cache.
+  var rolePath = (a.careerPath && a.careerPath.length)
+    ? a.careerPath
+    : buildFrontendRolePath(a.targetRole, a.scores && a.scores.cvStrength || 30);
+  renderRolePath('dbRmRolePath', rolePath, 'dark');
 
-  var nextRole=rm.rolePath.find(function(r){return !r.isCurrent&&r.daysFromNow>0;});
+  var nextRole=rolePath.find(function(r){return !r.isCurrent&&r.daysFromNow>0;});
   var ret=nextRole?'✦ '+Math.max(0,nextRole.daysFromNow-rm.currentDay)+' أيام تفتح مسار "'+nextRole.role+'"':'أنت قريب من هدفك 🎯';
   var el3=document.getElementById('dbRmRetention'); if(el3) el3.textContent=ret;
 }
@@ -3867,13 +4214,24 @@ function syncUserState(){
 }
 
 // ══════ DASHBOARD RENDER ══════
+// Single source of truth: Analysis.get(). If no analysis has run yet, the
+// dashboard shows "—" placeholders and prompts the user to run one — it
+// never substitutes a default role like "CSM Head" or "System Engineer".
 function renderDashboard(){
   var u = currentUser;
   if(!u) return;
+  var a = Analysis.get();
 
-  // Roadmap widget
-  var job2 = u.target_role || localStorage.getItem('darbi_job');
-  if(job2) renderDashboardRoadmap();
+  // Roadmap widget — only renders when an analysis exists; otherwise the
+  // widget stays hidden so we don't show stale "CSM Head" / "System Engineer"
+  // placeholder paths.
+  var widget = document.getElementById('dbRoadmapWidget');
+  if (a && a.targetRole) {
+    if (widget) widget.style.display = 'block';
+    renderDashboardRoadmap();
+  } else {
+    if (widget) widget.style.display = 'none';
+  }
 
   // Name
   document.getElementById('dbUserName').textContent = u.email ? u.email.split('@')[0] : 'مستخدم';
@@ -3901,12 +4259,15 @@ function renderDashboard(){
   }
   expiredEl.style.display = expired ? 'block' : 'none';
 
-  // Stats
-  document.getElementById('dbReadiness').textContent = tReadiness + '%';
-  document.getElementById('dbReadBar').style.width = tReadiness + '%';
-  document.getElementById('dbReadinessNote').textContent = tReadiness < 35
-    ? 'تحتاج تدريب أكثر قبل المقابلة'
-    : tReadiness < 65 ? 'في تقدم — استمر'
+  // Stats — readiness comes from Analysis (canonical) when present, falls
+  // back to the in-memory tReadiness only if no analysis exists yet.
+  var readiness = (a && a.scores && (a.scores.cvStrength || a.scores.overallReadiness)) || tReadiness || 0;
+  document.getElementById('dbReadiness').textContent = readiness + '%';
+  document.getElementById('dbReadBar').style.width = readiness + '%';
+  document.getElementById('dbReadinessNote').textContent = !a
+    ? 'شغّل تحليلاً لرؤية جاهزيتك'
+    : readiness < 35 ? 'تحتاج تدريب أكثر قبل المقابلة'
+    : readiness < 65 ? 'في تقدم — استمر'
     : 'قريب من الجاهزية';
 
   var day = parseInt(localStorage.getItem('darbi_sess')||'0');
@@ -3918,7 +4279,8 @@ function renderDashboard(){
     ? 'آخر جلسة: ' + lastActivity + (lastQ ? ' — س' + lastQ : '')
     : 'لم تبدأ بعد';
 
-  document.getElementById('dbTargetRole').textContent = u.target_role || localStorage.getItem('darbi_job') || '—';
+  // Target role — from latest Analysis only. No fallback to a stale legacy key.
+  document.getElementById('dbTargetRole').textContent = (a && a.targetRole) || '—';
   document.getElementById('dbStreak').textContent = '🔥 ' + (parseInt(localStorage.getItem('darbi_streak')||'0'));
 
   // Skills
