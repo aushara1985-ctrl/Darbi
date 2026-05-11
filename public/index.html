@@ -483,6 +483,73 @@ body{font-family:'Cairo',sans-serif;background:#f8f8fc;color:#0a0a0a}
 .bp-back-row{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
 .bp-back-link{background:none;border:none;color:#666;font-size:13px;cursor:pointer;padding:8px 0;font-family:inherit;font-weight:600}
 .bp-back-link:hover{color:#4f46e5}
+
+/* ══════ Guided Interview (s-guided-interview) ══════ */
+.gi-admin{background:#fef3c7;border:1.5px solid #fcd34d;border-radius:14px;padding:14px;margin-bottom:14px}
+.gi-admin-eyebrow{font-size:10px;font-weight:800;color:#92400e;letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
+.gi-admin-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.gi-admin-row:last-child{margin-bottom:0}
+.gi-admin-label{font-size:12px;font-weight:700;color:#78350f;min-width:54px}
+.gi-admin-btn{padding:6px 12px;font-size:12px;font-weight:700;border:1.5px solid #fde68a;background:#fff;color:#92400e;border-radius:7px;cursor:pointer;font-family:inherit}
+.gi-admin-btn:hover{background:#fffbeb}
+.gi-admin-btn.active{background:#92400e;color:#fff;border-color:#92400e}
+.gi-admin-select{padding:6px 10px;font-size:12px;border:1.5px solid #fde68a;background:#fff;color:#92400e;border-radius:7px;font-family:inherit}
+.gi-admin-reset{margin-right:auto;padding:6px 12px;font-size:12px;font-weight:700;background:#dc2626;color:#fff;border:none;border-radius:7px;cursor:pointer;font-family:inherit}
+
+.gi-timeline{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;background:#fff;border:1px solid #ececf4;border-radius:14px;padding:14px}
+.gi-tl-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;font-size:13px;color:#666;background:#fafafe;border:1px solid #ececf4;font-weight:600}
+.gi-tl-row.is-current{background:#eef2ff;border-color:#c7d2fe;color:#4f46e5;font-weight:800}
+.gi-tl-dot{width:9px;height:9px;border-radius:50%;background:#d1d5db;flex-shrink:0}
+.gi-tl-row.is-current .gi-tl-dot{background:#4f46e5;box-shadow:0 0 0 3px #c7d2fe}
+
+.gi-info{background:#fff;border:1px solid #ececf4;border-radius:14px;padding:14px;margin-bottom:14px}
+.gi-info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 16px}
+.gi-info-cell{font-size:12.5px;color:#555;line-height:1.5}
+.gi-info-cell b{font-weight:800;color:#0a0a0a}
+.gi-info-progress{margin-top:12px}
+.gi-info-progress-bar{height:6px;background:#f0f0f5;border-radius:3px;overflow:hidden;margin-bottom:5px}
+.gi-info-progress-fill{height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);border-radius:3px;transition:width .6s ease}
+.gi-info-progress-meta{font-size:11.5px;color:#888;display:flex;justify-content:space-between}
+
+.gi-q-card{background:#fff;border:1px solid #ececf4;border-radius:16px;padding:20px;margin-bottom:14px}
+.gi-q-title{font-size:17px;font-weight:800;color:#0a0a0a;line-height:1.5;margin-bottom:8px}
+.gi-q-context{font-size:13.5px;color:#555;line-height:1.7;margin-bottom:10px}
+.gi-q-tip{font-size:12.5px;color:#4f46e5;background:#eef2ff;border-radius:9px;padding:9px 12px;line-height:1.6}
+
+.gi-mode-picker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.gi-mode-btn{flex:1;min-width:96px;padding:13px 10px;border:1.5px solid #e6e6f0;border-radius:11px;background:#fff;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:#444;display:flex;flex-direction:column;align-items:center;gap:5px;transition:.12s}
+.gi-mode-btn:hover:not(:disabled){border-color:#c7d2fe;background:#fafafe}
+.gi-mode-btn.selected{border-color:#4f46e5;background:#eef2ff;color:#4f46e5}
+.gi-mode-btn:disabled{opacity:.4;cursor:not-allowed}
+.gi-mode-emoji{font-size:22px;line-height:1}
+.gi-mode-hint{font-size:11.5px;color:#666;line-height:1.5;margin-bottom:14px}
+
+.gi-helper{background:#fafafe;border:1px dashed #c7d2fe;border-radius:11px;padding:13px;margin-bottom:12px}
+.gi-helper-label{font-size:12px;font-weight:800;color:#4f46e5;margin-bottom:7px;letter-spacing:.3px}
+
+.gi-recorder{background:#0f172a;color:#fff;border-radius:14px;padding:18px;margin-bottom:12px;text-align:center}
+.gi-recorder-status{font-size:13px;color:#cbd5e1;margin-bottom:10px}
+.gi-recorder-timer{font-size:32px;font-weight:900;letter-spacing:1px;margin-bottom:14px;color:#fff;font-variant-numeric:tabular-nums}
+.gi-recorder-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.gi-rec-btn{padding:9px 18px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;border:none}
+.gi-rec-btn-start{background:#ef4444;color:#fff}
+.gi-rec-btn-stop{background:#fff;color:#0f172a}
+.gi-rec-btn-redo{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.gi-rec-video{width:100%;max-width:320px;height:180px;background:#000;border-radius:9px;margin:0 auto 10px;display:block;object-fit:cover}
+.gi-rec-fallback{font-size:12.5px;color:#fbbf24;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:9px;padding:10px;margin-top:10px;line-height:1.6}
+
+.gi-eval{margin-top:14px;padding:13px;border-radius:11px;border-width:1.5px;border-style:solid}
+.gi-eval-strong{background:#f0fdf4;border-color:#86efac;color:#166534}
+.gi-eval-okay{background:#fef3c7;border-color:#fcd34d;color:#92400e}
+.gi-eval-needswork{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+.gi-eval-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.gi-eval-body{font-size:13.5px;line-height:1.7}
+
+@media (max-width:600px){
+  .gi-info-grid{grid-template-columns:1fr}
+  .gi-mode-btn{padding:11px 8px}
+  .gi-q-title{font-size:16px}
+}
 .auth-modal{background:#fff;border-radius:20px;max-width:360px;width:calc(100% - 32px);box-shadow:0 24px 60px rgba(0,0,0,.18);overflow:hidden}
 .auth-tabs{display:grid;grid-template-columns:1fr 1fr}
 .auth-tab{padding:13px;text-align:center;font-size:14px;font-weight:700;cursor:pointer;color:#aaa;border-bottom:2px solid #f0f0f0;transition:.12s;font-family:'Cairo',sans-serif}
@@ -1769,7 +1836,9 @@ img,video,iframe{max-width:100%}
       </div>
       <div class="dbv2-h-readiness-bar"><div id="dbv2ReadinessFill" class="dbv2-h-readiness-fill" style="width:0%"></div></div>
       <div class="dbv2-h-ctas">
-        <button class="dbv2-btn dbv2-btn-p" onclick="goTool('interview')">ابدأ تدريب اليوم</button>
+        <!-- Primary CTA now opens the Guided Interview walkthrough, not the
+             legacy s-interview screen. Label changes based on session state. -->
+        <button class="dbv2-btn dbv2-btn-p" id="dbv2GuidedCta" onclick="startGuidedSession()">ابدأ تدريب اليوم</button>
         <button class="dbv2-btn dbv2-btn-s" onclick="goTool('cv')">حسّن سيرتي</button>
       </div>
     </div>
@@ -1803,6 +1872,20 @@ img,video,iframe{max-width:100%}
       <div class="dbv2-step-t">خطوتك التالية</div>
       <div id="dbv2NextStepBody" class="dbv2-step-body">—</div>
       <button class="dbv2-btn dbv2-btn-p" id="dbv2NextStepBtn" onclick="dbv2RouteNextStep()">ابدأ الآن</button>
+    </div>
+
+    <!-- 3b. LATEST GUIDED SESSION CARD -->
+    <div class="dbv2-card" id="dbv2GuidedCard" style="display:none">
+      <div class="dbv2-card-h">جلسة التجهيز</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+        <div>
+          <div style="font-size:15px;font-weight:800;color:#0a0a0a" id="dbv2GuidedRole">—</div>
+          <div style="font-size:12px;color:#888" id="dbv2GuidedMeta">—</div>
+        </div>
+        <span id="dbv2GuidedStatus" class="dbv2-badge dbv2-badge-free">—</span>
+      </div>
+      <div id="dbv2GuidedHighlights" style="display:none;margin-bottom:10px;font-size:13px;color:#444;line-height:1.7"></div>
+      <button class="dbv2-btn dbv2-btn-p" id="dbv2GuidedCardCta" onclick="startGuidedSession()" style="width:100%">ابدأ جلسة التجهيز ←</button>
     </div>
 
     <!-- 4. CAREER PATH CARD -->
@@ -2075,18 +2158,18 @@ img,video,iframe{max-width:100%}
     <div class="diag-result-card" style="background:#fef3c7;border-color:#fcd34d">
       <div class="diag-result-h" style="color:#92400e">الخطوة التالية</div>
       <div class="bp-cta-stack">
+        <!-- Primary — opens Guided Interview walkthrough (the new
+             coherent flow). NOT CV improvement. -->
         <button class="bp-cta bp-cta-primary" id="bpPrimaryCta" onclick="bpRoutePrimary()">
-          <span id="bpPrimaryLabel">ابدأ بإصلاح السيرة</span>
+          <span>ابدأ جلسة التجهيز</span>
           <span>←</span>
         </button>
-        <button class="bp-cta bp-cta-secondary" onclick="bpRouteTraining()">
-          <span>ابدأ أول تدريب</span>
-          <span>←</span>
-        </button>
+        <!-- Secondary — share to earn time. -->
         <button class="bp-cta bp-cta-tertiary" onclick="bpShare()">
           <span>شارك خطتي وخذ وقت إضافي</span>
           <span>+24 ساعة</span>
         </button>
+        <!-- Founder LTD — payment path, untouched. Hidden for admin / paid. -->
         <button class="bp-cta bp-cta-founder" onclick="diagTriggerFounderLTD()" id="bpFounderCta">
           <span>افتح الخطة كاملة — Founder LTD</span>
           <span>$199</span>
@@ -2102,6 +2185,151 @@ img,video,iframe{max-width:100%}
 
 </div>
 </div><!-- /s-bridge-plan -->
+
+<!-- s-guided-interview → single coherent walkthrough. Replaces the
+     fragmented "go to CV / go to training" routing. Holds intro,
+     question, and result sub-states in one screen so refresh resumes. -->
+<div id="s-guided-interview" class="app-screen">
+<div class="diag-wrap">
+
+  <!-- Admin preview panel (shown only when Access.isAdmin()) -->
+  <div class="gi-admin" id="giAdminPanel" style="display:none">
+    <div class="gi-admin-eyebrow">🛡 Admin Preview</div>
+    <div class="gi-admin-row">
+      <span class="gi-admin-label">الفرع:</span>
+      <button class="gi-admin-btn" data-br="A" onclick="giSetBranch('A')">A (وظيفة بسيطة)</button>
+      <button class="gi-admin-btn" data-br="B" onclick="giSetBranch('B')">B (خريج جديد)</button>
+      <button class="gi-admin-btn" data-br="C" onclick="giSetBranch('C')">C (خبرة)</button>
+    </div>
+    <div class="gi-admin-row">
+      <span class="gi-admin-label">اليوم:</span>
+      <select id="giAdminDay" class="gi-admin-select" onchange="giSetDay(parseInt(this.value,10))"></select>
+      <button class="gi-admin-reset" onclick="giResetSession()">إعادة الجلسة</button>
+    </div>
+  </div>
+
+  <!-- Empty/intro — only shown if no Diagnosis exists (defensive) -->
+  <div id="giIntro" style="display:none">
+    <div class="bp-empty">
+      <div style="font-size:28px;margin-bottom:6px">🎯</div>
+      <h3>ابدأ التشخيص أولاً عشان نبني جلسة تجهيزك.</h3>
+      <p>جلسة التجهيز تنبني على حلمك وسيرتك. شغّل تشخيص في دقيقة وارجع هنا.</p>
+      <button class="diag-btn-p" onclick="startDiagnosis()" style="flex:none;min-width:200px">ابدأ التشخيص ←</button>
+    </div>
+  </div>
+
+  <!-- Active question state -->
+  <div id="giQuestion" style="display:none">
+    <span class="diag-step-pill">جلسة التجهيز</span>
+    <h1 class="diag-h1">جلسة تجهيزك <span id="giSessionOrdinal">الأولى</span></h1>
+    <p class="diag-sub" id="giSubtitle">بنمشي معك خطوة بخطوة عشان نجهزك لأول مقابلة.</p>
+
+    <!-- Mode timeline -->
+    <div class="gi-timeline">
+      <div class="gi-tl-row" id="giTlBand1"><span class="gi-tl-dot"></span>اليوم 1–3: كتابة / صوت / فيديو</div>
+      <div class="gi-tl-row" id="giTlBand2"><span class="gi-tl-dot"></span>اليوم 4–7: صوت أو فيديو</div>
+      <div class="gi-tl-row" id="giTlBand3"><span class="gi-tl-dot"></span>اليوم 8–14: فيديو فقط</div>
+    </div>
+
+    <!-- Session info -->
+    <div class="gi-info">
+      <div class="gi-info-grid">
+        <div class="gi-info-cell">الحلم: <b id="giInfoDream">—</b></div>
+        <div class="gi-info-cell">أقرب دور: <b id="giInfoNearest">—</b></div>
+        <div class="gi-info-cell">الفرع: <b id="giInfoBranch">—</b></div>
+        <div class="gi-info-cell">اليوم: <b id="giInfoDay">1</b></div>
+        <div class="gi-info-cell">الطريقة: <b id="giInfoMode">—</b></div>
+        <div class="gi-info-cell">الوقت المتوقع: <b>~7 دقائق</b></div>
+      </div>
+      <div class="gi-info-progress">
+        <div class="gi-info-progress-bar"><div class="gi-info-progress-fill" id="giProgressFill" style="width:20%"></div></div>
+        <div class="gi-info-progress-meta">
+          <span>سؤال <b id="giProgressNow">1</b> من 5</span>
+          <span id="giProgressLabel">٢٠٪</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Current question -->
+    <div class="gi-q-card">
+      <div class="gi-q-title" id="giQTitle">—</div>
+      <div class="gi-q-context" id="giQContext">—</div>
+      <div class="gi-q-tip" id="giQTip">💡 —</div>
+    </div>
+
+    <!-- Mode selector -->
+    <div class="gi-q-card" id="giModeBlock">
+      <div class="diag-q-label" style="margin-bottom:8px">كيف تبي تجاوب؟</div>
+      <div class="gi-mode-picker" id="giModePicker"></div>
+      <div class="gi-mode-hint" id="giModeHint">—</div>
+
+      <!-- Helper notes textarea — only visible Day 4+ when picking voice/video -->
+      <div class="gi-helper" id="giHelperBlock" style="display:none">
+        <div class="gi-helper-label">نقاط مساعدة قبل التسجيل</div>
+        <textarea id="giHelperText" class="diag-input diag-textarea" style="min-height:80px;background:#fff" placeholder="نقاط سريعة ترتب فيها فكرتك قبل ما تسجّل..."></textarea>
+      </div>
+    </div>
+
+    <!-- Answer area — populated by giRenderAnswerArea() based on selected mode -->
+    <div id="giAnswerArea"></div>
+
+    <!-- Inline evaluation feedback after submit -->
+    <div id="giEvalBlock" style="display:none"></div>
+
+    <div class="diag-cta-row" style="margin-top:6px">
+      <button class="diag-btn-back" onclick="goScreen('s-bridge-plan')">← الرجوع للطريق</button>
+      <button class="diag-btn-p" id="giSubmitBtn" onclick="giSubmitAnswer()" disabled>التالي ←</button>
+    </div>
+  </div>
+
+  <!-- Result state -->
+  <div id="giResult" style="display:none">
+    <span class="diag-step-pill">نتيجة الجلسة</span>
+    <h1 class="diag-h1">نتيجة جلسة التجهيز</h1>
+    <p class="diag-sub">تقييم أولي لجودة الإجابة بناءً على القواعد الأساسية — مو AI متقدم.</p>
+
+    <div class="diag-result-card" style="border-color:#86efac;background:#f0fdf4">
+      <div class="diag-result-h" style="color:#166534">أقوى إجابة عندك</div>
+      <div class="diag-result-body" style="font-weight:700;margin-bottom:8px" id="giResStrongQ">—</div>
+      <div class="diag-result-body" id="giResStrongA" style="font-size:13.5px;color:#1f2937">—</div>
+    </div>
+
+    <div class="diag-result-card" style="border-color:#fecaca;background:#fef2f2">
+      <div class="diag-result-h" style="color:#991b1b">الإجابة التي تحتاج تحسين</div>
+      <div class="diag-result-body" style="font-weight:700;margin-bottom:8px" id="giResWeakQ">—</div>
+      <div class="diag-result-body" id="giResWeakA" style="font-size:13.5px;color:#1f2937">—</div>
+    </div>
+
+    <div class="diag-firstfix" style="margin-bottom:12px">
+      <div class="diag-firstfix-eyebrow">أول تحسين نشتغل عليه</div>
+      <div class="diag-firstfix-body" id="giResRecommendation">—</div>
+    </div>
+
+    <div class="diag-result-card">
+      <div class="diag-result-h">خطوتك التالية</div>
+      <div class="diag-result-body" id="giResNextStep">—</div>
+    </div>
+
+    <div class="bp-cta-stack">
+      <button class="bp-cta bp-cta-primary" onclick="giImproveWeakest()">
+        <span>حسّن هذه الإجابة</span><span>←</span>
+      </button>
+      <button class="bp-cta bp-cta-secondary" onclick="giSaveAndGoDashboard()">
+        <span>احفظ الجلسة في لوحتي</span><span>←</span>
+      </button>
+      <button class="bp-cta bp-cta-tertiary" onclick="diagOpenShareCard()">
+        <span>شارك تقدمي وخذ وقت إضافي</span><span>+24 ساعة</span>
+      </button>
+    </div>
+
+    <div class="bp-back-row">
+      <button class="bp-back-link" onclick="goScreen('s-bridge-plan')">← عرض الطريق</button>
+      <button class="bp-back-link" onclick="giStartNewSession()">↻ ابدأ الجلسة التالية</button>
+    </div>
+  </div>
+
+</div>
+</div><!-- /s-guided-interview -->
 
 <!-- Share card modal -->
 <div class="modal-bg" id="diagShareModal">
@@ -3017,8 +3245,9 @@ function renderBridgePlan(){
       + '</div>';
   });
 
-  // 6. Primary CTA copy by branch
-  document.getElementById('bpPrimaryLabel').textContent = bpPrimaryLabelForBranch(d.branch);
+  // 6. Primary CTA is now fixed copy ("ابدأ جلسة التجهيز") regardless of
+  // branch — bpPrimaryLabel span removed from the markup. Branch-aware
+  // CTA copy lives inside the Guided Interview itself.
 
   // Hide founder CTA for users who already have unlocked access.
   var founderBtn = document.getElementById('bpFounderCta');
@@ -3029,16 +3258,646 @@ function renderBridgePlan(){
   }
 }
 
-// Bridge plan CTAs — explicit one-screen-per-action routing per the spec.
+// Bridge plan CTAs — primary now opens the Guided Interview walkthrough,
+// not CV improvement. CV / training are reached only from inside the guided
+// session result, or via the explicit "تحسين السيرة" link on the dashboard.
 function bpRoutePrimary(){
-  // Primary action depends on branch but in all 3 cases it goes to CV.
-  goTool('cv');
+  startGuidedSession();
 }
-function bpRouteTraining(){ goTool('interview'); }
+function bpRouteTraining(){
+  // Kept for backward compat with anything still calling this — also routes
+  // to the new guided interview rather than the legacy s-interview.
+  startGuidedSession();
+}
 function bpShare(){
   var d = Diagnosis.get();
   if (!d) { showNotif('','','شغّل تشخيص أولاً.'); return; }
   diagOpenShareCard();
+}
+
+// ══════ Guided Interview Walkthrough ═══════════════════════════════════════
+// 5-question session per branch, with day-gated answer modes (written/voice/
+// video). All state in localStorage.darbi_guided_session — refresh resumes.
+
+// Questions per branch. Use {dreamRole} as a template token, replaced at
+// render time. Hardcoded per the spec — these are the canonical 15 prompts.
+var GUIDED_QUESTIONS_BY_BRANCH = {
+  A: [
+    { title: 'عرف بنفسك خلال 30 ثانية',
+      context: 'في الفرع لما المدير يسألك "عرف بنفسك"، عندك ثلاثين ثانية لا أكثر.',
+      tip: 'اسمك + آخر شي درسته/سويته + ليش تبي هذا الشغل.' },
+    { title: 'ليش تبغى تشتغل في هذا المكان؟',
+      context: 'المدير يبي شخص ملتزم، مو شخص محتاج وظيفة فقط.',
+      tip: 'سبب محدد للمكان (موقع، شركة، فرصة تعلم).' },
+    { title: 'كيف تتعامل مع عميل مستعجل أو زعلان؟',
+      context: 'سيناريو يومي في الفرع. يبي يشوف هدوءك.',
+      tip: 'اسمع → لخّص مشكلته → اعرض حل → اشكره.' },
+    { title: 'متى تقدر تباشر؟ وهل تقدر تلتزم بالدوام؟',
+      context: 'سؤال صريح يجاوب عليه بصراحة.',
+      tip: 'تاريخ محدد + المرونة في الورديات.' },
+    { title: 'اكتب السكربت اللي بتقوله للمدير في الفرع',
+      context: 'هذا اللي بتقوله أول لحظة وانت ماسك سيرتك.',
+      tip: 'مقدمة + سبب التقديم + سؤال متى يقدر يقابلك.' },
+  ],
+  B: [
+    { title: 'عرف بنفسك بطريقة تناسب {dreamRole}',
+      context: 'مقدمتك بزاوية هدفك، مو سيرة عامة.',
+      tip: 'اسمك + تخصصك + ليش هذا المجال + مشروع/تجربة ذو علاقة.' },
+    { title: 'ليش اخترت هذا المجال؟',
+      context: 'الـ HR يبي يفهم دافعك الحقيقي.',
+      tip: 'موقف أو حدث خلاك تختار هذا المجال.' },
+    { title: 'احكِ عن مشروع جامعي أو تجربة تثبت اهتمامك',
+      context: 'هذا مكان الدليل — مو ادعاء.',
+      tip: 'الموقف، دورك فيه، النتيجة (لو ممكن رقم).' },
+    { title: 'ما المهارة التي تحتاج تقويتها قبل التقديم؟',
+      context: 'صراحتك هنا تعطيك نقاط، مو نقص.',
+      tip: 'مهارة محددة + كيف تخطط تطورها.' },
+    { title: 'اكتب أول نسخة من رسالة تقديم قصيرة',
+      context: '٤–٦ سطور لشركة تختارها.',
+      tip: 'سلام + من أنت + ليش هذا الدور + ملحق/رابط + ختام.' },
+  ],
+  C: [
+    { title: 'عرف بنفسك كمرشح لهذا الدور',
+      context: 'مقدمة المرشح المحترف — قصيرة، مركّزة، بنتيجة.',
+      tip: 'مسماك الحالي + سنوات الخبرة + أبرز إنجاز قابل للقياس.' },
+    { title: 'ما أقوى إنجاز أو تجربة تريد إبرازها؟',
+      context: 'إنجاز واحد يثبت قيمتك للدور.',
+      tip: 'سياق + قراراتك + النتيجة بالأرقام.' },
+    { title: 'لماذا قد لا يرد عليك أصحاب العمل حالياً؟',
+      context: 'صراحة هنا تساعدك تشخّص بنفسك.',
+      tip: 'سيرة لا تطابق، أدوار أعلى، funnel ضعيف، شبكة محدودة...' },
+    { title: 'ما الدور الأقرب الذي تستطيع الفوز به الآن؟',
+      context: 'مو حلمك المباشر، بل الخطوة الواقعية.',
+      tip: 'دور مشابه أو متفرع تكسبه خلال 30 يوم.' },
+    { title: 'اكتب نسخة محسنة من ملخصك المهني',
+      context: 'ملخص ٣–٤ أسطر يقرأها الـ HR في ٧ ثوان.',
+      tip: 'الدور المستهدف + سنوات + أبرز نتيجة + ميزتك الفريدة.' },
+  ],
+};
+
+var GUIDED_NEXT_STEP_BY_BRANCH = {
+  A: 'استخدم السكربت اللي طلع لك في السؤال الأخير وقدّم على ٣ أماكن اليوم — وجهاً لوجه.',
+  B: 'نحوّل مشروعك أو تجربتك إلى نقطة قوية في السيرة. ابدأ بإعادة كتابة المشروع الأقوى بصيغة (موقف → دورك → نتيجة).',
+  C: 'نصلح ملخصك المهني بناءً على أقوى إنجاز كتبته في السؤال الثاني. ٣–٤ أسطر، الأرقام أولاً.',
+};
+
+// ── GuidedSession namespace ────────────────────────────────────────────────
+var GuidedSession = (function(){
+  var KEY = 'darbi_guided_session';
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); }
+    catch(e){ return null; }
+  }
+  function write(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+  return {
+    get: read,
+    save: write,
+    clear: function(){ try { localStorage.removeItem(KEY); } catch(e){} },
+    init: function(diag, preserveDay){
+      var existing = read();
+      var s = {
+        dreamRole:   diag.dreamRole,
+        branch:      diag.branch || 'B',
+        nearestRole: (diag.nearestWinnableRoles && diag.nearestWinnableRoles[0]) || '',
+        currentDay:  preserveDay && existing ? (existing.currentDay || 1) : 1,
+        currentStep: 0,
+        selectedMode: null,
+        helperNotes: '',
+        answers: [],
+        startedAt:  new Date().toISOString(),
+        completedAt: null,
+      };
+      write(s); return s;
+    },
+    isComplete:   function(){ var s = read(); return !!(s && s.completedAt); },
+    isInProgress: function(){ var s = read(); return !!(s && !s.completedAt && (s.answers || []).length > 0); },
+  };
+})();
+
+// ── Day / mode logic ──────────────────────────────────────────────────────
+function giCurrentDay(){
+  var s = GuidedSession.get();
+  return (s && s.currentDay) || 1;
+}
+function allowedModesForDay(day){
+  if (day >= 8) return ['video'];
+  if (day >= 4) return ['voice','video'];
+  return ['written','voice','video'];
+}
+function giModePhaseCopy(day){
+  if (day >= 8)  return 'من اليوم هذا، التدريب بالفيديو فقط عشان نحاكي ضغط المقابلة الحقيقي.';
+  if (day >= 4)  return 'الآن نحتاج نسمع إجابتك. الكتابة ساعدتك ترتب الفكرة، لكن المقابلة تحتاج كلام.';
+  return 'في أول الأيام نرتب أفكارك. اختر طريقة الجواب اللي تناسبك.';
+}
+function giModeLabel(mode){
+  return mode === 'written' ? 'كتابة' : mode === 'voice' ? 'صوت' : mode === 'video' ? 'فيديو' : '—';
+}
+
+// ── Rule-based evaluation (no OpenAI) ─────────────────────────────────────
+function giEvaluateAnswer(text, dreamRole){
+  var t = (text || '').trim();
+  var wc = t ? t.split(/\s+/).filter(Boolean).length : 0;
+  var hasNumbers   = /\d/.test(t);
+  var hasExample   = /(مثل|مرة|مرّة|عندما|لما|في مشروع|في موقف|كنت|when|once|example|سبق)/i.test(t);
+  var hasStructure = /(أولاً|ثانياً|ثالثاً|أول شي|بعدها|في النهاية|ثم|first|then|finally)/i.test(t);
+  var mentionsRole = dreamRole ? t.toLowerCase().indexOf(String(dreamRole).toLowerCase()) !== -1 : false;
+
+  var score = 0;
+  if (wc >= 60) score += 30;
+  else if (wc >= 30) score += 20;
+  else if (wc >= 15) score += 10;
+  if (hasNumbers)   score += 15;
+  if (hasExample)   score += 25;
+  if (hasStructure) score += 15;
+  if (mentionsRole) score += 15;
+
+  var level = score >= 70 ? 'strong' : score >= 40 ? 'okay' : 'needs_work';
+
+  var fb;
+  if (wc < 15)         fb = 'الإجابة قصيرة جداً. أضف سياق ومثال محدد.';
+  else if (!hasExample) fb = 'لا يوجد مثال محدد. أضف موقفاً أو تجربة حقيقية.';
+  else if (!hasNumbers) fb = 'أضف رقماً واحداً على الأقل (مدة، عدد، نتيجة).';
+  else if (!hasStructure) fb = 'رتّب الإجابة: أولاً... ثم... النتيجة...';
+  else if (!mentionsRole && dreamRole) fb = 'خصّص الإجابة لـ "' + dreamRole + '" — اربطها بهدفك صراحةً.';
+  else                  fb = 'إجابة قوية. حاول تختصرها لو تقدر، الـ HR وقته ضيق.';
+
+  return { score: score, level: level, feedback: fb, wordCount: wc };
+}
+
+// ── Recorder state — one shared MediaRecorder per session ────────────────
+var _giRec = { recorder: null, chunks: [], stream: null, blob: null, intervalId: null, secs: 0, mode: null };
+
+function _giStopStream(){
+  if (_giRec.stream){
+    try { _giRec.stream.getTracks().forEach(function(t){ t.stop(); }); } catch(e){}
+    _giRec.stream = null;
+  }
+  if (_giRec.intervalId){ clearInterval(_giRec.intervalId); _giRec.intervalId = null; }
+}
+function _giResetRecorder(){
+  _giStopStream();
+  _giRec.recorder = null; _giRec.chunks = []; _giRec.blob = null; _giRec.secs = 0; _giRec.mode = null;
+}
+function _giFmtSecs(s){
+  var m = Math.floor(s / 60), r = s % 60;
+  return (m < 10 ? '0' : '') + m + ':' + (r < 10 ? '0' : '') + r;
+}
+
+function giStartRecording(mode){
+  _giRec.mode = mode;
+  var wantVideo = mode === 'video';
+  var constraints = wantVideo ? { audio: true, video: true } : { audio: true };
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined'){
+    _giShowRecorderFallback(mode, wantVideo
+      ? 'الكاميرا غير مدعومة في هذا المتصفح. اكتب ما قلته للتقييم.'
+      : 'التسجيل الصوتي غير مدعوم في هذا المتصفح. اكتب ما قلته للتقييم.');
+    return;
+  }
+  navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
+    _giRec.stream = stream;
+    // Show live preview for video
+    if (wantVideo){
+      var v = document.getElementById('giRecVideo');
+      if (v){ v.srcObject = stream; v.muted = true; v.play().catch(function(){}); }
+    }
+    try {
+      _giRec.recorder = new MediaRecorder(stream);
+    } catch(e){
+      _giShowRecorderFallback(mode, wantVideo
+        ? 'تعذر تشغيل التسجيل. اكتب ما قلته للتقييم.'
+        : 'تعذر تشغيل التسجيل. اكتب ما قلته للتقييم.');
+      _giStopStream();
+      return;
+    }
+    _giRec.chunks = [];
+    _giRec.recorder.ondataavailable = function(e){ if (e.data && e.data.size > 0) _giRec.chunks.push(e.data); };
+    _giRec.recorder.onstop = function(){
+      _giRec.blob = new Blob(_giRec.chunks, { type: wantVideo ? 'video/webm' : 'audio/webm' });
+      var url = URL.createObjectURL(_giRec.blob);
+      // Swap UI to "recorded" state
+      giRenderAnswerArea('playback', { url: url, isVideo: wantVideo });
+      _giStopStream();
+    };
+    _giRec.recorder.start();
+    _giRec.secs = 0;
+    _giRec.intervalId = setInterval(function(){
+      _giRec.secs += 1;
+      var t = document.getElementById('giRecTimer');
+      if (t) t.textContent = _giFmtSecs(_giRec.secs);
+      if (_giRec.secs >= 120){ giStopRecording(); }
+    }, 1000);
+    var s = document.getElementById('giRecStatus');
+    if (s) s.textContent = wantVideo ? '🔴 تسجيل فيديو…' : '🔴 تسجيل صوت…';
+    var startBtn = document.getElementById('giRecStartBtn');
+    var stopBtn  = document.getElementById('giRecStopBtn');
+    if (startBtn) startBtn.style.display = 'none';
+    if (stopBtn)  stopBtn.style.display  = 'inline-flex';
+  }).catch(function(err){
+    console.error('[gi] mic/camera denied:', err && err.message);
+    _giShowRecorderFallback(mode, wantVideo
+      ? 'الكاميرا غير متاحة حالياً. تقدر تستخدم الصوت أو تكتب ما قلته للتقييم.'
+      : 'المايكروفون غير متاح حالياً. تقدر تكتب ما قلته للتقييم.');
+  });
+}
+function giStopRecording(){
+  if (_giRec.recorder && _giRec.recorder.state !== 'inactive'){
+    try { _giRec.recorder.stop(); } catch(e){}
+  } else {
+    _giStopStream();
+  }
+  if (_giRec.intervalId){ clearInterval(_giRec.intervalId); _giRec.intervalId = null; }
+}
+function _giShowRecorderFallback(mode, msg){
+  giRenderAnswerArea('fallback_text', { mode: mode, msg: msg });
+}
+
+// ── Render answer area based on mode ──────────────────────────────────────
+// state: 'initial' (just picked mode), 'playback' (recording done), 'fallback_text'
+function giRenderAnswerArea(state, opts){
+  opts = opts || {};
+  var area = document.getElementById('giAnswerArea');
+  if (!area) return;
+  var s = GuidedSession.get();
+  var mode = (opts.mode || (s && s.selectedMode)) || 'written';
+  var submitBtn = document.getElementById('giSubmitBtn');
+
+  if (state === 'fallback_text'){
+    area.innerHTML = ''
+      + '<div class="gi-q-card">'
+      +   '<div class="gi-rec-fallback" style="margin-bottom:10px;color:#92400e;background:#fef3c7;border-color:#fcd34d">' + (opts.msg || 'تعذر التسجيل تلقائياً.') + '</div>'
+      +   '<div class="diag-q-label" style="margin-bottom:8px">اكتب ما قلته (أو ما كنت تنوي تقوله):</div>'
+      +   '<textarea id="giAnsText" class="diag-input diag-textarea" placeholder="اكتب إجابتك هنا..."></textarea>'
+      + '</div>';
+    if (submitBtn) submitBtn.disabled = false;
+    return;
+  }
+
+  if (state === 'playback'){
+    var media = opts.isVideo
+      ? '<video src="' + opts.url + '" controls style="width:100%;max-width:320px;display:block;margin:0 auto 10px;border-radius:9px;background:#000"></video>'
+      : '<audio src="' + opts.url + '" controls style="width:100%;margin-bottom:10px"></audio>';
+    area.innerHTML = ''
+      + '<div class="gi-recorder" style="background:#0f172a">'
+      +   '<div class="gi-recorder-status">✓ تم التسجيل (' + _giFmtSecs(_giRec.secs) + ')</div>'
+      +   media
+      +   '<div class="gi-recorder-controls">'
+      +     '<button class="gi-rec-btn gi-rec-btn-redo" onclick="giRedoRecording()">إعادة التسجيل</button>'
+      +   '</div>'
+      +   '<div class="gi-rec-fallback">دربي يقيّم النص فقط. اكتب أو الصق ما قلته للتقييم. (لا ندّعي تحليل نبرة الصوت أو لغة الجسد.)</div>'
+      +   '<textarea id="giAnsText" class="diag-input diag-textarea" style="margin-top:10px;background:#fff" placeholder="اكتب أو الصق ما قلته في التسجيل..."></textarea>'
+      + '</div>';
+    if (submitBtn) submitBtn.disabled = false;
+    return;
+  }
+
+  // 'initial' — based on selected mode
+  if (mode === 'written'){
+    area.innerHTML = ''
+      + '<div class="gi-q-card">'
+      +   '<div class="diag-q-label" style="margin-bottom:8px">إجابتك المكتوبة:</div>'
+      +   '<textarea id="giAnsText" class="diag-input diag-textarea" placeholder="اكتب إجابتك هنا..." oninput="giOnAnsChange()"></textarea>'
+      + '</div>';
+    if (submitBtn) submitBtn.disabled = true;
+  } else if (mode === 'voice'){
+    area.innerHTML = ''
+      + '<div class="gi-recorder">'
+      +   '<div class="gi-recorder-status" id="giRecStatus">جاهز للتسجيل الصوتي</div>'
+      +   '<div class="gi-recorder-timer" id="giRecTimer">00:00</div>'
+      +   '<div class="gi-recorder-controls">'
+      +     '<button class="gi-rec-btn gi-rec-btn-start" id="giRecStartBtn" onclick="giStartRecording(\'voice\')">🎙️ بدء التسجيل</button>'
+      +     '<button class="gi-rec-btn gi-rec-btn-stop" id="giRecStopBtn" onclick="giStopRecording()" style="display:none">إيقاف</button>'
+      +   '</div>'
+      + '</div>';
+    if (submitBtn) submitBtn.disabled = true;
+  } else if (mode === 'video'){
+    area.innerHTML = ''
+      + '<div class="gi-recorder">'
+      +   '<video id="giRecVideo" class="gi-rec-video" playsinline></video>'
+      +   '<div class="gi-recorder-status" id="giRecStatus">جاهز للتسجيل بالفيديو</div>'
+      +   '<div class="gi-recorder-timer" id="giRecTimer">00:00</div>'
+      +   '<div class="gi-recorder-controls">'
+      +     '<button class="gi-rec-btn gi-rec-btn-start" id="giRecStartBtn" onclick="giStartRecording(\'video\')">🎥 بدء التسجيل</button>'
+      +     '<button class="gi-rec-btn gi-rec-btn-stop" id="giRecStopBtn" onclick="giStopRecording()" style="display:none">إيقاف</button>'
+      +   '</div>'
+      + '</div>';
+    if (submitBtn) submitBtn.disabled = true;
+  }
+}
+
+function giOnAnsChange(){
+  var ta = document.getElementById('giAnsText');
+  var btn = document.getElementById('giSubmitBtn');
+  if (!ta || !btn) return;
+  btn.disabled = !(ta.value && ta.value.trim().length >= 5);
+}
+function giRedoRecording(){
+  _giResetRecorder();
+  var s = GuidedSession.get();
+  giRenderAnswerArea('initial', { mode: s && s.selectedMode });
+}
+
+// ── Mode picker ───────────────────────────────────────────────────────────
+function giSelectMode(mode){
+  var s = GuidedSession.get();
+  if (!s) return;
+  s.selectedMode = mode;
+  GuidedSession.save(s);
+  // Update mode-picker visuals
+  Array.prototype.forEach.call(document.querySelectorAll('#giModePicker .gi-mode-btn'),
+    function(b){ b.classList.toggle('selected', b.getAttribute('data-mode') === mode); });
+  document.getElementById('giInfoMode').textContent = giModeLabel(mode);
+  // Helper notes visible for voice/video on Day 4+
+  var helper = document.getElementById('giHelperBlock');
+  if (helper) helper.style.display = (s.currentDay >= 4 && (mode === 'voice' || mode === 'video')) ? 'block' : 'none';
+  _giResetRecorder();
+  giRenderAnswerArea('initial', { mode: mode });
+}
+
+function giRenderModePicker(){
+  var s = GuidedSession.get();
+  if (!s) return;
+  var day = s.currentDay || 1;
+  var allowed = allowedModesForDay(day);
+  var picker = document.getElementById('giModePicker');
+  if (!picker) return;
+  var defs = [
+    { mode: 'written', emoji: '✍️', label: 'كتابة' },
+    { mode: 'voice',   emoji: '🎙️', label: 'صوت'  },
+    { mode: 'video',   emoji: '🎥', label: 'فيديو' },
+  ];
+  picker.innerHTML = defs.map(function(d){
+    var enabled = allowed.indexOf(d.mode) !== -1;
+    return '<button class="gi-mode-btn' + (s.selectedMode === d.mode ? ' selected' : '') + '"'
+         + ' data-mode="' + d.mode + '"'
+         + (enabled ? '' : ' disabled title="غير متاح في هذه المرحلة"')
+         + ' onclick="giSelectMode(\'' + d.mode + '\')">'
+         +   '<span class="gi-mode-emoji">' + d.emoji + '</span>'
+         +   '<span>' + d.label + '</span>'
+         + '</button>';
+  }).join('');
+  document.getElementById('giModeHint').textContent = giModePhaseCopy(day);
+}
+
+// ── Submit answer ─────────────────────────────────────────────────────────
+function giSubmitAnswer(){
+  var s = GuidedSession.get();
+  if (!s) return;
+  var day = s.currentDay || 1;
+  var mode = s.selectedMode;
+  if (!mode){ showNotif('','','اختر طريقة الجواب أولاً.'); return; }
+
+  // Day 4+ blocks written-only final answer
+  if (mode === 'written' && day >= 4){
+    showNotif('','','الكتابة كانت للترتيب فقط. الآن نحتاج نسمع إجابتك.');
+    return;
+  }
+  if (mode === 'written' && day >= 8){
+    showNotif('','','من اليوم 8 التدريب بالفيديو فقط.');
+    return;
+  }
+
+  var ta = document.getElementById('giAnsText');
+  var text = ta ? (ta.value || '').trim() : '';
+  if (text.length < 5){
+    showNotif('','','اكتب إجابتك (٥ أحرف على الأقل) قبل المتابعة.');
+    return;
+  }
+
+  var qList = GUIDED_QUESTIONS_BY_BRANCH[s.branch] || GUIDED_QUESTIONS_BY_BRANCH.B;
+  var q = qList[s.currentStep] || qList[0];
+  var qTitle = (q.title || '').replace('{dreamRole}', s.dreamRole || '');
+
+  var evalRes = giEvaluateAnswer(text, s.dreamRole);
+
+  // Save answer
+  s.answers = s.answers || [];
+  s.answers.push({
+    question: qTitle,
+    questionIndex: s.currentStep,
+    mode: mode,
+    answerText: text,
+    transcript: (mode === 'voice' || mode === 'video') ? text : null,
+    mediaType: mode === 'video' ? 'video/webm' : (mode === 'voice' ? 'audio/webm' : null),
+    score: evalRes.score,
+    level: evalRes.level,
+    feedback: evalRes.feedback,
+    helperNotes: (document.getElementById('giHelperText') || {}).value || '',
+    createdAt: new Date().toISOString(),
+  });
+
+  // Show inline evaluation, then auto-advance after a beat
+  var evalBlock = document.getElementById('giEvalBlock');
+  if (evalBlock){
+    var cls = evalRes.level === 'strong' ? 'gi-eval-strong' : evalRes.level === 'okay' ? 'gi-eval-okay' : 'gi-eval-needswork';
+    var lbl = evalRes.level === 'strong' ? 'قوية' : evalRes.level === 'okay' ? 'مقبولة' : 'تحتاج تحسين';
+    evalBlock.innerHTML = '<div class="gi-eval ' + cls + '">'
+      + '<div class="gi-eval-label">تقييم أولي — ' + lbl + ' (' + evalRes.score + '/100)</div>'
+      + '<div class="gi-eval-body">' + evalRes.feedback + '</div></div>';
+    evalBlock.style.display = 'block';
+  }
+
+  // Advance step
+  if (s.currentStep >= qList.length - 1){
+    s.completedAt = new Date().toISOString();
+    GuidedSession.save(s);
+    setTimeout(function(){ renderGuidedInterview(); }, 1100);
+  } else {
+    s.currentStep += 1;
+    s.selectedMode = null;
+    GuidedSession.save(s);
+    setTimeout(function(){
+      if (evalBlock) evalBlock.style.display = 'none';
+      renderGuidedInterview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 1100);
+  }
+}
+
+// ── Master renderer ───────────────────────────────────────────────────────
+function renderGuidedInterview(){
+  var intro = document.getElementById('giIntro');
+  var quest = document.getElementById('giQuestion');
+  var resEl = document.getElementById('giResult');
+  if (intro) intro.style.display = 'none';
+  if (quest) quest.style.display = 'none';
+  if (resEl) resEl.style.display = 'none';
+
+  // Admin panel visibility
+  var adminPanel = document.getElementById('giAdminPanel');
+  if (adminPanel) adminPanel.style.display = (typeof Access !== 'undefined' && Access.isAdmin && Access.isAdmin()) ? 'block' : 'none';
+  giRenderAdminControls();
+
+  var s = GuidedSession.get();
+  if (!s){
+    if (intro) intro.style.display = 'block';
+    return;
+  }
+  if (s.completedAt){
+    if (resEl) resEl.style.display = 'block';
+    giRenderResult(s);
+    return;
+  }
+  if (quest) quest.style.display = 'block';
+  giRenderQuestion(s);
+}
+
+function giRenderQuestion(s){
+  // Mode timeline highlight
+  var day = s.currentDay || 1;
+  ['giTlBand1','giTlBand2','giTlBand3'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.classList.remove('is-current');
+  });
+  if (day >= 8)      document.getElementById('giTlBand3').classList.add('is-current');
+  else if (day >= 4) document.getElementById('giTlBand2').classList.add('is-current');
+  else               document.getElementById('giTlBand1').classList.add('is-current');
+
+  // Subtitle + ordinal
+  document.getElementById('giSubtitle').textContent =
+    'بنمشي معك خطوة بخطوة عشان نجهزك لأول مقابلة على ' + (s.dreamRole || 'هدفك') + '.';
+
+  // Info
+  document.getElementById('giInfoDream').textContent  = s.dreamRole || '—';
+  document.getElementById('giInfoNearest').textContent = s.nearestRole || '—';
+  document.getElementById('giInfoBranch').textContent = s.branch || '—';
+  document.getElementById('giInfoDay').textContent    = day;
+  document.getElementById('giInfoMode').textContent   = s.selectedMode ? giModeLabel(s.selectedMode) : '—';
+
+  // Progress
+  var qList = GUIDED_QUESTIONS_BY_BRANCH[s.branch] || GUIDED_QUESTIONS_BY_BRANCH.B;
+  var stepHuman = s.currentStep + 1;
+  var pct = Math.round((s.currentStep / qList.length) * 100);
+  document.getElementById('giProgressFill').style.width = pct + '%';
+  document.getElementById('giProgressNow').textContent  = stepHuman;
+  document.getElementById('giProgressLabel').textContent = pct + '%';
+
+  // Current question (with template substitution)
+  var q = qList[s.currentStep] || qList[0];
+  document.getElementById('giQTitle').textContent   = (q.title || '').replace('{dreamRole}', s.dreamRole || '');
+  document.getElementById('giQContext').textContent = q.context || '';
+  document.getElementById('giQTip').textContent     = '💡 ' + (q.tip || '');
+
+  // Final question label
+  document.getElementById('giSubmitBtn').textContent = (s.currentStep === qList.length - 1) ? 'إنهاء الجلسة ←' : 'التالي ←';
+  document.getElementById('giSubmitBtn').disabled = true;
+
+  // Hide eval block from previous step
+  var evalBlock = document.getElementById('giEvalBlock');
+  if (evalBlock) evalBlock.style.display = 'none';
+
+  // Mode picker + initial answer area
+  giRenderModePicker();
+  if (s.selectedMode){
+    giRenderAnswerArea('initial', { mode: s.selectedMode });
+  } else {
+    // No mode picked yet — clear area, prompt user
+    var area = document.getElementById('giAnswerArea');
+    if (area) area.innerHTML = '<div class="gi-mode-hint" style="text-align:center;padding:24px 12px">↑ اختر طريقة الجواب أولاً</div>';
+  }
+}
+
+function giRenderResult(s){
+  var answers = s.answers || [];
+  if (!answers.length) return;
+  var strongest = answers[0], weakest = answers[0];
+  answers.forEach(function(a){
+    if (a.score > strongest.score) strongest = a;
+    if (a.score < weakest.score)   weakest   = a;
+  });
+  document.getElementById('giResStrongQ').textContent = strongest.question;
+  document.getElementById('giResStrongA').textContent = strongest.answerText.substring(0, 320) + (strongest.answerText.length > 320 ? '…' : '');
+  document.getElementById('giResWeakQ').textContent   = weakest.question;
+  document.getElementById('giResWeakA').textContent   = weakest.answerText.substring(0, 320) + (weakest.answerText.length > 320 ? '…' : '');
+  document.getElementById('giResRecommendation').textContent = weakest.feedback;
+  document.getElementById('giResNextStep').textContent = GUIDED_NEXT_STEP_BY_BRANCH[s.branch] || 'كمّل مع لوحتك لاختيار الخطوة القادمة.';
+}
+
+// ── Result CTAs ───────────────────────────────────────────────────────────
+function giImproveWeakest(){ goTool('cv'); }
+function giSaveAndGoDashboard(){
+  goScreen('s-dashboard');
+  if (typeof renderDashboard === 'function') renderDashboard();
+}
+function giStartNewSession(){
+  var d = Diagnosis.get();
+  if (!d){ startDiagnosis(); return; }
+  // Advance day by 1 (cap at 14) so the mode progression naturally moves forward.
+  var prev = GuidedSession.get();
+  var nextDay = Math.min(14, ((prev && prev.currentDay) || 1) + 1);
+  GuidedSession.init(d, false);
+  var fresh = GuidedSession.get();
+  fresh.currentDay = nextDay;
+  GuidedSession.save(fresh);
+  renderGuidedInterview();
+}
+
+// ── startGuidedSession — main entry ───────────────────────────────────────
+function startGuidedSession(){
+  var d = Diagnosis.get();
+  if (!d){
+    showNotif('','','شغّل تشخيص أولاً عشان نبني جلسة تجهيزك.');
+    startDiagnosis();
+    return;
+  }
+  var existing = GuidedSession.get();
+  // Re-init if: no session, or diagnosis changed, or session was completed (start a new one)
+  if (!existing || existing.dreamRole !== d.dreamRole || existing.branch !== d.branch || existing.completedAt){
+    GuidedSession.init(d, true);
+  }
+  renderGuidedInterview();
+  goScreen('s-guided-interview');
+}
+
+// ── Admin controls ────────────────────────────────────────────────────────
+function giRenderAdminControls(){
+  if (!(Access && Access.isAdmin && Access.isAdmin())) return;
+  var s = GuidedSession.get();
+  // Highlight active branch
+  Array.prototype.forEach.call(document.querySelectorAll('#giAdminPanel .gi-admin-btn'), function(b){
+    b.classList.toggle('active', !!s && b.getAttribute('data-br') === s.branch);
+  });
+  // Populate day select (1..14)
+  var sel = document.getElementById('giAdminDay');
+  if (sel && !sel.options.length){
+    var html = '';
+    for (var i = 1; i <= 14; i++) html += '<option value="' + i + '">يوم ' + i + '</option>';
+    sel.innerHTML = html;
+  }
+  if (sel && s) sel.value = String(s.currentDay || 1);
+}
+function giSetBranch(b){
+  var s = GuidedSession.get();
+  if (!s){
+    var d = Diagnosis.get();
+    if (!d){ showNotif('','','شغّل تشخيص أولاً.'); return; }
+    GuidedSession.init(d, true);
+    s = GuidedSession.get();
+  }
+  s.branch = b;
+  s.currentStep = 0;
+  s.selectedMode = null;
+  s.answers = [];
+  s.completedAt = null;
+  GuidedSession.save(s);
+  renderGuidedInterview();
+}
+function giSetDay(day){
+  var s = GuidedSession.get();
+  if (!s){
+    var d = Diagnosis.get();
+    if (!d){ showNotif('','','شغّل تشخيص أولاً.'); return; }
+    GuidedSession.init(d, true);
+    s = GuidedSession.get();
+  }
+  s.currentDay = day;
+  s.selectedMode = null;
+  GuidedSession.save(s);
+  renderGuidedInterview();
+}
+function giResetSession(){
+  var d = Diagnosis.get();
+  if (!d){ GuidedSession.clear(); renderGuidedInterview(); return; }
+  GuidedSession.init(d, false);
+  renderGuidedInterview();
 }
 
 // Founder LTD CTA on the unlock card. Reuses the existing Stripe path.
@@ -5557,19 +6416,94 @@ function dbv2ScoreNote(key, val){
   return '';
 }
 
-// Routes the "ابدأ الآن" button under the next-step card to the right screen.
-// When a diagnosis exists, the next step IS "open the bridge plan" — that's
-// the single screen where the user picks CV / training / share. Falls back
-// to the lowest-score logic only when there's no diagnosis to lean on.
+// Routes the "ابدأ الآن" button under the next-step card.
+// Priority: in-progress guided session → completed guided session →
+// bridge plan (if diagnosis exists) → lowest-score fallback → analyze.
 function dbv2RouteNextStep(){
+  if (typeof GuidedSession !== 'undefined' && GuidedSession.get){
+    var g = GuidedSession.get();
+    if (g){ renderGuidedInterview(); goScreen('s-guided-interview'); return; }
+  }
   var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
   if (d) { renderBridgePlan(); goScreen('s-bridge-plan'); return; }
   var a = Analysis.get();
   var low = dbv2LowestScore(a);
   if (!low) { focusAnalyze(); return; }
   if (low.route === 'cv') goTool('cv');
-  else if (low.route === 'interview') goTool('interview');
+  else if (low.route === 'interview') startGuidedSession();
   else focusAnalyze();
+}
+
+// Renders the Guided Session card on the dashboard. Shows different state
+// (not started / in progress / completed) with the right CTA label.
+function dbv2RenderGuidedCard(){
+  var card = document.getElementById('dbv2GuidedCard');
+  var hero = document.getElementById('dbv2GuidedCta'); // hero CTA in header
+  if (!card) return;
+  var d = Diagnosis.get && Diagnosis.get();
+  var g = (typeof GuidedSession !== 'undefined' && GuidedSession.get) ? GuidedSession.get() : null;
+
+  // No diagnosis yet → hide the whole card (the empty-state above prompts user)
+  if (!d){
+    card.style.display = 'none';
+    if (hero) hero.textContent = 'ابدأ التشخيص';
+    return;
+  }
+
+  card.style.display = 'block';
+  document.getElementById('dbv2GuidedRole').textContent = 'لـ ' + d.dreamRole;
+
+  var roleEl  = document.getElementById('dbv2GuidedRole');
+  var metaEl  = document.getElementById('dbv2GuidedMeta');
+  var stEl    = document.getElementById('dbv2GuidedStatus');
+  var ctaEl   = document.getElementById('dbv2GuidedCardCta');
+  var hlEl    = document.getElementById('dbv2GuidedHighlights');
+
+  if (!g){
+    metaEl.textContent = 'لم تبدأ بعد';
+    stEl.textContent = 'جديدة';
+    stEl.className = 'dbv2-badge dbv2-badge-free';
+    if (hlEl) hlEl.style.display = 'none';
+    ctaEl.textContent = 'ابدأ جلسة التجهيز ←';
+    if (hero) hero.textContent = 'ابدأ تدريب اليوم';
+    return;
+  }
+
+  var modeLbl = g.selectedMode ? giModeLabel(g.selectedMode) : '—';
+  metaEl.textContent = 'اليوم ' + (g.currentDay || 1) + ' · الفرع ' + (g.branch || 'B') + ' · الطريقة ' + modeLbl;
+
+  if (g.completedAt){
+    stEl.textContent = 'مكتملة ✓';
+    stEl.className = 'dbv2-badge dbv2-badge-paid';
+    // Strongest / weakest summary
+    var answers = g.answers || [];
+    if (answers.length){
+      var strongest = answers[0], weakest = answers[0];
+      answers.forEach(function(a){
+        if (a.score > strongest.score) strongest = a;
+        if (a.score < weakest.score)   weakest   = a;
+      });
+      hlEl.innerHTML = '<div><b>أقوى:</b> ' + strongest.question + '</div>'
+        + '<div><b>تحتاج تحسين:</b> ' + weakest.question + '</div>';
+      hlEl.style.display = 'block';
+    }
+    ctaEl.textContent = 'ابدأ الجلسة التالية ←';
+    if (hero) hero.textContent = 'ابدأ الجلسة التالية';
+  } else if ((g.answers || []).length > 0){
+    stEl.textContent = 'قيد التنفيذ';
+    stEl.className = 'dbv2-badge dbv2-badge-24h';
+    hlEl.style.display = 'none';
+    var stepHuman = (g.currentStep || 0) + 1;
+    metaEl.textContent += ' · سؤال ' + stepHuman + ' من 5';
+    ctaEl.textContent = 'تابع جلسة التجهيز ←';
+    if (hero) hero.textContent = 'تابع تدريب اليوم';
+  } else {
+    stEl.textContent = 'جاهزة للبدء';
+    stEl.className = 'dbv2-badge dbv2-badge-free';
+    hlEl.style.display = 'none';
+    ctaEl.textContent = 'ابدأ جلسة التجهيز ←';
+    if (hero) hero.textContent = 'ابدأ تدريب اليوم';
+  }
 }
 
 // "عرض الطريق" / "عرض التشخيص" buttons on the dashboard. If no diagnosis
@@ -5809,6 +6743,9 @@ function renderDashboard(){
   // Mirror to access screen ref display (if present elsewhere)
   var rl = document.getElementById('refLinkText');
   if(rl) rl.textContent = 'darbi.ai/join/' + refCode3;
+
+  // Refresh the Guided Session card (state-driven label + status).
+  if (typeof dbv2RenderGuidedCard === 'function') dbv2RenderGuidedCard();
 }
 </script>
 
