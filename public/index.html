@@ -964,10 +964,10 @@ img,video,iframe{max-width:100%}
 <body>
 
 <!-- NAV (always visible) -->
-<!-- ════ LANDING NAVBAR — clean, premium, "selling-focused" ════
-     Logged-in users see app links via the existing display toggles. The
-     landing-specific items (كيف يعمل / مثال / الوصول) live in lpNavGuest
-     and are hidden when navUser is shown. -->
+<!-- ════ LANDING NAVBAR — sales only. Never mixed with app links.
+     Links are FIXED: كيف يعمل / مثال / الوصول. Login state only changes
+     the right-side CTA (دخول↔خروج) and toggles a small "لوحتي" link for
+     logged-in users to jump back to their dashboard. -->
 <nav class="lp-nav" id="lpNav">
   <div class="lp-nav-inner">
     <div class="lp-nav-logo" onclick="showLanding()">
@@ -975,48 +975,65 @@ img,video,iframe{max-width:100%}
       <span class="lp-nav-name">Darbi · دربي</span>
     </div>
 
-    <!-- Guest links (landing scrolls) -->
     <div class="lp-nav-links" id="navGuest">
       <button class="lp-nav-link" onclick="lpScrollTo('lp-how')">كيف يعمل</button>
       <button class="lp-nav-link" onclick="lpScrollTo('lp-example')">مثال</button>
       <button class="lp-nav-link" onclick="lpScrollTo('lp-access')">الوصول</button>
-      <button class="lp-nav-link" onclick="openAuth('login')">دخول</button>
-    </div>
-
-    <!-- Logged-in links (app navigation) -->
-    <div class="lp-nav-links" id="navUser" style="display:none">
-      <button class="lp-nav-link" onclick="goScreen('s-dashboard')">لوحتي</button>
-      <button class="lp-nav-link" onclick="startGuidedSession()">التدريب</button>
-      <span id="navCredit" class="nav-credit-pill" onclick="goScreen('s-dashboard')" style="font-size:13px;font-weight:700;padding:5px 12px;border-radius:99px;cursor:pointer;background:#f5f5f8;color:#666;display:none"></span>
-      <span id="navPremiumBadge" style="display:none;background:#dcfce7;color:#166534;font-size:12px;font-weight:700;padding:4px 11px;border-radius:99px;border:1px solid #a7f3d0">Premium ✓</span>
+      <button class="lp-nav-link" id="navLoginLink" onclick="openAuth('login')">دخول</button>
+      <button class="lp-nav-link" id="navDashLink" style="display:none" onclick="goScreen('s-dashboard')">لوحتي ←</button>
     </div>
 
     <div class="lp-nav-cta">
-      <!-- Guest -->
       <button class="lp-btn lp-btn-p" id="navStartBtn" onclick="startDiagnosis()">ابدأ التشخيص</button>
-      <!-- Logged-in -->
       <button class="lp-btn lp-btn-s" id="navLogoutBtn" style="display:none" onclick="logoutUser()">خروج</button>
-      <!-- Hidden but kept for legacy callers (openAuth, etc.) -->
+      <!-- Kept hidden — legacy callers may reference #navLoginBtn -->
       <button class="lp-btn lp-btn-s" id="navLoginBtn" style="display:none" onclick="openAuth('login')">تسجيل الدخول</button>
-      <!-- Mobile burger -->
       <button class="lp-burger" id="navBurger" onclick="lpToggleMobileMenu()" aria-label="القائمة">≡</button>
     </div>
   </div>
 
-  <!-- Mobile menu — toggled by lpToggleMobileMenu() -->
   <div class="lp-mobile-menu" id="navMobileMenu">
     <div id="mobileGuest">
       <a onclick="lpScrollTo('lp-how');lpToggleMobileMenu()">كيف يعمل</a>
       <a onclick="lpScrollTo('lp-example');lpToggleMobileMenu()">مثال</a>
       <a onclick="lpScrollTo('lp-access');lpToggleMobileMenu()">الوصول</a>
-      <a onclick="openAuth('login');lpToggleMobileMenu()">دخول</a>
+      <a id="mobileNavLoginLink" onclick="openAuth('login');lpToggleMobileMenu()">دخول</a>
+      <a id="mobileNavDashLink" style="display:none" onclick="goScreen('s-dashboard');lpToggleMobileMenu()">لوحتي ←</a>
       <button class="lp-btn lp-btn-p" onclick="startDiagnosis();lpToggleMobileMenu()">ابدأ التشخيص</button>
+      <a id="mobileNavLogout" style="display:none;color:#dc2626" onclick="logoutUser();lpToggleMobileMenu()">خروج</a>
     </div>
-    <div id="mobileUser" style="display:none">
-      <a onclick="goScreen('s-dashboard');lpToggleMobileMenu()">🏠 لوحتي</a>
-      <a onclick="startGuidedSession();lpToggleMobileMenu()">🎯 التدريب</a>
-      <a onclick="logoutUser();lpToggleMobileMenu()">خروج</a>
+  </div>
+</nav>
+
+<!-- ════ APP NAVBAR — only shown on s-* screens. Logged-out users see a
+     minimal nav (brand + "العودة للرئيسية"). Logged-in users see the
+     full dashboard nav. Toggled by showLanding() / goScreen(). -->
+<nav class="lp-nav app-nav" id="appNav" style="display:none">
+  <div class="lp-nav-inner">
+    <div class="lp-nav-logo" onclick="goScreen('s-dashboard')">
+      <div class="lp-nav-mark">د</div>
+      <span class="lp-nav-name">Darbi · دربي</span>
     </div>
+
+    <div class="lp-nav-links" id="appNavLinks">
+      <button class="lp-nav-link" id="appNavDash" onclick="goScreen('s-dashboard')">لوحتي</button>
+      <button class="lp-nav-link" id="appNavTrain" onclick="startGuidedSession()">التدريب</button>
+      <span id="navCredit" class="lp-nav-link" onclick="goScreen('s-dashboard')" style="font-size:13px;font-weight:700;cursor:pointer;background:#fef3c7;color:#92400e;border-radius:99px;padding:6px 12px;display:none"></span>
+      <span id="navPremiumBadge" style="display:none;background:#dcfce7;color:#166534;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:99px;border:1px solid #a7f3d0;align-self:center">✓ Premium</span>
+    </div>
+
+    <div class="lp-nav-cta">
+      <button class="lp-btn lp-btn-s" id="appNavHomeBtn" onclick="showLanding()">← الرئيسية</button>
+      <button class="lp-btn lp-btn-s" id="appNavLogoutBtn" style="display:none" onclick="logoutUser()">خروج</button>
+      <button class="lp-burger" id="appNavBurger" onclick="appToggleMobileMenu()" aria-label="القائمة">≡</button>
+    </div>
+  </div>
+
+  <div class="lp-mobile-menu" id="appMobileMenu">
+    <a id="appMobileDash" onclick="goScreen('s-dashboard');appToggleMobileMenu()">🏠 لوحتي</a>
+    <a id="appMobileTrain" onclick="startGuidedSession();appToggleMobileMenu()">🎯 التدريب</a>
+    <a onclick="showLanding();appToggleMobileMenu()">← الرئيسية</a>
+    <a id="appMobileLogout" style="display:none;color:#dc2626" onclick="logoutUser();appToggleMobileMenu()">خروج</a>
   </div>
 </nav>
 
@@ -4631,13 +4648,24 @@ document.addEventListener('click',function(e){
 });
 
 // ══════ NAVIGATION ══════
+// showLanding / goScreen now also toggle which NAVBAR is visible. The
+// landing nav (lpNav) sells; the app nav (appNav) navigates the product.
+// They are physically separate <nav> elements — never mixed.
 function showLanding(){
+  var lpNav  = document.getElementById('lpNav');
+  var appNav = document.getElementById('appNav');
+  if (lpNav)  lpNav.style.display  = '';
+  if (appNav) appNav.style.display = 'none';
   document.getElementById('page-landing').style.display='block';
   document.querySelectorAll('.app-screen').forEach(function(s){s.classList.remove('active');});
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function goScreen(id){
+  var lpNav  = document.getElementById('lpNav');
+  var appNav = document.getElementById('appNav');
+  if (lpNav)  lpNav.style.display  = 'none';
+  if (appNav) appNav.style.display = '';
   document.getElementById('page-landing').style.display='none';
   document.querySelectorAll('.app-screen').forEach(function(s){s.classList.remove('active');});
   var el=document.getElementById(id); if(el) el.classList.add('active');
@@ -6982,37 +7010,54 @@ async function restoreSession(){
 
 function updateNavForUser(){
   var loggedIn = isLoggedIn();
+  function setDisp(id, val){ var el = document.getElementById(id); if (el) el.style.display = val; }
 
-  // Toggle guest vs user nav
-  document.getElementById('navGuest').style.display    = loggedIn ? 'none'        : 'flex';
-  document.getElementById('navLoginBtn').style.display  = loggedIn ? 'none'        : 'inline-flex';
-  document.getElementById('navStartBtn').style.display  = loggedIn ? 'none'        : 'inline-flex';
-  document.getElementById('navUser').style.display      = loggedIn ? 'flex'        : 'none';
-  document.getElementById('navLogoutBtn').style.display = loggedIn ? 'inline-flex' : 'none';
+  // ── Landing nav (lpNav) — links are FIXED, only login/logout toggles ──
+  // navGuest itself stays visible always (it carries the sales links).
+  setDisp('navLoginLink',       loggedIn ? 'none'        : '');
+  setDisp('navDashLink',        loggedIn ? ''            : 'none');
+  setDisp('navStartBtn',        '');                       // always show — even logged-in can start a new diagnosis
+  setDisp('navLogoutBtn',       loggedIn ? 'inline-flex' : 'none');
+  setDisp('navLoginBtn',        'none');                   // legacy hidden button
+  // Mobile landing menu
+  setDisp('mobileNavLoginLink', loggedIn ? 'none' : '');
+  setDisp('mobileNavDashLink',  loggedIn ? ''     : 'none');
+  setDisp('mobileNavLogout',    loggedIn ? ''     : 'none');
 
-  if(!loggedIn || !currentUser) return;
+  // ── App nav (appNav) — only logged-in users see لوحتي / التدريب links ──
+  setDisp('appNavDash',         loggedIn ? ''     : 'none');
+  setDisp('appNavTrain',        loggedIn ? ''     : 'none');
+  setDisp('appNavLogoutBtn',    loggedIn ? 'inline-flex' : 'none');
+  setDisp('appNavHomeBtn',      '');                       // always show
+  setDisp('appMobileDash',      loggedIn ? ''     : 'none');
+  setDisp('appMobileTrain',     loggedIn ? ''     : 'none');
+  setDisp('appMobileLogout',    loggedIn ? ''     : 'none');
 
-  // navCredit pill
-  var pill = document.getElementById('navCredit');
+  if (!loggedIn || !currentUser) return;
+
+  // Access pill + Premium badge — live in app-nav now (never on landing).
+  var pill  = document.getElementById('navCredit');
   var badge = document.getElementById('navPremiumBadge');
-  if(currentUser.paid || isPaid){
-    if(pill){ pill.style.display='none'; }
-    if(badge){ badge.style.display='inline-flex'; }
-  } else if(is24h && currentUser.access_expires_at && new Date(currentUser.access_expires_at)>new Date()){
-    var rem=new Date(currentUser.access_expires_at)-new Date();
-    var hrs=Math.max(0,Math.floor(rem/3600000));
-    if(pill){ pill.textContent='⏱ '+hrs+'h';pill.style.background='#fef3c7';pill.style.color='#92400e';pill.style.display='inline-flex'; }
-    if(badge) badge.style.display='none';
+  if (currentUser.paid || isPaid){
+    if (pill)  pill.style.display  = 'none';
+    if (badge) badge.style.display = 'inline-flex';
+  } else if (is24h && currentUser.access_expires_at && new Date(currentUser.access_expires_at) > new Date()){
+    var rem = new Date(currentUser.access_expires_at) - new Date();
+    var hrs = Math.max(0, Math.floor(rem/3600000));
+    if (pill){ pill.textContent = '⏱ ' + hrs + 'h'; pill.style.display = 'inline-flex'; }
+    if (badge) badge.style.display = 'none';
   } else {
-    if(pill){ pill.style.display='none'; }
-    if(badge) badge.style.display='none';
+    if (pill)  pill.style.display  = 'none';
+    if (badge) badge.style.display = 'none';
   }
+}
 
-  // Mobile menu state
-  var mg=document.getElementById('mobileGuest');
-  var mu=document.getElementById('mobileUser');
-  if(mg) mg.style.display='none';
-  if(mu) mu.style.display='block';
+// Mobile menu helper for the app nav (separate from the landing menu).
+function appToggleMobileMenu(){
+  var menu = document.getElementById('appMobileMenu');
+  if (!menu) return;
+  var open = menu.classList.toggle('open');
+  document.body.style.overflow = open ? 'hidden' : '';
 }
 
 // Auth flow: show auth modal when user tries to continue after analysis
