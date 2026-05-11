@@ -1883,10 +1883,11 @@ img,video,iframe{max-width:100%}
       </div>
     </div>
 
-    <!-- 3. NEXT STEP CARD -->
+    <!-- 3. NEXT STEP CARD — DarbiBrain.coach() + DarbiBrain.nextAction() -->
     <div class="dbv2-step">
       <div class="dbv2-step-t">خطوتك التالية</div>
       <div id="dbv2NextStepBody" class="dbv2-step-body">—</div>
+      <div id="dbv2NextStepReason" style="font-size:12.5px;color:#6b7280;margin:-4px 0 12px;line-height:1.6;display:none"></div>
       <button class="dbv2-btn dbv2-btn-p" id="dbv2NextStepBtn" onclick="dbv2RouteNextStep()">ابدأ الآن</button>
     </div>
 
@@ -1933,6 +1934,20 @@ img,video,iframe{max-width:100%}
         <button class="dbv2-btn dbv2-btn-s" onclick="goTool('cv')">تحسين السيرة</button>
         <button class="dbv2-btn dbv2-btn-s" onclick="focusAnalyze()">تحليل جديد</button>
       </div>
+    </div>
+
+    <!-- 6b. OUTCOMES TRACKING — small section, feeds DarbiBrain.learn() -->
+    <div class="dbv2-card" id="dbv2Outcomes">
+      <div class="dbv2-card-h">كيف يصير معك التقديم؟</div>
+      <p style="font-size:12.5px;color:#666;margin-bottom:11px;line-height:1.6">سجّل آخر نتيجة — دربي يعدّل خطتك على هذي الإشارة.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:7px" id="dbv2OutcomeBtns">
+        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('applied')"   style="font-size:12px;padding:8px 13px">قدّمت</button>
+        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('got_reply')" style="font-size:12px;padding:8px 13px">جاني رد</button>
+        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('interview')" style="font-size:12px;padding:8px 13px">دخلت مقابلة</button>
+        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('rejected')"  style="font-size:12px;padding:8px 13px">انرفضت</button>
+        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('success')"   style="font-size:12px;padding:8px 13px">انقبلت 🎉</button>
+      </div>
+      <div id="dbv2OutcomesConfirm" style="display:none;font-size:12.5px;color:#166534;margin-top:10px;font-weight:600"></div>
     </div>
 
     <!-- 7. REFERRAL (compact, lower) -->
@@ -3099,6 +3114,7 @@ function diagPickOption(btn, qid, value){
 function diagSubmitQuiz(){
   var diag = buildDiagnosis(_diagDraft.dreamRole, _diagDraft.cvText, _diagDraft.answers);
   Diagnosis.set(diag);
+  if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'diagnosis_completed' });
   // Mirror into Analysis namespace so the dashboard / CV improvement / training
   // can all keep reading from one place.
   if (typeof Analysis !== 'undefined' && Analysis.set){
@@ -3228,6 +3244,9 @@ function renderBridgePlan(){
   if (emptyEl) emptyEl.style.display = 'none';
   if (liveEl)  liveEl.style.display  = 'block';
 
+  // Tell the brain we opened the bridge plan (used for adaptation if needed).
+  if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'bridge_plan_viewed' });
+
   // 1. Dream
   document.getElementById('bpDream').textContent     = d.dreamRole || '—';
   document.getElementById('bpDreamLine').textContent = d.dreamRole || '—';
@@ -3249,15 +3268,25 @@ function renderBridgePlan(){
     bridgeEl.innerHTML += '<div class="diag-bridge-step"><span class="diag-bridge-num">'+(i+1)+'</span><span>'+s+'</span></div>';
   });
 
-  // 5. 7-day plan (Branch A vs career track)
-  var days = (d.branch === 'A') ? BRIDGE_7DAYS_BY_BRANCH.A : BRIDGE_7DAYS_BY_BRANCH.career;
+  // 5. 7-day plan — single source of truth: DarbiBrain.buildPlan(). The
+  // brain reads BRIDGE_7DAYS_BY_BRANCH internally and overlays task status.
+  var plan = (typeof DarbiBrain !== 'undefined' && DarbiBrain.buildPlan) ? DarbiBrain.buildPlan() : [];
+  if (!plan.length){
+    // Defensive fallback if the brain hasn't loaded for some reason.
+    var fallback = (d.branch === 'A') ? BRIDGE_7DAYS_BY_BRANCH.A : BRIDGE_7DAYS_BY_BRANCH.career;
+    plan = fallback.map(function(t, i){ return { id: 'day-' + (i+1), day: i+1, title: t, status: 'pending' }; });
+  }
   var daysEl = document.getElementById('bp7Days');
   daysEl.innerHTML = '';
-  days.forEach(function(label, i){
+  plan.forEach(function(item){
+    var isDone = item.status === 'done';
+    var rowStyle = isDone ? ' style="opacity:.6"' : '';
+    var check = isDone ? '<span style="color:#16a34a;font-weight:900;margin-left:6px">✓</span>' : '';
+    var bodyDecoration = isDone ? 'text-decoration:line-through;color:#666;' : '';
     daysEl.innerHTML += ''
-      + '<div class="bp-day-row">'
-      +   '<div class="bp-day-num">' + (i+1) + '<span>يوم</span></div>'
-      +   '<div class="bp-day-body">' + label + '</div>'
+      + '<div class="bp-day-row"' + rowStyle + '>'
+      +   '<div class="bp-day-num">' + item.day + '<span>يوم</span></div>'
+      +   '<div class="bp-day-body" style="' + bodyDecoration + '">' + check + item.title + '</div>'
       + '</div>';
   });
 
@@ -3387,6 +3416,353 @@ var GuidedSession = (function(){
     },
     isComplete:   function(){ var s = read(); return !!(s && s.completedAt); },
     isInProgress: function(){ var s = read(); return !!(s && !s.completedAt && (s.answers || []).length > 0); },
+  };
+})();
+
+// ══════ DarbiBrain — lean central decider ══════════════════════════════════
+// Pure-function namespace. READS from existing stores (Diagnosis / Analysis /
+// GuidedSession / darbi_outcomes) and COMPUTES decisions on demand.
+// Persists ONLY:
+//   events[]       — append-only signal log (capped at 100)
+//   taskStatus{}   — per-day done|pending for the 7-day plan
+//   lastUpdated    — ISO timestamp
+// NO dreamRole / branch / family / scores stored here — those live in
+// Diagnosis. This is the single biggest design decision: state is computed,
+// not duplicated, so a new diagnosis instantly updates every brain output.
+var DarbiBrain = (function(){
+  var KEY = 'darbi_brain';
+  var MAX_EVENTS = 100;
+
+  function read(){
+    try {
+      var s = JSON.parse(localStorage.getItem(KEY) || 'null') || {};
+      if (!Array.isArray(s.events)) s.events = [];
+      if (!s.taskStatus || typeof s.taskStatus !== 'object') s.taskStatus = {};
+      return s;
+    } catch(e){ return { events: [], taskStatus: {}, lastUpdated: null }; }
+  }
+  function write(s){
+    try {
+      s.lastUpdated = new Date().toISOString();
+      if (Array.isArray(s.events) && s.events.length > MAX_EVENTS){
+        s.events = s.events.slice(s.events.length - MAX_EVENTS);
+      }
+      localStorage.setItem(KEY, JSON.stringify(s));
+    } catch(e){}
+  }
+
+  // Flatten darbi_outcomes (a per-job object of booleans) into a list of
+  // outcome-type strings. The diagnosis quiz's appsCount/repliesCount answers
+  // are the primary signal for "many apps / no replies" — outcomes are just
+  // a corroborating signal.
+  function readOutcomes(){
+    try {
+      var o = JSON.parse(localStorage.getItem('darbi_outcomes') || '{}');
+      var all = [];
+      for (var job in o){
+        var entry = o[job];
+        if (entry && typeof entry === 'object'){
+          ['applied','got_reply','interview','rejected','success'].forEach(function(k){
+            if (entry[k]) all.push(k);
+          });
+        }
+      }
+      return all;
+    } catch(e){ return []; }
+  }
+
+  function _guidedSignalsFromEvents(events){
+    var sig = { shortAnswers: 0, noExample: 0, genericAnswers: 0, strongAnswers: 0 };
+    (events || []).forEach(function(ev){
+      if (ev.type === 'answer_short')      sig.shortAnswers++;
+      if (ev.type === 'answer_no_example') sig.noExample++;
+      if (ev.type === 'answer_generic')    sig.genericAnswers++;
+      if (ev.type === 'answer_strong')     sig.strongAnswers++;
+    });
+    return sig;
+  }
+
+  // learn(event) — single write path. Appends event, auto-extracts signals
+  // from guided answers, and bumps taskStatus when relevant events arrive.
+  function learn(event){
+    if (!event || !event.type) return;
+    var s = read();
+    var now = new Date().toISOString();
+    s.events.push({ type: event.type, payload: event.payload || null, ts: now });
+
+    // Auto-extract signals from guided answers so decide() can read them.
+    if (event.type === 'guided_answer_submitted' && event.payload){
+      var p = event.payload;
+      var text = String(p.answerText || '').trim();
+      var wc = text ? text.split(/\s+/).filter(Boolean).length : 0;
+      var hasExample = /(مثل|مرة|مرّة|عندما|لما|في مشروع|في موقف|كنت|when|once|example|سبق)/i.test(text);
+      var mentionsRole = p.dreamRole && text.toLowerCase().indexOf(String(p.dreamRole).toLowerCase()) !== -1;
+      if (wc < 25)                          s.events.push({ type: 'answer_short',      ts: now });
+      if (!hasExample && wc >= 15)          s.events.push({ type: 'answer_no_example', ts: now });
+      if (!mentionsRole && wc >= 15)        s.events.push({ type: 'answer_generic',    ts: now });
+      if ((p.score || 0) >= 70)             s.events.push({ type: 'answer_strong',     ts: now });
+    }
+
+    // Mark plan tasks done based on completion events.
+    if (event.type === 'cv_summary_used')         s.taskStatus['day-1'] = 'done';
+    if (event.type === 'guided_session_completed') s.taskStatus['day-4'] = 'done';
+    if (event.type === 'application_logged')       s.taskStatus['day-6'] = 'done';
+    if (event.type === 'reply_received')           s.taskStatus['day-7'] = 'done';
+
+    write(s);
+  }
+
+  function markTaskDone(taskId){
+    var s = read();
+    s.taskStatus[taskId] = 'done';
+    write(s);
+  }
+
+  function reset(){ try { localStorage.removeItem(KEY); } catch(e){} }
+
+  // decide() — pure function that maps current state → primaryProblem +
+  // priority + readinessStage. Rule order matters: outcome signals override
+  // everything, then quiz signals, then guided-session signals, then defaults.
+  function decide(){
+    var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+    var g = (typeof GuidedSession !== 'undefined' && GuidedSession.get) ? GuidedSession.get() : null;
+    var s = read();
+    var events = s.events || [];
+    var outcomes = readOutcomes();
+
+    if (!d){
+      return { primaryProblem: 'no_diagnosis_yet', priority: 'run_diagnosis', readinessStage: 'start' };
+    }
+
+    // Branch A — simple job track has its own diagnosis copy.
+    if (d.branch === 'A'){
+      var stageA = g
+        ? (g.completedAt ? 'applying' : (g.answers && g.answers.length > 0 ? 'practicing' : 'building'))
+        : 'building';
+      if (outcomes.indexOf('rejected') !== -1) stageA = 'adjusting';
+      if (outcomes.indexOf('interview') !== -1){
+        return { primaryProblem: 'weak_interview_answers', priority: 'practice_intro', readinessStage: 'practicing' };
+      }
+      return { primaryProblem: 'simple_job_needs_direct_application', priority: 'build_simple_cv', readinessStage: stageA };
+    }
+
+    // Outcome-driven overrides (highest priority for career branches).
+    if (outcomes.indexOf('interview') !== -1){
+      return { primaryProblem: 'weak_interview_answers', priority: 'practice_role_question', readinessStage: 'practicing' };
+    }
+    if (outcomes.filter(function(o){ return o === 'rejected'; }).length >= 1){
+      return { primaryProblem: 'wrong_role_targeting', priority: 'adjust_strategy', readinessStage: 'adjusting' };
+    }
+
+    // Quiz signals from the diagnosis (appsCount + repliesCount).
+    var appsCount = d.applicationsCount;
+    var repliesCount = d.repliesCount;
+    if ((appsCount === 'gt50' || appsCount === '20_50') && repliesCount === 'none'){
+      return { primaryProblem: 'cv_does_not_prove_role', priority: 'fix_summary', readinessStage: 'adjusting' };
+    }
+    if (appsCount === 'lt5'){
+      return { primaryProblem: 'weak_application_funnel', priority: 'widen_applications', readinessStage: 'applying' };
+    }
+
+    // Guided-session signals derived from the events log.
+    var gs = _guidedSignalsFromEvents(events);
+    if (gs.shortAnswers >= 3){
+      return { primaryProblem: 'weak_interview_answers', priority: 'practice_intro', readinessStage: 'practicing' };
+    }
+    if (gs.noExample >= 2){
+      return { primaryProblem: 'no_examples', priority: 'build_role_evidence', readinessStage: 'building' };
+    }
+
+    // Branch defaults — only apply when no stronger signal hit.
+    var stage = g ? (g.completedAt ? 'applying' : 'practicing') : 'building';
+    if (d.branch === 'B'){
+      return { primaryProblem: 'cv_does_not_prove_role', priority: 'build_role_evidence', readinessStage: stage };
+    }
+    return { primaryProblem: 'cv_too_generic', priority: 'fix_summary', readinessStage: stage };
+  }
+
+  // buildPlan() — 7-day plan list with status, sourced from the existing
+  // BRIDGE_7DAYS_BY_BRANCH content. The plan is identical between bridge
+  // plan and dashboard now — single source of truth.
+  function buildPlan(){
+    var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+    if (!d) return [];
+    var lib = (typeof BRIDGE_7DAYS_BY_BRANCH !== 'undefined') ? BRIDGE_7DAYS_BY_BRANCH : { A: [], career: [] };
+    var days = (d.branch === 'A') ? (lib.A || []) : (lib.career || []);
+    var s = read();
+    var ts = s.taskStatus || {};
+    return days.map(function(label, i){
+      var id = 'day-' + (i + 1);
+      var actionType = (d.branch === 'A')
+        ? (i <= 1 ? 'cv_work' : i <= 3 ? 'application' : 'follow_up')
+        : (i <= 2 ? 'cv_work' : i <= 4 ? 'training' : 'application');
+      var unlockMode = (i <= 2) ? ['written','voice','video']
+                     : (i <= 5) ? ['voice','video']
+                                : ['video'];
+      return {
+        id: id,
+        day: i + 1,
+        title: label,
+        status: ts[id] || 'pending',
+        actionType: actionType,
+        unlockMode: unlockMode,
+      };
+    });
+  }
+
+  // nextAction() — picks the right screen + fn based on decide().priority.
+  // Every "next step" CTA in the app should route through this.
+  function nextAction(){
+    var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+    var g = (typeof GuidedSession !== 'undefined' && GuidedSession.get) ? GuidedSession.get() : null;
+
+    if (!d){
+      return {
+        type: 'diagnosis', screen: 's-dream',
+        label: 'ابدأ التشخيص',
+        reason: 'لازم نشخّص حالتك قبل ما نبني خطة',
+        fn: function(){ if (typeof startDiagnosis === 'function') startDiagnosis(); },
+      };
+    }
+
+    var dec = decide();
+    var sessionLabel = g && !g.completedAt && (g.answers || []).length > 0
+      ? 'تابع جلسة التجهيز'
+      : (g && g.completedAt ? 'ابدأ الجلسة التالية' : 'ابدأ جلسة التجهيز');
+    var startGS = function(){ if (typeof startGuidedSession === 'function') startGuidedSession(); };
+    var openCV  = function(){ if (typeof goTool === 'function') goTool('cv'); };
+    var openBridge = function(){ if (typeof renderBridgePlan === 'function') renderBridgePlan(); goScreen('s-bridge-plan'); };
+    var scrollOutcomes = function(){
+      goScreen('s-dashboard');
+      if (typeof renderDashboard === 'function') renderDashboard();
+      setTimeout(function(){
+        var el = document.getElementById('dbv2Outcomes');
+        if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 200);
+    };
+
+    switch (dec.priority){
+      case 'fix_summary':
+        return {
+          type: 'cv', screen: 's-cv',
+          label: 'حسّن ملخص سيرتك',
+          reason: dec.primaryProblem === 'cv_does_not_prove_role'
+            ? 'تقدم كثير وما يردون — الملخص يحتاج لغة الإعلانات'
+            : 'الملخص أول شي يقرأه الـ HR — لازم يبيع الدور بسرعة',
+          fn: openCV,
+        };
+      case 'build_simple_cv':
+        return {
+          type: 'cv', screen: 's-cv',
+          label: 'ابنِ سيرتي البسيطة',
+          reason: 'صفحة واحدة + سكربت 30 ثانية + روح للفرع بنفسك',
+          fn: openCV,
+        };
+      case 'build_role_evidence':
+        return {
+          type: 'guided', screen: 's-guided-interview',
+          label: sessionLabel,
+          reason: 'سيرتك تحتاج دليل — نبنيه من قصصك في جلسة موجهة',
+          fn: startGS,
+        };
+      case 'practice_intro':
+        return {
+          type: 'guided', screen: 's-guided-interview',
+          label: sessionLabel,
+          reason: 'إجاباتك القصيرة = الـ HR ما يقتنع. نطوّل ونضيف مثال.',
+          fn: startGS,
+        };
+      case 'practice_role_question':
+        return {
+          type: 'guided', screen: 's-guided-interview',
+          label: 'استعد للمقابلة',
+          reason: 'دخلت مقابلة — نتمرن على السؤال الأهم في دورك',
+          fn: startGS,
+        };
+      case 'widen_applications':
+        return {
+          type: 'outcomes', screen: 's-dashboard',
+          label: 'سجّل تقديماتك',
+          reason: 'عدد التقديمات قليل — نرفعه لـ 30+ هذا الأسبوع',
+          fn: scrollOutcomes,
+        };
+      case 'adjust_strategy':
+        return {
+          type: 'bridge', screen: 's-bridge-plan',
+          label: 'راجع طريقك',
+          reason: 'الرفض الأخير = نراجع الأدوار المستهدفة',
+          fn: openBridge,
+        };
+      case 'run_diagnosis':
+      default:
+        return {
+          type: 'diagnosis', screen: 's-dream',
+          label: 'ابدأ التشخيص',
+          reason: 'لازم نشخّص حالتك قبل ما نبني خطة',
+          fn: function(){ if (typeof startDiagnosis === 'function') startDiagnosis(); },
+        };
+    }
+  }
+
+  // coach() — ONE Arabic message for the current state. Used by the
+  // dashboard's next-step card only. No coach-stamps anywhere else.
+  function coach(){
+    var dec = decide();
+    switch (dec.primaryProblem){
+      case 'no_diagnosis_yet':
+        return 'ابدأ بتشخيص دقيقة واحدة عشان نبني خطة مخصصة لحالتك.';
+      case 'simple_job_needs_direct_application':
+        return 'لهذا النوع من الوظائف، التقديم المباشر أفضل من الأونلاين. نجهز سيرة بسيطة وكلام تقوله للمسؤول في الفرع.';
+      case 'cv_too_generic':
+        return 'سيرتك ما تبيعك بسرعة. نبدأ بملخص يوضح الدور اللي تستهدفه وليش أنت مناسب له.';
+      case 'cv_does_not_prove_role':
+        return 'تقدّم كثير وما يردون = إشارة قوية إن السيرة لا تطابق لغة الإعلانات. اليوم نضبط الملخص.';
+      case 'weak_application_funnel':
+        return 'المشكلة مو فيك. عدد تقديماتك قليل مقارنة بالمنافسة. هذا الأسبوع نرفع العدد لـ 30+ تقديم.';
+      case 'weak_interview_answers':
+        return dec.priority === 'practice_role_question'
+          ? 'دخلت مقابلة — حلو. نتمرن اليوم على إجابة السؤال الأصعب في دورك.'
+          : 'إجاباتك في الجلسة قصيرة. نتمرن اليوم على إجابة بصيغة موقف → دور → نتيجة.';
+      case 'no_examples':
+        return 'إجاباتك واضحة لكن تحتاج مثال يثبت كلامك. اليوم نضيف موقف حقيقي بدل الكلام العام.';
+      case 'wrong_role_targeting':
+        return 'الرفض الأخير = إشارة لمراجعة الأدوار اللي تستهدفها. نشوف أقرب دور تكسبه فعلاً.';
+      default:
+        return null;
+    }
+  }
+
+  // getState() — derived snapshot for debugging / dashboard inspection.
+  function getState(){
+    var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+    var g = (typeof GuidedSession !== 'undefined' && GuidedSession.get) ? GuidedSession.get() : null;
+    var s = read();
+    var dec = decide();
+    return {
+      dreamRole: d && d.dreamRole,
+      branch:    d && d.branch,
+      family:    d && d.family,
+      primaryProblem: dec.primaryProblem,
+      priority:       dec.priority,
+      readinessStage: dec.readinessStage,
+      sessionStatus:  g ? (g.completedAt ? 'completed' : 'in_progress') : 'not_started',
+      eventsCount:    (s.events || []).length,
+      taskStatus:     s.taskStatus,
+      lastUpdated:    s.lastUpdated,
+      nextAction:     nextAction(),
+      coachMessage:   coach(),
+    };
+  }
+
+  return {
+    getState:     getState,
+    decide:       decide,
+    buildPlan:    buildPlan,
+    nextAction:   nextAction,
+    coach:        coach,
+    learn:        learn,
+    markTaskDone: markTaskDone,
+    reset:        reset,
   };
 })();
 
@@ -3808,6 +4184,15 @@ function giSubmitAnswer(){
     createdAt: new Date().toISOString(),
   });
 
+  // Feed the brain — it extracts answer_short / no_example / generic / strong
+  // signals automatically from the payload.
+  if (typeof DarbiBrain !== 'undefined') {
+    DarbiBrain.learn({
+      type: 'guided_answer_submitted',
+      payload: { question: qTitle, answerText: text, score: evalRes.score, mode: mode, dreamRole: s.dreamRole },
+    });
+  }
+
   // Show inline evaluation, then auto-advance after a beat
   var evalBlock = document.getElementById('giEvalBlock');
   if (evalBlock){
@@ -3823,6 +4208,7 @@ function giSubmitAnswer(){
   if (s.currentStep >= qList.length - 1){
     s.completedAt = new Date().toISOString();
     GuidedSession.save(s);
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'guided_session_completed' });
     setTimeout(function(){ renderGuidedInterview(); }, 1100);
   } else {
     s.currentStep += 1;
@@ -3966,6 +4352,7 @@ function startGuidedSession(){
   if (!existing || existing.dreamRole !== d.dreamRole || existing.branch !== d.branch || existing.completedAt){
     GuidedSession.init(d, true);
   }
+  if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'guided_session_started' });
   renderGuidedInterview();
   goScreen('s-guided-interview');
 }
@@ -4052,6 +4439,7 @@ function diagShareDoCopy(){
     + 'جرّبه على darbi-production.up.railway.app';
   var done = function(){
     Access.earn(24);
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'share_card_used' });
     showNotif('تم النسخ ✓','','+24 ساعة وصول إضافية.');
     closeModal();
   };
@@ -5005,6 +5393,14 @@ function logOutcome(type){
   outcomes[job].updatedAt = new Date().toISOString();
   localStorage.setItem('darbi_outcomes', JSON.stringify(outcomes));
 
+  // Feed the brain — both the post-analysis outcomes buttons and the new
+  // dashboard outcomes section route through here, so this is the single
+  // place where outcome events land in DarbiBrain.
+  if (typeof DarbiBrain !== 'undefined'){
+    var eventMap = { applied: 'application_logged', got_reply: 'reply_received', interview: 'interview_received', rejected: 'rejected', success: 'accepted' };
+    if (eventMap[type]) DarbiBrain.learn({ type: eventMap[type] });
+  }
+
   // Visual feedback
   var btns = document.getElementById('outcomeButtons');
   var conf = document.getElementById('outcomeConfirm');
@@ -5709,6 +6105,11 @@ function copyCV(section){
   }
   text = text.trim();
   if(!text){ showNotif('','','ما في محتوى للنسخ'); return; }
+  // Tell the brain the user actually used the improved summary — auto-marks
+  // day-1 of the plan as done (since "إصلاح الملخص المهني" is Day 1).
+  if (typeof DarbiBrain !== 'undefined' && (section === 'summary' || section === 'all')){
+    DarbiBrain.learn({ type: 'cv_summary_used' });
+  }
   navigator.clipboard.writeText(text)
     .then(function(){
       var statusMap = { summary:'cvS1status' };
@@ -6749,9 +7150,14 @@ function dbv2ScoreNote(key, val){
 }
 
 // Routes the "ابدأ الآن" button under the next-step card.
-// Priority: in-progress guided session → completed guided session →
-// bridge plan (if diagnosis exists) → lowest-score fallback → analyze.
+// SINGLE source of truth: DarbiBrain.nextAction(). The fallback chain runs
+// only if the brain hasn't loaded (defensive — shouldn't happen in practice).
 function dbv2RouteNextStep(){
+  if (typeof DarbiBrain !== 'undefined' && DarbiBrain.nextAction){
+    var nxt = DarbiBrain.nextAction();
+    if (nxt && typeof nxt.fn === 'function'){ nxt.fn(); return; }
+  }
+  // Fallback (brain missing for any reason)
   if (typeof GuidedSession !== 'undefined' && GuidedSession.get){
     var g = GuidedSession.get();
     if (g){ renderGuidedInterview(); goScreen('s-guided-interview'); return; }
@@ -6836,6 +7242,25 @@ function dbv2RenderGuidedCard(){
     ctaEl.textContent = 'ابدأ جلسة التجهيز ←';
     if (hero) hero.textContent = 'ابدأ تدريب اليوم';
   }
+}
+
+// Dashboard outcome buttons — single delegate to the existing logOutcome()
+// path (which writes darbi_outcomes AND feeds DarbiBrain via the wiring we
+// added inside logOutcome itself). Re-renders the dashboard after a beat so
+// the next-step card + coach + buildPlan all reflect the new event.
+function dbv2LogOutcome(type){
+  if (typeof logOutcome === 'function') logOutcome(type);
+  var labels = {
+    applied:   'تم — سجّلنا تقديمك. كمّل على الأقل ٢٠ تقديم هذا الأسبوع.',
+    got_reply: 'رائع! نتابع معك — جهّز نفسك للسؤال الأول.',
+    interview: 'ممتاز — دربي يحوّل الجلسة القادمة لتحضير مقابلة.',
+    rejected:  'مسجّل. دربي يعدّل الأدوار اللي تستهدفها بناءً عليها.',
+    success:   'مبروك 🎉 شارك تجربتك واكسب وقت إضافي.',
+  };
+  var conf = document.getElementById('dbv2OutcomesConfirm');
+  if (conf){ conf.style.display = 'block'; conf.textContent = labels[type] || 'تم التسجيل ✓'; }
+  // Re-render after a beat so the brain's new decision shows up in the card.
+  setTimeout(function(){ if (typeof renderDashboard === 'function') renderDashboard(); }, 900);
 }
 
 // "عرض الطريق" / "عرض التشخيص" buttons on the dashboard. If no diagnosis
@@ -7019,9 +7444,28 @@ function renderDashboard(){
   document.getElementById('dbv2ScoreIntNote').textContent = dbv2ScoreNote('interview', s.interviewReadiness||0);
   document.getElementById('dbv2ScoreEnNote').textContent  = dbv2ScoreNote('english',   s.englishReadiness||0);
 
-  // ── 3. Next step card ────────────────────────────────────────────────
-  var low = dbv2LowestScore(a);
-  document.getElementById('dbv2NextStepBody').textContent = dbv2NextStepCopy(low ? low.key : null);
+  // ── 3. Next step card — single source of truth: DarbiBrain ──────────
+  var coachMsg = (typeof DarbiBrain !== 'undefined' && DarbiBrain.coach) ? DarbiBrain.coach() : null;
+  var nxt      = (typeof DarbiBrain !== 'undefined' && DarbiBrain.nextAction) ? DarbiBrain.nextAction() : null;
+  if (coachMsg){
+    document.getElementById('dbv2NextStepBody').textContent = coachMsg;
+  } else {
+    var low = dbv2LowestScore(a);
+    document.getElementById('dbv2NextStepBody').textContent = dbv2NextStepCopy(low ? low.key : null);
+  }
+  var reasonEl = document.getElementById('dbv2NextStepReason');
+  if (reasonEl){
+    if (nxt && nxt.reason){
+      reasonEl.style.display = 'block';
+      reasonEl.textContent = '↳ ' + nxt.reason;
+    } else {
+      reasonEl.style.display = 'none';
+    }
+  }
+  var nxtBtn = document.getElementById('dbv2NextStepBtn');
+  if (nxtBtn && nxt && nxt.label){
+    nxtBtn.textContent = nxt.label + ' ←';
+  }
 
   // ── 4. Career path card ──────────────────────────────────────────────
   var pathEl = document.getElementById('dbv2CareerPath');
