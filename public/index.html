@@ -835,7 +835,7 @@ img,video,iframe{max-width:100%}
   <!-- Logged-in nav links -->
   <div class="nav-links" id="navUser" style="display:none">
     <span class="nav-link" onclick="goScreen('s-dashboard')">لوحتي</span>
-    <span class="nav-link" onclick="goTool('interview')">التدريب</span>
+    <span class="nav-link" onclick="startGuidedSession()">التدريب</span>
     <span id="navCredit" class="nav-credit-pill" onclick="goScreen('s-dashboard')"></span>
     <span id="navPremiumBadge" style="display:none;background:#dcfce7;color:#166534;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid #a7f3d0">Premium ✓</span>
   </div>
@@ -864,7 +864,7 @@ img,video,iframe{max-width:100%}
   </div>
   <div id="mobileUser" style="display:none">
     <div class="nmlink" onclick="goScreen('s-dashboard');closeMobileMenu()">🏠 لوحتي</div>
-    <div class="nmlink" onclick="goTool('interview');closeMobileMenu()">🎯 التدريب</div>
+    <div class="nmlink" onclick="startGuidedSession();closeMobileMenu()">🎯 التدريب</div>
     <div class="nmdiv"></div>
     <div class="nmlink" onclick="logoutUser();closeMobileMenu()">خروج</div>
   </div>
@@ -1453,11 +1453,11 @@ img,video,iframe{max-width:100%}
       <div class="tool-sub">خطوة بخطوة بناءً على تحليلك</div>
       <div style="margin-top:8px"><span class="pill-b">10–15 دقيقة</span></div>
     </div>
-    <div class="tool-card" onclick="goTool('interview')">
+    <div class="tool-card" onclick="startGuidedSession()">
       <div class="tool-ic">🎯</div>
       <div class="tool-title">تدريب المقابلات</div>
-      <div class="tool-sub">تقييم حقيقي وخريطة مهارات</div>
-      <div style="margin-top:8px"><span class="pill-b">15–25 دقيقة</span></div>
+      <div class="tool-sub">جلسة موجّهة بناءً على تشخيصك</div>
+      <div style="margin-top:8px"><span class="pill-b">~7 دقائق</span></div>
     </div>
   </div>
 
@@ -1478,10 +1478,19 @@ img,video,iframe{max-width:100%}
   </div>
 
   <!-- Header -->
-  <div style="margin-bottom:20px">
-    <div class="tag-b">نسختك المحسّنة جاهزة</div>
+  <div style="margin-bottom:14px">
+    <div class="tag-b">تحسين السيرة بناءً على تشخيصك</div>
     <h2 style="font-size:22px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">تحسين السيرة الذاتية</h2>
     <p style="font-size:13px;color:#666" id="cvSubtitle">اختر ما تبغى تنسخه أو تحمّله حسب وصولك.</p>
+  </div>
+
+  <!-- Diagnosis recap pill — only shows if a Diagnosis exists. -->
+  <div id="cvDiagRecap" class="card" style="display:none;padding:13px 16px;margin-bottom:14px;background:#eef2ff;border:1px solid #c7d2fe">
+    <div style="font-size:12px;color:#3730a3;line-height:1.7">
+      <span style="font-weight:800">حلمك:</span> <span id="cvRecapDream">—</span>
+      &nbsp;·&nbsp;
+      <span style="font-weight:800">أكبر فجوة:</span> <span id="cvRecapGap">—</span>
+    </div>
   </div>
 
   <!-- Step 1: Professional Summary -->
@@ -1494,17 +1503,18 @@ img,video,iframe{max-width:100%}
       <span id="cvS1status" style="font-size:12px;color:#16a34a;font-weight:700;display:none">✓ تم النسخ</span>
     </div>
 
-    <!-- Current version -->
+    <!-- Common weak pattern (illustration, not the user's actual CV) -->
     <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">النسخة الحالية ⚠</div>
+      <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">النمط الشائع الضعيف ⚠</div>
       <div style="font-size:13px;color:#7f1d1d;line-height:1.65" id="cvS1before">محترف في مجال عمله يبحث عن فرصة للتطور والنمو المهني في بيئة محفزة.</div>
+      <div style="font-size:11px;color:#991b1b;margin-top:6px">هذا اللي يكتبه أكثر المتقدمين — وما يميّز أحد عن أحد.</div>
     </div>
 
-    <!-- Suggested version -->
+    <!-- Personalized rewrite — built from Diagnosis + (optional) GuidedSession -->
     <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">النسخة المحسّنة ✓</div>
-      <div style="font-size:13px;color:#14532d;line-height:1.65" id="cvS1after">متخصص في [الدور المستهدف] مع [X سنوات] خبرة في [المجال]، حقّق [إنجاز قابل للقياس]. يتميز بـ[أبرز مهارة] ويستهدف المساهمة في [هدف الشركة].</div>
-      <div style="font-size:11px;color:#166534;margin-top:6px;font-style:italic">✦ يذكر الدور + الخبرة + إنجاز محدد + هدف — هذا ما يريده المدير</div>
+      <div style="font-size:10px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">نسختك المحسّنة لـ <span id="cvS1afterDreamLabel">هدفك</span> ✓</div>
+      <div style="font-size:13px;color:#14532d;line-height:1.65" id="cvS1after">— يُملأ من تشخيصك —</div>
+      <div style="font-size:11px;color:#166534;margin-top:6px" id="cvS1afterWhy">✦ يذكر الدور + الخبرة + إنجاز محدد + هدف — هذا ما يريده المدير</div>
     </div>
 
     <div style="display:flex;gap:8px">
@@ -1560,6 +1570,12 @@ img,video,iframe{max-width:100%}
     <button class="btn btn-p" style="padding:10px 18px;font-size:13px" onclick="copyCV('achievements')">نسخ الإنجازات المحسّنة</button>
   </div>
 
+  <!-- What changed and why — transparency panel populated from initCVScreen() -->
+  <div class="card" id="cvWhyCard" style="display:none;padding:18px;margin-bottom:12px;background:#fafafe;border:1px solid #e6e6f0">
+    <div style="font-size:11px;font-weight:800;color:#4f46e5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">وش غيّرنا وليش</div>
+    <ul id="cvWhyList" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px"></ul>
+  </div>
+
   <!-- Export / Download section -->
   <div class="card" style="padding:20px;margin-bottom:14px;border-top:3px solid #4f46e5" id="cvExportCard">
     <div class="tag-b" style="margin-bottom:8px">تصدير السيرة الذاتية</div>
@@ -1591,7 +1607,7 @@ img,video,iframe{max-width:100%}
   </div>
 
   <!-- Next step -->
-  <button class="btn btn-p btn-full" style="padding:13px;font-size:15px" onclick="goTool('interview')">التدريب على المقابلات ←</button>
+  <button class="btn btn-p btn-full" style="padding:13px;font-size:15px" onclick="startGuidedSession()">التدريب على المقابلات ←</button>
 
 </div></div>
 </div>
@@ -1636,7 +1652,7 @@ img,video,iframe{max-width:100%}
     <!-- Retention message -->
     <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
       <span id="rmRetention" style="font-size:12px;color:#94a3b8"></span>
-      <span id="rmHeadline" style="font-size:12px;font-weight:700;color:#a5b4fc;cursor:pointer" onclick="goTool('interview')">خطة بكرة جاهزة ←</span>
+      <span id="rmHeadline" style="font-size:12px;font-weight:700;color:#a5b4fc;cursor:pointer" onclick="startGuidedSession()">خطة بكرة جاهزة ←</span>
     </div>
   </div>
 
@@ -3425,7 +3441,65 @@ function giEvaluateAnswer(text, dreamRole){
 }
 
 // ── Recorder state — one shared MediaRecorder per session ────────────────
+// _giRec holds the audio/video pipeline; _giSpeech holds the browser-native
+// SpeechRecognition pipeline. They run in parallel during a recording so we
+// get a usable Arabic transcript even when no backend/OpenAI is available.
 var _giRec = { recorder: null, chunks: [], stream: null, blob: null, intervalId: null, secs: 0, mode: null };
+var _giSpeech = { sr: null, transcript: '', interim: '', supported: null };
+
+function _giSpeechSupported(){
+  if (_giSpeech.supported !== null) return _giSpeech.supported;
+  _giSpeech.supported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  return _giSpeech.supported;
+}
+
+function _giStartSpeech(){
+  if (!_giSpeechSupported()) return false;
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  try {
+    var sr = new SR();
+    sr.lang = 'ar-SA';            // Arabic; Web Speech also handles dialects.
+    sr.continuous = true;
+    sr.interimResults = true;
+    _giSpeech.transcript = '';
+    _giSpeech.interim = '';
+    sr.onresult = function(e){
+      var interim = '', finalT = '';
+      for (var i = e.resultIndex; i < e.results.length; i++){
+        var r = e.results[i];
+        if (r.isFinal) finalT += r[0].transcript;
+        else            interim += r[0].transcript;
+      }
+      if (finalT) _giSpeech.transcript += (_giSpeech.transcript ? ' ' : '') + finalT.trim();
+      _giSpeech.interim = interim;
+      // Live caption under the recorder, if the element exists.
+      var live = document.getElementById('giLiveCaption');
+      if (live){
+        live.textContent = (_giSpeech.transcript + ' ' + _giSpeech.interim).trim() || '… استمع …';
+      }
+    };
+    sr.onerror = function(ev){
+      console.warn('[speech] error:', ev && ev.error);
+    };
+    sr.onend = function(){ /* auto-restart while user is still recording */
+      if (_giRec.recorder && _giRec.recorder.state === 'recording'){
+        try { sr.start(); } catch(e){}
+      }
+    };
+    sr.start();
+    _giSpeech.sr = sr;
+    return true;
+  } catch(e){
+    console.warn('[speech] start failed:', e && e.message);
+    return false;
+  }
+}
+function _giStopSpeech(){
+  if (_giSpeech.sr){
+    try { _giSpeech.sr.onend = null; _giSpeech.sr.stop(); } catch(e){}
+    _giSpeech.sr = null;
+  }
+}
 
 function _giStopStream(){
   if (_giRec.stream){
@@ -3436,7 +3510,9 @@ function _giStopStream(){
 }
 function _giResetRecorder(){
   _giStopStream();
+  _giStopSpeech();
   _giRec.recorder = null; _giRec.chunks = []; _giRec.blob = null; _giRec.secs = 0; _giRec.mode = null;
+  _giSpeech.transcript = ''; _giSpeech.interim = '';
 }
 function _giFmtSecs(s){
   var m = Math.floor(s / 60), r = s % 60;
@@ -3480,6 +3556,9 @@ function giStartRecording(mode){
     };
     _giRec.recorder.start();
     _giRec.secs = 0;
+    // Kick off browser-native speech-to-text in parallel. Works in Chrome,
+    // Edge, Safari — gives us a real transcript without backend / OpenAI.
+    var speechOn = _giStartSpeech();
     _giRec.intervalId = setInterval(function(){
       _giRec.secs += 1;
       var t = document.getElementById('giRecTimer');
@@ -3487,11 +3566,14 @@ function giStartRecording(mode){
       if (_giRec.secs >= 120){ giStopRecording(); }
     }, 1000);
     var s = document.getElementById('giRecStatus');
-    if (s) s.textContent = wantVideo ? '🔴 تسجيل فيديو…' : '🔴 تسجيل صوت…';
+    if (s) s.textContent = (wantVideo ? '🔴 تسجيل فيديو' : '🔴 تسجيل صوت') + (speechOn ? ' + نسخ مباشر' : '');
     var startBtn = document.getElementById('giRecStartBtn');
     var stopBtn  = document.getElementById('giRecStopBtn');
     if (startBtn) startBtn.style.display = 'none';
     if (stopBtn)  stopBtn.style.display  = 'inline-flex';
+    // Show live caption area while recording (only useful with Speech API).
+    var captionWrap = document.getElementById('giLiveCaptionWrap');
+    if (captionWrap) captionWrap.style.display = speechOn ? 'block' : 'none';
   }).catch(function(err){
     console.error('[gi] mic/camera denied:', err && err.message);
     _giShowRecorderFallback(mode, wantVideo
@@ -3505,6 +3587,7 @@ function giStopRecording(){
   } else {
     _giStopStream();
   }
+  _giStopSpeech();
   if (_giRec.intervalId){ clearInterval(_giRec.intervalId); _giRec.intervalId = null; }
 }
 function _giShowRecorderFallback(mode, msg){
@@ -3536,12 +3619,22 @@ function giRenderAnswerArea(state, opts){
     var media = opts.isVideo
       ? '<video src="' + opts.url + '" controls style="width:100%;max-width:320px;display:block;margin:0 auto 10px;border-radius:9px;background:#000"></video>'
       : '<audio src="' + opts.url + '" controls style="width:100%;margin-bottom:10px"></audio>';
-    // Per spec: transcription is not auto-attempted. Always show the
-    // fallback wording so the user is honest about what's happening
-    // ("تعذر تحويل الصوت/الفيديو تلقائياً. اكتب ما قلته لتقييم الإجابة.")
-    var fallbackMsg = opts.isVideo
-      ? 'تعذر تحويل الفيديو تلقائياً. اكتب ما قلته لتقييم الإجابة. (دربي يقيّم النص فقط — لا ندّعي تحليل نبرة الصوت أو لغة الجسد.)'
-      : 'تعذر تحويل الصوت تلقائياً. اكتب ما قلته لتقييم الإجابة. (دربي يقيّم النص فقط — لا ندّعي تحليل نبرة الصوت.)';
+    // Did the browser-native Speech Recognition actually capture anything?
+    var liveTranscript = (_giSpeech.transcript || '').trim();
+    var captured = liveTranscript.length >= 10;
+    // Disclaimer adapts to reality. When transcription DID work, we tell the
+    // user it's their words and they can edit. When it didn't, we honestly
+    // say "تعذر التحويل" per spec and ask them to type. Never claim tone or
+    // body-language analysis either way.
+    var msg = captured
+      ? (opts.isVideo
+          ? 'نسخنا كلامك تلقائياً من الفيديو (نص فقط — لا تحليل نبرة أو لغة جسد). راجع/عدّل قبل التقييم.'
+          : 'نسخنا كلامك تلقائياً (نص فقط — لا تحليل نبرة). راجع/عدّل قبل التقييم.')
+      : (opts.isVideo
+          ? 'تعذر تحويل الفيديو تلقائياً. اكتب ما قلته لتقييم الإجابة. (دربي يقيّم النص فقط — لا ندّعي تحليل نبرة الصوت أو لغة الجسد.)'
+          : 'تعذر تحويل الصوت تلقائياً. اكتب ما قلته لتقييم الإجابة. (دربي يقيّم النص فقط — لا ندّعي تحليل نبرة الصوت.)');
+    var fallbackClass = captured ? 'gi-rec-fallback' : 'gi-rec-fallback';
+    var fallbackStyle = captured ? 'color:#a7f3d0;background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3)' : '';
     area.innerHTML = ''
       + '<div class="gi-recorder" style="background:#0f172a">'
       +   '<div class="gi-recorder-status">✓ تم التسجيل (' + _giFmtSecs(_giRec.secs) + ')</div>'
@@ -3549,10 +3642,12 @@ function giRenderAnswerArea(state, opts){
       +   '<div class="gi-recorder-controls">'
       +     '<button class="gi-rec-btn gi-rec-btn-redo" onclick="giRedoRecording()">إعادة التسجيل</button>'
       +   '</div>'
-      +   '<div class="gi-rec-fallback">' + fallbackMsg + '</div>'
-      +   '<textarea id="giAnsText" class="diag-input diag-textarea" style="margin-top:10px;background:#fff" placeholder="اكتب أو الصق ما قلته في التسجيل..."></textarea>'
+      +   '<div class="' + fallbackClass + '" style="' + fallbackStyle + '">' + msg + '</div>'
+      +   '<textarea id="giAnsText" class="diag-input diag-textarea" style="margin-top:10px;background:#fff" placeholder="اكتب أو الصق ما قلته في التسجيل..." oninput="giOnAnsChange()">'
+      +     (captured ? liveTranscript.replace(/</g,'&lt;') : '')
+      +   '</textarea>'
       + '</div>';
-    if (submitBtn) submitBtn.disabled = false;
+    if (submitBtn) submitBtn.disabled = !captured; // if transcript captured, ready to submit immediately
     return;
   }
 
@@ -3565,6 +3660,15 @@ function giRenderAnswerArea(state, opts){
       + '</div>';
     if (submitBtn) submitBtn.disabled = true;
   } else if (mode === 'voice'){
+    var captionVoice = _giSpeechSupported()
+      ? '<div id="giLiveCaptionWrap" style="display:none;margin-top:12px;text-align:right">'
+      +   '<div style="font-size:11px;font-weight:700;color:#fbbf24;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px">نسخ مباشر</div>'
+      +   '<div id="giLiveCaption" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:11px;font-size:13.5px;line-height:1.7;color:#e2e8f0;min-height:48px;text-align:right">… استمع …</div>'
+      + '</div>'
+      : '';
+    var voiceHint = _giSpeechSupported()
+      ? '<div class="gi-rec-fallback" style="margin-top:10px;color:#a7f3d0;background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3)">سوف ننسخ كلامك تلقائياً بالعربي أثناء التسجيل (نص فقط — لا تحليل نبرة).</div>'
+      : '<div class="gi-rec-fallback" style="margin-top:10px">متصفحك لا يدعم النسخ التلقائي. بعد التسجيل ستحتاج تكتب ما قلته يدوياً.</div>';
     area.innerHTML = ''
       + '<div class="gi-recorder">'
       +   '<div class="gi-recorder-status" id="giRecStatus">جاهز للتسجيل الصوتي</div>'
@@ -3573,9 +3677,20 @@ function giRenderAnswerArea(state, opts){
       +     '<button class="gi-rec-btn gi-rec-btn-start" id="giRecStartBtn" onclick="giStartRecording(\'voice\')">🎙️ بدء التسجيل</button>'
       +     '<button class="gi-rec-btn gi-rec-btn-stop" id="giRecStopBtn" onclick="giStopRecording()" style="display:none">إيقاف</button>'
       +   '</div>'
+      +   captionVoice
+      +   voiceHint
       + '</div>';
     if (submitBtn) submitBtn.disabled = true;
   } else if (mode === 'video'){
+    var captionVideo = _giSpeechSupported()
+      ? '<div id="giLiveCaptionWrap" style="display:none;margin-top:12px;text-align:right">'
+      +   '<div style="font-size:11px;font-weight:700;color:#fbbf24;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px">نسخ مباشر</div>'
+      +   '<div id="giLiveCaption" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:11px;font-size:13.5px;line-height:1.7;color:#e2e8f0;min-height:48px;text-align:right">… استمع …</div>'
+      + '</div>'
+      : '';
+    var videoHint = _giSpeechSupported()
+      ? '<div class="gi-rec-fallback" style="margin-top:10px;color:#a7f3d0;background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3)">سوف ننسخ كلامك تلقائياً بالعربي أثناء التسجيل (نص فقط — لا تحليل لغة جسد).</div>'
+      : '<div class="gi-rec-fallback" style="margin-top:10px">متصفحك لا يدعم النسخ التلقائي. بعد التسجيل ستحتاج تكتب ما قلته يدوياً.</div>';
     area.innerHTML = ''
       + '<div class="gi-recorder">'
       +   '<video id="giRecVideo" class="gi-rec-video" playsinline></video>'
@@ -3585,6 +3700,8 @@ function giRenderAnswerArea(state, opts){
       +     '<button class="gi-rec-btn gi-rec-btn-start" id="giRecStartBtn" onclick="giStartRecording(\'video\')">🎥 بدء التسجيل</button>'
       +     '<button class="gi-rec-btn gi-rec-btn-stop" id="giRecStopBtn" onclick="giStopRecording()" style="display:none">إيقاف</button>'
       +   '</div>'
+      +   captionVideo
+      +   videoHint
       + '</div>';
     if (submitBtn) submitBtn.disabled = true;
   }
@@ -5168,11 +5285,12 @@ function goTool(tool){
     return;
   }
   if(tool==='interview'){
-    // Free users get written-mode training (the heuristic localEvaluate works
-    // without OpenAI). Per-attempt limits are still enforced by the backend
-    // (POST /api/training/evaluate returns 403 once free quota is hit). The
-    // paywall used to gate the entire screen, which made the dashboard
-    // "تابع التدريب" button feel broken — fixed.
+    // All interview/training entry points route through the new Guided
+    // Interview Walkthrough. The legacy s-interview screen is preserved
+    // in the file (per the earlier spec) but no longer reachable from
+    // any user-facing CTA. If startGuidedSession exists, use it.
+    if (typeof startGuidedSession === 'function'){ startGuidedSession(); return; }
+    // Defensive fallback (should never run in production after deploy).
     loadInterviewQ();
     goScreen('s-interview');
   }
@@ -5308,61 +5426,269 @@ function renderCVStrongBullets(bullets){
   el.innerHTML = bullets.map(function(b){ return '• ' + b; }).join('<br>');
 }
 
-function initCVScreen(){
-  // Set access note
-  var note = document.getElementById('cvAccessNote');
-  var subtitle = document.getElementById('cvSubtitle');
-  var export24 = document.getElementById('cvExport24h');
-  var exportPrem = document.getElementById('cvExportPremium');
+// ── CV improvement helpers — personalize from Diagnosis + GuidedSession ───
 
-  if(isPaid){
-    if(note) note.textContent = '✅ Premium — وصول كامل';
+// Role-family keywords WITH placement hints. Used by the new keyword block
+// to tell the user where each one belongs in their CV.
+var CV_KEYWORDS_BY_FAMILY = {
+  marketing: [
+    { kw: 'Content calendar',      where: 'قسم المهارات' },
+    { kw: 'Meta Business / Ads',   where: 'قسم الأدوات' },
+    { kw: 'Google Analytics',      where: 'قسم الأدوات' },
+    { kw: 'Campaign reporting',    where: 'وصف أي تجربة سابقة' },
+    { kw: 'Canva / Figma',         where: 'قسم الأدوات' },
+    { kw: 'A/B testing',           where: 'قسم المهارات' },
+  ],
+  hr: [
+    { kw: 'Recruitment coordination', where: 'وصف خبرتك الحالية أو التطوع' },
+    { kw: 'HR reporting (Excel)',  where: 'قسم الأدوات' },
+    { kw: 'Confidentiality',       where: 'قسم المهارات الناعمة' },
+    { kw: 'Saudization / GOSI / Mudad', where: 'قسم المعرفة بالأنظمة' },
+    { kw: 'Onboarding',            where: 'وصف الخبرة' },
+    { kw: 'Talent sourcing',       where: 'قسم المهارات' },
+  ],
+  accounting: [
+    { kw: 'Accounts Payable (AP)', where: 'قسم المهارات' },
+    { kw: 'Accounts Receivable (AR)', where: 'قسم المهارات' },
+    { kw: 'Reconciliation',        where: 'قسم المهارات' },
+    { kw: 'Excel (VLOOKUP, Pivot)',where: 'قسم الأدوات' },
+    { kw: 'SAP / Zoho Books / QuickBooks', where: 'قسم الأدوات' },
+    { kw: 'Monthly closing',       where: 'وصف خبرتك' },
+  ],
+  sales: [
+    { kw: 'Targets / Quota',       where: 'وصف خبرتك' },
+    { kw: 'CRM (Salesforce / HubSpot)', where: 'قسم الأدوات' },
+    { kw: 'Cold outreach',         where: 'قسم المهارات' },
+    { kw: 'Objection handling',    where: 'قسم المهارات' },
+    { kw: 'Follow-up cadence',     where: 'قسم المهارات' },
+    { kw: 'Pipeline management',   where: 'قسم المهارات' },
+  ],
+  customer_service: [
+    { kw: 'Complaint resolution',  where: 'قسم المهارات' },
+    { kw: 'De-escalation',         where: 'قسم المهارات الناعمة' },
+    { kw: 'CRM (Zendesk / Freshdesk)', where: 'قسم الأدوات' },
+    { kw: 'Response time SLA',     where: 'وصف الخبرة' },
+    { kw: 'CSAT / NPS',            where: 'وصف الخبرة' },
+    { kw: 'Multi-channel support', where: 'قسم المهارات' },
+  ],
+  it_cyber: [
+    { kw: 'TryHackMe / HackTheBox labs', where: 'قسم المشاريع' },
+    { kw: 'CompTIA Security+ / Google IT', where: 'قسم الشهادات' },
+    { kw: 'Linux basics',          where: 'قسم المهارات' },
+    { kw: 'Wireshark / SIEM',      where: 'قسم الأدوات' },
+    { kw: 'Networking fundamentals', where: 'قسم المهارات' },
+    { kw: 'Helpdesk ticketing',    where: 'قسم المهارات' },
+  ],
+  design: [
+    { kw: 'Figma / Adobe XD',      where: 'قسم الأدوات' },
+    { kw: 'Behance / Dribbble link', where: 'قسم بيانات التواصل' },
+    { kw: 'Design system',         where: 'قسم المهارات' },
+    { kw: 'Visual hierarchy',      where: 'قسم المهارات' },
+    { kw: 'Wireframing',           where: 'قسم المهارات' },
+    { kw: 'Branding samples',      where: 'قسم المشاريع' },
+  ],
+  admin_office: [
+    { kw: 'Calendar / scheduling', where: 'قسم المهارات' },
+    { kw: 'Microsoft 365 (Outlook, Teams)', where: 'قسم الأدوات' },
+    { kw: 'Excel reporting',       where: 'قسم الأدوات' },
+    { kw: 'Vendor coordination',   where: 'قسم المهارات' },
+    { kw: 'Document control',      where: 'قسم المهارات' },
+    { kw: 'Meeting minutes',       where: 'قسم المهارات' },
+  ],
+  generic: [
+    { kw: 'Excel basics',          where: 'قسم الأدوات' },
+    { kw: 'Microsoft 365',         where: 'قسم الأدوات' },
+    { kw: 'Communication',         where: 'قسم المهارات الناعمة' },
+    { kw: 'Problem solving',       where: 'قسم المهارات الناعمة' },
+    { kw: 'Time management',       where: 'قسم المهارات الناعمة' },
+  ],
+};
+
+// Build a personalized "after" summary per branch + family.
+function cvBuildImprovedSummary(diag){
+  if (!diag) return 'متخصص يستهدف بناء مسار مهني واضح مع نتائج قابلة للقياس.';
+  var dr = diag.dreamRole || 'هدفك المهني';
+  var fam = diag.family && DREAM_ROLE_LIBRARY[diag.family] ? DREAM_ROLE_LIBRARY[diag.family] : null;
+  var famAr = fam ? fam.familyAr : 'مجالك';
+  // Branch A — simple job track
+  if (diag.branch === 'A'){
+    return 'باحث عن دور خدمة عملاء / مبيعات تجزئة في فرع، يتميز بالتعامل اللطيف مع العملاء والقدرة على حل المشكلات بهدوء والالتزام بالدوام. مستعد للبدء فوراً.';
+  }
+  // Branch B — fresh grad / building evidence
+  if (diag.branch === 'B'){
+    return 'في بداية مسار ' + famAr + '، مهتم بـ ' + dr + ' ومستعد لبناء الخبرة من خلال أقرب دور entry-level. ' +
+           'يعمل على ' + (fam && fam.bridgePlan && fam.bridgePlan[0] ? fam.bridgePlan[0] : 'بناء أمثلة عملية تثبت الاتجاه') + '، ' +
+           'يلتزم بالتطور المستمر وتقديم نتائج موثّقة.';
+  }
+  // Branch C — experienced; use diagnosis improvedSummary if present
+  if (diag.branch === 'C'){
+    if (diag.improvedSummary) return diag.improvedSummary;
+    return 'متخصص ' + famAr + ' يستهدف ' + dr + '، عنده سجل في ' +
+           (fam && fam.commonGaps && fam.commonGaps.length ? 'تجاوز ' + fam.commonGaps[0] : 'تحقيق نتائج موثّقة') + '، ' +
+           'يبحث عن دور يمزج الخبرة مع التأثير القابل للقياس.';
+  }
+  return 'متخصص يستهدف ' + dr + ' بنتائج قابلة للقياس والمساهمة في فريق منظم.';
+}
+
+// Transform an answer text into a CV-bullet style line (situation → action → result).
+// Trims to ~140 chars and capitalizes the first verb when possible.
+function cvAnswerToBullet(answerText){
+  if (!answerText) return null;
+  var t = answerText.replace(/\s+/g, ' ').trim();
+  if (t.length < 25) return null;
+  // Keep first 2 sentences if there are clear stops.
+  var parts = t.split(/[\.،؟!]/).filter(function(s){ return s.trim().length > 6; });
+  var first = (parts[0] || '').trim();
+  var second = (parts[1] || '').trim();
+  var bullet = (second && (first.length + second.length < 160)) ? (first + ' — ' + second) : first;
+  if (bullet.length > 160) bullet = bullet.substring(0, 158) + '…';
+  return bullet;
+}
+
+// Render the achievement-rewrite block. Prefers GuidedSession answers
+// (real user content) and falls back to role-family non-numeric bullets.
+function cvRenderAchievements(diag, session){
+  var bullets = [];
+  // 1) Pull from the user's own guided-session answers if any have decent length
+  if (session && session.answers && session.answers.length){
+    session.answers.forEach(function(a){
+      var b = cvAnswerToBullet(a.answerText);
+      if (b) bullets.push(b);
+    });
+  }
+  // 2) Fall back to role-family non-numeric bullets so the block is never empty
+  if (bullets.length < 3){
+    var fam = (diag && diag.family) || 'generic';
+    var pack = (typeof CV_BULLETS !== 'undefined' && CV_BULLETS[fam]) ? CV_BULLETS[fam] : (CV_BULLETS && CV_BULLETS.generic);
+    if (pack && pack.noMetrics){
+      pack.noMetrics.slice(0, 3 - bullets.length).forEach(function(b){ bullets.push(b); });
+    }
+  }
+  bullets = bullets.slice(0, 3);
+  var el = document.getElementById('cvS3strong');
+  if (el) el.innerHTML = bullets.map(function(b){ return '• ' + b; }).join('<br>');
+  return bullets;
+}
+
+function cvRenderKeywords(diag){
+  var el = document.getElementById('kwList');
+  if (!el) return [];
+  var fam = (diag && diag.family) || 'generic';
+  var list = CV_KEYWORDS_BY_FAMILY[fam] || CV_KEYWORDS_BY_FAMILY.generic;
+  // Filter out keywords already present in the user's CV (case-insensitive substring)
+  var cv = ((diag && diag.cvText) || '').toLowerCase();
+  var missing = list.filter(function(item){ return cv.indexOf(item.kw.toLowerCase()) === -1; });
+  if (!missing.length) missing = list.slice(0, 4); // CV already strong — still show recommended set
+  el.innerHTML = missing.map(function(item){
+    return '<div style="background:#fff;border:1px solid #e6e6f0;border-radius:10px;padding:10px 12px;width:100%">'
+      +    '<div style="font-size:13px;font-weight:700;color:#0a0a0a;margin-bottom:3px">+ ' + item.kw + '</div>'
+      +    '<div style="font-size:11.5px;color:#666">ضعها في: <b>' + item.where + '</b></div>'
+      +  '</div>';
+  }).join('');
+  el.style.flexDirection = 'column';
+  el.style.gap = '8px';
+  return missing.map(function(i){ return i.kw; });
+}
+
+function cvRenderWhyChanged(diag, session, keywordsAdded, bulletsFromSession){
+  var card = document.getElementById('cvWhyCard');
+  var list = document.getElementById('cvWhyList');
+  if (!card || !list){ return; }
+  if (!diag){ card.style.display = 'none'; return; }
+  var items = [];
+  items.push('غيّرنا الملخص ليذكر هدفك صراحةً (<b>' + (diag.dreamRole || '—') + '</b>) — هذا ما يبحث عنه الـ HR في أول ٧ ثوانٍ.');
+  if (keywordsAdded && keywordsAdded.length){
+    items.push('أضفنا <b>' + keywordsAdded.length + ' كلمات</b> تظهر في إعلانات هذا الدور (' +
+      keywordsAdded.slice(0, 3).map(function(k){ return '<span style="font-weight:700">' + k + '</span>'; }).join('، ') +
+      (keywordsAdded.length > 3 ? '،...' : '') + ').');
+  }
+  if (bulletsFromSession && bulletsFromSession.length){
+    items.push('حوّلنا <b>' + bulletsFromSession.length + ' من إجاباتك في جلسة التجهيز</b> لنقاط CV بصيغة (موقف → دور → نتيجة).');
+  } else {
+    items.push('استخدمنا قوالب نقاط احترافية لمجالك. شغّل جلسة تجهيز لتحويل قصصك أنت لنقاط CV.');
+  }
+  if (diag.branch === 'C'){
+    items.push('ركّزنا على إبراز <b>نتائج</b> بدل <b>وصف مهام</b> — وهذا أكبر فارق بين سيرتك الحالية والمطلوب.');
+  } else if (diag.branch === 'B'){
+    items.push('بنينا الدليل من المشاريع والتجارب الموجودة في سيرتك بدل ادعاء خبرة لا تملكها.');
+  }
+  list.innerHTML = items.map(function(i){
+    return '<li style="font-size:13px;color:#1f2937;line-height:1.75;padding-right:18px;position:relative">'
+      +    '<span style="position:absolute;right:0;color:#4f46e5">✓</span> ' + i + '</li>';
+  }).join('');
+  card.style.display = 'block';
+}
+
+function initCVScreen(){
+  // Access note — Free / 24h / Founder LTD / Admin
+  var note      = document.getElementById('cvAccessNote');
+  var subtitle  = document.getElementById('cvSubtitle');
+  var export24  = document.getElementById('cvExport24h');
+  var exportPrem= document.getElementById('cvExportPremium');
+  var accSt     = (typeof Access !== 'undefined' && Access.state) ? Access.state() : { status: 'none' };
+  var unlocked  = (accSt.status === 'admin' || accSt.status === 'founder_ltd' || isPaid);
+  if (unlocked){
+    if(note) note.textContent = accSt.status === 'admin' ? '🛡 Admin — وصول كامل' : '✓ Founder — وصول كامل';
     if(subtitle) subtitle.textContent = 'حمّل نسخة نظيفة جاهزة للتقديم.';
     if(export24) export24.style.display = 'none';
     if(exportPrem) exportPrem.style.display = 'block';
-  } else if (is24h) {
+  } else if (accSt.status === 'free_24h' || is24h){
     if(note) note.textContent = '⏱ 24 ساعة';
-    if(subtitle) subtitle.textContent = 'تقدر تنسخ الأقسام المحسنة وتعاين القوالب. تحميل PDF نظيف بدون علامة مائية متاح في Premium فقط.';
+    if(subtitle) subtitle.textContent = 'تقدر تنسخ الأقسام المحسنة. تحميل PDF نظيف بدون علامة مائية في Founder LTD.';
+    if(export24) export24.style.display = 'block';
+    if(exportPrem) exportPrem.style.display = 'none';
   } else {
     if(note) note.textContent = 'معاينة مجانية';
-    if(subtitle) subtitle.textContent = 'تقدر تطّلع وتنسخ. لتحميل PDF نظيف فعّل 24 ساعة أو Premium.';
+    if(subtitle) subtitle.textContent = 'تقدر تطّلع وتنسخ. لتحميل PDF نظيف فعّل وصول 24 ساعة أو Founder LTD.';
+    if(export24) export24.style.display = 'block';
+    if(exportPrem) exportPrem.style.display = 'none';
   }
 
-  // Pull canonical Analysis state. CV improvement always reads from here so a
-  // dashboard with a stale role can never leak into the bullets shown here.
+  // Hide the legacy "type a number" placeholder-fill UX entirely.
+  var guide = document.getElementById('cvGuideQ');
+  if (guide) guide.style.display = 'none';
+
+  // Pull canonical state. Prefer Diagnosis; fall back to Analysis if needed.
+  var diag = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+  var session = (typeof GuidedSession !== 'undefined' && GuidedSession.get) ? GuidedSession.get() : null;
   var a = Analysis.get();
-  var job = (a && a.targetRole) || localStorage.getItem('darbi_job') || 'الدور المستهدف';
-  var family = (a && a.roleFamily) || detectRoleFamily(job);
-  var kw = (a && a.recommendedKeywords) || [];
+  var dreamRole = (diag && diag.dreamRole) || (a && a.targetRole) || 'هدفك المهني';
+  var family    = (diag && diag.family)     || (a && a.roleFamily) || detectRoleFamily(dreamRole);
 
-  // Suggested summary — use AI-improved summary if available, else a
-  // role-aware fallback. No [X]/[Y]/[Z] tokens.
-  var s1after = document.getElementById('cvS1after');
-  if(s1after){
-    var summary = (a && a.improvedSummary) || ('متخصص في ' + job + ' مع التزام بتحقيق نتائج ملموسة وتجربة عميل منظمة.');
-    s1after.textContent = summary;
-  }
-
-  // Keywords
-  var kwList = document.getElementById('kwList');
-  if(kwList){
-    if (kw.length) {
-      kwList.innerHTML = kw.map(function(k){
-        return '<span class="pill-b" style="cursor:pointer" onclick="this.style.background=\'#dcfce7\';this.style.color=\'#166534\'">+ '+k+'</span>';
-      }).join('');
+  // Diagnosis recap pill (top of screen)
+  var recapEl = document.getElementById('cvDiagRecap');
+  if (recapEl){
+    if (diag){
+      recapEl.style.display = 'block';
+      document.getElementById('cvRecapDream').textContent = dreamRole;
+      document.getElementById('cvRecapGap').textContent   = diag.biggestGap || 'بحاجة لتشخيص أعمق';
     } else {
-      kwList.innerHTML = '<span style="font-size:12px;color:#888">شغّل تحليلاً لاقتراح كلمات مفتاحية مطابقة لسيرتك.</span>';
+      recapEl.style.display = 'none';
     }
   }
 
-  // Strong bullets — never contains raw [X]/[Y]/[Z]. Default to non-numeric
-  // professional bullets; user can supply a number via the guide question to
-  // upgrade them to metric versions.
-  renderCVStrongBullets(pickCVBullets(family, null));
+  // Step 1 — personalized improved summary (no [X]/[Y]/[Z], no template fills)
+  var s1after = document.getElementById('cvS1after');
+  if (s1after) s1after.textContent = cvBuildImprovedSummary(diag || { dreamRole: dreamRole, family: family, branch: (a && a.seniorityLevel === 'senior') ? 'C' : 'B' });
+  var s1lbl = document.getElementById('cvS1afterDreamLabel');
+  if (s1lbl) s1lbl.textContent = dreamRole;
+  var s1why = document.getElementById('cvS1afterWhy');
+  if (s1why) s1why.textContent = '✦ يذكر الدور (' + dreamRole + ') + الخبرة + هدف واضح — هذا ما يبحث عنه الـ HR.';
 
-  // Step numbers
-  document.getElementById('cvS2n').className = 'sn sn-active';
-  document.getElementById('cvS3n').className = 'sn sn-active';
+  // Step 2 — keywords with placement hints
+  var keywordsAdded = cvRenderKeywords(diag || { family: family, cvText: (a && a.cvText) || '' });
+
+  // Step 3 — achievement rewrites from GuidedSession (or family fallback)
+  var bulletsFromSession = (session && session.answers && session.answers.length)
+    ? cvRenderAchievements(diag || { family: family }, session)
+    : (cvRenderAchievements(diag || { family: family }, null), []);
+
+  // Step indicators
+  if (document.getElementById('cvS2n')) document.getElementById('cvS2n').className = 'sn sn-active';
+  if (document.getElementById('cvS3n')) document.getElementById('cvS3n').className = 'sn sn-active';
+
+  // "What changed and why" panel — populated last so we can reference everything
+  cvRenderWhyChanged(diag, session, keywordsAdded, bulletsFromSession);
 }
 
 function copyCV(section){
