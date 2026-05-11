@@ -3536,6 +3536,12 @@ function giRenderAnswerArea(state, opts){
     var media = opts.isVideo
       ? '<video src="' + opts.url + '" controls style="width:100%;max-width:320px;display:block;margin:0 auto 10px;border-radius:9px;background:#000"></video>'
       : '<audio src="' + opts.url + '" controls style="width:100%;margin-bottom:10px"></audio>';
+    // Per spec: transcription is not auto-attempted. Always show the
+    // fallback wording so the user is honest about what's happening
+    // ("تعذر تحويل الصوت/الفيديو تلقائياً. اكتب ما قلته لتقييم الإجابة.")
+    var fallbackMsg = opts.isVideo
+      ? 'تعذر تحويل الفيديو تلقائياً. اكتب ما قلته لتقييم الإجابة. (دربي يقيّم النص فقط — لا ندّعي تحليل نبرة الصوت أو لغة الجسد.)'
+      : 'تعذر تحويل الصوت تلقائياً. اكتب ما قلته لتقييم الإجابة. (دربي يقيّم النص فقط — لا ندّعي تحليل نبرة الصوت.)';
     area.innerHTML = ''
       + '<div class="gi-recorder" style="background:#0f172a">'
       +   '<div class="gi-recorder-status">✓ تم التسجيل (' + _giFmtSecs(_giRec.secs) + ')</div>'
@@ -3543,7 +3549,7 @@ function giRenderAnswerArea(state, opts){
       +   '<div class="gi-recorder-controls">'
       +     '<button class="gi-rec-btn gi-rec-btn-redo" onclick="giRedoRecording()">إعادة التسجيل</button>'
       +   '</div>'
-      +   '<div class="gi-rec-fallback">دربي يقيّم النص فقط. اكتب أو الصق ما قلته للتقييم. (لا ندّعي تحليل نبرة الصوت أو لغة الجسد.)</div>'
+      +   '<div class="gi-rec-fallback">' + fallbackMsg + '</div>'
       +   '<textarea id="giAnsText" class="diag-input diag-textarea" style="margin-top:10px;background:#fff" placeholder="اكتب أو الصق ما قلته في التسجيل..."></textarea>'
       + '</div>';
     if (submitBtn) submitBtn.disabled = false;
