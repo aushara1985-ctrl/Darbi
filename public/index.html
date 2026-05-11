@@ -461,6 +461,150 @@ body{font-family:'Cairo',sans-serif;background:#f8f8fc;color:#0a0a0a}
   .diag-supporting{grid-template-columns:repeat(2,1fr);gap:7px}
 }
 
+/* ══════ LANDING PAGE v3 — premium, big type, real product feel ══════ */
+.lp-nav{background:#fff;border-bottom:1px solid #ececf4;padding:0;height:72px;display:flex;align-items:center;position:sticky;top:0;z-index:60;backdrop-filter:saturate(180%) blur(8px);background:rgba(255,255,255,.92)}
+.lp-nav-inner{max-width:1120px;margin:0 auto;width:100%;padding:0 28px;display:flex;align-items:center;gap:18px}
+.lp-nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;margin-left:auto}
+.lp-nav-mark{width:34px;height:34px;background:#4f46e5;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:800}
+.lp-nav-name{font-size:18px;font-weight:800;color:#0a0a0a;letter-spacing:-.3px}
+.lp-nav-links{display:flex;gap:6px;align-items:center}
+.lp-nav-link{padding:9px 14px;font-size:15px;color:#444;border-radius:9px;cursor:pointer;font-weight:600;transition:.12s;background:transparent;border:none;font-family:inherit}
+.lp-nav-link:hover{background:#f5f5fa;color:#0a0a0a}
+.lp-nav-cta{margin-right:auto;display:flex;align-items:center;gap:10px}
+.lp-btn{padding:11px 22px;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;border:none;transition:.15s;line-height:1;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.lp-btn-p{background:#4f46e5;color:#fff}
+.lp-btn-p:hover{background:#4338ca;transform:translateY(-1px);box-shadow:0 8px 20px rgba(79,70,229,.25)}
+.lp-btn-s{background:#fff;color:#0a0a0a;border:1.5px solid #e6e6f0}
+.lp-btn-s:hover{background:#fafafe;border-color:#c7d2fe}
+.lp-btn-lg{padding:16px 32px;font-size:17px;font-weight:800;border-radius:13px}
+.lp-burger{display:none;background:none;border:none;color:#0a0a0a;font-size:24px;cursor:pointer;padding:6px 10px;font-family:inherit}
+.lp-mobile-menu{display:none;position:fixed;top:72px;right:0;left:0;background:#fff;border-bottom:1px solid #ececf4;padding:16px 24px;z-index:55;flex-direction:column;gap:6px;box-shadow:0 12px 24px rgba(15,23,42,.05)}
+.lp-mobile-menu.open{display:flex}
+.lp-mobile-menu a{padding:13px 12px;color:#1f2937;font-size:16px;font-weight:600;cursor:pointer;border-radius:9px;text-decoration:none}
+.lp-mobile-menu a:hover{background:#f5f5fa}
+.lp-mobile-menu .lp-btn{width:100%;justify-content:center;margin-top:6px}
+
+/* Sections shell */
+.lp-section{max-width:1120px;margin:0 auto;padding:88px 28px}
+.lp-section-sm{max-width:1120px;margin:0 auto;padding:60px 28px}
+.lp-bg-gray{background:#fafafa}
+.lp-bg-white{background:#fff}
+.lp-eyebrow{display:inline-block;font-size:13px;font-weight:800;color:#4f46e5;letter-spacing:.4px;text-transform:uppercase;background:#eef2ff;padding:7px 14px;border-radius:99px;margin-bottom:18px}
+.lp-h2{font-size:38px;font-weight:900;letter-spacing:-1.5px;line-height:1.15;color:#0a0a0a;margin-bottom:14px}
+.lp-h2 span{color:#4f46e5}
+.lp-sub{font-size:18px;color:#4b5563;line-height:1.7;max-width:680px}
+
+/* Hero */
+.lp-hero{padding:96px 28px 60px;max-width:1120px;margin:0 auto;text-align:right}
+.lp-hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.lp-hero-badge{display:inline-flex;align-items:center;gap:8px;background:#eef2ff;color:#4338ca;font-size:14px;font-weight:700;padding:8px 16px;border-radius:99px;margin-bottom:24px;border:1px solid #c7d2fe}
+.lp-hero-badge::before{content:'';width:8px;height:8px;background:#4f46e5;border-radius:50%;animation:lp-pulse 2s infinite}
+@keyframes lp-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.lp-h1{font-size:58px;font-weight:900;line-height:1.1;letter-spacing:-2.5px;color:#0a0a0a;margin-bottom:18px}
+.lp-h1 span{color:#4f46e5}
+.lp-hero-sub{font-size:23px;font-weight:600;color:#374151;line-height:1.5;margin-bottom:14px;max-width:560px}
+.lp-hero-support{font-size:18px;color:#6b7280;line-height:1.75;margin-bottom:30px;max-width:560px}
+.lp-hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.lp-hero-meta{font-size:14px;color:#9ca3af;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.lp-hero-meta-item{display:flex;align-items:center;gap:6px}
+.lp-hero-meta-item::before{content:'✓';color:#10b981;font-weight:800;font-size:13px}
+
+/* Hero diagnosis card — the visual that shows what Darbi actually produces */
+.lp-diag-card{background:#fff;border:1px solid #ececf4;border-radius:24px;padding:28px;box-shadow:0 24px 48px rgba(15,23,42,.07),0 4px 12px rgba(15,23,42,.04);position:relative}
+.lp-diag-card::before{content:'تشخيص نموذجي';position:absolute;top:-12px;right:24px;background:#4f46e5;color:#fff;font-size:11px;font-weight:800;letter-spacing:.5px;padding:5px 12px;border-radius:99px;text-transform:uppercase}
+.lp-diag-row{padding:13px 0;border-bottom:1px solid #f3f4f6;display:flex;flex-direction:column;gap:5px}
+.lp-diag-row:last-child{border-bottom:none}
+.lp-diag-label{font-size:12px;font-weight:800;color:#9ca3af;letter-spacing:.5px;text-transform:uppercase}
+.lp-diag-val{font-size:18px;font-weight:700;color:#0a0a0a;line-height:1.5}
+.lp-diag-val.is-target{color:#16a34a}
+.lp-diag-val.is-bridge{color:#4f46e5}
+
+/* Problem section */
+.lp-problem-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:36px}
+.lp-problem-card{background:#fff;border:1px solid #ececf4;border-radius:18px;padding:24px;display:flex;gap:16px;align-items:flex-start}
+.lp-problem-num{flex-shrink:0;width:40px;height:40px;border-radius:11px;background:#fef2f2;color:#dc2626;font-size:17px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.lp-problem-body h3{font-size:18px;font-weight:800;color:#0a0a0a;margin-bottom:6px;line-height:1.4}
+.lp-problem-body p{font-size:15px;color:#6b7280;line-height:1.7}
+
+/* How it works */
+.lp-how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:36px}
+.lp-how-step{background:#fff;border:1px solid #ececf4;border-radius:18px;padding:24px;text-align:center;position:relative}
+.lp-how-num{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:#eef2ff;color:#4f46e5;font-size:18px;font-weight:900;margin-bottom:14px}
+.lp-how-title{font-size:17px;font-weight:800;color:#0a0a0a;margin-bottom:6px;line-height:1.4}
+.lp-how-sub{font-size:14px;color:#6b7280;line-height:1.6}
+
+/* Wow example */
+.lp-example{background:linear-gradient(135deg,#1e1b4b 0%,#3b0764 100%);border-radius:24px;padding:48px 36px;color:#fff;margin-top:36px}
+.lp-example-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.lp-example-col h4{font-size:13px;font-weight:800;color:#a5b4fc;letter-spacing:.6px;text-transform:uppercase;margin-bottom:14px}
+.lp-example-input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px}
+.lp-example-input .lp-ex-row{padding:9px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:15px;color:#e2e8f0;line-height:1.6;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.lp-example-input .lp-ex-row:last-child{border-bottom:none}
+.lp-example-input .lp-ex-label{color:#94a3b8;font-size:13px;font-weight:600}
+.lp-example-input .lp-ex-val{color:#fff;font-weight:700}
+.lp-example-output{background:#fff;color:#0a0a0a;border-radius:14px;padding:18px}
+.lp-example-output .lp-ex-section{padding:9px 0;border-bottom:1px solid #f3f4f6}
+.lp-example-output .lp-ex-section:last-child{border-bottom:none}
+.lp-example-output .lp-ex-section h5{font-size:12px;font-weight:800;color:#4f46e5;letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
+.lp-example-output .lp-ex-section p{font-size:14.5px;color:#1f2937;line-height:1.65;margin:0}
+
+/* Access options */
+.lp-access-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
+.lp-access-card{background:#fff;border:1px solid #ececf4;border-radius:20px;padding:26px;display:flex;flex-direction:column}
+.lp-access-card.is-hot{border:2px solid #4f46e5;background:linear-gradient(180deg,#fafafe,#fff)}
+.lp-access-tag{display:inline-block;font-size:11px;font-weight:800;color:#4f46e5;background:#eef2ff;padding:5px 11px;border-radius:99px;letter-spacing:.4px;text-transform:uppercase;margin-bottom:12px;align-self:flex-start}
+.lp-access-card h3{font-size:20px;font-weight:900;color:#0a0a0a;margin-bottom:6px}
+.lp-access-card .lp-access-price{font-size:30px;font-weight:900;color:#0a0a0a;letter-spacing:-1px;margin:8px 0}
+.lp-access-card .lp-access-sub{font-size:13.5px;color:#6b7280;margin-bottom:18px;line-height:1.6}
+.lp-access-list{list-style:none;padding:0;margin:0 0 22px;display:flex;flex-direction:column;gap:9px;flex:1}
+.lp-access-list li{font-size:15px;color:#1f2937;display:flex;gap:9px;line-height:1.6}
+.lp-access-list li::before{content:'✓';color:#10b981;font-weight:900;flex-shrink:0}
+.lp-access-fineprint{font-size:12.5px;color:#9ca3af;margin-top:10px;line-height:1.6}
+
+/* Sharing loop */
+.lp-share-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;margin-top:36px}
+.lp-share-card{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);border-radius:20px;padding:32px;color:#fff;box-shadow:0 20px 40px rgba(124,58,237,.25)}
+.lp-share-card-eyebrow{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;opacity:.85;margin-bottom:6px}
+.lp-share-card-val{font-size:22px;font-weight:900;margin-bottom:18px;line-height:1.3}
+.lp-share-card-row{font-size:15px;line-height:1.6;margin-bottom:12px}
+.lp-share-card-row b{font-weight:800}
+.lp-share-card-foot{font-size:11px;opacity:.7;text-align:left;direction:ltr;margin-top:18px;letter-spacing:.5px}
+
+/* Final CTA */
+.lp-finalcta{text-align:center;background:#0f172a;color:#fff;border-radius:24px;padding:64px 36px;margin:88px auto;max-width:1064px}
+.lp-finalcta h2{font-size:42px;font-weight:900;letter-spacing:-1.5px;margin-bottom:14px;line-height:1.15}
+.lp-finalcta p{font-size:18px;color:#cbd5e1;line-height:1.7;margin-bottom:28px;max-width:600px;margin-left:auto;margin-right:auto}
+
+/* Footer */
+.lp-footer{border-top:1px solid #ececf4;padding:36px 28px;max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;font-size:13.5px;color:#6b7280}
+.lp-footer-logo{display:flex;align-items:center;gap:8px;color:#0a0a0a;font-weight:800}
+.lp-footer-links{display:flex;gap:18px}
+.lp-footer-links a{color:#6b7280;text-decoration:none;cursor:pointer}
+.lp-footer-links a:hover{color:#0a0a0a}
+
+@media (max-width:900px){
+  .lp-nav-links{display:none}
+  .lp-burger{display:inline-flex}
+  .lp-nav-cta .lp-btn:not(.lp-burger){display:none}
+  .lp-hero{padding:60px 22px 40px}
+  .lp-hero-grid{grid-template-columns:1fr;gap:36px;text-align:right}
+  .lp-h1{font-size:36px;letter-spacing:-1.5px}
+  .lp-hero-sub{font-size:18px}
+  .lp-hero-support{font-size:16px}
+  .lp-section{padding:60px 22px}
+  .lp-h2{font-size:28px;letter-spacing:-.8px}
+  .lp-sub{font-size:16px}
+  .lp-problem-grid{grid-template-columns:1fr;gap:12px}
+  .lp-how-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .lp-example{padding:32px 20px}
+  .lp-example-grid{grid-template-columns:1fr;gap:18px}
+  .lp-access-grid{grid-template-columns:1fr;gap:14px}
+  .lp-share-grid{grid-template-columns:1fr;gap:24px}
+  .lp-finalcta{padding:48px 24px;margin:60px 18px;border-radius:18px}
+  .lp-finalcta h2{font-size:30px}
+  .lp-footer{flex-direction:column;text-align:center;padding:30px 22px}
+}
+
 /* Bridge plan — 7-day list + CTA stack */
 .bp-day-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
 .bp-day-row{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:#fafafe;border:1px solid #ececf4;border-radius:10px}
@@ -820,436 +964,348 @@ img,video,iframe{max-width:100%}
 <body>
 
 <!-- NAV (always visible) -->
-<nav class="nav">
-  <div class="nav-logo" onclick="showLanding()" style="cursor:pointer">
-    <div class="nav-ic">د</div>
-    <span class="nav-name">دربي</span>
+<!-- ════ LANDING NAVBAR — clean, premium, "selling-focused" ════
+     Logged-in users see app links via the existing display toggles. The
+     landing-specific items (كيف يعمل / مثال / الوصول) live in lpNavGuest
+     and are hidden when navUser is shown. -->
+<nav class="lp-nav" id="lpNav">
+  <div class="lp-nav-inner">
+    <div class="lp-nav-logo" onclick="showLanding()">
+      <div class="lp-nav-mark">د</div>
+      <span class="lp-nav-name">Darbi · دربي</span>
+    </div>
+
+    <!-- Guest links (landing scrolls) -->
+    <div class="lp-nav-links" id="navGuest">
+      <button class="lp-nav-link" onclick="lpScrollTo('lp-how')">كيف يعمل</button>
+      <button class="lp-nav-link" onclick="lpScrollTo('lp-example')">مثال</button>
+      <button class="lp-nav-link" onclick="lpScrollTo('lp-access')">الوصول</button>
+      <button class="lp-nav-link" onclick="openAuth('login')">دخول</button>
+    </div>
+
+    <!-- Logged-in links (app navigation) -->
+    <div class="lp-nav-links" id="navUser" style="display:none">
+      <button class="lp-nav-link" onclick="goScreen('s-dashboard')">لوحتي</button>
+      <button class="lp-nav-link" onclick="startGuidedSession()">التدريب</button>
+      <span id="navCredit" class="nav-credit-pill" onclick="goScreen('s-dashboard')" style="font-size:13px;font-weight:700;padding:5px 12px;border-radius:99px;cursor:pointer;background:#f5f5f8;color:#666;display:none"></span>
+      <span id="navPremiumBadge" style="display:none;background:#dcfce7;color:#166534;font-size:12px;font-weight:700;padding:4px 11px;border-radius:99px;border:1px solid #a7f3d0">Premium ✓</span>
+    </div>
+
+    <div class="lp-nav-cta">
+      <!-- Guest -->
+      <button class="lp-btn lp-btn-p" id="navStartBtn" onclick="startDiagnosis()">ابدأ التشخيص</button>
+      <!-- Logged-in -->
+      <button class="lp-btn lp-btn-s" id="navLogoutBtn" style="display:none" onclick="logoutUser()">خروج</button>
+      <!-- Hidden but kept for legacy callers (openAuth, etc.) -->
+      <button class="lp-btn lp-btn-s" id="navLoginBtn" style="display:none" onclick="openAuth('login')">تسجيل الدخول</button>
+      <!-- Mobile burger -->
+      <button class="lp-burger" id="navBurger" onclick="lpToggleMobileMenu()" aria-label="القائمة">≡</button>
+    </div>
   </div>
 
-  <!-- Guest nav links -->
-  <div class="nav-links" id="navGuest">
-    <span class="nav-link" onclick="scrollTo('hiw-section')">كيف يعمل</span>
-    <span class="nav-link" onclick="scrollTo('pricing-section')">التسعيرة</span>
-  </div>
-
-  <!-- Logged-in nav links -->
-  <div class="nav-links" id="navUser" style="display:none">
-    <span class="nav-link" onclick="goScreen('s-dashboard')">لوحتي</span>
-    <span class="nav-link" onclick="startGuidedSession()">التدريب</span>
-    <span id="navCredit" class="nav-credit-pill" onclick="goScreen('s-dashboard')"></span>
-    <span id="navPremiumBadge" style="display:none;background:#dcfce7;color:#166534;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid #a7f3d0">Premium ✓</span>
-  </div>
-
-  <div class="nav-btns">
-    <!-- Guest -->
-    <button class="btn-ghost" id="navLoginBtn" onclick="openAuth('login')">تسجيل الدخول</button>
-    <button class="btn-fill"  id="navStartBtn" onclick="focusAnalyze()">ابدأ التحليل</button>
-    <!-- Logged-in -->
-    <button class="btn-ghost" id="navLogoutBtn" style="display:none" onclick="logoutUser()">خروج</button>
-    <!-- Hamburger -->
-    <button class="nav-burger" id="navBurger" onclick="toggleMobileMenu()" aria-label="القائمة">
-      <span></span><span></span><span></span>
-    </button>
+  <!-- Mobile menu — toggled by lpToggleMobileMenu() -->
+  <div class="lp-mobile-menu" id="navMobileMenu">
+    <div id="mobileGuest">
+      <a onclick="lpScrollTo('lp-how');lpToggleMobileMenu()">كيف يعمل</a>
+      <a onclick="lpScrollTo('lp-example');lpToggleMobileMenu()">مثال</a>
+      <a onclick="lpScrollTo('lp-access');lpToggleMobileMenu()">الوصول</a>
+      <a onclick="openAuth('login');lpToggleMobileMenu()">دخول</a>
+      <button class="lp-btn lp-btn-p" onclick="startDiagnosis();lpToggleMobileMenu()">ابدأ التشخيص</button>
+    </div>
+    <div id="mobileUser" style="display:none">
+      <a onclick="goScreen('s-dashboard');lpToggleMobileMenu()">🏠 لوحتي</a>
+      <a onclick="startGuidedSession();lpToggleMobileMenu()">🎯 التدريب</a>
+      <a onclick="logoutUser();lpToggleMobileMenu()">خروج</a>
+    </div>
   </div>
 </nav>
-
-<!-- Mobile nav menu -->
-<div class="nav-mobile-menu" id="navMobileMenu">
-  <div id="mobileGuest">
-    <div class="nmlink" onclick="scrollTo('hiw-section');closeMobileMenu()">كيف يعمل</div>
-    <div class="nmlink" onclick="scrollTo('pricing-section');closeMobileMenu()">التسعيرة</div>
-    <div class="nmdiv"></div>
-    <div class="nmlink" style="color:#4f46e5;font-weight:700" onclick="focusAnalyze();closeMobileMenu()">ابدأ التحليل ←</div>
-    <div class="nmlink" onclick="openAuth('login');closeMobileMenu()">تسجيل الدخول</div>
-  </div>
-  <div id="mobileUser" style="display:none">
-    <div class="nmlink" onclick="goScreen('s-dashboard');closeMobileMenu()">🏠 لوحتي</div>
-    <div class="nmlink" onclick="startGuidedSession();closeMobileMenu()">🎯 التدريب</div>
-    <div class="nmdiv"></div>
-    <div class="nmlink" onclick="logoutUser();closeMobileMenu()">خروج</div>
-  </div>
-</div>
 
 <!-- Referral banner -->
 <div class="ref-banner" id="refBanner">🎁 جاي من صديق؟ عطيناك بداية أقوى</div>
 
 <!-- ═══════════════════════════════════════════
-  LANDING PAGE — PRESERVED EXACTLY
+  LANDING PAGE — v3 rebuild (diagnosis-first, premium feel)
+  Structure: hero · problem · how · example · access · share · final-cta · footer
+  All primary CTAs route to startDiagnosis(). No embedded form, no fake
+  social proof, no app-UI bleed, no $49 monthly, no fabricated testimonials.
 ═══════════════════════════════════════════ -->
 <div id="page-landing">
 
-  <!-- HERO — diagnosis-first hook. Old "paste job + CV" form is preserved
-       below as a secondary path; primary CTA is now the diagnosis flow. -->
-  <section class="hero">
-    <div class="hero-badge"><div class="hero-pulse"></div>قدمت ١٠ مرات وما رد ولا واحد؟ تعال نشوف وين الخلل.</div>
-    <h1>قدمت وما <span>جاك رد؟</span></h1>
-    <p>يمكن المشكلة مو فيك. يمكن أنت تقدم على الطريق الغلط. اكتب الوظيفة اللي تحلم فيها وارفع سيرتك، ودربي يقول لك وين أنت الآن، وش أقرب وظيفة تناسبك، وش تحتاج عشان توصل لهدفك.</p>
-    <div style="margin:0 auto 28px;max-width:380px">
-      <button class="btn btn-p btn-full" onclick="startDiagnosis()" style="padding:16px;font-size:17px;font-weight:800">ابدأ التشخيص ←</button>
-      <p style="font-size:11.5px;color:#aaa;text-align:center;margin-top:8px">دقيقة واحدة. مجاني. بدون تسجيل في البداية.</p>
-    </div>
-
-    <!-- INPUT FORM -->
-    <div class="hero-form" id="heroForm">
-      <div class="hf-row">
-        <label class="hf-label">الوظيفة اللي تبغاها</label>
-        <input class="hf-input" id="jobInput" placeholder="مثال: مطور React — مدير مشاريع — محاسب">
-      </div>
-      <div class="hf-row">
-        <label class="hf-label">الصق سيرتك الذاتية</label>
-        <textarea class="hf-input hf-textarea" id="cvText" placeholder="الصق محتوى سيرتك الذاتية هنا..."></textarea>
-        <div class="hf-divider"><span class="hf-or">أو</span></div>
-        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('cvFile').click()">
-          📄 ارفع ملف PDF أو Word
-          <div style="font-size:11px;margin-top:3px;color:#ccc">PDF, DOCX — حجم أقصى 5MB</div>
+  <!-- HERO -->
+  <section class="lp-hero">
+    <div class="lp-hero-grid">
+      <div>
+        <div class="lp-hero-badge">قدمت ١٠ مرات وما رد ولا واحد؟ خلنا نشوف وين الخلل.</div>
+        <h1 class="lp-h1">قدمت وما <span>جاك رد؟</span></h1>
+        <p class="lp-hero-sub">يمكن المشكلة مو فيك. يمكن الطريق اللي تقدم عليه غلط.</p>
+        <p class="lp-hero-support">اكتب الوظيفة اللي تحلم فيها وارفع سيرتك، ودربي يوضح لك: وين أنت الآن، أقرب وظيفة تقدر تفوز فيها، والجسر العملي للوصول لهدفك.</p>
+        <div class="lp-hero-ctas">
+          <button class="lp-btn lp-btn-p lp-btn-lg" onclick="startDiagnosis()">ابدأ التشخيص ←</button>
+          <button class="lp-btn lp-btn-s lp-btn-lg" onclick="lpScrollTo('lp-example')">شاهد مثال</button>
         </div>
-        <input type="file" id="cvFile" accept=".pdf,.docx,.doc" style="display:none" onchange="handleUpload(event)">
-      </div>
-
-      <!-- JD field — collapses by default -->
-      <div class="hf-row" style="padding-bottom:10px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <label class="hf-label" style="margin-bottom:0">وصف الوظيفة <span style="color:#aaa;font-weight:400">(اختياري)</span></label>
-          <span id="jdToggle" onclick="toggleJD()" style="font-size:12px;color:#4f46e5;font-weight:700;cursor:pointer">+ أضف وصف للحصول على تحليل أدق</span>
-        </div>
-        <div id="jdField" style="display:none">
-          <textarea class="hf-input" id="jdText" rows="4"
-            style="min-height:90px;font-size:13px"
-            placeholder="الصق وصف الوظيفة من LinkedIn أو بكد أو أي مصدر...&#10;&#10;كلما كان الوصف أكثر تفصيلاً — كان التحليل أدق ومخصص لهذه الوظيفة تحديداً."></textarea>
-          <div id="jdHint" style="font-size:12px;margin-top:5px;padding:7px 11px;border-radius:8px;display:none"></div>
+        <div class="lp-hero-meta">
+          <span class="lp-hero-meta-item">دقيقة واحدة</span>
+          <span class="lp-hero-meta-item">مجاني للبدء</span>
+          <span class="lp-hero-meta-item">بدون اشتراك شهري</span>
         </div>
       </div>
 
-      <div class="hf-btn-row">
-        <button class="btn btn-p btn-full" id="analyzeBtn" style="padding:14px;font-size:16px" onclick="startAnalysis()">
-          🔍 ابدأ التحليل
-        </button>
-      </div>
-    </div>
-
-    <div class="trust">
-      <div class="trust-avs">
-        <div class="tav" style="background:#4f46e5;margin-left:0">م</div>
-        <div class="tav" style="background:#ec4899;margin-left:-6px">ف</div>
-        <div class="tav" style="background:#10b981;margin-left:-6px">أ</div>
-        <div class="tav" style="background:#f59e0b;margin-left:-6px">س</div>
-        <div class="tav" style="background:#3b82f6;margin-left:-6px">ن</div>
-      </div>
-      <span>ندعم أغلب المسارات عبر تحليل المسمى والوصف الوظيفي</span>
-    </div>
-  </section>
-
-  <!-- LOGOS -->
-  <div class="logos">
-    <p>يستخدمه متقدمون في كبرى الشركات</p>
-    <div class="logos-row">
-      <span class="logo-item">Aramco</span>
-      <span class="logo-item">STC</span>
-      <span class="logo-item">NEOM</span>
-      <span class="logo-item">Al Rajhi</span>
-      <span class="logo-item">stc pay</span>
-      <span class="logo-item">Noon</span>
-    </div>
-  </div>
-
-  <!-- SECTION 2: PROBLEM -->
-  <section class="features" id="features-section" style="background:#fff">
-    <div class="features-inner">
-      <div class="section-tag" style="color:#dc2626">المشكلة الحقيقية</div>
-      <h2 class="section-h">ليش ما تجيك مقابلات؟</h2>
-      <p class="section-sub">أكثر من 70% من السير الذاتية تُحذف تلقائياً قبل ما يشوفها أحد</p>
-      <div class="feats-grid">
-        <div class="feat" style="border-top:3px solid #fee2e2">
-          <div class="feat-ic" style="background:#fef2f2"><svg viewBox="0 0 24 24" fill="#dc2626"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM12 17H8v-2h4v2zm4-4H8v-2h8v2z"/></svg></div>
-          <h3>CV عام بدون تخصيص</h3>
-          <p>نفس الـ CV لكل الوظائف — الـ ATS يحذفه قبل ما يشوفه أحد</p>
+      <!-- Visual: what Darbi actually produces -->
+      <div class="lp-diag-card" aria-label="تشخيص نموذجي من دربي">
+        <div class="lp-diag-row">
+          <span class="lp-diag-label">حلمك</span>
+          <span class="lp-diag-val">Marketing Specialist</span>
         </div>
-        <div class="feat" style="border-top:3px solid #fee2e2">
-          <div class="feat-ic" style="background:#fef2f2"><svg viewBox="0 0 24 24" fill="#dc2626"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
-          <h3>بدون أرقام أو إنجازات</h3>
-          <p>وصف مهام فقط — المدير يريد نتائج قابلة للقياس وتأثير واضح</p>
+        <div class="lp-diag-row">
+          <span class="lp-diag-label">واقع سيرتك</span>
+          <span class="lp-diag-val">بداية مسار تسويق</span>
         </div>
-        <div class="feat" style="border-top:3px solid #fee2e2">
-          <div class="feat-ic" style="background:#fef2f2"><svg viewBox="0 0 24 24" fill="#dc2626"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
-          <h3>كلمات الوظيفة ناقصة</h3>
-          <p>ما تطابق كلمات وصف الوظيفة = تُرفض تلقائياً قبل ما تُقرأ</p>
+        <div class="lp-diag-row">
+          <span class="lp-diag-label">أقرب مدخل</span>
+          <span class="lp-diag-val is-target">Marketing Assistant</span>
         </div>
-        <div class="feat" style="border-top:3px solid #fee2e2">
-          <div class="feat-ic" style="background:#fef2f2"><svg viewBox="0 0 24 24" fill="#dc2626"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
-          <h3>إجابات المقابلة ضعيفة</h3>
-          <p>حتى لو وصلتك المقابلة — الإجابات العامة بدون قصص تخسّرك العرض</p>
+        <div class="lp-diag-row">
+          <span class="lp-diag-label">أول خطوة</span>
+          <span class="lp-diag-val is-bridge">إصلاح الملخص + بناء مثال تسويقي</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 3: HOW IT WORKS -->
-  <section class="features" id="hiw-section" style="background:#fafafa">
-    <div class="features-inner">
-      <div class="section-tag">كيف يشتغل دربي</div>
-      <h2 class="section-h">من وظيفة تبغاها<br>إلى خطة تدريب يومية</h2>
-      <div style="font-size:14px;font-weight:600;color:#666;margin-bottom:6px;text-align:right">بدون تعقيد — 4 خطوات وتشوف نتيجة فورية</div>
-      <div class="how-it-works-grid">
-        <div class="hiw-step">
-          <div class="hiw-num">1</div>
-          <div class="hiw-title">اكتب الوظيفة</div>
-          <div class="hiw-sub">اسم الدور اللي تبغاه</div>
+  <!-- PROBLEM -->
+  <section class="lp-section lp-bg-gray" id="lp-problem">
+    <span class="lp-eyebrow">المشكلة</span>
+    <h2 class="lp-h2">المشكلة مو دائماً <span>في السيرة.</span></h2>
+    <p class="lp-sub">قبل ما نلوم سيرتك، خلنا نشوف فعلاً وين السبب. هذي ٤ أسباب شائعة لما يكون فيه سكوت بعد التقديم:</p>
+    <div class="lp-problem-grid">
+      <div class="lp-problem-card">
+        <div class="lp-problem-num">1</div>
+        <div class="lp-problem-body">
+          <h3>تقدم على وظائف أعلى من أقرب مدخل لك</h3>
+          <p>كثير من الباحثين يستهدفون أدوار متقدمة قبل وقتها. السوق ما يقبلك في دور أعلى من سيرتك بدرجة.</p>
         </div>
-        <div class="hiw-step">
-          <div class="hiw-num">2</div>
-          <div class="hiw-title">الصق CV</div>
-          <div class="hiw-sub">أو ارفع ملفك مباشرة</div>
+      </div>
+      <div class="lp-problem-card">
+        <div class="lp-problem-num">2</div>
+        <div class="lp-problem-body">
+          <h3>سيرتك لا تثبت المهارات المطلوبة</h3>
+          <p>الـ HR يبحث عن دليل واضح في ٧ ثوان. لو ما يلقاه، سيرتك تنزل التحت بغض النظر عن قدراتك الفعلية.</p>
         </div>
-        <div class="hiw-step">
-          <div class="hiw-num">3</div>
-          <div class="hiw-title">احصل على التحليل</div>
-          <div class="hiw-sub">نقاط الجاهزية + المشاكل الحقيقية</div>
+      </div>
+      <div class="lp-problem-card">
+        <div class="lp-problem-num">3</div>
+        <div class="lp-problem-body">
+          <h3>تقدم كثير بدون استراتيجية</h3>
+          <p>٥٠ تقديم بدون ترتيب أو متابعة = ضوضاء. ٢٠ تقديم مدروس مع تخصيص كل واحد = نتائج.</p>
         </div>
-        <div class="hiw-step" style="border-left:0">
-          <div class="hiw-num">4</div>
-          <div class="hiw-title">ابدأ التدريب</div>
-          <div class="hiw-sub">خطة يومية تحسّن جاهزيتك</div>
+      </div>
+      <div class="lp-problem-card">
+        <div class="lp-problem-num">4</div>
+        <div class="lp-problem-body">
+          <h3>ما تعرف هل المشكلة في CV أو الوظيفة أو المقابلة</h3>
+          <p>السكوت غامض. ما تدري لو سيرتك ضعيفة، أو إعلانك خاطئ، أو إجاباتك تحتاج تطوير. دربي يحدد لك بالضبط.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 4: CV ANALYSIS BEFORE/AFTER -->
-  <section class="features" style="background:#fff">
-    <div class="features-inner">
-      <div class="section-tag">تحليل CV</div>
-      <h2 class="section-h">شوف وش يتغير<br>بعد دربي</h2>
-      <p class="section-sub">تحليل حقيقي بناءً على سيرتك والوظيفة اللي تبغاها</p>
-      <div class="grid-2col">
-        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:14px;padding:20px">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#b91c1c;margin-bottom:12px">قبل دربي</div>
-          <div style="font-size:13px;color:#7f1d1d;line-height:1.8">
-            ❌ ملخص عام بدون تخصيص<br>
-            ❌ مهام بدون نتائج قابلة للقياس<br>
-            ❌ كلمات مفتاحية ناقصة<br>
-            ❌ جاهزية: <strong>32%</strong>
+  <!-- HOW IT WORKS -->
+  <section class="lp-section lp-bg-white" id="lp-how">
+    <span class="lp-eyebrow">كيف يعمل دربي</span>
+    <h2 class="lp-h2">من حلمك إلى <span>تشخيصك</span> في دقيقة.</h2>
+    <p class="lp-sub">٤ خطوات بسيطة. بدون تسجيل في البداية، بدون أسئلة كثيرة.</p>
+    <div class="lp-how-grid">
+      <div class="lp-how-step">
+        <div class="lp-how-num">1</div>
+        <div class="lp-how-title">اكتب الوظيفة اللي تحلم فيها</div>
+        <div class="lp-how-sub">تسويق، موارد بشرية، خدمة عملاء، أمن سيبراني...</div>
+      </div>
+      <div class="lp-how-step">
+        <div class="lp-how-num">2</div>
+        <div class="lp-how-title">ارفع سيرتك أو الصقها</div>
+        <div class="lp-how-sub">PDF أو نص. دربي يقرأ المحتوى، مو الاسم.</div>
+      </div>
+      <div class="lp-how-step">
+        <div class="lp-how-num">3</div>
+        <div class="lp-how-title">جاوب ٤ أسئلة قصيرة</div>
+        <div class="lp-how-sub">عن تقديماتك، الردود، الإنجليزي، وأكبر إحباط.</div>
+      </div>
+      <div class="lp-how-step">
+        <div class="lp-how-num">4</div>
+        <div class="lp-how-title">احصل على تشخيصك وخطتك</div>
+        <div class="lp-how-sub">واقعك، أقرب مدخل، الجسر، وخطوة اليوم.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WOW EXAMPLE — the section that closes the sale -->
+  <section class="lp-section lp-bg-gray" id="lp-example">
+    <span class="lp-eyebrow">مثال حقيقي</span>
+    <h2 class="lp-h2">مو رقم جاهزية. <span>تشخيص واضح.</span></h2>
+    <p class="lp-sub">أكثر منتجات السيرة الذاتية تعطيك "نقاط جاهزية ٤٨٪". دربي يعطيك جملة تفهمها وتتحرك بها:</p>
+
+    <div class="lp-example">
+      <div class="lp-example-grid">
+        <div class="lp-example-col">
+          <h4>المدخلات</h4>
+          <div class="lp-example-input">
+            <div class="lp-ex-row">
+              <span class="lp-ex-label">الوظيفة التي تحلم بها</span>
+              <span class="lp-ex-val">HR Specialist</span>
+            </div>
+            <div class="lp-ex-row">
+              <span class="lp-ex-label">السيرة</span>
+              <span class="lp-ex-val">خريج إدارة أعمال</span>
+            </div>
+            <div class="lp-ex-row">
+              <span class="lp-ex-label">عدد التقديمات</span>
+              <span class="lp-ex-val">٢٢ تقديم</span>
+            </div>
+            <div class="lp-ex-row">
+              <span class="lp-ex-label">الردود</span>
+              <span class="lp-ex-val">ولا رد</span>
+            </div>
           </div>
         </div>
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:20px">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#166534;margin-bottom:12px">بعد دربي</div>
-          <div style="font-size:13px;color:#14532d;line-height:1.8">
-            ✅ ملخص مخصص لكل وظيفة<br>
-            ✅ إنجازات بأرقام واضحة<br>
-            ✅ كلمات مفتاحية مطابقة<br>
-            ✅ جاهزية: <strong>68%+</strong>
+
+        <div class="lp-example-col">
+          <h4>تشخيص دربي</h4>
+          <div class="lp-example-output">
+            <div class="lp-ex-section">
+              <h5>وضعك الحالي</h5>
+              <p>سيرتك لا تثبت خبرة HR بعد — مشاريع الجامعة موجودة لكن مكتوبة كمهام، مو كأدلة على التنظيم والمتابعة.</p>
+            </div>
+            <div class="lp-ex-section">
+              <h5>أقرب مدخل</h5>
+              <p>HR Assistant / Recruitment Coordinator — أدوار تقبل خريج بدون خبرة HR رسمية.</p>
+            </div>
+            <div class="lp-ex-section">
+              <h5>أكبر كسر</h5>
+              <p>لا توجد أمثلة على التنظيم، المتابعة مع الناس، أو التعامل مع بيانات حساسة.</p>
+            </div>
+            <div class="lp-ex-section">
+              <h5>أول خطوة</h5>
+              <p>تحويل مشروع جامعي (تنظيم فعالية / فريق طلابي) إلى ٣ نقاط HR واضحة في سيرتك.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 5: TRAINING ENGINE -->
-  <section class="features" style="background:#fafafa">
-    <div class="features-inner">
-      <div class="section-tag">محرك التدريب</div>
-      <h2 class="section-h">مو quiz —<br>نظام تدريب يومي حقيقي</h2>
-      <p class="section-sub">دربي يكشف الحفظ، يتتبع 8 مهارات، ويرفع جاهزيتك بطريقة مثبتة</p>
-      <div class="grid-2col-asym">
-        <div style="background:#0f172a;border-radius:16px;padding:22px;color:#fff">
-          <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px">مهام اليوم — يوم 3</div>
-          <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:11px;padding:11px 13px;margin-bottom:8px;font-size:13px;display:flex;align-items:center;gap:9px">
-            <span style="width:18px;height:18px;border-radius:50%;background:#22c55e;display:grid;place-items:center;font-size:9px;flex-shrink:0">✓</span>
-            <span>أجب على سؤال سلوكي جديد</span>
-            <span style="margin-right:auto;font-size:11px;color:#64748b">10 دق</span>
-          </div>
-          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:11px 13px;margin-bottom:8px;font-size:13px;display:flex;align-items:center;gap:9px">
-            <span style="width:18px;height:18px;border-radius:50%;background:#4f46e5;display:grid;place-items:center;font-size:9px;flex-shrink:0;color:#fff">▶</span>
-            <span>أعد صياغة إجابتك الضعيفة</span>
-            <span style="margin-right:auto;font-size:11px;color:#64748b">8 دق</span>
-          </div>
-          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:11px;padding:11px 13px;font-size:13px;display:flex;align-items:center;gap:9px;opacity:.5">
-            <span>🔒</span>
-            <span>سيناريو مفاجئ من دربي</span>
-            <span style="margin-right:auto;font-size:11px;color:#64748b">7 دق</span>
-          </div>
-          <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:12px;color:#64748b">جاهزيتك اليوم</span>
-            <span style="font-size:14px;font-weight:700;color:#a5b4fc">32% → 37%</span>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <div class="feat">
-            <div class="feat-ic" style="background:#fff7ed"><svg viewBox="0 0 24 24" fill="#ea580c"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-            <h3>كشف الحفظ التلقائي</h3>
-            <p>إذا كررت نفس المثال — دربي يوقفك: "أنت تكرر نفس المثال، خلينا نبني مثال أقوى"</p>
-          </div>
-          <div class="feat">
-            <div class="feat-ic" style="background:#f0f0ff"><svg viewBox="0 0 24 24" fill="#4f46e5"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
-            <h3>خريطة 8 مهارات</h3>
-            <p>التواصل، سرد القصص، الضغط، التفكير التجاري — تُتبع كل يوم وتُحدَّث بعد كل إجابة</p>
-          </div>
-        </div>
+  <!-- ACCESS OPTIONS -->
+  <section class="lp-section lp-bg-white" id="lp-access">
+    <span class="lp-eyebrow">الوصول</span>
+    <h2 class="lp-h2">ابدأ مجاناً. <span>واستمر بالطريقة اللي تناسبك.</span></h2>
+    <p class="lp-sub">التشخيص الأول مجاني. لو حبيت تكمل، عندك خيارين بدون اشتراك شهري.</p>
+
+    <div class="lp-access-grid">
+      <div class="lp-access-card">
+        <span class="lp-access-tag">ابدأ هنا</span>
+        <h3>تشخيص مجاني</h3>
+        <div class="lp-access-price">$0</div>
+        <div class="lp-access-sub">بدون بطاقة، بدون تسجيل في البداية.</div>
+        <ul class="lp-access-list">
+          <li>تشخيص أولي كامل</li>
+          <li>أقرب وظيفة تناسبك الآن</li>
+          <li>أول توصية عملية</li>
+          <li>٢٤ ساعة وصول بعد التشخيص</li>
+        </ul>
+        <button class="lp-btn lp-btn-s" onclick="startDiagnosis()">ابدأ التشخيص</button>
+      </div>
+
+      <div class="lp-access-card">
+        <span class="lp-access-tag">مجاني — قابل للتمديد</span>
+        <h3>اكسب وقت إضافي</h3>
+        <div class="lp-access-price" style="font-size:24px">شارك وادعُ</div>
+        <div class="lp-access-sub">وقتك المجاني يطول كل ما شاركت أو دعوت صديق.</div>
+        <ul class="lp-access-list">
+          <li>+٢٤ ساعة لمشاركة كارد التشخيص</li>
+          <li>+٤٨ ساعة لكل صديق يسجّل</li>
+          <li>+٧ أيام لمشاركة فيديو تجربتك</li>
+          <li>حد أقصى ٣٠ يوم مجاني</li>
+        </ul>
+        <button class="lp-btn lp-btn-s" onclick="startDiagnosis()">جرّب التشخيص أولاً</button>
+      </div>
+
+      <div class="lp-access-card is-hot">
+        <span class="lp-access-tag" style="background:#fef3c7;color:#92400e">للجادّين</span>
+        <h3>Founder Lifetime Access</h3>
+        <div class="lp-access-price">$199</div>
+        <div class="lp-access-sub">ادفع مرة واحدة — بدون اشتراك شهري.</div>
+        <ul class="lp-access-list">
+          <li>كل المزايا طوال رحلة البحث</li>
+          <li>وصول للقوالب والميزات الجديدة</li>
+          <li>تدريب مقابلات بدون حد يومي</li>
+          <li>دعم مباشر للمؤسسين</li>
+        </ul>
+        <button class="lp-btn lp-btn-p" onclick="startDiagnosis()">ابدأ التشخيص أولاً</button>
+        <div class="lp-access-fineprint">الاستخدام العادل مطبق لحماية جودة الخدمة. لا اشتراك شهري.</div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 6: JOB MATCHING -->
-  <section class="features" style="background:#fff">
-    <div class="features-inner">
-      <div class="section-tag">مطابقة الوظائف</div>
-      <h2 class="section-h">3 مسارات مخصصة<br>بناءً على مهاراتك</h2>
-      <p class="section-sub">دربي ما يعطيك قائمة وظائف — يعطيك خطة طريق واضحة</p>
-      <div class="grid-3col">
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:18px">
-          <div style="font-size:11px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">الأنسب الآن</div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:6px">Customer Success Specialist</div>
-          <div style="font-size:12px;color:#166534;margin-bottom:10px">يناسب مهاراتك الحالية مباشرة</div>
-          <div style="font-size:12px;color:#166534;font-weight:600">→ قدّم هذا الأسبوع</div>
+  <!-- SHARING LOOP -->
+  <section class="lp-section lp-bg-gray" id="lp-share">
+    <div class="lp-share-grid">
+      <div>
+        <span class="lp-eyebrow">شارك وخذ وقت إضافي</span>
+        <h2 class="lp-h2">شارك طريقك. <span>خذ وقت إضافي.</span></h2>
+        <p class="lp-sub">بعد التشخيص، يطلع لك كارد قابل للمشاركة يوضح حلمك، أقرب مدخل لك، وأول خطوة. شاركه على واتساب أو تويتر، وخذ وقت إضافي في دربي.</p>
+        <div style="margin-top:24px">
+          <button class="lp-btn lp-btn-p lp-btn-lg" onclick="startDiagnosis()">ابدأ وشاهد كاردك ←</button>
         </div>
-        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:18px">
-          <div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">بعد تدريب 7–14 يوم</div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:6px">Customer Success Manager</div>
-          <div style="font-size:12px;color:#1d4ed8;margin-bottom:10px">يحتاج تقوية مهارات القيادة</div>
-          <div style="font-size:12px;color:#1d4ed8;font-weight:600">→ تدرّب أولاً مع دربي</div>
-        </div>
-        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;padding:18px">
-          <div style="font-size:11px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">تحول ذكي</div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:6px">Account Manager</div>
-          <div style="font-size:12px;color:#c2410c;margin-bottom:10px">نفس المهارات بإطار مختلف</div>
-          <div style="font-size:12px;color:#c2410c;font-weight:600">→ سهل الانتقال إليه</div>
-        </div>
+      </div>
+      <div class="lp-share-card">
+        <div class="lp-share-card-eyebrow">حلمي</div>
+        <div class="lp-share-card-val">Marketing Specialist</div>
+
+        <div class="lp-share-card-row"><b>أقرب مدخل:</b> Marketing Assistant</div>
+        <div class="lp-share-card-row"><b>أول خطوة:</b> بناء ٣ أمثلة تسويقية بسيطة وإضافتها للسيرة</div>
+
+        <div class="lp-share-card-foot">Powered by Darbi</div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 7: UGC ACCESS -->
-  <section class="features" style="background:#fafafa">
-    <div class="features-inner">
-      <div class="section-tag">الوصول المجاني</div>
-      <h2 class="section-h">ساعد غيرك<br>واحصل على 24 ساعة</h2>
-      <p class="section-sub">شارك تجربتك في فيديو قصير وافتح وصول يوم كامل مجاناً</p>
-      <div class="ugc-grid-4">
-        <div class="ugc-card-step">
-          <div style="font-size:26px;margin-bottom:10px">📋</div>
-          <div style="font-size:13px;font-weight:700;margin-bottom:4px">اختر السكربت</div>
-          <div style="font-size:12px;color:#666">خريج / موظف / يقدم كثير</div>
-        </div>
-        <div class="ugc-card-step">
-          <div style="font-size:26px;margin-bottom:10px">🎥</div>
-          <div style="font-size:13px;font-weight:700;margin-bottom:4px">سجّل الفيديو</div>
-          <div style="font-size:12px;color:#666">30 ثانية على TikTok أو X</div>
-        </div>
-        <div class="ugc-card-step">
-          <div style="font-size:26px;margin-bottom:10px">🔗</div>
-          <div style="font-size:13px;font-weight:700;margin-bottom:4px">أرسل الرابط</div>
-          <div style="font-size:12px;color:#666">الصق الرابط في دربي</div>
-        </div>
-        <div class="ugc-card-step" style="background:#f0fdf4;border-color:#bbf7d0">
-          <div style="font-size:26px;margin-bottom:10px">✅</div>
-          <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:#166534">افتح الوصول</div>
-          <div style="font-size:12px;color:#166534">24 ساعة كاملة</div>
-        </div>
-      </div>
-      <div style="text-align:center">
-        <button class="btn-fill" style="padding:12px 28px;font-size:14px" onclick="focusAnalyze()">ابدأ الآن — حلّل سيرتك أولاً ←</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- PRICING -->
-  <section class="pricing" id="pricing-section">
-    <div style="max-width:760px;margin:0 auto;padding:0 20px;text-align:center">
-      <div class="section-tag" style="text-align:center">التسعيرة</div>
-      <h2 class="section-h" style="letter-spacing:-1.2px">اختر الخطة المناسبة لك</h2>
-      <p class="section-sub" style="margin:0 auto 36px">ابدأ بالتحليل مجاناً — ادفع فقط لما تقرر تكمل التدريب</p>
-      <div class="pricing-grid">
-
-        <!-- Free -->
-        <div class="plan" style="padding:24px;text-align:right">
-          <div class="plan-name">معاينة مجانية</div>
-          <div class="plan-price" style="font-size:36px">$0</div>
-          <div class="plan-sub">بدون بطاقة</div>
-          <div class="plan-divider"></div>
-          <ul class="plan-list">
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>تحليل CV كامل</li>
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>نقاط الجاهزية</li>
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>معاينة محدودة</li>
-            <li style="opacity:.4"><div class="chk" style="background:#f0f0f0"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#ccc" stroke-width="1.5"/></svg></div>بدون تدريب</li>
-            <li style="opacity:.4"><div class="chk" style="background:#f0f0f0"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#ccc" stroke-width="1.5"/></svg></div>بدون تحميل</li>
-          </ul>
-          <button class="plan-btn plan-btn-o" onclick="focusAnalyze()">ابدأ التحليل</button>
-          <div style="font-size:11px;color:#aaa;margin-top:8px;text-align:center">أو شارك فيديو للحصول على 24 ساعة كاملة</div>
-        </div>
-
-        <!-- Monthly — Middle -->
-        <div class="plan" style="padding:24px;text-align:right;border:1px solid #e8e8e8">
-          <div class="plan-name">شهري</div>
-          <div class="plan-price" style="font-size:36px">$49</div>
-          <div class="plan-sub">شهرياً · إلغاء وقت ما تبغى</div>
-          <div class="plan-divider"></div>
-          <ul class="plan-list">
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>تدريب يومي كامل</li>
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>تحسين CV</li>
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>تدريب المقابلات</li>
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>تتبع التقدم</li>
-            <li style="opacity:.4"><div class="chk" style="background:#f0f0f0"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#ccc" stroke-width="1.5"/></svg></div>التحديثات المستقبلية</li>
-          </ul>
-          <button class="plan-btn plan-btn-o" onclick="triggerCheckout('monthly')">اشترك الآن</button>
-        </div>
-
-        <!-- Lifetime — BEST -->
-        <div class="plan hot" style="padding:24px;text-align:right;transform:scale(1.03)">
-          <div class="plan-badge">Best Deal ⭐</div>
-          <div class="plan-name">مدى الحياة</div>
-          <div class="plan-price" style="font-size:36px">$199</div>
-          <div class="plan-sub">دفعة واحدة — للأبد</div>
-          <div class="plan-divider"></div>
-          <ul class="plan-list">
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>كل مزايا الشهري</li>
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>وصول مدى الحياة</li>
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>كل التحديثات المستقبلية</li>
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>تحميل غير محدود</li>
-            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#4f46e5" stroke-width="1.5"/></svg></div>أفضل قيمة</li>
-          </ul>
-          <button class="plan-btn plan-btn-f" onclick="triggerCheckout('lifetime')">افتح القفل الآن</button>
-          <div style="font-size:11px;color:#4f46e5;margin-top:8px;text-align:center;font-weight:600">وفّر $389 مقارنة بالشهري</div>
-        </div>
-
-      </div>
-
-      <!-- UGC note -->
-      <div style="margin-top:20px;padding:14px 20px;background:#f8f8fc;border:1px solid #e8e8f0;border-radius:14px;font-size:13px;color:#666;text-align:center">
-        🎥 <strong style="color:#0a0a0a">بدون مال؟</strong> شارك فيديو تجربتك واحصل على وصول 24 ساعة كاملة مجاناً
-        <a onclick="goScreen('s-paywall');selectPay('ugc')" style="color:#4f46e5;font-weight:700;cursor:pointer;margin-right:6px">ابدأ الآن ←</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section class="testi" id="testi-section">
-    <div class="testi-inner">
-      <div class="section-tag">آراء المستخدمين</div>
-      <h2 class="section-h">ماذا يقولون عن دربي</h2>
-      <div class="testi-grid">
-        <div class="tc"><p class="tc-text">"حصلت على مقابلة في STC بعد أسبوع من استخدام دربي. الـ ATS score ساعدني أفهم وين كانت تروح سيرتي."</p><div class="tc-author"><div class="tc-av" style="background:#4f46e5">م</div><div><div class="tc-name">محمد العتيبي</div><div class="tc-role">مهندس برمجيات · الرياض</div></div></div></div>
-        <div class="tc"><p class="tc-text">"المقابلة المحاكاة غيّرت طريقة إجابتي كلياً. وصلت لـ 3 مقابلات في شهر واحد."</p><div class="tc-author"><div class="tc-av" style="background:#ec4899">س</div><div><div class="tc-name">سارة الشمري</div><div class="tc-role">محللة أعمال · جدة</div></div></div></div>
-        <div class="tc"><p class="tc-text">"الـ 199 ريال أرخص من كورس على يوديمي. وفّر عليّ شهور من الفشل في المقابلات."</p><div class="tc-author"><div class="tc-av" style="background:#10b981">أ</div><div><div class="tc-name">أحمد الدوسري</div><div class="tc-role">مدير مشاريع · الدمام</div></div></div></div>
-        <div class="tc"><p class="tc-text">"ما كنت أعرف إن CV حقتي ضعيف. بعد التعديلات جاءتني مقابلة أرامكو."</p><div class="tc-author"><div class="tc-av" style="background:#f59e0b">ن</div><div><div class="tc-name">نورة القحطاني</div><div class="tc-role">محاسبة · الرياض</div></div></div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta">
-    <h2>جاهز تبدأ<br>رحلتك المهنية؟</h2>
-    <p>انضم لآلاف المتقدمين في السعودية والخليج</p>
-    <div class="cta-btns">
-      <button class="btn-fill" style="padding:12px 28px;font-size:14px" onclick="focusAnalyze()">ابدأ التحليل</button>
-      <button class="btn-ghost" style="padding:12px 24px;font-size:14px">شاهد Demo</button>
-    </div>
+  <!-- FINAL CTA -->
+  <section class="lp-finalcta" id="lp-final">
+    <h2>جاهز تعرف <span style="color:#fbbf24">وين الخلل؟</span></h2>
+    <p>خذ دقيقة واحدة. اكتب حلمك وارفع سيرتك. دربي يعطيك أول طريق واضح.</p>
+    <button class="lp-btn lp-btn-p lp-btn-lg" onclick="startDiagnosis()" style="background:#fbbf24;color:#0f172a;font-size:18px">ابدأ التشخيص ←</button>
   </section>
 
   <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-logo"><div class="footer-ic">د</div><span style="font-size:14px;font-weight:700">دربي</span></div>
-    <div class="footer-links"><a>الخصوصية</a><a>الشروط</a><a>تواصل معنا</a></div>
-    <span class="footer-copy">© 2025 Darbi · المملكة العربية السعودية</span>
+  <footer class="lp-footer">
+    <div class="lp-footer-logo">
+      <div class="lp-nav-mark" style="width:26px;height:26px;font-size:13px">د</div>
+      <span>Darbi · دربي</span>
+    </div>
+    <div class="lp-footer-links">
+      <a>الخصوصية</a>
+      <a>الشروط</a>
+      <a onclick="openAuth('login')">دخول</a>
+    </div>
+    <span>© 2026 Darbi · المملكة العربية السعودية</span>
   </footer>
+
+  <!-- Hidden legacy inputs — preserved so any leftover code paths
+       (focusAnalyze, startAnalysis, runAnalysis) that read #jobInput / #cvText
+       still find the elements and don't throw. The new flow uses s-dream's
+       own inputs (#diagDreamRole, #diagCvText). -->
+  <div style="display:none" aria-hidden="true">
+    <input id="jobInput" type="text">
+    <textarea id="cvText"></textarea>
+    <textarea id="jdText"></textarea>
+    <input type="file" id="cvFile" accept=".pdf,.docx,.doc" onchange="handleUpload(event)">
+    <div id="uploadZone"></div>
+    <div id="jdField"></div>
+    <div id="jdHint"></div>
+    <button id="analyzeBtn"></button>
+    <button id="navBurger"></button>
+    <span id="jdToggle"></span>
+  </div>
+
 
 </div><!-- /page-landing -->
 
@@ -4592,9 +4648,32 @@ function goScreen(id){
 
 function scrollTo(id){ var el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth'}); }
 
+// ══════ LANDING PAGE v3 helpers ══════
+// lpScrollTo — accounts for the 72px sticky navbar so anchors don't sit
+// underneath it. Used by "كيف يعمل / مثال / الوصول" and any hero CTA that
+// scrolls to a section.
+function lpScrollTo(id){
+  var el = document.getElementById(id);
+  if (!el) return;
+  var navH = 72;
+  var top = el.getBoundingClientRect().top + window.pageYOffset - navH - 8;
+  window.scrollTo({ top: top, behavior: 'smooth' });
+}
+// lpToggleMobileMenu — delegates to the existing toggle so the open/close
+// + body scroll-lock behaviour stays consistent with the rest of the app.
+function lpToggleMobileMenu(){
+  if (typeof toggleMobileMenu === 'function') toggleMobileMenu();
+}
+
+// focusAnalyze is the LEGACY entry point used by buttons we haven't fully
+// migrated yet (e.g. dashboard "تحليل جديد"). It used to scroll to the old
+// hero form and focus #jobInput. Now it just kicks off the diagnosis flow —
+// the new product entry. The hidden #jobInput div still exists as a safety
+// net for any callsite that might try to read it.
 function focusAnalyze(){
-  showLanding();
-  setTimeout(function(){ document.getElementById('heroForm').scrollIntoView({behavior:'smooth',block:'center'}); document.getElementById('jobInput').focus(); },400);
+  if (typeof startDiagnosis === 'function'){ startDiagnosis(); return; }
+  // Defensive fallback (shouldn't run): jump to s-dream directly.
+  goScreen('s-dream');
 }
 
 // ══════ FILE UPLOAD ══════
