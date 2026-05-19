@@ -58,6 +58,64 @@ const db = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectU
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
 
+// Summarize an AI/OpenAI error into something safe to log AND safe to return
+// to the client. Never echoes raw response bodies, API keys, or full stack
+// traces. Used in every catch block that touches OpenAI.
+function safeAiErrorSummary(e) {
+  if (!e) return { status: null, code: null, type: null, msg: 'unknown_error' };
+  const status = (e && (e.status || (e.response && e.response.status))) || null;
+  const code   = (e && (e.code || (e.error && e.error.code))) || null;
+  const type   = (e && (e.type || (e.error && e.error.type))) || null;
+  const raw    = String((e && e.message) || '').slice(0, 200);
+  // Redact anything that looks like a key (sk-..., bearer tokens, long hex).
+  const msg = raw
+    .replace(/sk-[A-Za-z0-9_-]{20,}/g, 'sk-***')
+    .replace(/Bearer\s+[A-Za-z0-9._-]{20,}/gi, 'Bearer ***')
+    .replace(/[A-Fa-f0-9]{32,}/g, '***');
+  return { status: status, code: code, type: type, msg: msg };
+}
+
+// ─── Rate limiter + IP helper (used by public/unauth endpoints) ──────────────
+// In-memory sliding window. Cleared on restart; best-effort abuse prevention,
+// not a security boundary. For real security, use authMiddleware + DB tracking.
+const _rateMap = new Map();
+function rateLimit(key, max, windowMs) {
+  const now = Date.now();
+  const entry = _rateMap.get(key);
+  if (!entry || now > entry.resetAt) {
+    _rateMap.set(key, { count: 1, resetAt: now + windowMs });
+    return true;
+  }
+  if (entry.count >= max) return false;
+  entry.count++;
+  return true;
+}
+const _rateCleanup = setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of _rateMap) if (now > v.resetAt) _rateMap.delete(k);
+}, 60_000);
+if (_rateCleanup.unref) _rateCleanup.unref();
+
+function getIP(req) {
+  const fwd = req.headers['x-forwarded-for'];
+  const raw = (Array.isArray(fwd) ? fwd[0] : fwd) || (req.socket && req.socket.remoteAddress) || 'unknown';
+  return String(raw).split(',')[0].trim();
+}
+
+// ─── Arabic normalization (server) ────────────────────────────────────────────
+// Used by the heuristic intent fallback so 'خدمه عملاء' == 'خدمة عملاء' etc.
+function _arNormalize(s) {
+  if (!s) return '';
+  return String(s)
+    .toLowerCase()
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/ـ/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'Login required' });
@@ -105,6 +163,205 @@ app.get('/api/darbi/me', authMiddleware, async (req, res) => {
     if (!rows[0]) return res.status(404).json({ error: 'User not found' });
     res.json({ success: true, user: { ...rows[0], paid: rows[0].access_status === 'paid' } });
   } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ─── ROLE INTENT ENGINE ───────────────────────────────────────────────────────
+// resolveDreamIntent — classifies the user's dream role into one of the
+// canonical families. OpenAI is the primary path; a normalized concept-match
+// fallback exists ONLY to prevent stupid output when OpenAI is unavailable.
+// The fallback is NOT marketed as smart — it returns honest confidence and
+// surfaces "unknown" instead of inventing roles.
+const INTENT_FAMILIES = [
+  'marketing', 'hr', 'accounting', 'sales',
+  'customer_service', 'it_cyber', 'design',
+  'admin_office', 'simple_job', 'unknown',
+];
+
+// Core concepts per family. NOT exhaustive synonyms — broad concepts that any
+// reasonable dream-role description in this family should contain. Used by the
+// heuristic fallback ONLY.
+const FAMILY_CONCEPTS = {
+  marketing:        ['تسويق','marketing','social media','content','حملات','seo','إعلانات','digital marketing','رقمي','محتوى'],
+  hr:               ['موارد بشرية','hr','recruitment','توظيف','talent','استقطاب','تنمية بشرية','people'],
+  accounting:       ['محاسبة','accounting','محاسب','finance','مالية','audit','بنوك','banking','تدقيق'],
+  sales:            ['مبيعات','sales','بيع','مندوب','telesales','account executive'],
+  customer_service: ['خدمه','عملاء','customer service','customer support','customer care','call center','كول سنتر','عنايه','دعم','client services','تواصل'],
+  it_cyber:         ['it','تقنيه','cybersecurity','امن سيبراني','helpdesk','soc','شبكات','networking','it support'],
+  design:           ['design','تصميم','graphic','ui','ux','مصمم','figma','adobe','بصري'],
+  admin_office:     ['اداري','admin','office','coordinator','منسق','executive assistant','سكرتير','data entry','مكتبي','تنسيق'],
+  simple_job:       ['كاشير','cashier','باريستا','barista','ماكدونالد','starbucks','retail','تجزئه','فرع','مطعم','استقبال','مقهى','وظيفه بسيطه'],
+};
+
+function heuristicIntent(dreamRole, cvText) {
+  const dn = _arNormalize(dreamRole || '');
+  const cn = _arNormalize(cvText || '').slice(0, 800); // CV first 800 chars only
+  const combined = dn + ' ' + cn;
+
+  let bestFam = 'unknown';
+  let bestScore = 0;
+  let bestHits = [];
+
+  for (const fam of Object.keys(FAMILY_CONCEPTS)) {
+    let score = 0;
+    const hits = [];
+    for (const concept of FAMILY_CONCEPTS[fam]) {
+      const cnorm = _arNormalize(concept);
+      if (!cnorm) continue;
+      // Stronger signal if the dream-role itself contains it (vs only the CV).
+      if (dn.indexOf(cnorm) !== -1) { score += 2; hits.push(concept); }
+      else if (combined.indexOf(cnorm) !== -1) { score += 1; hits.push(concept); }
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestFam = fam;
+      bestHits = hits;
+    }
+  }
+
+  // Honest confidence calibration. The fallback is NOT the intelligence —
+  // it should refuse to commit on weak signal so the UI asks the user to pick.
+  let confidence;
+  if (bestScore === 0)      { confidence = 18; bestFam = 'unknown'; }
+  else if (bestScore === 1) { confidence = 45; }
+  else if (bestScore === 2) { confidence = 62; }
+  else if (bestScore === 3) { confidence = 74; }
+  else                       { confidence = 82; }
+
+  // Simple seniority detection — used only when OpenAI didn't provide one.
+  let inferredSeniority = 'unknown';
+  const cv = cvText || '';
+  if (/\b(vp|vice president|chief|cxo)\b|director|head of/i.test(cv)) inferredSeniority = 'executive';
+  else if (/(10|eleven|twelve|1[3-9]|20|25|30)\+?\s*(year|years|سنه|سنوات|سنين)/i.test(cv)) inferredSeniority = 'senior';
+  else if (/[5-9]\+?\s*(year|years|سنه|سنوات|سنين)/i.test(cv)) inferredSeniority = 'mid';
+  else if (/\b(student|طالب|طالبه|undergraduate)\b/i.test(cv)) inferredSeniority = 'student';
+  else if (/\b(fresh|graduate|تخرج|تخرجت|خريج|intern|تدريب)\b/i.test(cv)) inferredSeniority = 'fresh_grad';
+
+  return {
+    family: bestFam,
+    confidence,
+    normalizedDreamRole: dn,
+    inferredSeniority,
+    reason: bestScore > 0
+      ? `طابق ${bestScore} مفهوم: ${bestHits.slice(0, 3).join('، ')}`
+      : 'ما طابق أي مفهوم واضح من العائلات المعروفة — نحتاج تحديد منك',
+    nearestRoleLogic: 'heuristic_concept_match',
+    isSimpleJob: bestFam === 'simple_job',
+    source: 'heuristic',
+  };
+}
+
+async function openaiIntent(dreamRole, cvText, quizAnswers) {
+  if (!process.env.OPENAI_API_KEY) return null;
+  let openai;
+  try {
+    const OpenAI = require('openai');
+    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  } catch (e) {
+    console.error('[intent] OpenAI SDK load failed:', safeAiErrorSummary(e));
+    return null;
+  }
+
+  const prompt = `أنت مصنّف مسارات مهنية للسوق السعودي. حدّد إلى أي عائلة وظيفية ينتمي هدف المستخدم.
+
+العائلات المسموح بها (بالضبط، لا تخترع غيرها):
+- marketing (تسويق)
+- hr (موارد بشرية)
+- accounting (محاسبة/مالية)
+- sales (مبيعات)
+- customer_service (خدمة عملاء/دعم/كول سنتر/عناية بالعملاء)
+- it_cyber (تقنية/أمن سيبراني)
+- design (تصميم)
+- admin_office (إداري/منسق/سكرتير)
+- simple_job (كاشير/باريستا/استقبال/تجزئة/مقهى — وظائف لا تحتاج تخصص)
+- unknown (الهدف غير واضح أو لا يطابق أي عائلة)
+
+المدخلات:
+- الدور المرغوب: ${(dreamRole || '').slice(0, 200)}
+- مقتطف السيرة (أول 800 حرف): ${(cvText || '').slice(0, 800)}
+${quizAnswers ? `- إجابات quiz: ${JSON.stringify(quizAnswers).slice(0, 400)}` : ''}
+
+أرجع JSON صارم فقط:
+{
+  "family": "<عائلة من القائمة فقط>",
+  "confidence": <عدد صحيح 0-100>,
+  "inferredSeniority": "<student|fresh_grad|entry|mid|senior|executive|unknown>",
+  "reason": "<سطر واحد بالعربي يشرح ليش اخترت هذي العائلة>",
+  "isSimpleJob": <true|false>,
+  "nearestEntryRoles": ["<دور واقعي 1>", "<دور 2>", "<دور 3>"]
+}
+
+قواعد صارمة:
+- لا تخترع شركات أو أسماء محددة.
+- إذا الهدف غامض أو ما يطابق عائلة معروفة، استخدم family="unknown" وconfidence أقل من 50.
+- ممنوع تماماً اقتراح "Junior X" أو "Trainee X" أو "Assistant X" مع X غير محدد. اقترح أدوار حقيقية كاملة فقط (مثل "Customer Service Representative"، "HR Coordinator")، لا templates.`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+      response_format: { type: 'json_object' },
+      max_tokens: 500,
+      temperature: 0.2,
+    });
+    const parsed = JSON.parse(response.choices[0].message.content);
+
+    // Defensive normalization — never trust LLM output blindly.
+    let family = parsed.family;
+    if (!INTENT_FAMILIES.includes(family)) family = 'unknown';
+    let confidence = typeof parsed.confidence === 'number' ? parsed.confidence : 50;
+    confidence = Math.max(0, Math.min(100, Math.round(confidence)));
+    const seniority = ['student','fresh_grad','entry','mid','senior','executive','unknown']
+      .includes(parsed.inferredSeniority) ? parsed.inferredSeniority : 'unknown';
+    let nearest = Array.isArray(parsed.nearestEntryRoles) ? parsed.nearestEntryRoles : [];
+    // Strip any "Junior {placeholder}" / "Trainee {placeholder}" / "Assistant {placeholder}"
+    // patterns the model might still produce.
+    nearest = nearest
+      .filter(r => typeof r === 'string')
+      .map(r => r.trim())
+      .filter(r => r.length >= 3 && r.length <= 80)
+      .filter(r => !/^(junior|trainee|assistant)\s+(\{|<|x\b|role\b)/i.test(r))
+      .slice(0, 5);
+
+    return {
+      family,
+      confidence,
+      normalizedDreamRole: _arNormalize(dreamRole || ''),
+      inferredSeniority: seniority,
+      reason: String(parsed.reason || '').slice(0, 200),
+      nearestRoleLogic: nearest,
+      isSimpleJob: !!parsed.isSimpleJob,
+      source: 'openai',
+    };
+  } catch (e) {
+    console.error('[intent] OpenAI classify error:', safeAiErrorSummary(e));
+    return null;
+  }
+}
+
+app.post('/api/darbi/resolve-intent', async (req, res) => {
+  // Public endpoint — called pre-signup from the diagnosis flow. Two-tier
+  // rate limit per IP (burst + hourly) to keep OpenAI bills bounded without
+  // blocking honest users on slow connections.
+  const ip = getIP(req);
+  if (!rateLimit('intent-burst:' + ip, 5, 60_000) ||
+      !rateLimit('intent-hour:' + ip, 60, 3600_000)) {
+    return res.status(429).json({ error: 'rate_limit', message: 'Too many requests' });
+  }
+
+  const { dreamRole, cvText, quizAnswers } = req.body || {};
+  if (typeof dreamRole !== 'string' || dreamRole.trim().length < 1 || dreamRole.length > 300) {
+    return res.status(400).json({ error: 'invalid_dreamRole' });
+  }
+  const cv = typeof cvText === 'string' ? cvText.slice(0, 8000) : '';
+
+  // Primary: OpenAI classification (when key is present and call succeeds).
+  let intent = await openaiIntent(dreamRole.trim(), cv, quizAnswers);
+
+  // Safety net: heuristic concept-match fallback. Returns honest confidence;
+  // unknown is a valid output when the dream role doesn't map cleanly.
+  if (!intent) intent = heuristicIntent(dreamRole.trim(), cv);
+
+  res.json({ success: true, intent });
 });
 
 // ─── ANALYSIS ─────────────────────────────────────────────────────────────────
@@ -188,7 +445,7 @@ ${cvText.substring(0, 3000)}
 
     res.json({ success: true, result });
   } catch (e) {
-    console.error('AI analyze error:', e.message);
+    console.error('[analyze] AI error:', safeAiErrorSummary(e));
     const score = computeHeuristicScore(cvText, targetRole, jobDescription);
     res.json({ success: true, result: score, fallback: true });
   }
@@ -255,7 +512,7 @@ app.post('/api/darbi/training/answer', authMiddleware, async (req, res) => {
 
     res.json({ success: true, evaluation });
   } catch (e) {
-    console.error('Training eval error:', e.message);
+    console.error('[training/answer] AI error:', safeAiErrorSummary(e));
     res.json({ success: true, evaluation: localEvaluate(answerText) });
   }
 });
@@ -721,7 +978,7 @@ async function evaluateTranscript(transcript, question, roleFamily, mode) {
     });
     return JSON.parse(response.choices[0].message.content);
   } catch(e) {
-    console.error('[eval] GPT error:', e.message);
+    console.error('[eval] GPT error:', safeAiErrorSummary(e));
     return localEvaluate(transcript);
   }
 }
@@ -785,13 +1042,13 @@ app.post('/api/training/transcribe', authMiddleware, async (req, res) => {
       res.json({ success: true, transcript, fallback: false });
 
     } catch(e) {
-      console.error('[transcribe] OpenAI error:', e.message);
+      console.error('[transcribe] OpenAI error:', safeAiErrorSummary(e));
+      // Never echo raw OpenAI error to the client — user sees the soft message.
       res.json({
         success: false,
         fallback: true,
         message: 'تعذّر تحويل الصوت تلقائياً — اكتب إجابتك لتقييمها',
         transcript: '',
-        error: e.message,
       });
     }
   });
@@ -865,8 +1122,11 @@ app.post('/api/training/evaluate', authMiddleware, async (req, res) => {
     res.json({ success: true, evaluation, attemptNumber: attemptCount + 1 });
 
   } catch(e) {
-    console.error('[evaluate] error:', e.message);
-    res.status(500).json({ error: e.message });
+    console.error('[evaluate] error:', safeAiErrorSummary(e));
+    // Never echo raw error to client. The eval was offered with a local
+    // fallback inside evaluateTranscript already; if we still ended up here,
+    // something below the AI layer failed (DB, etc.) — give a generic message.
+    res.status(500).json({ error: 'evaluation_failed', message: 'تعذّر التقييم الآن — جرّب بعد لحظات.' });
   }
 });
 
@@ -893,7 +1153,8 @@ app.post('/api/training/demo-transcribe', async (req, res) => {
       const transcript = await transcribeAudio(req.file.buffer, req.file.mimetype);
       res.json({ success: true, transcript: transcript || '', fallback: !transcript });
     } catch(e) {
-      res.json({ success: false, fallback: true, transcript: '', error: e.message });
+      console.error('[demo-transcribe] error:', safeAiErrorSummary(e));
+      res.json({ success: false, fallback: true, transcript: '' });
     }
   });
 });

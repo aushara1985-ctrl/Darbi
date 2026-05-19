@@ -424,6 +424,10 @@ body{font-family:'Cairo',sans-serif;background:#f8f8fc;color:#0a0a0a}
 .diag-roles-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
 .diag-role-chip{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:11px 14px;border-radius:10px;font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px}
 .diag-role-chip::before{content:'✓';color:#16a34a;font-size:12px;font-weight:900;width:18px;height:18px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+button.diag-role-chip-pick{background:#fffbeb;border:1.5px solid #fbbf24;color:#78350f;cursor:pointer;font-family:inherit;transition:all .15s;text-align:right}
+button.diag-role-chip-pick::before{content:'→';background:#fef3c7;color:#b45309;font-size:13px}
+button.diag-role-chip-pick:hover{background:#fef3c7;border-color:#f59e0b;transform:translateY(-1px);box-shadow:0 2px 8px rgba(245,158,11,.18)}
+button.diag-role-chip-pick:active{transform:translateY(0)}
 .diag-bridge-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
 .diag-bridge-step{font-size:13.5px;color:#1f2937;padding:10px 12px;background:#fafafe;border:1px solid #ececf4;border-radius:9px;line-height:1.6;display:flex;gap:9px;align-items:flex-start}
 .diag-bridge-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#4f46e5;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
@@ -2739,7 +2743,7 @@ var DREAM_ROLE_LIBRARY = {
   },
   customer_service: {
     familyAr: 'خدمة عملاء',
-    keywords: ['خدمة عملاء','customer service','call center','دعم العملاء','customer support','موظف فرع'],
+    keywords: ['خدمة عملاء','customer service','customer care','customer support','call center','كول سنتر','عناية عملاء','دعم العملاء','عناية بالعملاء','عناية بالعميل','خدمة العملاء','موظف فرع','contact center','client services'],
     nearestRoles: ['Customer Service Representative','Call Center Agent','Branch Customer Service','Reception / Front Desk'],
     commonGaps: ['ما في أمثلة على حل شكاوى','ما في أدلة تواصل تحت الضغط','ما تذكر CRM أو ticketing','السيرة عامة بدون لغة الخدمة'],
     bridgePlan: [
@@ -2795,15 +2799,35 @@ var DREAM_ROLE_LIBRARY = {
   },
 };
 
+// Normalize Arabic text for tolerant keyword matching:
+//   ة → ه          (ta marbuta → ha)
+//   أ إ آ → ا       (hamza forms → bare alef)
+//   ى → ي          (alef maksura → ya)
+//   ـ stripped     (tatweel)
+//   collapse whitespace + lowercase ASCII.
+// Used in detectDreamFamily so 'خدمه عملاء' / 'خدمة عملاء' / 'CUSTOMER care'
+// all match the same family without library duplication.
+function _arNormalize(s){
+  if (!s) return '';
+  return String(s)
+    .toLowerCase()
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/ـ/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 // Detect which DREAM_ROLE_LIBRARY family a free-text dream maps to. Returns
 // 'unknown' when nothing matches — the diagnosis still works in that case
 // (generic fallbacks live in buildDiagnosis).
 function detectDreamFamily(dreamText){
   if (!dreamText) return 'unknown';
-  var t = String(dreamText).toLowerCase();
+  var t = _arNormalize(dreamText);
   for (var family in DREAM_ROLE_LIBRARY){
     var lib = DREAM_ROLE_LIBRARY[family];
-    if (lib.keywords && lib.keywords.some(function(k){ return t.indexOf(k.toLowerCase()) !== -1; })) {
+    if (lib.keywords && lib.keywords.some(function(k){ return t.indexOf(_arNormalize(k)) !== -1; })) {
       return family;
     }
   }
@@ -2844,6 +2868,239 @@ function inferStatusFromCV(cvText){
   return 'unknown';
 }
 
+// Extract simple structured facts from a free-text CV for use in the
+// heuristic fallback diagnosis. Returns null fields when nothing detected —
+// the diagnosis copy guards against nulls. Pure regex; no network calls.
+function extractCvFacts(cvText){
+  var out = { major: null, gradYear: null, latestTitle: null, yearsExp: null, languages: [], tools: [] };
+  if (!cvText || cvText.length < 30) return out;
+  var t = cvText;
+  var tn = _arNormalize(t);
+
+  // ── Major / degree field ─────────────────────────────────────────────
+  // Arabic: بكالوريوس / ماجستير / دبلوم + field
+  var majorAr = t.match(/(?:بكالوريوس|ماجستير|دبلوم|دكتوراه)[\s:،,-]+([^\n،,.\-–|]{3,60})/);
+  if (majorAr && majorAr[1]) out.major = majorAr[1].trim().slice(0, 60);
+  if (!out.major){
+    var majorAr2 = t.match(/(?:تخصص|قسم)[\s:،,-]+([^\n،,.\-–|]{3,60})/);
+    if (majorAr2 && majorAr2[1]) out.major = majorAr2[1].trim().slice(0, 60);
+  }
+  // English: Bachelor of X / B.Sc in X / Major in X / Degree in X
+  if (!out.major){
+    var majorEn = t.match(/\b(?:bachelor(?:'s)?|master(?:'s)?|b\.?\s?sc\.?|m\.?\s?sc\.?|b\.?\s?a\.?|degree|major)\b[^a-zA-Z]{0,8}(?:of|in)?\s+([A-Z][A-Za-z &]{2,50})/);
+    if (majorEn && majorEn[1]) out.major = majorEn[1].trim().slice(0, 60);
+  }
+
+  // ── Graduation year (4-digit, 1990..currentYear+1) ────────────────────
+  var thisYear = new Date().getFullYear();
+  var yearMatches = (t.match(/\b(19[9]\d|20[0-3]\d)\b/g) || [])
+    .map(function(y){ return parseInt(y, 10); })
+    .filter(function(y){ return y >= 1990 && y <= thisYear + 1; });
+  if (yearMatches.length){
+    // Pick the largest year that is <= currentYear+1 (assume that's the grad year)
+    out.gradYear = Math.max.apply(null, yearMatches);
+  }
+
+  // ── Latest job title — heuristic: first line after Experience/الخبرة
+  // header, or the line right before the earliest year range. Capped.
+  var expIdx = t.search(/(?:experience|work experience|الخبرة العملية|الخبرات|خبرات|الخبرة)/i);
+  if (expIdx !== -1){
+    var after = t.slice(expIdx, expIdx + 600).split(/\n+/);
+    for (var i = 1; i < after.length && i < 8; i++){
+      var line = (after[i] || '').trim().replace(/^[-•·*\s]+/, '');
+      // Skip lines that are dates, company-only, or too short/long
+      if (line.length >= 4 && line.length <= 80 && !/^\d/.test(line) && !/^[a-z0-9_.@-]+$/i.test(line)){
+        out.latestTitle = line.slice(0, 80);
+        break;
+      }
+    }
+  }
+
+  // ── Years of experience (max value across patterns) ───────────────────
+  var yrsPatterns = [
+    /(\d{1,2})\+?\s*(?:years?|yrs?)\s*(?:of\s*)?(?:experience|exp\b)/i,
+    /خبره?\s*(?:تزيد\s*عن\s*)?(\d{1,2})\+?\s*(?:سنه|سنوات|سنين)/,
+    /(\d{1,2})\+?\s*(?:سنه|سنوات|سنين)\s*(?:من\s*)?الخبره/,
+  ];
+  var yrsCandidates = [];
+  yrsPatterns.forEach(function(re){
+    var m = tn.match(re) || t.match(re);
+    if (m && m[1]) yrsCandidates.push(parseInt(m[1], 10));
+  });
+  if (yrsCandidates.length){
+    out.yearsExp = Math.max.apply(null, yrsCandidates.filter(function(n){ return n > 0 && n < 60; }));
+  }
+
+  // ── Languages (curated list) ──────────────────────────────────────────
+  var langDict = [
+    { re: /\b(arabic|عربي)\b/i,  v: 'Arabic'  },
+    { re: /\b(english|انجليزي|إنجليزي|انجليزيه)\b/i, v: 'English' },
+    { re: /\b(french|فرنسي)\b/i, v: 'French'  },
+    { re: /\b(german|deutsch|الماني|ألماني)\b/i, v: 'German' },
+    { re: /\b(spanish|اسباني|إسباني)\b/i, v: 'Spanish' },
+    { re: /\b(urdu|اردو|أردو)\b/i, v: 'Urdu' },
+  ];
+  langDict.forEach(function(d){ if (d.re.test(t)) out.languages.push(d.v); });
+
+  // ── Tools / software (curated) ────────────────────────────────────────
+  var toolDict = [
+    'Excel','Word','PowerPoint','Outlook','Microsoft 365','Google Workspace',
+    'Salesforce','HubSpot','Zoho','SAP','QuickBooks','Tableau','Power BI',
+    'Canva','Figma','Photoshop','Illustrator','Adobe XD',
+    'Python','SQL','JavaScript','React','Node',
+    'Zendesk','Freshdesk','Intercom','Jira','Slack',
+    'AutoCAD','Revit',
+  ];
+  toolDict.forEach(function(name){
+    var re = new RegExp('\\b' + name.replace(/[.+]/g, '\\$&') + '\\b', 'i');
+    if (re.test(t)) out.tools.push(name);
+  });
+
+  // Cap arrays so the diagnosis copy never explodes.
+  out.languages = out.languages.slice(0, 6);
+  out.tools     = out.tools.slice(0, 8);
+
+  // ── Soft evidence flags — used by buildDiagnosis to write specific copy
+  // instead of generic templates. Each flag is true only when the CV shows
+  // multiple corroborating signals (single-keyword hits are too noisy).
+  out.projectsEvidence = (function(){
+    var hits = 0;
+    if (/\bproject(s)?\b|مشاريع|مشروع/i.test(t)) hits++;
+    if (/\binternship|training|تدريب\b|تدريبي/i.test(t)) hits++;
+    if (/\bportfolio|بورتفوليو\b/i.test(t)) hits++;
+    if (/\bgithub|behance|dribbble\b/i.test(t)) hits++;
+    return hits >= 1;
+  })();
+  out.customerFacing = (function(){
+    var hits = 0;
+    if (/customer|client|عملاء|عميل/i.test(t)) hits++;
+    if (/support|دعم|service|خدمه|خدمة/i.test(t)) hits++;
+    if (/communicat|تواصل|interact/i.test(t)) hits++;
+    if (/handled.*complain|resolved.*issue|شكوى|شكاو/i.test(t)) hits++;
+    return hits >= 2;
+  })();
+  out.leadershipEvidence = (function(){
+    var hits = 0;
+    if (/\bled\b|قاد|قدت|قاده|قيادة|قياده/i.test(t)) hits++;
+    if (/\bmanaged\b|ادار|أدار|إدارة|اداره/i.test(t)) hits++;
+    if (/team.*\d+|\d+.*team|فريق.*\d+|\d+.*فريق/i.test(t)) hits++;
+    if (/\bmentored|coach(ed)?|درّبت|درب/i.test(t)) hits++;
+    if (/\bsupervisor|manager|head of|director|lead\b/i.test(t)) hits++;
+    return hits >= 1;
+  })();
+
+  return out;
+}
+
+// =============================================================================
+// ROLE INTENT ENGINE — client wrapper
+// =============================================================================
+// resolveDreamIntent — the canonical way to determine a user's career
+// direction. Always asks the server (which prefers OpenAI when available),
+// and only falls back to the local heuristic on full network failure.
+//
+// Returns:
+//   { family, confidence, normalizedDreamRole, inferredSeniority,
+//     reason, nearestRoleLogic, isSimpleJob, source }
+//
+// `source` is one of: 'openai' | 'heuristic' | 'local'.
+// The UI should never claim a confidence > 50 as authoritative — it should
+// surface the "pick a direction" chips whenever confidence < 60.
+async function resolveDreamIntent(args){
+  var dreamRole = (args && args.dreamRole) || '';
+  var cvText    = (args && args.cvText)    || '';
+  var quizAnswers = (args && args.quizAnswers) || null;
+
+  try {
+    var res = await fetch('/api/darbi/resolve-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dreamRole: dreamRole, cvText: cvText, quizAnswers: quizAnswers }),
+    });
+    if (res.ok){
+      var data = await res.json();
+      if (data && data.intent && data.intent.family){
+        return data.intent;
+      }
+    }
+  } catch(e){
+    // Swallow — drop to local fallback below. Never surface raw network errors.
+  }
+
+  return localHeuristicIntent(dreamRole, cvText);
+}
+
+// Maps the Arabic chip labels rendered in the unknown-family path to their
+// canonical family keys. Used by chooseDirectionAndRebuild() to translate a
+// user click into an intent override for buildDiagnosis.
+var ARABIC_LABEL_TO_FAMILY = {
+  'خدمة عملاء':         'customer_service',
+  'مبيعات':              'sales',
+  'تسويق':               'marketing',
+  'موارد بشرية':         'hr',
+  'محاسبة':              'accounting',
+  'تقنية':               'it_cyber',
+  'تصميم':               'design',
+  'إدارة / تنسيق':       'admin_office',
+  'وظيفة بسيطة الآن':    'simple_job',
+};
+
+// Called when the user clicks one of the direction chips on the unknown-family
+// diagnosis screen. Rebuilds the diagnosis with the chosen family as an
+// intent override (skipping the network call), saves it, and re-renders.
+async function chooseDirectionAndRebuild(family){
+  if (!family) return;
+  var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+  if (!d) return;
+  // Build an intent override using the user's explicit choice. Confidence is
+  // set to 95 because the human told us — no inference needed.
+  var override = {
+    family: family,
+    confidence: 95,
+    normalizedDreamRole: (typeof _arNormalize === 'function') ? _arNormalize(d.dreamRole || '') : (d.dreamRole || ''),
+    inferredSeniority: (d.intent && d.intent.inferredSeniority) || (d.inferredStatus || 'unknown'),
+    reason: 'المستخدم اختار هذا الاتجاه يدويًا',
+    nearestRoleLogic: 'user_choice',
+    isSimpleJob: family === 'simple_job',
+    source: 'user',
+  };
+  // Recover the original quiz answers so determineBranch still works.
+  var answers = {
+    dreamRole:    d.dreamRole,
+    appsCount:    d.applicationsCount,
+    repliesCount: d.repliesCount,
+    english:      d.englishLevel,
+    frustration:  d.frustration,
+    status:       d.inferredStatus,
+  };
+  var newDiag = await buildDiagnosis(d.dreamRole, d.cvText || '', answers, override);
+  Diagnosis.set(newDiag);
+  if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'direction_chosen', payload: { family: family } });
+  // Re-render the diagnosis screen — same renderer handles both confident and
+  // direction-pick states based on the new newDiag.needsDirectionPick flag.
+  if (typeof renderDiagnosisScreen === 'function') renderDiagnosisScreen();
+}
+
+// Local last-resort fallback if the server is unreachable. Keeps the diagnosis
+// flow working offline (e.g., during deploys). Honest confidence values so the
+// UI knows to ask the user instead of inventing roles.
+function localHeuristicIntent(dreamRole, cvText){
+  var family = (typeof detectDreamFamily === 'function') ? detectDreamFamily(dreamRole) : 'unknown';
+  var seniority = (typeof inferStatusFromCV === 'function') ? inferStatusFromCV(cvText) : 'unknown';
+  return {
+    family: family || 'unknown',
+    confidence: family && family !== 'unknown' ? 55 : 18,
+    normalizedDreamRole: _arNormalize(dreamRole || ''),
+    inferredSeniority: seniority || 'unknown',
+    reason: family && family !== 'unknown'
+      ? 'تطابق محلي مع عائلة ' + family
+      : 'ما طابق أي مفهوم واضح',
+    nearestRoleLogic: 'local',
+    isSimpleJob: family === 'simple_job' || (typeof detectSimpleJobIntent === 'function' && detectSimpleJobIntent(dreamRole)),
+    source: 'local',
+  };
+}
+
 // Pick branch A/B/C from quiz answers + CV signal.
 function determineBranch(answers, cvText){
   var status = answers.status || inferStatusFromCV(cvText);
@@ -2856,28 +3113,58 @@ function determineBranch(answers, cvText){
 // Build the wow diagnosis. Pulls library content for the family, injects
 // answers, and runs analyzeCareerFit() in the background to fill supporting
 // scores. Returns a fully-shaped diagnosis object.
-function buildDiagnosis(dreamRole, cvText, answers){
-  var family = detectDreamFamily(dreamRole);
+// buildDiagnosis is async because role-intent classification goes through
+// resolveDreamIntent (OpenAI when available, heuristic safety net otherwise).
+// Pass `intentOverride` when the user has explicitly chosen a direction from
+// the unknown-family chips — that skips the network call and re-builds the
+// diagnosis with the chosen family.
+async function buildDiagnosis(dreamRole, cvText, answers, intentOverride){
+  var intent = intentOverride || await resolveDreamIntent({
+    dreamRole: dreamRole, cvText: cvText, quizAnswers: answers,
+  });
+  var family = intent.family || 'unknown';
+  // Treat sub-60 confidence as "not confident enough to commit" — the UI
+  // surfaces the direction chips even if we got a family back.
+  var confidentFamily = (intent.confidence || 0) >= 60 && family !== 'unknown';
   var branch = determineBranch(answers, cvText);
-  var lib = DREAM_ROLE_LIBRARY[family] || null;
+  // simple_job from the intent engine overrides whatever determineBranch said.
+  if (intent.isSimpleJob === true || family === 'simple_job') branch = 'A';
+  var lib = confidentFamily ? (DREAM_ROLE_LIBRARY[family] || null) : null;
+  var facts = (typeof extractCvFacts === 'function') ? extractCvFacts(cvText) : null;
 
   // Run heuristic CV analyzer for supporting scores.
   var rec = (typeof analyzeCareerFit === 'function')
     ? analyzeCareerFit(cvText, dreamRole, '')
     : { cvStrengthScore: 30, jobFitScore: 30, interviewReadinessScore: 25, readinessScore: 30 };
 
-  // currentReality copy
+  // currentReality copy — uses extracted CV facts when available so the copy
+  // never feels like a template. The unknown-family path acknowledges what we
+  // SEE in the CV before asking the user to clarify direction.
   var currentReality;
   if (branch === 'A') {
     currentReality = 'سيرتك بسيطة، وهذا في الواقع مناسب لوظيفة مباشرة. ما تحتاج تعقّدها — تحتاج طريقة تقديم أذكى.';
+  } else if (!confidentFamily) {
+    // Unknown or low-confidence direction — speak to facts we see, not generic.
+    var seen = [];
+    if (facts && facts.major) seen.push('تخصصك ' + facts.major);
+    if (facts && facts.latestTitle) seen.push('آخر دور لك "' + facts.latestTitle + '"');
+    if (facts && facts.yearsExp) seen.push(facts.yearsExp + ' سنوات خبرة');
+    if (facts && facts.customerFacing) seen.push('تعرّض لتجربة عملاء');
+    if (facts && facts.leadershipEvidence) seen.push('إشارات لقيادة فريق');
+    currentReality = seen.length
+      ? 'من سيرتك واضح: ' + seen.slice(0, 3).join('، ') + '. لكن هدفك "' + dreamRole + '" ما نقدر نربطه باتجاه واضح. نحتاج تحدد المسار وندخل بعمق.'
+      : 'هدفك "' + dreamRole + '" ما طابق أي مسار معروف. اختر اتجاه من الخيارات تحت ونرسم لك الطريق.';
   } else if (branch === 'B') {
-    currentReality = lib
-      ? 'أنت في بداية مسار ' + lib.familyAr + '. سيرتك ما تثبت بعد الدليل المطلوب لدور متخصص كامل، لكن الهدف ممكن.'
-      : 'أنت في بداية المسار. هدفك ممكن، لكن نحتاج نوضح اتجاهك أولاً ونبني الدليل من اللي عندك.';
+    var bMods = '';
+    if (facts && facts.customerFacing && family === 'customer_service') bMods = ' الزين إنه عندك تعرّض لتجربة عملاء في سيرتك — نبني عليه.';
+    if (facts && facts.leadershipEvidence && (family === 'admin_office' || family === 'hr')) bMods = ' عندك إشارات تنظيمية في سيرتك — نوظفها.';
+    if (facts && facts.tools && facts.tools.length && family === 'it_cyber') bMods = ' الأدوات في سيرتك (' + facts.tools.slice(0,2).join('، ') + ') مدخل صح للتقنية.';
+    currentReality = 'أنت في بداية مسار ' + lib.familyAr + '. سيرتك ما تثبت بعد الدليل المطلوب لدور متخصص كامل، لكن الهدف ممكن.' + bMods;
   } else {
-    currentReality = lib
-      ? 'عندك خبرة في ' + lib.familyAr + '. السيرة موجودة، لكن لا تطابق لغة الإعلانات بسرعة كافية، أو تستهدف أدوار أعلى من أقرب مدخل.'
-      : 'عندك خبرة. السيرة تحتاج تطابق لغة الإعلانات وتبرز النتائج بسرعة، مو وصف مهام عام.';
+    var cMods = '';
+    if (facts && facts.yearsExp) cMods = ' (شفنا ' + facts.yearsExp + ' سنوات خبرة في سيرتك)';
+    if (facts && facts.leadershipEvidence) cMods += '، وفي إشارات قيادة';
+    currentReality = 'عندك خبرة في ' + lib.familyAr + cMods + '. السيرة موجودة، لكن لا تطابق لغة الإعلانات بسرعة كافية، أو تستهدف أدوار أعلى من أقرب مدخل.';
   }
 
   // biggestGap copy — pick the leading reason for silence
@@ -2887,6 +3174,8 @@ function buildDiagnosis(dreamRole, cvText, answers){
   } else if (branch === 'B') {
     if (lib && lib.commonGaps && lib.commonGaps.length) {
       biggestGap = 'سيرتك ' + lib.commonGaps[0] + '. لما الـ HR يفتحها لـ 7 ثواني، ما يلقى الدليل اللي يحتاجه يوصلك للمقابلة.';
+    } else if (!confidentFamily) {
+      biggestGap = 'نحتاج نحدد اتجاهك أكثر عشان نعطيك طريق واقعي. اختر أقرب اتجاه من الخيارات تحت — راح نعيد التشخيص حالًا على المسار اللي تختاره.';
     } else {
       biggestGap = 'سيرتك ما تثبت بعد المهارات اللي تطلبها هذي الوظيفة. الـ HR لا يستنتج، يبحث عن دليل واضح.';
     }
@@ -2901,14 +3190,28 @@ function buildDiagnosis(dreamRole, cvText, answers){
     }
   }
 
-  // nearestWinnableRoles
+  // nearestWinnableRoles. When the family is unknown OR confidence is low we
+  // DO NOT invent "Junior {dreamRole}" / "Trainee {dreamRole}" / "Assistant
+  // {dreamRole}" — that produces phrases like "Junior فضاء" which look like
+  // nonsense. Instead, surface 9 common Saudi paths the user can CLICK to
+  // re-build their diagnosis with a chosen direction.
   var nearestRoles;
+  // If OpenAI gave us specific entry roles, prefer those.
+  var openaiRoles = (Array.isArray(intent.nearestRoleLogic) && intent.nearestRoleLogic.length)
+    ? intent.nearestRoleLogic : null;
   if (branch === 'A') {
     nearestRoles = ['كاشير','باريستا','موظف خدمة عملاء فرع','استقبال','مبيعات تجزئة'];
+  } else if (lib && openaiRoles) {
+    nearestRoles = openaiRoles.slice(0, 5);
   } else if (lib) {
     nearestRoles = lib.nearestRoles.slice(0, 4);
+  } else if (openaiRoles) {
+    nearestRoles = openaiRoles.slice(0, 5);
   } else {
-    nearestRoles = ['Junior ' + dreamRole, 'Trainee ' + dreamRole, 'Assistant ' + dreamRole];
+    // The 9 canonical Saudi-market directions — used when family is unknown.
+    // These render as INTERACTIVE chips in renderDiagnosisScreen, so the user
+    // can click one and trigger a rebuild with the chosen family.
+    nearestRoles = ['خدمة عملاء','مبيعات','تسويق','موارد بشرية','محاسبة','تقنية','تصميم','إدارة / تنسيق','وظيفة بسيطة الآن'];
   }
 
   // bridgePlan
@@ -2947,7 +3250,16 @@ function buildDiagnosis(dreamRole, cvText, answers){
   } else if (branch === 'C') {
     firstFix = 'اختر إعلان واحد فقط الليلة + أعد ترتيب أعلى ٣ إنجازات في سيرتك بحيث تظهر الأرقام أولاً. ٢٠ دقيقة شغل.';
   } else {
-    firstFix = 'اكتب اتجاهك بسطر واحد + ٣ أدوار محتملة. لما تعرف وين رايح، نعرف وش نصلح.';
+    // family === 'unknown' OR low confidence. Surface a CV fact so the user
+    // feels seen, then point to the chips.
+    var hint = '';
+    if (facts){
+      if (facts.major)             hint = ' (شفنا تخصصك: ' + facts.major + ')';
+      else if (facts.latestTitle)  hint = ' (آخر دور لك: ' + facts.latestTitle + ')';
+      else if (facts.yearsExp)     hint = ' (خبرتك: ' + facts.yearsExp + ' سنوات)';
+      else if (facts.customerFacing) hint = ' (شفنا تعرّض عملاء في سيرتك)';
+    }
+    firstFix = 'اختر اتجاه من الخيارات تحت' + hint + ' — بمجرد ما تضغط، يعاد التشخيص فورًا ويصير الطريق واضح.';
   }
 
   // pathClarity score: how clear is the path from current to dream?
@@ -2969,6 +3281,18 @@ function buildDiagnosis(dreamRole, cvText, answers){
     dreamRole: dreamRole,
     family: family,
     branch: branch,
+    // Persist the full intent so the dashboard / renderer can decide whether
+    // to surface the "pick a direction" chips (low confidence) or hide them.
+    intent: {
+      family: intent.family,
+      confidence: intent.confidence || 0,
+      inferredSeniority: intent.inferredSeniority || 'unknown',
+      reason: intent.reason || '',
+      source: intent.source || 'unknown',
+      isSimpleJob: !!intent.isSimpleJob,
+    },
+    confidentFamily: confidentFamily,
+    needsDirectionPick: !confidentFamily && branch !== 'A',
     inferredStatus: answers.status || inferStatusFromCV(cvText),
     cvTextLength: (cvText || '').length,
     applicationsCount: answers.appsCount || null,
@@ -2982,6 +3306,7 @@ function buildDiagnosis(dreamRole, cvText, answers){
     firstFix: firstFix,
     supportingScores: sup,
     interviewPrep: lib ? lib.interviewPrep : 'ليش هذا المسار؟ + موقف يثبت قدراتك',
+    cvFacts: facts,
     cvText: cvText,
     createdAt: new Date().toISOString(),
   };
@@ -3184,8 +3509,27 @@ function diagPickOption(btn, qid, value){
   document.getElementById('diagQuizSubmit').disabled = !ok;
 }
 
-function diagSubmitQuiz(){
-  var diag = buildDiagnosis(_diagDraft.dreamRole, _diagDraft.cvText, _diagDraft.answers);
+async function diagSubmitQuiz(){
+  // Role-intent classification goes through the server (OpenAI when available)
+  // so buildDiagnosis is async. Show a loading state on the submit button so
+  // the user knows we're working — usually 1-3s.
+  var btn = document.getElementById('diagQuizSubmit');
+  var origLabel = btn ? btn.textContent : '';
+  if (btn){ btn.disabled = true; btn.textContent = 'جاري التشخيص…'; }
+  var diag;
+  try {
+    diag = await buildDiagnosis(_diagDraft.dreamRole, _diagDraft.cvText, _diagDraft.answers);
+  } catch(e){
+    // buildDiagnosis owns its own fallbacks; we shouldn't reach here. If we
+    // do, recover with a fully-local intent so the user is never blocked.
+    console.error('[diag] build failed:', (e && e.message) || e);
+    diag = await buildDiagnosis(
+      _diagDraft.dreamRole, _diagDraft.cvText, _diagDraft.answers,
+      localHeuristicIntent(_diagDraft.dreamRole, _diagDraft.cvText)
+    );
+  } finally {
+    if (btn){ btn.disabled = false; btn.textContent = origLabel || 'متابعة ←'; }
+  }
   Diagnosis.set(diag);
   if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'diagnosis_completed' });
   // Mirror into Analysis namespace so the dashboard / CV improvement / training
@@ -3223,10 +3567,25 @@ function renderDiagnosisScreen(){
   document.getElementById('diagResReality').textContent = d.currentReality;
   document.getElementById('diagResGap').textContent = d.biggestGap;
 
+  // When confidence is low we render the chips as CLICKABLE buttons that
+  // rebuild the diagnosis with the chosen direction. When the family is
+  // confidently known, chips are static role suggestions (the existing UX).
   var rolesEl = document.getElementById('diagResRoles');
   rolesEl.innerHTML = '';
+  var pickMode = d.needsDirectionPick === true;
   d.nearestWinnableRoles.forEach(function(r){
-    rolesEl.innerHTML += '<div class="diag-role-chip">' + r + '</div>';
+    if (pickMode){
+      var fam = ARABIC_LABEL_TO_FAMILY[r] || null;
+      if (fam){
+        rolesEl.innerHTML += '<button type="button" class="diag-role-chip diag-role-chip-pick" '
+          + 'onclick="chooseDirectionAndRebuild(' + JSON.stringify(fam).replace(/"/g, '&quot;') + ')">'
+          + r + ' ←</button>';
+      } else {
+        rolesEl.innerHTML += '<div class="diag-role-chip">' + r + '</div>';
+      }
+    } else {
+      rolesEl.innerHTML += '<div class="diag-role-chip">' + r + '</div>';
+    }
   });
 
   var bridgeEl = document.getElementById('diagResBridge');
