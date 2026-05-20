@@ -553,7 +553,8 @@ button.diag-role-chip-pick:active{transform:translateY(0)}
 .lp-example-output .lp-ex-section p{font-size:14.5px;color:#1f2937;line-height:1.65;margin:0}
 
 /* Access options */
-.lp-access-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
+.lp-access-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
+@media (max-width:1100px){.lp-access-grid{grid-template-columns:repeat(2,1fr);gap:14px}}
 .lp-access-card{background:#fff;border:1px solid #ececf4;border-radius:20px;padding:26px;display:flex;flex-direction:column}
 .lp-access-card.is-hot{border:2px solid #4f46e5;background:linear-gradient(180deg,#fafafe,#fff)}
 .lp-access-tag{display:inline-block;font-size:11px;font-weight:800;color:#4f46e5;background:#eef2ff;padding:5px 11px;border-radius:99px;letter-spacing:.4px;text-transform:uppercase;margin-bottom:12px;align-self:flex-start}
@@ -1217,51 +1218,69 @@ img,video,iframe{max-width:100%}
   <!-- ACCESS OPTIONS -->
   <section class="lp-section lp-bg-white" id="lp-access">
     <span class="lp-eyebrow">الوصول</span>
-    <h2 class="lp-h2">ابدأ مجاناً. <span>واستمر بالطريقة اللي تناسبك.</span></h2>
-    <p class="lp-sub">التشخيص الأول مجاني. لو حبيت تكمل، عندك خيارين بدون اشتراك شهري.</p>
+    <h2 class="lp-h2">ابدأ مجاناً. <span>واختر اللي يناسبك.</span></h2>
+    <p class="lp-sub">التشخيص الأول مجاني. خطط الاشتراك حالياً قيد التفعيل — نعمل بنموذج الإطلاق التجريبي.</p>
 
     <div class="lp-access-grid">
+      <!-- 1. Free — the launch tier. Includes share-to-earn as a benefit. -->
       <div class="lp-access-card">
         <span class="lp-access-tag">ابدأ هنا</span>
-        <h3>تشخيص مجاني</h3>
+        <h3>Free</h3>
         <div class="lp-access-price">$0</div>
         <div class="lp-access-sub">بدون بطاقة، بدون تسجيل في البداية.</div>
         <ul class="lp-access-list">
           <li>تشخيص أولي كامل</li>
           <li>أقرب وظيفة تناسبك الآن</li>
-          <li>أول توصية عملية</li>
           <li>٢٤ ساعة وصول بعد التشخيص</li>
+          <li>وقت إضافي عبر المشاركة والإحالة</li>
         </ul>
-        <button class="lp-btn lp-btn-s" onclick="startDiagnosis()">ابدأ التشخيص</button>
+        <button class="lp-btn lp-btn-p" onclick="startDiagnosis()">ابدأ التشخيص</button>
       </div>
 
+      <!-- 2. Starter — positioning only. Paid CTAs hit PAY_ENABLED guard. -->
       <div class="lp-access-card">
-        <span class="lp-access-tag">مجاني — قابل للتمديد</span>
-        <h3>اكسب وقت إضافي</h3>
-        <div class="lp-access-price" style="font-size:24px">شارك وادعُ</div>
-        <div class="lp-access-sub">وقتك المجاني يطول كل ما شاركت أو دعوت صديق.</div>
+        <span class="lp-access-tag">للجادّين قليلاً</span>
+        <h3>Starter</h3>
+        <div class="lp-access-price">$9<span style="font-size:14px;color:#6b7280;font-weight:600">/شهر</span></div>
+        <div class="lp-access-sub">للباحث النشط: عدة وظائف بنفس الوقت.</div>
         <ul class="lp-access-list">
-          <li>+٢٤ ساعة لمشاركة كارد التشخيص</li>
-          <li>+٤٨ ساعة لكل صديق يسجّل</li>
-          <li>+٧ أيام لمشاركة فيديو تجربتك</li>
-          <li>حد أقصى ٣٠ يوم مجاني</li>
+          <li>تشخيصات متعددة بالشهر</li>
+          <li>تتبع تقديماتك (قريباً)</li>
+          <li>تدريب مقابلات بمعدّل أعلى</li>
+          <li>كل المزايا المجانية</li>
         </ul>
-        <button class="lp-btn lp-btn-s" onclick="startDiagnosis()">جرّب التشخيص أولاً</button>
+        <button class="lp-btn lp-btn-s" onclick="triggerCheckout('starter')">اشترك — $9</button>
       </div>
 
-      <div class="lp-access-card is-hot">
-        <span class="lp-access-tag" style="background:#fef3c7;color:#92400e">للجادّين</span>
-        <h3>Founder Lifetime Access</h3>
-        <div class="lp-access-price">$199</div>
-        <div class="lp-access-sub">ادفع مرة واحدة — بدون اشتراك شهري.</div>
+      <!-- 3. Pro Unlimited — positioning only. -->
+      <div class="lp-access-card">
+        <span class="lp-access-tag">للمحترفين</span>
+        <h3>Pro Unlimited</h3>
+        <div class="lp-access-price">$19<span style="font-size:14px;color:#6b7280;font-weight:600">/شهر</span></div>
+        <div class="lp-access-sub">بدون حدود يومية على التشخيص والتدريب.</div>
         <ul class="lp-access-list">
-          <li>كل المزايا طوال رحلة البحث</li>
-          <li>وصول للقوالب والميزات الجديدة</li>
-          <li>تدريب مقابلات بدون حد يومي</li>
-          <li>دعم مباشر للمؤسسين</li>
+          <li>تشخيص بدون حد</li>
+          <li>تدريب مقابلات بدون حد</li>
+          <li>أولوية في الدعم</li>
+          <li>كل مزايا Starter</li>
         </ul>
-        <button class="lp-btn lp-btn-p" onclick="startDiagnosis()">ابدأ التشخيص أولاً</button>
-        <div class="lp-access-fineprint">الاستخدام العادل مطبق لحماية جودة الخدمة. لا اشتراك شهري.</div>
+        <button class="lp-btn lp-btn-s" onclick="triggerCheckout('pro')">اشترك — $19</button>
+      </div>
+
+      <!-- 4. Founder Lifetime — kept as the headline paid tier. -->
+      <div class="lp-access-card is-hot">
+        <span class="lp-access-tag" style="background:#fef3c7;color:#92400e">دفعة واحدة</span>
+        <h3>Founder Lifetime</h3>
+        <div class="lp-access-price">$199<span style="font-size:14px;color:#6b7280;font-weight:600"> · مرة واحدة</span></div>
+        <div class="lp-access-sub">ادفع مرة واحدة — بدون اشتراك شهري أبداً.</div>
+        <ul class="lp-access-list">
+          <li>كل مزايا Pro طوال رحلة البحث</li>
+          <li>وصول للقوالب والميزات الجديدة</li>
+          <li>دعم مباشر للمؤسسين</li>
+          <li>قفل سعر — حتى لو رفعنا الاشتراك</li>
+        </ul>
+        <button class="lp-btn lp-btn-p" onclick="triggerCheckout('lifetime')">فعّل Founder — $199</button>
+        <div class="lp-access-fineprint">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
       </div>
     </div>
   </section>
@@ -4847,7 +4866,7 @@ function diagTriggerFounderLTD(){
   if (typeof triggerCheckout === 'function') {
     triggerCheckout('lifetime');
   } else {
-    showNotif('الدفع غير متاح','','تواصل معنا لتفعيل وصول المؤسسين.');
+    showNotif('الدفع غير متاح', '', PAY_GENERIC_MSG);
   }
 }
 
@@ -6037,14 +6056,21 @@ function selectPay(opt){
   }
 })();
 
-// Friendly, non-leaky message shown to users for any payment failure. Raw
-// Stripe errors (e.g. "Invalid API Key provided: sk_live_...") are written
-// to console.error for the developer but NEVER surfaced in UI text.
-var PAY_GENERIC_MSG = 'الدفع غير متاح حالياً. جرّب لاحقاً أو تواصل معنا.';
+// Soft-launch payment guard. PAY_ENABLED=false bypasses the Stripe call
+// entirely so an invalid key in production can never leak a raw error to
+// users. Pricing cards stay visible (for positioning) but every paid CTA
+// shows the friendly disabled message. Flip to true once a real Stripe
+// key is in Railway Variables and verified.
+var PAY_ENABLED = false;
+var PAY_GENERIC_MSG = 'الدفع غير متاح حالياً. تواصل معنا لتفعيل الوصول.';
 
 function triggerCheckout(plan){
   if(!isLoggedIn()){
     requireAuth(function(){ triggerCheckout(plan); }, 'سجّل دخولك عشان تكمل الدفع');
+    return;
+  }
+  if (!PAY_ENABLED){
+    showNotif('الدفع غير متاح', '', PAY_GENERIC_MSG);
     return;
   }
   apiFetch('/api/payment/checkout',{method:'POST',body:{plan:plan}})
