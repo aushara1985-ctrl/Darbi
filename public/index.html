@@ -456,6 +456,50 @@ button.diag-role-chip-pick:active{transform:translateY(0)}
 .diag-unlock-btn-pay:hover{background:#f59e0b}
 .diag-unlock-fineprint{font-size:11px;color:#94a3b8;margin-top:10px;line-height:1.6}
 
+/* Diagnosis unlock — 4-tier compact row variant */
+.diag-unlock-opt.is-recommended{background:rgba(251,191,36,.08);border-color:#fbbf24;position:relative}
+.dut-badge{position:absolute;top:-10px;right:14px;background:#fbbf24;color:#0f172a;font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;letter-spacing:.3px;white-space:nowrap}
+.dut-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px}
+.dut-row h4{margin:0}
+.dut-price{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.5px;white-space:nowrap}
+.dut-mo{font-size:11.5px;font-weight:600;color:#94a3b8;margin-right:2px}
+.dut-fine{font-size:10.5px;color:#94a3b8;margin-top:8px;line-height:1.5}
+
+/* Dashboard expired-state tier buttons */
+.dbv2-expired-tiers{display:flex;gap:7px;flex-wrap:wrap}
+
+/* Application Tracker */
+.dbv2-tracker-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.tk-stat{background:#fafafe;border:1px solid #ececf4;border-radius:10px;padding:11px 6px;text-align:center}
+.tk-num{display:block;font-size:22px;font-weight:900;color:#0a0a0a;letter-spacing:-.5px;line-height:1.1}
+.tk-lbl{display:block;font-size:11px;color:#6b7280;margin-top:4px}
+.dbv2-tracker-insight{background:#eef2ff;border:1px solid #c7d2fe;color:#4338ca;padding:11px 13px;border-radius:10px;font-size:13.5px;line-height:1.65;margin-bottom:12px;font-weight:600}
+.dbv2-tracker-empty{background:#fafafe;border:1px dashed #e0e0ec;border-radius:12px;padding:22px 18px;text-align:center;font-size:13.5px;color:#6b7280;line-height:1.7;margin-bottom:12px}
+.dbv2-tracker-list{display:flex;flex-direction:column}
+.tk-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f5}
+.tk-row:last-child{border-bottom:none}
+.tk-main{flex:1;min-width:0}
+.tk-co{font-size:14px;font-weight:700;color:#0a0a0a;display:flex;align-items:center;gap:6px}
+.tk-role{font-size:12.5px;color:#6b7280;margin-top:2px}
+.tk-url{color:#4f46e5;text-decoration:none;font-size:14px}
+.tk-url:hover{color:#4338ca}
+.tk-status{border:1.5px solid #e6e6f0;border-radius:8px;padding:6px 9px;font-size:12.5px;font-family:inherit;background:#fff;cursor:pointer;color:#1f2937;font-weight:600;direction:rtl}
+.tk-status.is-reply{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8}
+.tk-status.is-interview{border-color:#fcd34d;background:#fef3c7;color:#92400e}
+.tk-status.is-rejected{border-color:#fecaca;background:#fef2f2;color:#b91c1c}
+.tk-status.is-accepted{border-color:#bbf7d0;background:#f0fdf4;color:#166534}
+.tk-del{background:none;border:none;color:#9ca3af;font-size:18px;cursor:pointer;padding:0 8px;line-height:1;font-family:inherit}
+.tk-del:hover{color:#dc2626}
+.tk-form-input{width:100%;padding:11px 13px;border:1.5px solid #e6e6f0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:#fafafe;color:#0a0a0a;margin-bottom:10px;direction:rtl;box-sizing:border-box}
+.tk-form-input:focus{border-color:#4f46e5;background:#fff}
+@media (max-width:600px){
+  .dbv2-tracker-stats{grid-template-columns:repeat(5,1fr);gap:5px}
+  .tk-num{font-size:18px}
+  .tk-lbl{font-size:10px}
+  .tk-stat{padding:9px 4px}
+  .tk-row{flex-wrap:wrap}
+}
+
 @media (max-width:600px){
   .diag-wrap{padding:18px 14px 50px}
   .diag-h1{font-size:25px}
@@ -1252,34 +1296,35 @@ img,video,iframe{max-width:100%}
         <button class="lp-btn lp-btn-s" onclick="triggerCheckout('starter')">اشترك — $9</button>
       </div>
 
-      <!-- 3. Pro Unlimited — positioning only. -->
-      <div class="lp-access-card">
-        <span class="lp-access-tag">للمحترفين</span>
+      <!-- 3. Pro Unlimited — visually recommended per spec. -->
+      <div class="lp-access-card is-hot">
+        <span class="lp-access-tag" style="background:#eef2ff;color:#4338ca">الأكثر مناسبة للباحث الجاد</span>
         <h3>Pro Unlimited</h3>
         <div class="lp-access-price">$19<span style="font-size:14px;color:#6b7280;font-weight:600">/شهر</span></div>
-        <div class="lp-access-sub">بدون حدود يومية على التشخيص والتدريب.</div>
+        <div class="lp-access-sub">للي يبحث بجدية ويحتاج يستخدم دربي بدون حدود شهرية مزعجة.</div>
         <ul class="lp-access-list">
           <li>تشخيص بدون حد</li>
           <li>تدريب مقابلات بدون حد</li>
           <li>أولوية في الدعم</li>
           <li>كل مزايا Starter</li>
         </ul>
-        <button class="lp-btn lp-btn-s" onclick="triggerCheckout('pro')">اشترك — $19</button>
+        <button class="lp-btn lp-btn-p" onclick="triggerCheckout('pro')">اشترك — $19</button>
+        <div class="lp-access-fineprint">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
       </div>
 
-      <!-- 4. Founder Lifetime — kept as the headline paid tier. -->
-      <div class="lp-access-card is-hot">
+      <!-- 4. Founder Lifetime — exact spec copy. -->
+      <div class="lp-access-card">
         <span class="lp-access-tag" style="background:#fef3c7;color:#92400e">دفعة واحدة</span>
         <h3>Founder Lifetime</h3>
         <div class="lp-access-price">$199<span style="font-size:14px;color:#6b7280;font-weight:600"> · مرة واحدة</span></div>
-        <div class="lp-access-sub">ادفع مرة واحدة — بدون اشتراك شهري أبداً.</div>
+        <div class="lp-access-sub">ادفع مرة واحدة. بدون اشتراك شهري.</div>
         <ul class="lp-access-list">
           <li>كل مزايا Pro طوال رحلة البحث</li>
           <li>وصول للقوالب والميزات الجديدة</li>
           <li>دعم مباشر للمؤسسين</li>
           <li>قفل سعر — حتى لو رفعنا الاشتراك</li>
         </ul>
-        <button class="lp-btn lp-btn-p" onclick="triggerCheckout('lifetime')">فعّل Founder — $199</button>
+        <button class="lp-btn lp-btn-s" onclick="triggerCheckout('lifetime')">فعّل Founder — $199</button>
         <div class="lp-access-fineprint">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
       </div>
     </div>
@@ -1937,7 +1982,15 @@ img,video,iframe{max-width:100%}
       </div>
 
       <div id="dbv2ExpiredNote" class="dbv2-expired-note" style="display:none">
-        انتهت فترة الوصول. تقدر تكمل بنسخ محدود أو ترقية.
+        <div style="font-weight:700;margin-bottom:6px">انتهت فترة الوصول</div>
+        <div style="font-size:13px;color:#7f1d1d;margin-bottom:11px;line-height:1.6">تقدر تكمل بنسخ محدود من نتائجك، أو ترفع وصولك بإحدى الخطط:</div>
+        <div class="dbv2-expired-tiers">
+          <button class="dbv2-btn dbv2-btn-s" onclick="diagOpenShareCard()" style="font-size:12.5px;padding:8px 12px">Free — شارك +24h</button>
+          <button class="dbv2-btn dbv2-btn-s" onclick="triggerCheckout('starter')" style="font-size:12.5px;padding:8px 12px">Starter — $9</button>
+          <button class="dbv2-btn dbv2-btn-p" onclick="triggerCheckout('pro')" style="font-size:12.5px;padding:8px 12px">Pro — $19 ★</button>
+          <button class="dbv2-btn dbv2-btn-s" onclick="triggerCheckout('lifetime')" style="font-size:12.5px;padding:8px 12px">Founder — $199</button>
+        </div>
+        <div style="font-size:11.5px;color:#9ca3af;margin-top:8px">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
       </div>
 
       <div class="dbv2-h-row">
@@ -2032,18 +2085,32 @@ img,video,iframe{max-width:100%}
       </div>
     </div>
 
-    <!-- 6b. OUTCOMES TRACKING — small section, feeds DarbiBrain.learn() -->
-    <div class="dbv2-card" id="dbv2Outcomes">
-      <div class="dbv2-card-h">كيف يصير معك التقديم؟</div>
-      <p style="font-size:12.5px;color:#666;margin-bottom:11px;line-height:1.6">سجّل آخر نتيجة — دربي يعدّل خطتك على هذي الإشارة.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:7px" id="dbv2OutcomeBtns">
-        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('applied')"   style="font-size:12px;padding:8px 13px">قدّمت</button>
-        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('got_reply')" style="font-size:12px;padding:8px 13px">جاني رد</button>
-        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('interview')" style="font-size:12px;padding:8px 13px">دخلت مقابلة</button>
-        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('rejected')"  style="font-size:12px;padding:8px 13px">انرفضت</button>
-        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2LogOutcome('success')"   style="font-size:12px;padding:8px 13px">انقبلت 🎉</button>
+    <!-- 6b. APPLICATION TRACKER — per-application records, status changes feed DarbiBrain.learn() -->
+    <div class="dbv2-card" id="dbv2Tracker">
+      <div class="dbv2-card-h">تقديماتك</div>
+      <p style="font-size:12.5px;color:#666;margin-bottom:11px;line-height:1.6">سجّل كل تقديم برابطه وحالته. دربي يقرأ النمط ويعدّل خطتك على الواقع، مو على افتراض.</p>
+
+      <!-- Stats row — hidden until first application exists -->
+      <div class="dbv2-tracker-stats" id="trackerStats" style="display:none">
+        <div class="tk-stat"><span class="tk-num" id="tkTotal">0</span><span class="tk-lbl">إجمالي</span></div>
+        <div class="tk-stat"><span class="tk-num" id="tkReplies">0</span><span class="tk-lbl">رد</span></div>
+        <div class="tk-stat"><span class="tk-num" id="tkInter">0</span><span class="tk-lbl">مقابلة</span></div>
+        <div class="tk-stat"><span class="tk-num" id="tkRej">0</span><span class="tk-lbl">رفض</span></div>
+        <div class="tk-stat"><span class="tk-num" id="tkAcc">0</span><span class="tk-lbl">قبول</span></div>
       </div>
-      <div id="dbv2OutcomesConfirm" style="display:none;font-size:12.5px;color:#166534;margin-top:10px;font-weight:600"></div>
+
+      <!-- Insight pill (one of 4 rules, or hidden) -->
+      <div id="trackerInsight" class="dbv2-tracker-insight" style="display:none"></div>
+
+      <!-- Empty state — spec wording -->
+      <div id="trackerEmpty" class="dbv2-tracker-empty">
+        سجّل أول تقديم عشان دربي يعرف هل المشكلة في السيرة، اختيار الوظائف، أو المقابلة.
+      </div>
+
+      <!-- Application rows -->
+      <div id="trackerList" class="dbv2-tracker-list"></div>
+
+      <button class="dbv2-btn dbv2-btn-p" style="margin-top:12px" onclick="openAppTrackerModal()">+ سجل تقديم جديد</button>
     </div>
 
     <!-- 7. REFERRAL (compact, lower) -->
@@ -2215,25 +2282,42 @@ img,video,iframe{max-width:100%}
     </div>
   </div>
 
-  <!-- Unlock card — appears AFTER the wow, never before. -->
+  <!-- Unlock card — appears AFTER the wow, never before. 4 tiers per spec. -->
   <div class="diag-unlock" id="diagUnlockCard">
     <div class="diag-unlock-eyebrow">افتح خطتك الكاملة</div>
     <div class="diag-unlock-h">عندك 24 ساعة وصول مجاني</div>
-    <div class="diag-unlock-sub" id="diagUnlockSub">شفت أقرب طريق لحلمك. بعد 24 ساعة، تقدر تكمل بطريقتين:</div>
+    <div class="diag-unlock-sub" id="diagUnlockSub">شفت أقرب طريق لحلمك. لو تبي تكمل بدون انقطاع، اختار الخطة اللي تناسبك:</div>
 
+    <!-- Free — current state -->
     <div class="diag-unlock-opt">
-      <h4>اكسب وصول مجاني</h4>
-      <p>شارك كارد التشخيص أو ادعُ صديقًا — وخذ وقت إضافي.</p>
+      <div class="dut-row"><h4>Free</h4><span class="dut-price">$0</span></div>
+      <p>تشخيص أولي + ٢٤ ساعة وصول + مشاركة لوقت إضافي.</p>
       <button class="diag-unlock-btn diag-unlock-btn-share" onclick="diagOpenShareCard()">شارك نتيجتك — +24 ساعة</button>
     </div>
 
+    <!-- Starter -->
     <div class="diag-unlock-opt">
-      <h4>وصول المؤسسين — $199</h4>
-      <p>ادفع مرة واحدة. استخدم دربي بدون اشتراك شهري.</p>
-      <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="diagTriggerFounderLTD()">فعّل وصول المؤسسين — $199</button>
+      <div class="dut-row"><h4>Starter</h4><span class="dut-price">$9<span class="dut-mo">/شهر</span></span></div>
+      <p>للباحث النشط: تشخيصات متعددة + تتبع تقديماتك + تدريب أعلى.</p>
+      <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="triggerCheckout('starter')">اشترك Starter — $9</button>
     </div>
 
-    <div class="diag-unlock-fineprint">الاستخدام العادل مطبق لحماية جودة الخدمة. لا اشتراك شهري.</div>
+    <!-- Pro — recommended -->
+    <div class="diag-unlock-opt is-recommended">
+      <div class="dut-badge">الأكثر مناسبة للباحث الجاد</div>
+      <div class="dut-row"><h4>Pro Unlimited</h4><span class="dut-price">$19<span class="dut-mo">/شهر</span></span></div>
+      <p>للي يبحث بجدية ويحتاج يستخدم دربي بدون حدود شهرية مزعجة.</p>
+      <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="triggerCheckout('pro')">اشترك Pro — $19</button>
+      <div class="dut-fine">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
+    </div>
+
+    <!-- Founder Lifetime -->
+    <div class="diag-unlock-opt">
+      <div class="dut-row"><h4>Founder Lifetime</h4><span class="dut-price">$199<span class="dut-mo"> · مرة واحدة</span></span></div>
+      <p>ادفع مرة واحدة. بدون اشتراك شهري.</p>
+      <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="triggerCheckout('lifetime')">فعّل Founder — $199</button>
+      <div class="dut-fine">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
+    </div>
   </div>
 </div>
 </div><!-- /s-diagnosis -->
@@ -2457,6 +2541,31 @@ img,video,iframe{max-width:100%}
 
 </div>
 </div><!-- /s-guided-interview -->
+
+<!-- Application Tracker modal — add/edit a single application -->
+<div class="modal-bg" id="appTrackerModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-head"><h2>تقديم جديد</h2><p>تفاصيل سريعة عن الوظيفة اللي قدّمت عليها.</p></div>
+    <div class="modal-body">
+      <input id="appTkCompany" class="tk-form-input" placeholder="الشركة" maxlength="80">
+      <input id="appTkRole"    class="tk-form-input" placeholder="اسم الوظيفة" maxlength="80">
+      <input id="appTkUrl"     class="tk-form-input" placeholder="رابط الوظيفة (اختياري)" maxlength="400">
+      <input id="appTkDate"    class="tk-form-input" type="date">
+      <select id="appTkStatus" class="tk-form-input">
+        <option value="applied">قدمت</option>
+        <option value="reply">جاني رد</option>
+        <option value="interview">مقابلة</option>
+        <option value="rejected">انرفضت</option>
+        <option value="accepted">انقبلت</option>
+      </select>
+      <div id="appTkErr" style="color:#dc2626;font-size:13px;display:none;margin-top:4px"></div>
+    </div>
+    <div class="modal-foot" style="flex-direction:column;gap:8px">
+      <button class="btn btn-p btn-full" onclick="saveAppTracker()">حفظ التقديم</button>
+      <button class="btn btn-s btn-full" onclick="closeModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
 
 <!-- Share card modal -->
 <div class="modal-bg" id="diagShareModal">
@@ -4087,9 +4196,12 @@ var DarbiBrain = (function(){
       goScreen('s-dashboard');
       if (typeof renderDashboard === 'function') renderDashboard();
       setTimeout(function(){
-        var el = document.getElementById('dbv2Outcomes');
+        var el = document.getElementById('dbv2Tracker');
         if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 200);
+        // Open the "add application" modal right away — that's the action
+        // the brain decided the user needs.
+        if (typeof openAppTrackerModal === 'function') openAppTrackerModal();
+      }, 250);
     };
 
     switch (dec.priority){
@@ -4216,6 +4328,208 @@ var DarbiBrain = (function(){
     reset:        reset,
   };
 })();
+
+// ══════ Applications — full per-application tracker ══════════════════════════
+// Replaces the old quick-tap outcomes booleans. Each application is its own
+// record. Status changes feed DarbiBrain.learn so the brain's decide() picks
+// up "many apps, zero replies" / "interview reached" / "rejected" patterns.
+var Applications = (function(){
+  var KEY = 'darbi_applications';
+  function read(){
+    try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; }
+    catch(e){ return []; }
+  }
+  function write(arr){ try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch(e){} }
+  function nowIso(){ return new Date().toISOString(); }
+  function newId(){ return 'app-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8); }
+
+  // Status → DarbiBrain event name for status-change learn calls.
+  var STATUS_EVENT = {
+    reply:     'reply_received',
+    interview: 'interview_received',
+    rejected:  'rejected',
+    accepted:  'accepted',
+  };
+
+  return {
+    // Newest-first list for the UI.
+    list: function(){ return read().slice().reverse(); },
+    raw:  function(){ return read(); },
+
+    add: function(input){
+      var arr = read();
+      var app = {
+        id:        newId(),
+        company:   String((input && input.company)   || '').trim().slice(0, 80),
+        role:      String((input && input.role)      || '').trim().slice(0, 80),
+        url:       String((input && input.url)       || '').trim().slice(0, 400),
+        appliedAt: (input && input.appliedAt) || nowIso().slice(0, 10),
+        status:    (input && input.status)    || 'applied',
+        createdAt: nowIso(),
+        updatedAt: nowIso(),
+      };
+      arr.push(app);
+      write(arr);
+      if (typeof DarbiBrain !== 'undefined' && DarbiBrain.learn){
+        DarbiBrain.learn({ type: 'application_logged', payload: { id: app.id, status: app.status } });
+        // If the application is logged with an already-progressed status, also fire that event.
+        if (STATUS_EVENT[app.status]) {
+          DarbiBrain.learn({ type: STATUS_EVENT[app.status], payload: { id: app.id } });
+        }
+      }
+      return app;
+    },
+
+    update: function(id, patch){
+      var arr = read();
+      var idx = arr.findIndex(function(a){ return a.id === id; });
+      if (idx < 0) return null;
+      var prevStatus = arr[idx].status;
+      Object.assign(arr[idx], patch || {}, { updatedAt: nowIso() });
+      write(arr);
+      var newStatus = arr[idx].status;
+      if (patch && patch.status && patch.status !== prevStatus){
+        if (typeof DarbiBrain !== 'undefined' && DarbiBrain.learn && STATUS_EVENT[newStatus]){
+          DarbiBrain.learn({ type: STATUS_EVENT[newStatus], payload: { id: id } });
+        }
+      }
+      return arr[idx];
+    },
+
+    remove: function(id){
+      var arr = read().filter(function(a){ return a.id !== id; });
+      write(arr);
+    },
+
+    // Honest counts. `replies` = any status past 'applied' (rep/interview/rejected/accepted).
+    stats: function(){
+      var arr = read();
+      var s = { total: arr.length, applied: 0, reply: 0, interview: 0, rejected: 0, accepted: 0 };
+      arr.forEach(function(a){ if (s[a.status] != null) s[a.status]++; });
+      s.replies = s.reply + s.interview + s.rejected + s.accepted;
+      return s;
+    },
+
+    // Single short coaching line based on the current stats. Returns null when
+    // no app exists so the empty-state copy takes over.
+    insight: function(){
+      var s = this.stats();
+      if (s.total === 0)                              return null;
+      if (s.accepted > 0)                             return 'ممتاز. سجّل وش اشتغل معك عشان نبني منه توصيات أقوى.';
+      if (s.interview > 0)                            return 'أنت تصل للمقابلة. نركز الآن على إجابات المقابلة.';
+      if (s.total >= 20 && s.replies === 0)           return 'هنا المشكلة غالباً في مطابقة السيرة أو اختيار الوظائف.';
+      if (s.total < 5)                                return 'عدد تقديماتك قليل. قبل ما نحكم على السيرة، نحتاج توسع التقديم.';
+      return null;
+    },
+  };
+})();
+
+// ── HTML-escape util shared by tracker + any other innerHTML writer ──────────
+function appTrackerEscape(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+// Render the tracker card on the dashboard. Called from renderDashboard() at
+// the end of its render path so it always shows fresh stats + insight.
+function renderApplicationTracker(){
+  if (typeof Applications === 'undefined') return;
+  var statsEl   = document.getElementById('trackerStats');
+  var insightEl = document.getElementById('trackerInsight');
+  var emptyEl   = document.getElementById('trackerEmpty');
+  var listEl    = document.getElementById('trackerList');
+  if (!listEl) return;
+
+  var stats = Applications.stats();
+  var apps  = Applications.list();
+  var insight = Applications.insight();
+
+  if (statsEl) statsEl.style.display = stats.total > 0 ? '' : 'none';
+  if (emptyEl) emptyEl.style.display = stats.total === 0 ? '' : 'none';
+  ['tkTotal','tkReplies','tkInter','tkRej','tkAcc'].forEach(function(id, i){
+    var v = [stats.total, stats.replies, stats.interview, stats.rejected, stats.accepted][i];
+    var el = document.getElementById(id);
+    if (el) el.textContent = v;
+  });
+
+  if (insightEl){
+    if (insight){ insightEl.textContent = insight; insightEl.style.display = ''; }
+    else        { insightEl.style.display = 'none'; }
+  }
+
+  var STATUS_LABELS = { applied:'قدمت', reply:'جاني رد', interview:'مقابلة', rejected:'انرفضت', accepted:'انقبلت' };
+  var STATUS_CLASSES = { applied:'', reply:'is-reply', interview:'is-interview', rejected:'is-rejected', accepted:'is-accepted' };
+  listEl.innerHTML = apps.map(function(a){
+    var urlBit = a.url
+      ? '<a class="tk-url" href="' + appTrackerEscape(a.url) + '" target="_blank" rel="noopener">↗</a>'
+      : '';
+    var opts = Object.keys(STATUS_LABELS).map(function(k){
+      return '<option value="' + k + '"' + (a.status === k ? ' selected' : '') + '>' + STATUS_LABELS[k] + '</option>';
+    }).join('');
+    return ''
+      + '<div class="tk-row" data-id="' + appTrackerEscape(a.id) + '">'
+      +   '<div class="tk-main">'
+      +     '<div class="tk-co">' + appTrackerEscape(a.company) + ' ' + urlBit + '</div>'
+      +     '<div class="tk-role">' + appTrackerEscape(a.role) + (a.appliedAt ? ' · ' + appTrackerEscape(a.appliedAt) : '') + '</div>'
+      +   '</div>'
+      +   '<select class="tk-status ' + (STATUS_CLASSES[a.status] || '')
+      +   '" onchange="updateAppTrackerStatus(\'' + appTrackerEscape(a.id) + '\', this.value)">' + opts + '</select>'
+      +   '<button class="tk-del" onclick="removeAppTracker(\'' + appTrackerEscape(a.id) + '\')" aria-label="حذف">×</button>'
+      + '</div>';
+  }).join('');
+}
+
+function openAppTrackerModal(){
+  var modal = document.getElementById('appTrackerModal');
+  if (!modal) return;
+  document.getElementById('appTkCompany').value = '';
+  document.getElementById('appTkRole').value    = '';
+  document.getElementById('appTkUrl').value     = '';
+  document.getElementById('appTkDate').value    = new Date().toISOString().slice(0, 10);
+  document.getElementById('appTkStatus').value  = 'applied';
+  var err = document.getElementById('appTkErr');
+  if (err){ err.style.display = 'none'; err.textContent = ''; }
+  modal.classList.add('open');
+  setTimeout(function(){ document.getElementById('appTkCompany').focus(); }, 50);
+}
+
+function saveAppTracker(){
+  var company = (document.getElementById('appTkCompany').value || '').trim();
+  var role    = (document.getElementById('appTkRole').value    || '').trim();
+  var url     = (document.getElementById('appTkUrl').value     || '').trim();
+  var date    = document.getElementById('appTkDate').value;
+  var status  = document.getElementById('appTkStatus').value;
+  var err = document.getElementById('appTkErr');
+
+  if (!company || !role){
+    if (err){ err.textContent = 'اكتب الشركة واسم الوظيفة على الأقل.'; err.style.display = ''; }
+    return;
+  }
+  if (url && !/^https?:\/\//i.test(url)){
+    if (err){ err.textContent = 'رابط الوظيفة يبدأ بـ http:// أو https://'; err.style.display = ''; }
+    return;
+  }
+
+  Applications.add({ company: company, role: role, url: url, appliedAt: date, status: status });
+  closeModal();
+  renderApplicationTracker();
+  // Re-render the whole dashboard so DarbiBrain coach/nextAction reflect new state.
+  if (typeof renderDashboard === 'function') renderDashboard();
+}
+
+function updateAppTrackerStatus(id, newStatus){
+  Applications.update(id, { status: newStatus });
+  renderApplicationTracker();
+  if (typeof renderDashboard === 'function') renderDashboard();
+}
+
+function removeAppTracker(id){
+  if (typeof confirm === 'function' && !confirm('حذف هذا التقديم؟')) return;
+  Applications.remove(id);
+  renderApplicationTracker();
+  if (typeof renderDashboard === 'function') renderDashboard();
+}
 
 // ── Day / mode logic ──────────────────────────────────────────────────────
 function giCurrentDay(){
@@ -7327,6 +7641,8 @@ function closeModal(){
   if (fp) fp.classList.remove('open');
   var sh = document.getElementById('diagShareModal');
   if (sh) sh.classList.remove('open');
+  var at = document.getElementById('appTrackerModal');
+  if (at) at.classList.remove('open');
 }
 function showNotif(t,s,b){ document.getElementById('modalTitle').textContent=t||'تنبيه';document.getElementById('modalSub').textContent=s||'';document.getElementById('modalBody').textContent=b||'';document.getElementById('notifModal').classList.add('open'); }
 document.getElementById('notifModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
@@ -7753,24 +8069,10 @@ function dbv2RenderGuidedCard(){
   }
 }
 
-// Dashboard outcome buttons — single delegate to the existing logOutcome()
-// path (which writes darbi_outcomes AND feeds DarbiBrain via the wiring we
-// added inside logOutcome itself). Re-renders the dashboard after a beat so
-// the next-step card + coach + buildPlan all reflect the new event.
-function dbv2LogOutcome(type){
-  if (typeof logOutcome === 'function') logOutcome(type);
-  var labels = {
-    applied:   'تم — سجّلنا تقديمك. كمّل على الأقل ٢٠ تقديم هذا الأسبوع.',
-    got_reply: 'رائع! نتابع معك — جهّز نفسك للسؤال الأول.',
-    interview: 'ممتاز — دربي يحوّل الجلسة القادمة لتحضير مقابلة.',
-    rejected:  'مسجّل. دربي يعدّل الأدوار اللي تستهدفها بناءً عليها.',
-    success:   'مبروك 🎉 شارك تجربتك واكسب وقت إضافي.',
-  };
-  var conf = document.getElementById('dbv2OutcomesConfirm');
-  if (conf){ conf.style.display = 'block'; conf.textContent = labels[type] || 'تم التسجيل ✓'; }
-  // Re-render after a beat so the brain's new decision shows up in the card.
-  setTimeout(function(){ if (typeof renderDashboard === 'function') renderDashboard(); }, 900);
-}
+// (dbv2LogOutcome removed — the quick-tap outcomes card it backed has been
+// replaced by the full Application Tracker. The s-analysis screen still
+// calls the older logOutcome() directly, which continues to feed DarbiBrain
+// via its own eventMap.)
 
 // "عرض الطريق" / "عرض التشخيص" buttons on the dashboard. If no diagnosis
 // has run yet, both push the user into the diagnosis flow — the bridge
@@ -8031,6 +8333,9 @@ function renderDashboard(){
 
   // Refresh the Guided Session card (state-driven label + status).
   if (typeof dbv2RenderGuidedCard === 'function') dbv2RenderGuidedCard();
+
+  // Refresh the Application Tracker (stats + insight + list).
+  if (typeof renderApplicationTracker === 'function') renderApplicationTracker();
 }
 </script>
 
