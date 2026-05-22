@@ -468,6 +468,18 @@ button.diag-role-chip-pick:active{transform:translateY(0)}
 /* Dashboard expired-state tier buttons */
 .dbv2-expired-tiers{display:flex;gap:7px;flex-wrap:wrap}
 
+/* Collapsed-secondary details block on dashboard */
+.dbv2-details{margin-top:10px}
+.dbv2-details-summary{cursor:pointer;padding:13px 16px;background:#fafafe;border:1px solid #ececf4;border-radius:12px;font-size:13.5px;font-weight:700;color:#4f46e5;list-style:none;display:flex;align-items:center;gap:8px}
+.dbv2-details-summary::-webkit-details-marker{display:none}
+.dbv2-details-summary::before{content:'▾';color:#9ca3af;transition:transform .15s}
+.dbv2-details[open] .dbv2-details-summary::before{transform:rotate(180deg)}
+.dbv2-details-summary:hover{background:#f0f0ff}
+.dbv2-empty-sub{padding:18px 8px;text-align:center;font-size:13.5px;color:#9ca3af;font-style:italic}
+
+/* Access status card on dashboard */
+#dbv2AccessCard{background:linear-gradient(180deg,#fafafe,#fff)}
+
 /* Application Tracker */
 .dbv2-tracker-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
 .tk-stat{background:#fafafe;border:1px solid #ececf4;border-radius:10px;padding:11px 6px;text-align:center}
@@ -1367,8 +1379,9 @@ img,video,iframe{max-width:100%}
       <span>Darbi · دربي</span>
     </div>
     <div class="lp-footer-links">
-      <a>الخصوصية</a>
-      <a>الشروط</a>
+      <a onclick="openLegalModal('privacy')">الخصوصية</a>
+      <a onclick="openLegalModal('terms')">الشروط</a>
+      <a onclick="openLegalModal('contact')">تواصل معنا</a>
       <a onclick="openAuth('login')">دخول</a>
     </div>
     <span>© 2026 Darbi · المملكة العربية السعودية</span>
@@ -2008,89 +2021,43 @@ img,video,iframe{max-width:100%}
       </div>
     </div>
 
-    <!-- 2. SCORE CARDS (4) -->
-    <div class="dbv2-scores">
-      <div class="dbv2-score">
-        <div class="dbv2-score-label">قوة السيرة</div>
-        <div class="dbv2-score-val"><span id="dbv2ScoreCV">0</span>%</div>
-        <div class="dbv2-score-note" id="dbv2ScoreCVNote">—</div>
-      </div>
-      <div class="dbv2-score">
-        <div class="dbv2-score-label">مطابقة الوظيفة</div>
-        <div class="dbv2-score-val"><span id="dbv2ScoreFit">0</span>%</div>
-        <div class="dbv2-score-note" id="dbv2ScoreFitNote">—</div>
-      </div>
-      <div class="dbv2-score">
-        <div class="dbv2-score-label">جاهزية المقابلة</div>
-        <div class="dbv2-score-val"><span id="dbv2ScoreInt">0</span>%</div>
-        <div class="dbv2-score-note" id="dbv2ScoreIntNote">—</div>
-      </div>
-      <div class="dbv2-score">
-        <div class="dbv2-score-label">اللغة الإنجليزية</div>
-        <div class="dbv2-score-val"><span id="dbv2ScoreEn">0</span>%</div>
-        <div class="dbv2-score-note" id="dbv2ScoreEnNote">—</div>
-      </div>
-    </div>
-
-    <!-- 3. NEXT STEP CARD — DarbiBrain.coach() + DarbiBrain.nextAction() -->
+    <!-- ════ A. PRIMARY NEXT STEP — what to do RIGHT NOW ════
+         The brain picks the screen + reason. Spec calls this "خطوتك الآن". -->
     <div class="dbv2-step">
-      <div class="dbv2-step-t">خطوتك التالية</div>
+      <div class="dbv2-step-t">خطوتك الآن</div>
       <div id="dbv2NextStepBody" class="dbv2-step-body">—</div>
       <div id="dbv2NextStepReason" style="font-size:12.5px;color:#6b7280;margin:-4px 0 12px;line-height:1.6;display:none"></div>
       <button class="dbv2-btn dbv2-btn-p" id="dbv2NextStepBtn" onclick="dbv2RouteNextStep()">ابدأ الآن</button>
     </div>
 
-    <!-- 3b. LATEST GUIDED SESSION CARD -->
-    <div class="dbv2-card" id="dbv2GuidedCard" style="display:none">
-      <div class="dbv2-card-h">جلسة التجهيز</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px">
-        <div>
-          <div style="font-size:15px;font-weight:800;color:#0a0a0a" id="dbv2GuidedRole">—</div>
-          <div style="font-size:12px;color:#888" id="dbv2GuidedMeta">—</div>
-        </div>
-        <span id="dbv2GuidedStatus" class="dbv2-badge dbv2-badge-free">—</span>
-      </div>
-      <div id="dbv2GuidedHighlights" style="display:none;margin-bottom:10px;font-size:13px;color:#444;line-height:1.7"></div>
-      <button class="dbv2-btn dbv2-btn-p" id="dbv2GuidedCardCta" onclick="startGuidedSession()" style="width:100%">ابدأ جلسة التجهيز ←</button>
-    </div>
-
-    <!-- 4. CAREER PATH CARD -->
+    <!-- ════ B. LATEST DIAGNOSIS SUMMARY — حلمك / أقرب مدخل / أكبر فجوة ════ -->
     <div class="dbv2-card">
-      <div class="dbv2-card-h">المسار الوظيفي المتوقع</div>
-      <div id="dbv2CareerPath" class="dbv2-path"></div>
-    </div>
-
-    <!-- 5. TODAY PLAN -->
-    <div class="dbv2-card">
-      <div class="dbv2-card-h">خطة اليوم</div>
-      <div id="dbv2TodayList"></div>
-      <button class="dbv2-fullplan-btn" onclick="dbv2OpenFullPlan()">عرض الخطة كاملة</button>
-    </div>
-
-    <!-- 6. LATEST ANALYSIS CARD -->
-    <div class="dbv2-card">
-      <div class="dbv2-card-h">آخر تحليل</div>
+      <div class="dbv2-card-h">آخر تشخيص</div>
       <div class="dbv2-latest-row">
         <div>
           <div class="dbv2-latest-role" id="dbv2LatestRole">—</div>
           <div class="dbv2-latest-date" id="dbv2LatestDate">—</div>
         </div>
       </div>
+      <div id="dbv2LatestNearest" style="font-size:13px;color:#1f2937;margin:6px 0 8px;line-height:1.6;display:none"></div>
       <div class="dbv2-latest-gap" id="dbv2LatestGap" style="display:none">—</div>
       <div class="dbv2-latest-ctas">
         <button class="dbv2-btn dbv2-btn-s" onclick="dbv2OpenBridge()">عرض الطريق</button>
         <button class="dbv2-btn dbv2-btn-s" onclick="dbv2OpenDiagnosis()">عرض التشخيص</button>
-        <button class="dbv2-btn dbv2-btn-s" onclick="goTool('cv')">تحسين السيرة</button>
         <button class="dbv2-btn dbv2-btn-s" onclick="focusAnalyze()">تحليل جديد</button>
       </div>
     </div>
 
-    <!-- 6b. APPLICATION TRACKER — per-application records, status changes feed DarbiBrain.learn() -->
+    <!-- ════ C. TODAY PLAN — 1–3 tasks max. No full-plan modal CTA here. ════ -->
+    <div class="dbv2-card">
+      <div class="dbv2-card-h">خطة اليوم</div>
+      <div id="dbv2TodayList"></div>
+    </div>
+
+    <!-- ════ D. APPLICATION TRACKER — per-application records ════ -->
     <div class="dbv2-card" id="dbv2Tracker">
       <div class="dbv2-card-h">تقديماتك</div>
       <p style="font-size:12.5px;color:#666;margin-bottom:11px;line-height:1.6">سجّل كل تقديم برابطه وحالته. دربي يقرأ النمط ويعدّل خطتك على الواقع، مو على افتراض.</p>
-
-      <!-- Stats row — hidden until first application exists -->
       <div class="dbv2-tracker-stats" id="trackerStats" style="display:none">
         <div class="tk-stat"><span class="tk-num" id="tkTotal">0</span><span class="tk-lbl">إجمالي</span></div>
         <div class="tk-stat"><span class="tk-num" id="tkReplies">0</span><span class="tk-lbl">رد</span></div>
@@ -2098,31 +2065,92 @@ img,video,iframe{max-width:100%}
         <div class="tk-stat"><span class="tk-num" id="tkRej">0</span><span class="tk-lbl">رفض</span></div>
         <div class="tk-stat"><span class="tk-num" id="tkAcc">0</span><span class="tk-lbl">قبول</span></div>
       </div>
-
-      <!-- Insight pill (one of 4 rules, or hidden) -->
       <div id="trackerInsight" class="dbv2-tracker-insight" style="display:none"></div>
-
-      <!-- Empty state — spec wording -->
       <div id="trackerEmpty" class="dbv2-tracker-empty">
         سجّل أول تقديم عشان دربي يعرف هل المشكلة في السيرة، اختيار الوظائف، أو المقابلة.
       </div>
-
-      <!-- Application rows -->
       <div id="trackerList" class="dbv2-tracker-list"></div>
-
       <button class="dbv2-btn dbv2-btn-p" style="margin-top:12px" onclick="openAppTrackerModal()">+ سجل تقديم جديد</button>
     </div>
 
-    <!-- 7. REFERRAL (compact, lower) -->
-    <div class="dbv2-ref">
-      <div class="dbv2-ref-h">شارك دربي واحصل على وقت إضافي</div>
-      <div class="dbv2-ref-sub">+24 ساعة وصول لكل صديق يسجّل برابطك.</div>
-      <div class="dbv2-ref-row">
-        <span class="dbv2-ref-link" id="dbRefLink">darbi.ai/join/—</span>
-        <button class="dbv2-ref-copy" onclick="copyRef()">نسخ</button>
+    <!-- ════ E. ACCESS STATUS — Free / Starter / Pro / Founder ════ -->
+    <div class="dbv2-card" id="dbv2AccessCard">
+      <div class="dbv2-card-h">حالة وصولك</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div>
+          <div id="dbv2AccessTierName" style="font-size:17px;font-weight:900;color:#0a0a0a">Free</div>
+          <div id="dbv2AccessTierSub" style="font-size:12.5px;color:#6b7280;margin-top:3px;line-height:1.5">تشخيص أولي + ٢٤ ساعة وصول + مشاركة لوقت إضافي.</div>
+        </div>
+        <button id="dbv2AccessUpgrade" class="dbv2-btn dbv2-btn-s" onclick="lpScrollToAccess()" style="font-size:13px">عرض الخطط</button>
       </div>
-      <div class="dbv2-ref-stats" id="dbRefStats">—</div>
     </div>
+
+    <!-- ════ F. SECONDARY — collapsed by default. Scores, roadmap, referral, full-plan link. ════ -->
+    <details class="dbv2-details" id="dbv2More">
+      <summary class="dbv2-details-summary">تفاصيل إضافية · المهارات · الطريق الكامل · الإحالة</summary>
+
+      <!-- F.1 Scores — hidden individually when 0; whole grid replaced with placeholder when all zero -->
+      <div class="dbv2-card" style="margin-top:14px">
+        <div class="dbv2-card-h">قياس مهاراتك</div>
+        <div class="dbv2-scores" id="dbv2ScoresGrid">
+          <div class="dbv2-score" id="dbv2ScoreCVCard">
+            <div class="dbv2-score-label">قوة السيرة</div>
+            <div class="dbv2-score-val"><span id="dbv2ScoreCV">0</span>%</div>
+            <div class="dbv2-score-note" id="dbv2ScoreCVNote">—</div>
+          </div>
+          <div class="dbv2-score" id="dbv2ScoreFitCard">
+            <div class="dbv2-score-label">مطابقة الوظيفة</div>
+            <div class="dbv2-score-val"><span id="dbv2ScoreFit">0</span>%</div>
+            <div class="dbv2-score-note" id="dbv2ScoreFitNote">—</div>
+          </div>
+          <div class="dbv2-score" id="dbv2ScoreIntCard">
+            <div class="dbv2-score-label">جاهزية المقابلة</div>
+            <div class="dbv2-score-val"><span id="dbv2ScoreInt">0</span>%</div>
+            <div class="dbv2-score-note" id="dbv2ScoreIntNote">—</div>
+          </div>
+          <div class="dbv2-score" id="dbv2ScoreEnCard">
+            <div class="dbv2-score-label">اللغة الإنجليزية</div>
+            <div class="dbv2-score-val"><span id="dbv2ScoreEn">0</span>%</div>
+            <div class="dbv2-score-note" id="dbv2ScoreEnNote">—</div>
+          </div>
+        </div>
+        <div id="dbv2ScoresEmpty" class="dbv2-empty-sub" style="display:none">ما عندنا بيانات كافية بعد</div>
+      </div>
+
+      <!-- F.2 Career path -->
+      <div class="dbv2-card">
+        <div class="dbv2-card-h">المسار الوظيفي المتوقع</div>
+        <div id="dbv2CareerPath" class="dbv2-path"></div>
+      </div>
+
+      <!-- F.3 Guided session card — only renders when a session exists -->
+      <div class="dbv2-card" id="dbv2GuidedCard" style="display:none">
+        <div class="dbv2-card-h">جلسة التجهيز</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+          <div>
+            <div style="font-size:15px;font-weight:800;color:#0a0a0a" id="dbv2GuidedRole">—</div>
+            <div style="font-size:12px;color:#888" id="dbv2GuidedMeta">—</div>
+          </div>
+          <span id="dbv2GuidedStatus" class="dbv2-badge dbv2-badge-free">—</span>
+        </div>
+        <div id="dbv2GuidedHighlights" style="display:none;margin-bottom:10px;font-size:13px;color:#444;line-height:1.7"></div>
+        <button class="dbv2-btn dbv2-btn-p" id="dbv2GuidedCardCta" onclick="startGuidedSession()" style="width:100%">ابدأ جلسة التجهيز ←</button>
+      </div>
+
+      <!-- F.4 Full roadmap — secondary, opens modal -->
+      <button class="dbv2-fullplan-btn" onclick="dbv2OpenFullPlan()">عرض الخطة كاملة</button>
+
+      <!-- F.5 Referral — moved to bottom of details -->
+      <div class="dbv2-ref" style="margin-top:14px">
+        <div class="dbv2-ref-h">شارك دربي واحصل على وقت إضافي</div>
+        <div class="dbv2-ref-sub">+24 ساعة وصول لكل صديق يسجّل برابطك.</div>
+        <div class="dbv2-ref-row">
+          <span class="dbv2-ref-link" id="dbRefLink">darbi.ai/join/—</span>
+          <button class="dbv2-ref-copy" onclick="copyRef()">نسخ</button>
+        </div>
+        <div class="dbv2-ref-stats" id="dbRefStats">—</div>
+      </div>
+    </details>
 
   </div><!-- /dbv2Live -->
 </div>
@@ -2541,6 +2569,15 @@ img,video,iframe{max-width:100%}
 
 </div>
 </div><!-- /s-guided-interview -->
+
+<!-- Legal / Contact modal — populated by openLegalModal('privacy'|'terms'|'contact') -->
+<div class="modal-bg" id="legalModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-head"><h2 id="legalModalTitle">—</h2><p id="legalModalSub">—</p></div>
+    <div class="modal-body" id="legalModalBody" style="max-height:60vh;overflow-y:auto;font-size:14px;line-height:1.85;color:#374151;text-align:right;direction:rtl"></div>
+    <div class="modal-foot"><button class="btn btn-p btn-full" onclick="closeModal()">حسناً</button></div>
+  </div>
+</div>
 
 <!-- Application Tracker modal — add/edit a single application -->
 <div class="modal-bg" id="appTrackerModal">
@@ -5340,20 +5377,53 @@ document.addEventListener('click',function(e){
 });
 
 // ══════ NAVIGATION ══════
+// Central "reset scroll to the very top" helper used by every screen-change
+// path. Browsers preserve scrollTop across DOM toggles, so without this the
+// new screen opens at whatever Y the previous one was scrolled to — the
+// user perception is "nothing happened, the click did nothing". Spec
+// requires *instant* (not smooth) so the new screen is visibly at top
+// before the first paint.
+function _scrollTop(){
+  try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
+  catch(e){ window.scrollTo(0, 0); }
+  // Belt-and-braces for browsers that ignore the behavior option.
+  if (document.documentElement) document.documentElement.scrollTop = 0;
+  if (document.body) document.body.scrollTop = 0;
+  // Re-pin on the next animation frame in case fonts/images settle the
+  // layout after we scrolled. This is what eliminates the "lands in the
+  // middle of the next screen" feel users were reporting.
+  if (window.requestAnimationFrame){
+    requestAnimationFrame(function(){
+      try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
+      catch(e){ window.scrollTo(0, 0); }
+    });
+  }
+}
+
+// closeAllModals — defensive. Called at the start of every screen switch so
+// a modal can never sit on top of a fresh screen and obscure the new context.
+// Intentional modal opens (openAppTrackerModal, diagOpenShareCard, etc.) run
+// AFTER goScreen finishes, so this never closes a modal the user just opened.
+function _closeAllModals(){
+  if (typeof closeModal === 'function') { try { closeModal(); } catch(e){} }
+}
+
 // showLanding / goScreen now also toggle which NAVBAR is visible. The
 // landing nav (lpNav) sells; the app nav (appNav) navigates the product.
 // They are physically separate <nav> elements — never mixed.
 function showLanding(){
+  _closeAllModals();
   var lpNav  = document.getElementById('lpNav');
   var appNav = document.getElementById('appNav');
   if (lpNav)  lpNav.style.display  = '';
   if (appNav) appNav.style.display = 'none';
   document.getElementById('page-landing').style.display='block';
   document.querySelectorAll('.app-screen').forEach(function(s){s.classList.remove('active');});
-  window.scrollTo({top:0,behavior:'smooth'});
+  _scrollTop();
 }
 
 function goScreen(id){
+  _closeAllModals();
   var lpNav  = document.getElementById('lpNav');
   var appNav = document.getElementById('appNav');
   if (lpNav)  lpNav.style.display  = 'none';
@@ -5361,7 +5431,7 @@ function goScreen(id){
   document.getElementById('page-landing').style.display='none';
   document.querySelectorAll('.app-screen').forEach(function(s){s.classList.remove('active');});
   var el=document.getElementById(id); if(el) el.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
+  _scrollTop();
   if(id==='s-dashboard') renderDashboard();
   if(id !== 'page-landing' && id !== 's-dashboard') scheduleFeedback();
 }
@@ -5383,6 +5453,13 @@ function lpScrollTo(id){
 // + body scroll-lock behaviour stays consistent with the rest of the app.
 function lpToggleMobileMenu(){
   if (typeof toggleMobileMenu === 'function') toggleMobileMenu();
+}
+
+// "عرض الخطط" from the dashboard access card. Sends the user to landing
+// then anchors them at the pricing/access section.
+function lpScrollToAccess(){
+  showLanding();
+  setTimeout(function(){ lpScrollTo('lp-access'); }, 50);
 }
 
 // focusAnalyze is the LEGACY entry point used by buttons we haven't fully
@@ -7643,7 +7720,61 @@ function closeModal(){
   if (sh) sh.classList.remove('open');
   var at = document.getElementById('appTrackerModal');
   if (at) at.classList.remove('open');
+  var lg = document.getElementById('legalModal');
+  if (lg) lg.classList.remove('open');
 }
+
+// ══════ Legal + contact modals — minimum content for launch ═════════════
+// Spec: footer/nav links must not be dead. Either route to real content or
+// be hidden. Below is the minimum Arabic content for soft launch.
+var LEGAL_MODAL_CONTENT = {
+  privacy: {
+    title: 'سياسة الخصوصية',
+    sub:   'كيف ندير بيانات حسابك ومحتوى سيرتك.',
+    html:
+      '<p><b>البيانات اللي نخزنها:</b> بريدك الإلكتروني (للدخول)، نص سيرتك الذاتية، إجاباتك في التشخيص والجلسات الموجّهة، تقديماتك المسجلة، ونتائج تحليلاتك.</p>' +
+      '<p><b>وين تنخزن:</b> داخل قاعدة بيانات Postgres مستضافة على Railway. حسابك يدخل بـ JWT — كلمة سرك تنخزن مشفّرة (bcrypt). سيرتك ما تشاركها مع أي طرف ثالث.</p>' +
+      '<p><b>OpenAI:</b> لما تشغّل تشخيصاً، نُرسل نص هدفك وأول ٨٠٠ حرف من سيرتك إلى OpenAI لمعالجة الـ AI. لا نرسل بريدك أو هويتك. مفاتيحنا تخضع لشروط OpenAI.</p>' +
+      '<p><b>الإلغاء:</b> تقدر تطلب حذف حسابك وكل بياناتك بالتواصل معنا. لا نحتفظ بنسخ احتياطية بعد الحذف لأكثر من ٧ أيام.</p>' +
+      '<p><b>Cookies / تتبع:</b> نستخدم localStorage فقط لتذكر جلستك ونتائج تشخيصك على متصفحك. لا نستخدم cookies تتبع طرف ثالث.</p>' +
+      '<p style="color:#9ca3af;font-size:12.5px;margin-top:14px">آخر تحديث: مايو ٢٠٢٦. لو فيه أسئلة، اضغط "تواصل معنا".</p>',
+  },
+  terms: {
+    title: 'شروط الاستخدام',
+    sub:   'القواعد المختصرة لاستخدام دربي.',
+    html:
+      '<p><b>الاستخدام:</b> دربي أداة إرشادية للباحثين عن عمل. النصائح والتشخيصات اجتهادية، مو ضمانات. القرار النهائي بشغلك يرجع لك.</p>' +
+      '<p><b>الاستخدام العادل:</b> الخطط المدفوعة لها حدود معقولة لحماية جودة الخدمة (مثلاً عدد تشخيصات شهرية وتدريبات يومية). نحتفظ بحقّ مراجعة الاستخدام لو خرج عن المعقول.</p>' +
+      '<p><b>الاسترداد:</b> Founder Lifetime — استرداد كامل خلال ٧ أيام لو ما استخدمت الخدمة. اشتراك Starter/Pro — إلغاء وقت ما تبي، بدون استرداد للشهر الجاري.</p>' +
+      '<p><b>الإطلاق التجريبي:</b> دربي حالياً في مرحلة إطلاق ناعم. الخطط المدفوعة قد تكون غير مفعّلة مؤقتاً. لو ضغطت زر دفع وما اشتغل، نعتذر — تواصل معنا وراح نفعّل وصولك يدوياً.</p>' +
+      '<p><b>المحتوى:</b> ما ترفع محتوى ما يخصك (سيرة شخص ثاني بدون إذنه). أي خرق يلغي حسابك.</p>' +
+      '<p style="color:#9ca3af;font-size:12.5px;margin-top:14px">آخر تحديث: مايو ٢٠٢٦.</p>',
+  },
+  contact: {
+    title: 'تواصل معنا',
+    sub:   'طرق الوصول لنا — نرد خلال ٢٤ ساعة.',
+    html:
+      '<p><b>بريد الدعم:</b> <a href="mailto:aushara1985@gmail.com" style="color:#4f46e5;font-weight:700;text-decoration:none">aushara1985@gmail.com</a></p>' +
+      '<p><b>أمور الفوترة والترقية:</b> نفس البريد. اكتب لنا أيش الخطة اللي تبيها ونفعّلها يدوياً (الدفع الآلي قيد التفعيل).</p>' +
+      '<p><b>تقرير bugs:</b> صوّر الشاشة وارسلها مع تفاصيل الخطوات. كل تقرير يساعدنا نطوّر.</p>' +
+      '<p><b>اقتراحات منتج:</b> دربي في بداية رحلته. رأيك يفرّق. اكتب لنا بصراحة.</p>' +
+      '<p style="color:#9ca3af;font-size:12.5px;margin-top:14px">نحن في الرياض، السعودية. أوقات الرد: السبت–الأربعاء، ١٠ صباحاً–٦ مساءً.</p>',
+  },
+};
+
+function openLegalModal(which){
+  var c = LEGAL_MODAL_CONTENT[which];
+  if (!c) return;
+  document.getElementById('legalModalTitle').textContent = c.title;
+  document.getElementById('legalModalSub').textContent   = c.sub;
+  document.getElementById('legalModalBody').innerHTML    = c.html;
+  document.getElementById('legalModal').classList.add('open');
+}
+// Click-outside to dismiss for the legal modal.
+(function(){
+  var lg = document.getElementById('legalModal');
+  if (lg) lg.addEventListener('click', function(e){ if (e.target === this) closeModal(); });
+})();
 function showNotif(t,s,b){ document.getElementById('modalTitle').textContent=t||'تنبيه';document.getElementById('modalSub').textContent=s||'';document.getElementById('modalBody').textContent=b||'';document.getElementById('notifModal').classList.add('open'); }
 document.getElementById('notifModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 document.getElementById('upgradeModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
@@ -8244,16 +8375,38 @@ function renderDashboard(){
   var curDay = (a.roadmap && a.roadmap.currentDay) || parseInt(localStorage.getItem('darbi_sess')||'1');
   document.getElementById('dbv2CurrentDay').textContent = curDay;
 
-  // ── 2. Score cards ───────────────────────────────────────────────────
+  // ── 2. Scores (collapsed by default) — hide cards with 0 value to
+  //      kill the "0% everywhere" perception. If all four are zero (e.g.
+  //      heuristic ran without real signal), replace the grid with a
+  //      polite placeholder per spec.
   var s = a.scores || {};
-  document.getElementById('dbv2ScoreCV').textContent  = s.cvStrength || 0;
-  document.getElementById('dbv2ScoreFit').textContent = s.jobMatch || 0;
-  document.getElementById('dbv2ScoreInt').textContent = s.interviewReadiness || 0;
-  document.getElementById('dbv2ScoreEn').textContent  = s.englishReadiness || 0;
-  document.getElementById('dbv2ScoreCVNote').textContent  = dbv2ScoreNote('cv',        s.cvStrength||0);
-  document.getElementById('dbv2ScoreFitNote').textContent = dbv2ScoreNote('fit',       s.jobMatch||0);
-  document.getElementById('dbv2ScoreIntNote').textContent = dbv2ScoreNote('interview', s.interviewReadiness||0);
-  document.getElementById('dbv2ScoreEnNote').textContent  = dbv2ScoreNote('english',   s.englishReadiness||0);
+  var scoreFields = [
+    { id: 'CV',  cardId: 'dbv2ScoreCVCard',  val: s.cvStrength,         note: dbv2ScoreNote('cv',        s.cvStrength||0) },
+    { id: 'Fit', cardId: 'dbv2ScoreFitCard', val: s.jobMatch,           note: dbv2ScoreNote('fit',       s.jobMatch||0) },
+    { id: 'Int', cardId: 'dbv2ScoreIntCard', val: s.interviewReadiness, note: dbv2ScoreNote('interview', s.interviewReadiness||0) },
+    { id: 'En',  cardId: 'dbv2ScoreEnCard',  val: s.englishReadiness,   note: dbv2ScoreNote('english',   s.englishReadiness||0) },
+  ];
+  var nonZero = 0;
+  scoreFields.forEach(function(f){
+    var v = f.val || 0;
+    var card = document.getElementById(f.cardId);
+    var valEl = document.getElementById('dbv2Score' + f.id);
+    var noteEl = document.getElementById('dbv2Score' + f.id + 'Note');
+    if (valEl)  valEl.textContent  = v;
+    if (noteEl) noteEl.textContent = f.note;
+    // Hide individual 0% cards — they add nothing and feel broken.
+    if (card) card.style.display = (v > 0) ? '' : 'none';
+    if (v > 0) nonZero++;
+  });
+  var grid     = document.getElementById('dbv2ScoresGrid');
+  var placeholder = document.getElementById('dbv2ScoresEmpty');
+  if (nonZero === 0){
+    if (grid) grid.style.display = 'none';
+    if (placeholder) placeholder.style.display = '';
+  } else {
+    if (grid) grid.style.display = '';
+    if (placeholder) placeholder.style.display = 'none';
+  }
 
   // ── 3. Next step card — single source of truth: DarbiBrain ──────────
   var coachMsg = (typeof DarbiBrain !== 'undefined' && DarbiBrain.coach) ? DarbiBrain.coach() : null;
@@ -8306,9 +8459,21 @@ function renderDashboard(){
       + '</div>';
   });
 
-  // ── 6. Latest analysis card ──────────────────────────────────────────
+  // ── B. Latest diagnosis summary — حلمك / أقرب وظيفة الآن / أكبر فجوة ──
   document.getElementById('dbv2LatestRole').textContent = a.targetRole;
   document.getElementById('dbv2LatestDate').textContent = dbv2FmtDate(a.createdAt);
+  // Surface the spec's "أقرب وظيفة الآن" — pulled from the diagnosis state.
+  var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+  var nearestEl = document.getElementById('dbv2LatestNearest');
+  if (nearestEl){
+    var firstNearest = d && Array.isArray(d.nearestWinnableRoles) && d.nearestWinnableRoles.length ? d.nearestWinnableRoles[0] : null;
+    if (firstNearest){
+      nearestEl.style.display = '';
+      nearestEl.innerHTML = '<b>أقرب وظيفة الآن:</b> ' + appTrackerEscape(String(firstNearest));
+    } else {
+      nearestEl.style.display = 'none';
+    }
+  }
   var topGap = (a.gaps && a.gaps[0]) || (a.problems && a.problems[0] && a.problems[0].title);
   var gapEl = document.getElementById('dbv2LatestGap');
   if (topGap) {
@@ -8316,6 +8481,34 @@ function renderDashboard(){
     gapEl.textContent = '⚠ أكبر فجوة: ' + topGap;
   } else {
     gapEl.style.display = 'none';
+  }
+
+  // ── E. Access status card ─────────────────────────────────────────────
+  var accCardName = document.getElementById('dbv2AccessTierName');
+  var accCardSub  = document.getElementById('dbv2AccessTierSub');
+  var accCardBtn  = document.getElementById('dbv2AccessUpgrade');
+  if (accCardName && accCardSub){
+    var st = (typeof Access !== 'undefined' && Access.state) ? Access.state() : { status: 'none' };
+    if (st.status === 'admin'){
+      accCardName.textContent = 'Admin'; accCardSub.textContent = 'كل الميزات مفتوحة لك.';
+      if (accCardBtn) accCardBtn.style.display = 'none';
+    } else if (st.status === 'founder_ltd' || (u.paid || isPaid)){
+      accCardName.textContent = 'Founder Lifetime'; accCardSub.textContent = 'وصول كامل مدى الحياة. كل المزايا مفتوحة.';
+      if (accCardBtn) accCardBtn.style.display = 'none';
+    } else if (st.status === 'free_24h' && st.expiresAt && st.expiresAt > Date.now()){
+      var hrs = Math.max(0, Math.floor((st.expiresAt - Date.now())/3600000));
+      accCardName.textContent = 'Free';
+      accCardSub.textContent  = 'باقي ' + hrs + ' ساعة من وصولك المجاني. شارك للحصول على وقت إضافي.';
+      if (accCardBtn) accCardBtn.style.display = '';
+    } else if (st.status === 'expired'){
+      accCardName.textContent = 'انتهى الوصول';
+      accCardSub.textContent  = 'تقدر تكمل بنسخ محدود أو ترقية لأحد الخطط.';
+      if (accCardBtn) accCardBtn.style.display = '';
+    } else {
+      accCardName.textContent = 'Free';
+      accCardSub.textContent  = 'تشخيص أولي + ٢٤ ساعة وصول + مشاركة لوقت إضافي.';
+      if (accCardBtn) accCardBtn.style.display = '';
+    }
   }
 
   // ── 7. Referral (compact) ────────────────────────────────────────────
