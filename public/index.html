@@ -1039,8 +1039,8 @@ img,video,iframe{max-width:100%}
     <div class="lp-nav-links" id="navGuest">
       <button class="lp-nav-link" onclick="lpScrollTo('lp-how')">كيف يعمل</button>
       <button class="lp-nav-link" onclick="lpScrollTo('lp-example')">مثال</button>
-      <button class="lp-nav-link" onclick="lpScrollTo('lp-access')">الوصول</button>
-      <button class="lp-nav-link" id="navLoginLink" onclick="openAuth('login')">دخول</button>
+      <button class="lp-nav-link" onclick="lpScrollTo('lp-access')">الأسعار</button>
+      <button class="lp-nav-link" id="navLoginLink" onclick="openAuth('login')" style="display:none">دخول</button>
       <button class="lp-nav-link" id="navDashLink" style="display:none" onclick="goScreen('s-dashboard')">لوحتي ←</button>
     </div>
 
@@ -1057,7 +1057,7 @@ img,video,iframe{max-width:100%}
     <div id="mobileGuest">
       <a onclick="lpScrollTo('lp-how');lpToggleMobileMenu()">كيف يعمل</a>
       <a onclick="lpScrollTo('lp-example');lpToggleMobileMenu()">مثال</a>
-      <a onclick="lpScrollTo('lp-access');lpToggleMobileMenu()">الوصول</a>
+      <a onclick="lpScrollTo('lp-access');lpToggleMobileMenu()">الأسعار</a>
       <a id="mobileNavLoginLink" onclick="openAuth('login');lpToggleMobileMenu()">دخول</a>
       <a id="mobileNavDashLink" style="display:none" onclick="goScreen('s-dashboard');lpToggleMobileMenu()">لوحتي ←</a>
       <button class="lp-btn lp-btn-p" onclick="startDiagnosis();lpToggleMobileMenu()">ابدأ التشخيص</button>
@@ -1078,7 +1078,9 @@ img,video,iframe{max-width:100%}
 
     <div class="lp-nav-links" id="appNavLinks">
       <button class="lp-nav-link" id="appNavDash" onclick="goScreen('s-dashboard')">لوحتي</button>
+      <button class="lp-nav-link" id="appNavDiag" onclick="appNavGoDiag()">التشخيص</button>
       <button class="lp-nav-link" id="appNavTrain" onclick="startGuidedSession()">التدريب</button>
+      <button class="lp-nav-link" id="appNavApps" onclick="appNavGoApps()">تقديماتي</button>
       <span id="navCredit" class="lp-nav-link" onclick="goScreen('s-dashboard')" style="font-size:13px;font-weight:700;cursor:pointer;background:#fef3c7;color:#92400e;border-radius:99px;padding:6px 12px;display:none"></span>
       <span id="navPremiumBadge" style="display:none;background:#dcfce7;color:#166534;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:99px;border:1px solid #a7f3d0;align-self:center">✓ Premium</span>
     </div>
@@ -1092,7 +1094,9 @@ img,video,iframe{max-width:100%}
 
   <div class="lp-mobile-menu" id="appMobileMenu">
     <a id="appMobileDash" onclick="goScreen('s-dashboard');appToggleMobileMenu()">🏠 لوحتي</a>
-    <a id="appMobileTrain" onclick="startGuidedSession();appToggleMobileMenu()">🎯 التدريب</a>
+    <a id="appMobileDiag" onclick="appNavGoDiag();appToggleMobileMenu()">🎯 التشخيص</a>
+    <a id="appMobileTrain" onclick="startGuidedSession();appToggleMobileMenu()">🏋️ التدريب</a>
+    <a id="appMobileApps" onclick="appNavGoApps();appToggleMobileMenu()">📋 تقديماتي</a>
     <a onclick="showLanding();appToggleMobileMenu()">← الرئيسية</a>
     <a id="appMobileLogout" style="display:none;color:#dc2626" onclick="logoutUser();appToggleMobileMenu()">خروج</a>
   </div>
@@ -2007,10 +2011,10 @@ img,video,iframe{max-width:100%}
       </div>
 
       <div class="dbv2-h-row">
-        <div class="dbv2-h-cell">هدفك الحالي: <b id="dbv2TargetRole">—</b></div>
-        <div class="dbv2-h-cell">جاهزيتك الآن: <b id="dbv2Readiness">0%</b></div>
-        <div class="dbv2-h-cell">خطة تجهيزك: <b id="dbv2RoadmapLen">—</b></div>
-        <div class="dbv2-h-cell">اليوم: <b id="dbv2CurrentDay">1</b></div>
+        <div class="dbv2-h-cell" id="dbv2HCellTarget">هدفك الحالي: <b id="dbv2TargetRole">—</b></div>
+        <div class="dbv2-h-cell" id="dbv2HCellReadiness">جاهزيتك الآن: <b id="dbv2Readiness">0%</b></div>
+        <div class="dbv2-h-cell" id="dbv2HCellRoadmap">خطة تجهيزك: <b id="dbv2RoadmapLen">—</b></div>
+        <div class="dbv2-h-cell" id="dbv2HCellDay">اليوم: <b id="dbv2CurrentDay">1</b></div>
       </div>
       <div class="dbv2-h-readiness-bar"><div id="dbv2ReadinessFill" class="dbv2-h-readiness-fill" style="width:0%"></div></div>
       <div class="dbv2-h-ctas">
@@ -2263,14 +2267,10 @@ img,video,iframe{max-width:100%}
     <div class="diag-hero-target" id="diagResDream">—</div>
   </div>
 
+  <!-- ABOVE THE FOLD: dream → reality → nearest → interpretation → first action → CTA -->
   <div class="diag-result-card">
     <div class="diag-result-h">وضعك الحالي من سيرتك</div>
     <div class="diag-result-body" id="diagResReality">—</div>
-  </div>
-
-  <div class="diag-result-card">
-    <div class="diag-result-h">أكبر سبب محتمل لعدم الرد</div>
-    <div class="diag-result-body" id="diagResGap">—</div>
   </div>
 
   <div class="diag-result-card">
@@ -2278,9 +2278,10 @@ img,video,iframe{max-width:100%}
     <div class="diag-roles-list" id="diagResRoles"></div>
   </div>
 
-  <div class="diag-result-card">
-    <div class="diag-result-h">الجسر بينك وبين وظيفة الحلم</div>
-    <div class="diag-bridge-list" id="diagResBridge"></div>
+  <!-- One-line interpretation — the "aha" sentence. -->
+  <div class="diag-result-card" id="diagResInterpretationCard" style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#f59e0b">
+    <div class="diag-result-h" style="color:#78350f">القراءة في سطر واحد</div>
+    <div class="diag-result-body" id="diagResInterpretation" style="color:#1f2937;font-weight:700">—</div>
   </div>
 
   <div class="diag-firstfix">
@@ -2289,6 +2290,17 @@ img,video,iframe{max-width:100%}
   </div>
 
   <button class="diag-cta-primary" id="diagResMainCta" onclick="diagRouteFromBranch()">ابدأ الآن →</button>
+
+  <!-- BELOW THE FOLD — supporting detail. -->
+  <div class="diag-result-card">
+    <div class="diag-result-h">أكبر سبب محتمل لعدم الرد</div>
+    <div class="diag-result-body" id="diagResGap">—</div>
+  </div>
+
+  <div class="diag-result-card">
+    <div class="diag-result-h">الجسر بينك وبين وظيفة الحلم</div>
+    <div class="diag-bridge-list" id="diagResBridge"></div>
+  </div>
 
   <!-- Supporting evidence (scores) — appears below, NOT as the hero. -->
   <div class="diag-supporting">
@@ -2607,7 +2619,7 @@ img,video,iframe{max-width:100%}
 <!-- Share card modal -->
 <div class="modal-bg" id="diagShareModal">
   <div class="modal" style="max-width:460px">
-    <div class="modal-head"><h2>شارك نتيجتك</h2><p>اكسب 24 ساعة وصول إضافية.</p></div>
+    <div class="modal-head"><h2>شارك نتيجتك وخذ 24 ساعة إضافية</h2><p>انسخ بطاقتك وشاركها — يضاف لحسابك 24 ساعة وصول فور النسخ.</p></div>
     <div class="modal-body">
       <div id="diagShareCardPreview" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:14px;padding:22px;color:#fff;margin-bottom:14px">
         <div style="font-size:11px;font-weight:700;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px">حلمي</div>
@@ -3427,6 +3439,108 @@ async function buildDiagnosis(dreamRole, cvText, answers, intentOverride){
     firstFix = 'اختر اتجاه من الخيارات تحت' + hint + ' — بمجرد ما تضغط، يعاد التشخيص فورًا ويصير الطريق واضح.';
   }
 
+  // ─── P1: Senior-CV override ─────────────────────────────────────────────
+  // If the CV shows real senior signals (8+ yrs, leadership titles, ARR
+  // ownership, team mgmt) AND the dream is a leadership-level role, do NOT
+  // suggest CSM / Specialist / Coordinator / Junior / Trainee / Assistant
+  // entry roles. The gap is positioning, not skill.
+  var rawCv = (cvText || '');
+  var seniorSignals = 0;
+  if (facts && facts.yearsExp && facts.yearsExp >= 8) seniorSignals++;
+  if (/\b(head of|director|vp|vice president|chief|c-?level|cxo|cco|cmo|coo|cto|ceo)\b/i.test(rawCv)) seniorSignals++;
+  if (/\bmanager of (cs|customer|managers|team|the team|csms)\b/i.test(rawCv)) seniorSignals++;
+  if (/\b(\d{2,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)\b/i.test(rawCv)) seniorSignals++;
+  if (/\barr\b|\bmrr\b|\bnrr\b|\bgrr\b|\bnet retention|gross retention|retention rate\b/i.test(rawCv)) seniorSignals++;
+  if (/\b(managed|led|leading|leadership)\b.{0,30}(team|people|staff|directs?|reports?)/i.test(rawCv)) seniorSignals++;
+  if (/\b(playbook|playbooks|health scoring|health score|qbr|executive (reporting|review)|expansion (revenue|playbook)|strategy)\b/i.test(rawCv)) seniorSignals++;
+  if (facts && facts.leadershipEvidence) seniorSignals++;
+  var isSeniorCV = seniorSignals >= 2;
+  var dreamIsLeadership = /\b(director|head of|vp\b|vice president|chief|lead\b|leader|principal)\b/i.test(dreamRole || '');
+
+  if (isSeniorCV && dreamIsLeadership && branch === 'C') {
+    // Strip entry/mid roles that would insult an experienced operator.
+    var BANNED_FOR_SENIOR = /(\bcsm\b|customer success manager(?!.*senior|.*lead|.*enterprise)|specialist|coordinator|client support|call center|agent|junior|trainee|assistant|مبتدئ|متدرب|مساعد|ممثل خدمة)/i;
+    var filtered = (nearestRoles || []).filter(function(r){ return !BANNED_FOR_SENIOR.test(r); });
+    // Build senior role pool keyed off the dream's family signal.
+    var dreamLc = (dreamRole || '').toLowerCase();
+    var seniorPool;
+    if (/customer success|cs\b|عملاء|cs leadership/i.test(dreamLc)) {
+      seniorPool = [
+        'Head of Customer Success',
+        'Senior Customer Success Manager (Enterprise)',
+        'Director of Customer Success — smaller SaaS',
+        'CS Operations Lead'
+      ];
+    } else if (/sales|مبيعات|account/i.test(dreamLc)) {
+      seniorPool = [
+        'Head of Sales — smaller SaaS',
+        'Senior Account Executive (Enterprise)',
+        'Sales Operations Lead',
+        'Director of Sales — smaller company'
+      ];
+    } else if (/marketing|تسويق|growth|brand/i.test(dreamLc)) {
+      seniorPool = [
+        'Head of Marketing — smaller SaaS',
+        'Senior Marketing Manager',
+        'Growth Lead',
+        'Director of Marketing — smaller company'
+      ];
+    } else if (/engineering|tech|cto|software/i.test(dreamLc)) {
+      seniorPool = [
+        'Engineering Manager',
+        'Staff Engineer',
+        'Head of Engineering — smaller SaaS',
+        'Tech Lead'
+      ];
+    } else {
+      // Generic leadership fallback — derive from the dream role itself.
+      seniorPool = [
+        'Senior ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, ''),
+        'Head of ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, '') + ' — smaller company',
+        (dreamRole || 'Director') + ' at a smaller SaaS',
+        'Operations Lead'
+      ];
+    }
+    var seniorRoles = [];
+    filtered.forEach(function(r){ if (seniorRoles.indexOf(r) === -1) seniorRoles.push(r); });
+    seniorPool.forEach(function(r){ if (seniorRoles.indexOf(r) === -1) seniorRoles.push(r); });
+    nearestRoles = seniorRoles.slice(0, 4);
+
+    // Override the narrative copy to positioning-not-skill.
+    var arrMatch = rawCv.match(/(\d{1,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)/i);
+    var yrsCopy = (facts && facts.yearsExp) ? (facts.yearsExp + ' سنوات خبرة') : 'خبرة قيادية فعلية';
+    var arrCopy = arrMatch ? (' + ARR ' + arrMatch[0]) : '';
+    currentReality = 'عندك ' + yrsCopy + ' في القيادة' + arrCopy + ' — السيرة فيها الدليل، لكن مكتوبة كمهام تشغيلية، مو كقصة قائد تنفيذي.';
+    biggestGap = 'الفجوة ليست في خبرتك. الفجوة في التموضع (positioning) — السيرة تحتاج تعيد صياغة كل دور كقائد يملك ARR، retention، expansion، أداء فريق، وتقارير تنفيذية.';
+    firstFix = 'أعد كتابة الملخص المهني في ٣ أسطر فقط: ARR managed + retention% + team size. هذا أعلى-تأثير تعديل اليوم — أهم من تقديم على ١٠ وظائف.';
+  }
+
+  // ─── P0: One-line interpretation (the "wow" sentence above the fold) ───
+  // A single, branch-aware diagnostic that explains in 1 line WHY the user
+  // isn't getting replies. Rendered between "nearest roles" and "first fix".
+  var interpretation;
+  if (isSeniorCV && dreamIsLeadership && branch === 'C') {
+    interpretation = 'أنت لا تحتاج تبدأ من جديد. أنت تحتاج تعيد صياغة خبرتك كقائد ' +
+      (/customer success|cs\b|عملاء/i.test((dreamRole||'').toLowerCase()) ? 'CS' : 'تنفيذي') +
+      ' — مو كموظف عمليات.';
+  } else if (branch === 'A') {
+    interpretation = 'مشكلتك مو في سيرتك، مشكلتك في القناة. التقديم وجهاً لوجه يفتح الباب أسرع من ١٠٠ تقديم أونلاين.';
+  } else if (branch === 'B') {
+    interpretation = confidentFamily
+      ? ('أنت في بداية مسار ' + lib.familyAr + '. تحتاج تثبت الدليل في السيرة قبل ما تقدم — مو تقدم وتنتظر.')
+      : 'هدفك واضح، لكن مسارك المهني يحتاج اتجاه. اختر اتجاه واحد من الخيارات تحت ونرسم الطريق.';
+  } else if (branch === 'C') {
+    if (answers.appsCount === 'lt5') {
+      interpretation = 'مشكلتك مو السيرة، مشكلتك حجم القمع. ٥ تقديمات في ٦ أشهر ما تكفي تعرف وين الخلل.';
+    } else if (answers.repliesCount === 'none' && (answers.appsCount === 'gt50' || answers.appsCount === '20_50')) {
+      interpretation = 'قدمت كثير وما يردون = إشارة قوية إن السيرة لا تطابق لغة الإعلانات، أو تستهدف أدوار أعلى من المدخل الواقعي.';
+    } else {
+      interpretation = 'سيرتك تصف مهام بدل ما تثبت نتائج. + غالباً تستهدف أعلى من أقرب مدخل واقعي لك الآن.';
+    }
+  } else {
+    interpretation = 'نحتاج نحدد اتجاهك بدقة أكثر. اختر من الخيارات تحت ونعيد التشخيص فوراً.';
+  }
+
   // pathClarity score: how clear is the path from current to dream?
   var pathClarity;
   if (branch === 'A') pathClarity = 80;
@@ -3469,6 +3583,8 @@ async function buildDiagnosis(dreamRole, cvText, answers, intentOverride){
     nearestWinnableRoles: nearestRoles,
     bridgePlan: bridgePlan,
     firstFix: firstFix,
+    interpretation: interpretation,
+    isSeniorOverride: !!(isSeniorCV && dreamIsLeadership && branch === 'C'),
     supportingScores: sup,
     interviewPrep: lib ? lib.interviewPrep : 'ليش هذا المسار؟ + موقف يثبت قدراتك',
     cvFacts: facts,
@@ -3569,6 +3685,25 @@ var _diagDraft = { dreamRole: '', cvText: '', answers: {} };
 function startDiagnosis(){
   _diagDraft = { dreamRole: '', cvText: '', answers: {} };
   goScreen('s-dream');
+}
+
+// App-nav links — "التشخيص" opens existing diagnosis if any, else starts a
+// new one; "تقديماتي" jumps to the dashboard tracker card (single source).
+function appNavGoDiag(){
+  var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+  if (d){
+    renderDiagnosisScreen();
+    goScreen('s-diagnosis');
+  } else {
+    startDiagnosis();
+  }
+}
+function appNavGoApps(){
+  goScreen('s-dashboard');
+  setTimeout(function(){
+    var el = document.getElementById('dbv2Tracker');
+    if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 120);
 }
 
 // PDF upload handler dedicated to the diagnosis screen — same engine as
@@ -3760,6 +3895,18 @@ function renderDiagnosisScreen(){
   });
 
   document.getElementById('diagResFirstFix').textContent = d.firstFix;
+
+  // P0 — one-line interpretation. Backward-compat: hide card if missing.
+  var interpEl = document.getElementById('diagResInterpretation');
+  var interpCard = document.getElementById('diagResInterpretationCard');
+  if (interpEl && interpCard){
+    if (d.interpretation && d.interpretation.trim()){
+      interpEl.textContent = d.interpretation;
+      interpCard.style.display = '';
+    } else {
+      interpCard.style.display = 'none';
+    }
+  }
 
   // Branch-specific main CTA copy
   var ctaBtn = document.getElementById('diagResMainCta');
@@ -5240,9 +5387,17 @@ function diagShareDoCopy(){
     + 'أول خطوة: ' + d.firstFix + '\n\n'
     + 'جرّبه على darbi-production.up.railway.app';
   var done = function(){
-    Access.earn(24);
+    // Only credit +24h when the user actually needs it. Founder LTD / admin
+    // tiers don't benefit, so suppress the misleading "+24h" message there.
+    var preState = (typeof Access !== 'undefined' && Access.state) ? Access.state() : { status: 'none' };
+    var canEarn = preState.status !== 'admin' && preState.status !== 'founder_ltd';
+    if (canEarn) Access.earn(24);
     if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'share_card_used' });
-    showNotif('تم النسخ ✓','','+24 ساعة وصول إضافية.');
+    if (canEarn){
+      showNotif('تم النسخ ✅','','أضفنا لك 24 ساعة وصول إضافية.');
+    } else {
+      showNotif('تم النسخ ✅','','شكراً لمشاركتك دربي.');
+    }
     closeModal();
   };
   if (navigator.clipboard && navigator.clipboard.writeText){
@@ -6554,13 +6709,15 @@ function submitVideo(){
 
 // ══════ ACCESS ══════
 function goTool(tool){
-  if(!isLoggedIn()){
-    requireAuth(function(){ goTool(tool); }, 'سجّل دخولك عشان نحفظ تدريبك');
-    return;
-  }
+  // CV preview is open — login is required only at SAVE time, not at preview.
+  // Every other tool still gates behind login (training, mock interview, etc).
   if(tool==='cv'){
     goScreen('s-cv');
     setTimeout(initCVScreen, 100);
+    return;
+  }
+  if(!isLoggedIn()){
+    requireAuth(function(){ goTool(tool); }, 'سجّل دخولك عشان نحفظ تدريبك');
     return;
   }
   if(tool==='interview'){
@@ -8370,10 +8527,26 @@ function renderDashboard(){
   var readiness = (a.scores && (a.scores.overallReadiness || a.scores.cvStrength)) || 0;
   document.getElementById('dbv2Readiness').textContent = readiness + '%';
   document.getElementById('dbv2ReadinessFill').style.width = readiness + '%';
-  var rmLen = (a.roadmap && a.roadmap.lengthDays) || 60;
-  document.getElementById('dbv2RoadmapLen').textContent = rmLen + ' يوم';
-  var curDay = (a.roadmap && a.roadmap.currentDay) || parseInt(localStorage.getItem('darbi_sess')||'1');
-  document.getElementById('dbv2CurrentDay').textContent = curDay;
+
+  // Show readiness only when there's a real number — otherwise it reads as "0%" debug.
+  var cellReadiness = document.getElementById('dbv2HCellReadiness');
+  if (cellReadiness) cellReadiness.style.display = (readiness > 0) ? '' : 'none';
+
+  // Roadmap length — show only when the user has an actual roadmap, not the
+  // default 60-day placeholder.
+  var hasRoadmap = !!(a.roadmap && a.roadmap.lengthDays);
+  var rmLen = hasRoadmap ? a.roadmap.lengthDays : 0;
+  document.getElementById('dbv2RoadmapLen').textContent = rmLen ? (rmLen + ' يوم') : '—';
+  var cellRoadmap = document.getElementById('dbv2HCellRoadmap');
+  if (cellRoadmap) cellRoadmap.style.display = hasRoadmap ? '' : 'none';
+
+  // Current day — only show after the user has actually started training
+  // (darbi_sess > 1 OR roadmap.currentDay set).
+  var rawSess = parseInt(localStorage.getItem('darbi_sess')||'0');
+  var curDay = (a.roadmap && a.roadmap.currentDay) || rawSess;
+  document.getElementById('dbv2CurrentDay').textContent = curDay || 1;
+  var cellDay = document.getElementById('dbv2HCellDay');
+  if (cellDay) cellDay.style.display = (curDay && curDay >= 1 && (rawSess > 0 || hasRoadmap)) ? '' : 'none';
 
   // ── 2. Scores (collapsed by default) — hide cards with 0 value to
   //      kill the "0% everywhere" perception. If all four are zero (e.g.
