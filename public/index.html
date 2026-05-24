@@ -8003,23 +8003,30 @@ function updateNavForUser(){
 
   // ── Landing nav (lpNav) — links are FIXED, only login/logout toggles ──
   // navGuest itself stays visible always (it carries the sales links).
-  setDisp('navLoginLink',       loggedIn ? 'none'        : '');
+  // P3: "دخول" is permanently hidden in the desktop nav per spec — login
+  // is reachable from the footer + mobile burger only. Keep it hidden for
+  // both guests and logged-in users so updateNavForUser() doesn't show it.
+  setDisp('navLoginLink',       'none');
   setDisp('navDashLink',        loggedIn ? ''            : 'none');
   setDisp('navStartBtn',        '');                       // always show — even logged-in can start a new diagnosis
   setDisp('navLogoutBtn',       loggedIn ? 'inline-flex' : 'none');
   setDisp('navLoginBtn',        'none');                   // legacy hidden button
-  // Mobile landing menu
+  // Mobile landing menu — burger still shows "دخول" for guests
   setDisp('mobileNavLoginLink', loggedIn ? 'none' : '');
   setDisp('mobileNavDashLink',  loggedIn ? ''     : 'none');
   setDisp('mobileNavLogout',    loggedIn ? ''     : 'none');
 
-  // ── App nav (appNav) — only logged-in users see لوحتي / التدريب links ──
+  // ── App nav (appNav) — only logged-in users see لوحتي / التدريب / etc ──
   setDisp('appNavDash',         loggedIn ? ''     : 'none');
+  setDisp('appNavDiag',         loggedIn ? ''     : 'none');
   setDisp('appNavTrain',        loggedIn ? ''     : 'none');
+  setDisp('appNavApps',         loggedIn ? ''     : 'none');
   setDisp('appNavLogoutBtn',    loggedIn ? 'inline-flex' : 'none');
   setDisp('appNavHomeBtn',      '');                       // always show
   setDisp('appMobileDash',      loggedIn ? ''     : 'none');
+  setDisp('appMobileDiag',      loggedIn ? ''     : 'none');
   setDisp('appMobileTrain',     loggedIn ? ''     : 'none');
+  setDisp('appMobileApps',      loggedIn ? ''     : 'none');
   setDisp('appMobileLogout',    loggedIn ? ''     : 'none');
 
   if (!loggedIn || !currentUser) return;
