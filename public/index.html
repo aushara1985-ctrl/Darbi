@@ -441,6 +441,41 @@ button.diag-role-chip-pick:active{transform:translateY(0)}
 .diag-cta-primary{margin-top:14px;width:100%;padding:14px;background:#4f46e5;color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}
 .diag-cta-primary:hover{background:#4338ca}
 
+/* Jobs section (real jobs from ATS / aggregator providers) */
+.diag-jobs{margin-top:16px;background:#ffffff;border:1px solid #e0e7ff;border-radius:14px;padding:18px}
+.diag-jobs-head{margin-bottom:11px}
+.diag-jobs-h{font-size:16px;font-weight:900;color:#0a0a0a;margin-bottom:4px}
+.diag-jobs-sub{font-size:12.5px;color:#6b7280;line-height:1.6}
+.diag-jobs-meta{font-size:13px;color:#1f2937;margin-bottom:11px;line-height:1.6;font-weight:600}
+.diag-jobs-list{display:flex;flex-direction:column;gap:10px}
+.diag-job-card{background:#fafafe;border:1px solid #ececf4;border-radius:12px;padding:13px}
+.diag-job-card.is-low{opacity:.78}
+.diag-job-row1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+.diag-job-title{font-size:14.5px;font-weight:800;color:#0a0a0a;line-height:1.4}
+.diag-job-match{flex-shrink:0;font-size:12px;font-weight:800;background:#dcfce7;color:#166534;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.diag-job-match.is-mid{background:#fef3c7;color:#92400e}
+.diag-job-match.is-low{background:#fee2e2;color:#991b1b}
+.diag-job-row2{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:#475569;margin-bottom:8px}
+.diag-job-meta{display:inline-flex;align-items:center;gap:4px}
+.diag-job-source{background:#eef2ff;color:#4338ca;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.diag-job-why{font-size:12.5px;color:#0f172a;line-height:1.6;margin-bottom:6px}
+.diag-job-tip{font-size:12px;color:#0c4a6e;background:#e0f2fe;border-radius:8px;padding:7px 10px;line-height:1.55;margin-bottom:8px}
+.diag-job-flags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.diag-job-flag{font-size:11px;background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:99px;font-weight:600}
+.diag-job-ctas{display:flex;gap:6px;flex-wrap:wrap}
+.diag-job-cta{flex:1;min-width:90px;padding:8px 10px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid #ececf4;background:#fff;color:#0a0a0a;font-family:inherit;text-align:center}
+.diag-job-cta.is-primary{background:#4f46e5;color:#fff;border-color:#4f46e5}
+.diag-job-cta.is-primary:hover{background:#4338ca}
+.diag-job-cta:not(.is-primary):hover{background:#f9fafb}
+.diag-jobs-fallback{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:11px;padding:13px;font-size:13px;color:#475569;line-height:1.7}
+.diag-jobs-fallback h4{font-size:13px;font-weight:800;color:#0a0a0a;margin-bottom:6px}
+.diag-jobs-fallback ul{margin:6px 0;padding-right:18px}
+.diag-jobs-fallback li{margin-bottom:4px}
+.diag-jobs-fallback .fb-link{display:inline-block;font-size:11.5px;color:#4338ca;text-decoration:none;margin-left:6px;background:#eef2ff;padding:2px 8px;border-radius:99px}
+.diag-jobs-fallback .fb-link:hover{background:#e0e7ff}
+.diag-jobs-ctas{display:flex;gap:8px;margin-top:11px}
+.diag-jobs-empty{padding:14px;text-align:center;color:#6b7280;font-size:12.5px;background:#f9fafb;border-radius:10px}
+
 /* Unlock card */
 .diag-unlock{background:#0f172a;border-radius:18px;padding:24px;color:#fff;margin-top:16px}
 .diag-unlock-eyebrow{font-size:11px;font-weight:700;color:#fbbf24;letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
@@ -2052,6 +2087,26 @@ img,video,iframe{max-width:100%}
       </div>
     </div>
 
+    <!-- ════ B2. WEEKLY OPPORTUNITIES — real jobs from ATS/aggregators ════ -->
+    <div class="dbv2-card" id="dbv2WeeklyJobs">
+      <div class="dbv2-card-h">فرصك هذا الأسبوع</div>
+      <div id="dbv2WeeklyJobsBody">
+        <div id="dbv2WeeklyJobsMeta" style="font-size:13px;color:#1f2937;margin-bottom:8px;line-height:1.6">—</div>
+        <div id="dbv2WeeklyJobsProgress" style="background:#f1f5f9;border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;color:#0a0a0a;display:none">
+          <div style="font-weight:700;margin-bottom:4px">هدفك هذا الأسبوع: قدّم على 10 وظائف مناسبة</div>
+          <div id="dbv2WeeklyProgressText" style="color:#475569">قدمت على 0 من 10</div>
+          <div style="height:6px;background:#e2e8f0;border-radius:99px;margin-top:6px;overflow:hidden"><div id="dbv2WeeklyProgressFill" style="height:100%;width:0%;background:#10b981;border-radius:99px"></div></div>
+        </div>
+        <div id="dbv2WeeklyJobsList" class="diag-jobs-list" style="margin-bottom:11px"></div>
+        <div id="dbv2WeeklyJobsFallback" style="display:none;font-size:12.5px;color:#6b7280;line-height:1.6"></div>
+        <div class="dbv2-latest-ctas">
+          <button class="dbv2-btn dbv2-btn-p" onclick="JobsUI.dashboardSearch()">ابحث الآن</button>
+          <button class="dbv2-btn dbv2-btn-s" onclick="JobsUI.openAll()">عرض كل الوظائف</button>
+          <button class="dbv2-btn dbv2-btn-s" onclick="openAppTrackerModal()">سجل تقديم جديد</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ════ C. TODAY PLAN — 1–3 tasks max. No full-plan modal CTA here. ════ -->
     <div class="dbv2-card">
       <div class="dbv2-card-h">خطة اليوم</div>
@@ -2290,6 +2345,20 @@ img,video,iframe{max-width:100%}
   </div>
 
   <button class="diag-cta-primary" id="diagResMainCta" onclick="diagRouteFromBranch()">ابدأ الآن →</button>
+
+  <!-- ─── Jobs we found for you ─── -->
+  <div class="diag-jobs" id="diagJobsCard">
+    <div class="diag-jobs-head">
+      <div class="diag-jobs-h">وظائف وجدناها لك</div>
+      <div class="diag-jobs-sub">دربي بحث في صفحات وظائف الشركات ورتّب النتائج حسب سيرتك وحلمك.</div>
+    </div>
+    <div class="diag-jobs-meta" id="diagJobsMeta"></div>
+    <div class="diag-jobs-list" id="diagJobsList"></div>
+    <div class="diag-jobs-fallback" id="diagJobsFallback" style="display:none"></div>
+    <div class="diag-jobs-ctas" id="diagJobsCtas" style="display:none">
+      <button class="diag-btn-p" onclick="JobsUI.refresh()">تحديث النتائج</button>
+    </div>
+  </div>
 
   <!-- BELOW THE FOLD — supporting detail. -->
   <div class="diag-result-card">
@@ -3924,6 +3993,12 @@ function renderDiagnosisScreen(){
   document.getElementById('diagSupInt').textContent = d.supportingScores.interviewReadiness;
   document.getElementById('diagSupPath').textContent = d.supportingScores.pathClarity;
 
+  // Kick the real-jobs search asynchronously. Render is non-blocking — the
+  // jobs card shows a loading line, then either populates or shows fallback.
+  if (typeof JobsUI !== 'undefined' && JobsUI.autoSearchOnDiagnosis){
+    try { JobsUI.autoSearchOnDiagnosis(); } catch(e){}
+  }
+
   // Unlock card subtitle reflects access state
   var sub = document.getElementById('diagUnlockSub');
   var st = Access.state();
@@ -4604,6 +4679,322 @@ var Applications = (function(){
       if (s.total >= 20 && s.replies === 0)           return 'هنا المشكلة غالباً في مطابقة السيرة أو اختيار الوظائف.';
       if (s.total < 5)                                return 'عدد تقديماتك قليل. قبل ما نحكم على السيرة، نحتاج توسع التقديم.';
       return null;
+    },
+  };
+})();
+
+// ══════ JobsUI — real-jobs search powered by /api/jobs/search ══════════════
+// Lean state machine:
+//   - cacheKey = dreamRole|family|seniority|location
+//   - Last result kept in localStorage so the dashboard "فرصك هذا الأسبوع"
+//     card shows what we already found without re-hitting the server.
+//   - Render functions are surface-agnostic (called from both the diagnosis
+//     screen and the dashboard card).
+//
+// IMPORTANT: never invents jobs. mode === 'fallback' renders the honest
+// fallback block; mode === 'live' renders real cards.
+var JobsUI = (function(){
+  var CACHE_KEY = 'darbi_jobs_cache_v1';
+  function _read(){
+    try { return JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); }
+    catch(e){ return null; }
+  }
+  function _write(o){
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(o)); } catch(e){}
+  }
+  function _clear(){ try { localStorage.removeItem(CACHE_KEY); } catch(e){} }
+
+  function _escape(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function _matchClass(score){
+    if (score >= 60) return '';
+    if (score >= 35) return 'is-mid';
+    return 'is-low';
+  }
+  function _sourceLabel(src){
+    return {
+      greenhouse: 'Greenhouse', lever: 'Lever', ashby: 'Ashby',
+      workable: 'Workable', smartrecruiters: 'SmartRecruiters',
+      jsearch: 'JSearch', adzuna: 'Adzuna', jooble: 'Jooble',
+      serpapi: 'Google Jobs', theirstack: 'TheirStack',
+    }[src] || src || '';
+  }
+
+  // ── Network call ─────────────────────────────────────────────────────────
+  async function _callSearch(opts){
+    var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+    if (!d || !d.dreamRole) return null;
+    var body = {
+      dreamRole: d.dreamRole,
+      diagnosis: {
+        family:           d.family,
+        intent:           d.intent || null,
+        isSeniorOverride: !!d.isSeniorOverride,
+      },
+      cvFacts:  d.cvFacts || null,
+      cvText:   d.cvText  || null,
+      location: (opts && opts.location) || null,
+      limit:    (opts && opts.limit)    || 10,
+    };
+    try {
+      var r = await fetch('/api/jobs/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!r.ok) {
+        if (r.status === 429) return { success: false, error: 'rate_limit' };
+        return { success: false, error: 'http_' + r.status };
+      }
+      var data = await r.json();
+      if (data && data.success){
+        _write({ at: Date.now(), data: data });
+        if (typeof DarbiBrain !== 'undefined') {
+          DarbiBrain.learn({ type: 'jobs_searched', mode: data.mode, count: (data.jobs||[]).length });
+        }
+      }
+      return data;
+    } catch(e) {
+      return { success: false, error: 'network' };
+    }
+  }
+
+  // ── Render: single job card ─────────────────────────────────────────────
+  function _renderJobCard(j, idx){
+    var score = (j.match && j.match.score) || 0;
+    var matchCls = _matchClass(score);
+    var flags = (j.match && j.match.flags) || [];
+    var flagsHtml = flags.length
+      ? '<div class="diag-job-flags">' + flags.map(function(f){
+          return '<span class="diag-job-flag">' + _escape(f.ar || f.key) + '</span>';
+        }).join('') + '</div>'
+      : '';
+    var why = (j.whyMatched || []).map(_escape).join(' · ');
+    var openHref = j.applyUrl || j.url || '#';
+    var safeId = _escape(j.id || ('job-' + idx));
+    var safePayload = encodeURIComponent(JSON.stringify({
+      id: j.id, title: j.title, company: j.company, url: openHref, source: j.source,
+    }));
+    return ''
+      + '<div class="diag-job-card' + (score < 35 ? ' is-low' : '') + '" data-job-id="' + safeId + '">'
+      +   '<div class="diag-job-row1">'
+      +     '<div class="diag-job-title">' + _escape(j.title || '—') + '</div>'
+      +     '<span class="diag-job-match ' + matchCls + '">' + Math.round(score) + '٪</span>'
+      +   '</div>'
+      +   '<div class="diag-job-row2">'
+      +     '<span class="diag-job-meta">🏢 ' + _escape(j.company || '—') + '</span>'
+      +     (j.location ? '<span class="diag-job-meta">📍 ' + _escape(j.location) + '</span>' : '')
+      +     (j.source ? '<span class="diag-job-source">' + _escape(_sourceLabel(j.source)) + '</span>' : '')
+      +   '</div>'
+      +   (why ? '<div class="diag-job-why">✓ ' + why + '</div>' : '')
+      +   (j.cvFixTip ? '<div class="diag-job-tip">💡 ' + _escape(j.cvFixTip) + '</div>' : '')
+      +   flagsHtml
+      +   '<div class="diag-job-ctas">'
+      +     '<a class="diag-job-cta is-primary" href="' + _escape(openHref) + '" target="_blank" rel="noopener" onclick="JobsUI.trackOpen(\'' + safePayload + '\')">افتح الوظيفة ←</a>'
+      +     '<button class="diag-job-cta" onclick="JobsUI.markApplied(\'' + safePayload + '\')">سجلت تقديم</button>'
+      +     '<button class="diag-job-cta" onclick="JobsUI.markNotFit(\'' + safePayload + '\')">ليست مناسبة</button>'
+      +   '</div>'
+      + '</div>';
+  }
+
+  function _renderFallback(payload){
+    if (!payload) return '';
+    var titles = (payload.targetTitles || []).map(_escape);
+    var links  = payload.searchLinks || [];
+    var titleList = titles.length
+      ? '<h4>مسميات بحث جاهزة</h4><ul>' + titles.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ul>'
+      : '';
+    var linksHtml = links.length
+      ? '<h4 style="margin-top:8px">روابط بحث سريعة</h4>' + links.map(function(l){
+          return '<div style="margin-bottom:4px">' + _escape(l.label) +
+                 ' <a class="fb-link" target="_blank" rel="noopener" href="' + _escape(l.linkedin) + '">LinkedIn</a>' +
+                 ' <a class="fb-link" target="_blank" rel="noopener" href="' + _escape(l.bayt) + '">Bayt</a>' +
+                 ' <a class="fb-link" target="_blank" rel="noopener" href="' + _escape(l.google) + '">Google</a>' +
+                 '</div>';
+        }).join('')
+      : '';
+    return ''
+      + '<div><strong style="color:#0a0a0a">' + _escape(payload.message || 'البحث التلقائي غير مفعّل حالياً.') + '</strong></div>'
+      + titleList + linksHtml;
+  }
+
+  // ── Render: diagnosis screen section ────────────────────────────────────
+  function _renderDiag(data){
+    var meta = document.getElementById('diagJobsMeta');
+    var list = document.getElementById('diagJobsList');
+    var fb   = document.getElementById('diagJobsFallback');
+    var ctas = document.getElementById('diagJobsCtas');
+    if (!list) return;
+    list.innerHTML = '';
+    if (fb)   { fb.innerHTML = ''; fb.style.display = 'none'; }
+    if (ctas) ctas.style.display = '';
+    if (!data){
+      if (meta) meta.textContent = 'نبحث في صفحات وظائف الشركات...';
+      return;
+    }
+    if (data.error === 'rate_limit'){
+      if (meta) meta.textContent = 'بحثت كثير في وقت قصير. جرب بعد دقيقة.';
+      return;
+    }
+    if (!data.success){
+      if (meta) meta.textContent = 'ما قدرنا نبحث الآن. حاول مرة أخرى لاحقاً.';
+      return;
+    }
+    if (data.mode === 'fallback'){
+      if (meta) meta.textContent = '';
+      if (fb)   { fb.innerHTML = _renderFallback(data.fallback); fb.style.display = ''; }
+      return;
+    }
+    var jobs = data.jobs || [];
+    if (!jobs.length){
+      if (meta) meta.textContent = 'ما لقينا وظائف مناسبة الآن. جرّب توسيع المدينة أو الرجوع لاحقاً.';
+      return;
+    }
+    if (meta) meta.textContent = 'لقينا لك ' + jobs.length + ' وظيفة مناسبة';
+    list.innerHTML = jobs.map(_renderJobCard).join('');
+  }
+
+  // ── Render: dashboard "فرصك هذا الأسبوع" ─────────────────────────────────
+  function _renderDashboardCard(data){
+    var meta = document.getElementById('dbv2WeeklyJobsMeta');
+    var list = document.getElementById('dbv2WeeklyJobsList');
+    var fb   = document.getElementById('dbv2WeeklyJobsFallback');
+    var prog = document.getElementById('dbv2WeeklyJobsProgress');
+    if (!list) return;
+    list.innerHTML = '';
+    if (fb)   { fb.innerHTML = ''; fb.style.display = 'none'; }
+    if (!data){
+      if (meta) meta.textContent = 'اضغط "ابحث الآن" لجلب الوظائف المتاحة.';
+      if (prog) prog.style.display = 'none';
+      return;
+    }
+    if (data.mode === 'fallback'){
+      if (meta) meta.textContent = 'مصادر الوظائف غير مفعّلة بعد.';
+      if (fb)   { fb.innerHTML = _renderFallback(data.fallback); fb.style.display = ''; }
+    } else if ((data.jobs || []).length){
+      var jobs = data.jobs.slice(0, 3);
+      if (meta) meta.textContent = 'لقينا لك ' + data.jobs.length + ' وظيفة مناسبة. أعلى 3:';
+      list.innerHTML = jobs.map(_renderJobCard).join('');
+    } else {
+      if (meta) meta.textContent = 'ما لقينا وظائف الآن. جرّب لاحقاً.';
+    }
+
+    // Progress: count applied applications THIS WEEK.
+    if (prog && typeof Applications !== 'undefined') {
+      var since = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      var apps = Applications.raw().filter(function(a){
+        var t = Date.parse(a.appliedAt || a.createdAt || 0);
+        return isFinite(t) && t >= since;
+      });
+      var n = Math.min(apps.length, 10);
+      var t = document.getElementById('dbv2WeeklyProgressText');
+      var f = document.getElementById('dbv2WeeklyProgressFill');
+      if (t) t.textContent = 'قدمت على ' + n + ' من 10';
+      if (f) f.style.width = ((n / 10) * 100) + '%';
+      prog.style.display = '';
+    }
+  }
+
+  // ── Public surface ──────────────────────────────────────────────────────
+  return {
+    // Called from renderDiagnosisScreen() right after we render the wow.
+    autoSearchOnDiagnosis: async function(){
+      var card = document.getElementById('diagJobsCard');
+      if (!card) return;
+      var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+      if (!d || !d.dreamRole) { card.style.display = 'none'; return; }
+      card.style.display = '';
+      // Use cached result if fresh (< 30 min) and same dream.
+      var cached = _read();
+      var fresh  = cached && (Date.now() - cached.at < 30 * 60 * 1000)
+        && cached.data && cached.data.searchProfile
+        && cached.data.searchProfile.dreamRole === d.dreamRole;
+      if (fresh){ _renderDiag(cached.data); return; }
+      _renderDiag(null); // loading state
+      var data = await _callSearch({});
+      _renderDiag(data);
+    },
+
+    // Manual refresh button on the diagnosis screen.
+    refresh: async function(){
+      _clear();
+      _renderDiag(null);
+      var data = await _callSearch({});
+      _renderDiag(data);
+    },
+
+    // Dashboard card: paint from cache on dashboard open.
+    renderDashboardFromCache: function(){
+      var cached = _read();
+      _renderDashboardCard(cached && cached.data ? cached.data : null);
+    },
+
+    // Dashboard "ابحث الآن" button.
+    dashboardSearch: async function(){
+      _renderDashboardCard({ mode: 'live', jobs: [] }); // light placeholder
+      var data = await _callSearch({});
+      _renderDashboardCard(data);
+    },
+
+    // "عرض كل الوظائف" — for now, sends user back to the diagnosis screen
+    // where the full list lives. When we add a dedicated jobs screen we'll
+    // route here.
+    openAll: function(){
+      var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+      if (d){
+        if (typeof renderDiagnosisScreen === 'function') renderDiagnosisScreen();
+        goScreen('s-diagnosis');
+        setTimeout(function(){
+          var el = document.getElementById('diagJobsCard');
+          if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      } else {
+        showNotif('','','شغّل تشخيص أولاً.');
+      }
+    },
+
+    // Track external "open job" click (analytics-light).
+    trackOpen: function(payloadEnc){
+      try {
+        var p = JSON.parse(decodeURIComponent(payloadEnc));
+        if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'job_opened', job: p });
+      } catch(e){}
+    },
+
+    // "سجلت تقديم" — push into the Application Tracker + DarbiBrain.
+    markApplied: function(payloadEnc){
+      try {
+        var p = JSON.parse(decodeURIComponent(payloadEnc));
+        if (typeof Applications === 'undefined') {
+          showNotif('','','لازم تسجل الدخول عشان تحفظ تقديماتك.');
+          return;
+        }
+        var rec = Applications.add({
+          company: p.company || '',
+          role:    p.title   || '',
+          url:     p.url     || '',
+          status:  'applied',
+        });
+        if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'application_logged', application: rec });
+        if (typeof renderApplicationTracker === 'function') renderApplicationTracker();
+        if (typeof renderDashboard === 'function') renderDashboard();
+        showNotif('تم ✅','','أضفنا التقديم لتتبعك.');
+      } catch(e){}
+    },
+
+    // "ليست مناسبة" — soft-hide locally (no server state). Removes the card
+    // from the DOM and feeds DarbiBrain so we can use it later for ranking.
+    markNotFit: function(payloadEnc){
+      try {
+        var p = JSON.parse(decodeURIComponent(payloadEnc));
+        if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'job_dismissed', job: p });
+        // Remove the card from view.
+        var card = document.querySelector('[data-job-id="' + (p.id || '') + '"]');
+        if (card && card.parentNode) card.parentNode.removeChild(card);
+      } catch(e){}
     },
   };
 })();
@@ -8709,6 +9100,12 @@ function renderDashboard(){
 
   // Refresh the Application Tracker (stats + insight + list).
   if (typeof renderApplicationTracker === 'function') renderApplicationTracker();
+
+  // Paint the "فرصك هذا الأسبوع" card from cache. Live search only fires
+  // when the user explicitly clicks "ابحث الآن" — keeps dashboard load fast.
+  if (typeof JobsUI !== 'undefined' && JobsUI.renderDashboardFromCache) {
+    try { JobsUI.renderDashboardFromCache(); } catch(e){}
+  }
 }
 </script>
 

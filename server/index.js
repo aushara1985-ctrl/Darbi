@@ -364,6 +364,17 @@ app.post('/api/darbi/resolve-intent', async (req, res) => {
   res.json({ success: true, intent });
 });
 
+// ─── JOBS SEARCH (career-family-agnostic, hybrid ATS + aggregator) ───────────
+// Registration is delegated to ./jobs to keep this file lean. Two routes:
+//   GET  /api/jobs/sources   → public ATS sources + provider availability
+//   POST /api/jobs/search    → fetch + rank + return honest fallback
+try {
+  require('./jobs').register(app, { rateLimit, getIP });
+  console.log('[jobs] routes registered');
+} catch (e) {
+  console.error('[jobs] failed to register routes:', e.message);
+}
+
 // ─── ANALYSIS ─────────────────────────────────────────────────────────────────
 app.post('/api/darbi/analyze', authMiddleware, async (req, res) => {
   const { targetRole, cvText, jobDescription = '' } = req.body;
