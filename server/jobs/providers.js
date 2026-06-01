@@ -4,7 +4,8 @@
 // so the orchestrator can skip them quickly.
 //
 // Env vars (any subset can be set):
-//   JSEARCH_API_KEY     → RapidAPI JSearch
+//   JSEARCH_API_KEY     → JSearch (OpenWeb Ninja direct by default)
+//   JSEARCH_PROVIDER    → "openwebninja" (default) or "rapidapi" to switch
 //   ADZUNA_APP_ID + ADZUNA_APP_KEY  → Adzuna
 //   JOOBLE_API_KEY      → Jooble
 //   SERPAPI_KEY         → SerpAPI (Google Jobs)
@@ -54,24 +55,36 @@ function _norm(job) {
   };
 }
 
-// ─── JSearch (RapidAPI) ────────────────────────────────────────────────────
+// ─── JSearch (OpenWeb Ninja direct OR RapidAPI proxy) ──────────────────────
+// Same underlying service, two reseller fronts. Default = OpenWeb Ninja
+// direct (cheaper, what the user subscribed to). Override per spec via
+// JSEARCH_PROVIDER=rapidapi if the key was issued through RapidAPI instead.
+// Both fronts return identical JSON shape: {status, request_id, data:[...]}.
 async function jsearch(profile, errorsOut) {
   const key = process.env.JSEARCH_API_KEY;
   if (!key) return [];
   const q = profile.targetTitles[0] || profile.searchKeywords[0] || profile.dreamRole;
   if (!q) return [];
   const loc = profile.location || 'Saudi Arabia';
-  const cacheKey = 'prov:jsearch:' + q + '|' + loc;
+  const provider = (process.env.JSEARCH_PROVIDER || 'openwebninja').toLowerCase();
+  const cacheKey = 'prov:jsearch:' + provider + ':' + q + '|' + loc;
   const cached = cache.get(cacheKey);
   if (cached) return cached;
-  const url = 'https://jsearch.p.rapidapi.com/search?query=' + encodeURIComponent(q + ' in ' + loc) + '&page=1&num_pages=1';
+  let url, headers;
+  if (provider === 'rapidapi') {
+    url = 'https://jsearch.p.rapidapi.com/search?query=' + encodeURIComponent(q + ' in ' + loc) + '&page=1&num_pages=1';
+    headers = {
+      'X-RapidAPI-Key':  key,
+      'X-RapidAPI-Host': 'jsearch.p.rapidapi.com',
+    };
+  } else {
+    // OpenWeb Ninja direct endpoint — matches the openwebninja.com dashboard
+    // subscription. Uses the simpler X-API-Key header.
+    url = 'https://jsearch.api.openwebninja.com/v1/search?query=' + encodeURIComponent(q + ' in ' + loc) + '&page=1&num_pages=1';
+    headers = { 'X-API-Key': key };
+  }
   try {
-    const data = await _fetchJson(url, {
-      headers: {
-        'X-RapidAPI-Key':  key,
-        'X-RapidAPI-Host': 'jsearch.p.rapidapi.com',
-      },
-    });
+    const data = await _fetchJson(url, { headers });
     const arr = Array.isArray(data.data) ? data.data : [];
     const out = arr.map(j => _norm({
       id:           'js:' + (j.job_id || j.job_apply_link),
