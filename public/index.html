@@ -476,6 +476,43 @@ button.diag-role-chip-pick:active{transform:translateY(0)}
 .diag-jobs-ctas{display:flex;gap:8px;margin-top:11px}
 .diag-jobs-empty{padding:14px;text-align:center;color:#6b7280;font-size:12.5px;background:#f9fafb;border-radius:10px}
 
+/* Apply Package modal — tailored CV summary + bullets + cover letter */
+.apk-honest{background:#fef3c7;border:1px solid #fcd34d;border-radius:9px;padding:10px 12px;font-size:12.5px;color:#78350f;line-height:1.6;margin-bottom:14px;font-weight:600}
+.apk-sec{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #f1f5f9}
+.apk-sec:last-child{border-bottom:none}
+.apk-h{font-size:13.5px;font-weight:800;color:#0a0a0a;margin-bottom:7px}
+.apk-h-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;gap:8px}
+.apk-h-row .apk-h{margin-bottom:0}
+.apk-copy-btn{background:#eef2ff;color:#4338ca;border:none;border-radius:7px;padding:5px 10px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.apk-copy-btn:hover{background:#e0e7ff}
+.apk-block{background:#fafafe;border:1px solid #ececf4;border-radius:9px;padding:11px 13px;font-size:13px;color:#0f172a;line-height:1.75}
+.apk-pre{white-space:pre-line}
+.apk-list{margin:0;padding-right:18px;font-size:13px;color:#0f172a;line-height:1.8}
+.apk-list li{margin-bottom:5px}
+.apk-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.apk-pill{background:#eef2ff;color:#4338ca;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:99px}
+.apk-pill-warn{background:#fee2e2;color:#991b1b}
+.apk-job{background:#fafafe;border:1px solid #ececf4;border-radius:10px;padding:11px 13px}
+.apk-job-title{font-size:14px;font-weight:800;color:#0a0a0a;margin-bottom:3px}
+.apk-job-meta{font-size:12.5px;color:#475569}
+.apk-qa{margin-bottom:8px}
+.apk-q{font-size:12.5px;font-weight:700;color:#0a0a0a;margin-bottom:3px}
+.apk-a{font-size:12.5px;color:#475569;line-height:1.7;background:#fafafe;border:1px solid #ececf4;border-radius:8px;padding:8px 11px}
+.apk-checklist{display:flex;flex-direction:column;gap:7px}
+.apk-check{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#0a0a0a;cursor:pointer;line-height:1.5}
+.apk-check input{width:16px;height:16px;cursor:pointer;accent-color:#4f46e5}
+
+/* Dashboard "تجهيزات التقديم" rows */
+.apk-pkg-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;background:#fafafe;border:1px solid #ececf4;border-radius:10px;margin-bottom:7px;flex-wrap:wrap}
+.apk-pkg-row-l{flex:1;min-width:160px}
+.apk-pkg-title{font-size:13.5px;font-weight:800;color:#0a0a0a;line-height:1.4}
+.apk-pkg-sub{font-size:11.5px;color:#475569;margin-top:2px}
+.apk-pkg-status{font-weight:700;padding:1px 7px;border-radius:99px;font-size:10.5px}
+.apk-pkg-status.is-draft{background:#fef3c7;color:#92400e}
+.apk-pkg-status.is-ready{background:#dcfce7;color:#166534}
+.apk-pkg-status.is-applied{background:#dbeafe;color:#1e40af}
+.apk-pkg-ctas{display:flex;gap:5px;flex-wrap:wrap}
+
 /* Unlock card */
 .diag-unlock{background:#0f172a;border-radius:18px;padding:24px;color:#fff;margin-top:16px}
 .diag-unlock-eyebrow{font-size:11px;font-weight:700;color:#fbbf24;letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
@@ -2107,6 +2144,14 @@ img,video,iframe{max-width:100%}
       </div>
     </div>
 
+    <!-- ════ B3. APPLY PACKAGES — tailored prep per job (draft/ready/applied) ════ -->
+    <div class="dbv2-card" id="dbv2ApplyPkgs">
+      <div class="dbv2-card-h">تجهيزات التقديم</div>
+      <p style="font-size:12.5px;color:#666;margin-bottom:10px;line-height:1.6">تجهيز تقديم مخصص لكل وظيفة: ملخص + نقاط + رسالة. تنسخها وتقدّم بنفسك.</p>
+      <div id="dbv2ApplyPkgsList" style="margin-bottom:7px"></div>
+      <div id="dbv2ApplyPkgsEmpty" style="font-size:12.5px;color:#6b7280;line-height:1.6;padding:10px;background:#f9fafb;border-radius:9px">اختر وظيفة من فرصك واضغط <b>جهّزني لهذه الوظيفة</b>.</div>
+    </div>
+
     <!-- ════ C. TODAY PLAN — 1–3 tasks max. No full-plan modal CTA here. ════ -->
     <div class="dbv2-card">
       <div class="dbv2-card-h">خطة اليوم</div>
@@ -2704,6 +2749,24 @@ img,video,iframe{max-width:100%}
     <div class="modal-foot" style="flex-direction:column;gap:8px">
       <button class="btn btn-p btn-full" onclick="diagShareDoCopy()">نسخ النص + أحصل على 24 ساعة</button>
       <button class="btn btn-s btn-full" onclick="closeModal()">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- Apply Package modal — tailored CV + bullets + cover letter per job.
+     Built by ApplyPackage.build(job) from JobsUI cards. NEVER auto-applies;
+     the user copies sections, opens the job, and marks "سجلت تقديم". -->
+<div class="modal-bg" id="applyPkgModal">
+  <div class="modal" style="max-width:680px;max-height:92vh;overflow-y:auto">
+    <div class="modal-head">
+      <h2>جهّز تقديمك لهذه الوظيفة</h2>
+      <p>دربي يجهز لك نسخة موجهة من سيرتك ورسالة تقديم قبل ما تفتح رابط الوظيفة.</p>
+    </div>
+    <div class="modal-body" id="applyPkgBody">—</div>
+    <div class="modal-foot" style="flex-direction:column;gap:8px">
+      <a class="btn btn-p btn-full" id="applyPkgOpenJobBtn" target="_blank" rel="noopener" href="#">افتح الوظيفة ←</a>
+      <button class="btn btn-s btn-full" id="applyPkgMarkAppliedBtn" data-pkg-id="" onclick="ApplyPackage.markApplied()">سجلت تقديم</button>
+      <button class="btn btn-s btn-full" onclick="closeModal()">رجوع للوظائف</button>
     </div>
   </div>
 </div>
@@ -4793,7 +4856,8 @@ var JobsUI = (function(){
       +   (j.cvFixTip ? '<div class="diag-job-tip">💡 ' + _escape(j.cvFixTip) + '</div>' : '')
       +   flagsHtml
       +   '<div class="diag-job-ctas">'
-      +     '<a class="diag-job-cta is-primary" href="' + _escape(openHref) + '" target="_blank" rel="noopener" onclick="JobsUI.trackOpen(\'' + safePayload + '\')">افتح الوظيفة ←</a>'
+      +     '<button class="diag-job-cta is-primary" onclick="ApplyPackage.openForJob(\'' + safePayload + '\')">جهّزني لهذه الوظيفة ←</button>'
+      +     '<a class="diag-job-cta" href="' + _escape(openHref) + '" target="_blank" rel="noopener" onclick="JobsUI.trackOpen(\'' + safePayload + '\')">افتح الوظيفة</a>'
       +     '<button class="diag-job-cta" onclick="JobsUI.markApplied(\'' + safePayload + '\')">سجلت تقديم</button>'
       +     '<button class="diag-job-cta" onclick="JobsUI.markNotFit(\'' + safePayload + '\')">ليست مناسبة</button>'
       +   '</div>'
@@ -4995,6 +5059,872 @@ var JobsUI = (function(){
         var card = document.querySelector('[data-job-id="' + (p.id || '') + '"]');
         if (card && card.parentNode) card.parentNode.removeChild(card);
       } catch(e){}
+    },
+  };
+})();
+
+// ══════ ApplyPackage — tailored CV summary + bullets + cover letter per job ══
+// Builds a draft application package from Diagnosis state + the specific job
+// card. Stored in localStorage.darbi_apply_packages (newest last; LRU at 50).
+// NEVER auto-applies and NEVER invents experience — every templated line is
+// either rooted in observed CV facts or marked with bracketed placeholders.
+//
+// Public surface:
+//   ApplyPackage.openForJob(payloadEnc) — called from JobsUI job card primary CTA
+//   ApplyPackage.open(pkgId)            — opens an existing package (dashboard row)
+//   ApplyPackage.render(pkgId)          — re-paints the modal body
+//   ApplyPackage.copySection(pkgId, type)  — type ∈ summary | bullets | cover
+//   ApplyPackage.toggleChecklist(pkgId, itemId)
+//   ApplyPackage.markApplied()          — used by modal footer; syncs to Applications
+//   ApplyPackage.renderDashboardList()  — called from renderDashboard()
+//   ApplyPackage.list() / .getById(id) / .setStatus(id, status)
+var ApplyPackage = (function(){
+  var KEY = 'darbi_apply_packages';
+  var MAX = 50;
+
+  function _read(){
+    try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; }
+    catch(e){ return []; }
+  }
+  function _write(arr){
+    if (arr.length > MAX) arr = arr.slice(-MAX); // LRU drop oldest
+    try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch(e){}
+  }
+  function _newId(){ return 'pkg-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8); }
+  function _escape(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function _isEnglishTitle(t){
+    var s = (t || '').trim();
+    if (!s) return false;
+    // Treat as English-context job if the title contains no Arabic letters.
+    return !/[؀-ۿ]/.test(s);
+  }
+
+  // ── Family-specific tailoring pools. Mirrors backend FAMILIES (server/jobs/
+  // families.js) at a high level — we keep this lean and CV-honest. NEVER add
+  // numeric achievements here; the user fills numbers from their actual CV.
+  var FAMILY_RULES = {
+    customer_success: {
+      ar: 'نجاح العملاء',
+      seniorBullets: [
+        'قيادة فريق CSMs لإدارة محفظة ARR بقيمة [اكتب القيمة]',
+        'بناء playbooks للاحتفاظ (NRR/GRR) وعمليات التوسع (expansion)',
+        'تنفيذ مراجعات تنفيذية (QBR) مع كبار العملاء',
+        'تصميم نظام health scoring لتحديد العملاء المعرضين للخسارة',
+        'تعاون مع المنتج والمبيعات لتوسيع استخدام العملاء'
+      ],
+      freshBullets: [
+        'دعم العملاء عبر البريد والدردشة والهاتف',
+        'متابعة دورة حياة العميل من التفعيل إلى التجديد',
+        'تسجيل تفاعلات العملاء على نظام CRM',
+        'بناء علاقات مع العملاء وحل مشكلاتهم',
+        'تنسيق مع الفرق الداخلية لإيصال صوت العميل'
+      ],
+      skills: ['Retention','Expansion','Renewals','Onboarding','Customer Health','NRR','GRR','Playbooks','Salesforce','Gainsight'],
+    },
+    customer_service: {
+      ar: 'خدمة العملاء',
+      seniorBullets: [
+        'قيادة فريق خدمة عملاء لتحقيق SLA عالي ورضا قوي',
+        'بناء عمليات الاستجابة عبر القنوات (هاتف، دردشة، بريد)',
+        'تحليل بيانات الشكاوى لتحسين المنتج/الخدمة',
+        'تطوير برامج تدريب لممثلي خدمة العملاء',
+        'تقليل متوسط زمن الحل وتحسين CSAT'
+      ],
+      freshBullets: [
+        'دعم العملاء عبر الهاتف والدردشة والبريد',
+        'استخدام أنظمة Ticketing (Zendesk/Freshdesk)',
+        'الالتزام بزمن استجابة وحل واضح',
+        'تصعيد الحالات المعقدة للفرق المختصة',
+        'الحفاظ على نبرة احترافية مع العملاء'
+      ],
+      skills: ['Zendesk','Freshdesk','Customer Communication','Ticket Management','Conflict Resolution','CSAT','SLA'],
+    },
+    sales: {
+      ar: 'المبيعات',
+      seniorBullets: [
+        'قيادة فريق مبيعات لتحقيق هدف سنوي بقيمة [اكتب الهدف]',
+        'بناء pipeline منظم وتحسين معدلات التحويل',
+        'تطوير شراكات استراتيجية مع عملاء مؤسسيين',
+        'إدارة دورة بيع طويلة (enterprise) من lead إلى إغلاق',
+        'استخدام Salesforce/HubSpot لتتبع الفرص والتنبؤ'
+      ],
+      freshBullets: [
+        'تدريب على prospecting وبناء قاعدة عملاء محتملين',
+        'استخدام Salesforce/HubSpot لتسجيل الأنشطة',
+        'مهارات تواصل قوية بالعربية والإنجليزية',
+        'تحقيق هدف اتصالات يومي خلال التدريب الميداني',
+        'فهم أساسي لـ B2B sales funnel'
+      ],
+      skills: ['B2B Sales','Prospecting','Salesforce','HubSpot','Cold Calling','Pipeline Management','Negotiation','CRM'],
+    },
+    marketing: {
+      ar: 'التسويق',
+      seniorBullets: [
+        'قيادة استراتيجية تسويق متعددة القنوات',
+        'إدارة ميزانية إعلانات على Google/Meta',
+        'بناء فريق محتوى وتنسيقه مع المنتج والمبيعات',
+        'إعداد تقارير شهرية بمؤشرات CAC, LTV, ROAS',
+        'إطلاق حملات إقليمية في السوق السعودي والخليجي'
+      ],
+      freshBullets: [
+        'تدريب على تخطيط حملات تسويق رقمي',
+        'إدارة سوشيال ميديا لمشروع جامعي/مجتمعي',
+        'إنشاء محتوى بصري باستخدام Canva/Figma',
+        'تحليل الأداء عبر Google Analytics / Meta Insights',
+        'شهادة [Google Digital Marketing / HubSpot] إن وجدت'
+      ],
+      skills: ['Digital Marketing','Content','SEO','Social Media','Google Ads','Meta Ads','Analytics','Canva','HubSpot','Brand'],
+    },
+    hr: {
+      ar: 'الموارد البشرية',
+      seniorBullets: [
+        'قيادة استراتيجية التوظيف لـ [اكتب عدد الموظفين] موظف',
+        'إعداد سياسات الموارد البشرية وفق نظام العمل السعودي',
+        'تطوير برامج تأهيل وتدريب الموظفين الجدد',
+        'إدارة علاقات الموظفين وحل النزاعات بمهنية',
+        'بناء وتنفيذ نظام تقييم الأداء السنوي'
+      ],
+      freshBullets: [
+        'تدريب على مهام التوظيف والاستقطاب',
+        'متابعة سيرة المتقدمين عبر [ATS]',
+        'تنسيق مقابلات بين المرشحين ومديري التوظيف',
+        'إعداد وثائق التعيين والمستندات الرسمية',
+        'دعم برامج تأهيل الموظفين الجدد'
+      ],
+      skills: ['Recruitment','Onboarding','Employee Relations','Performance Management','HRIS','Payroll','Labor Law','Talent Acquisition'],
+    },
+    finance: {
+      ar: 'المالية',
+      seniorBullets: [
+        'إعداد القوائم المالية الشهرية والربعية',
+        'إدارة فريق مالي ودعم اتخاذ القرار',
+        'تحليل FP&A ودعم خطط الميزانية',
+        'إدارة العلاقة مع المدققين الخارجيين',
+        'تحسين الكفاءة المالية ومؤشرات النقد'
+      ],
+      freshBullets: [
+        'مهارات Excel متقدمة (Pivot, VLOOKUP, Macros)',
+        'تدريب أو مشاريع في FP&A',
+        'فهم القوائم المالية الأساسية',
+        'استخدام أنظمة ERP في بيئة تدريب',
+        'دقة في التعامل مع الأرقام والتحقق منها'
+      ],
+      skills: ['IFRS','FP&A','Financial Analysis','Excel','SAP','Power BI','Forecasting','Budgeting'],
+    },
+    accounting: {
+      ar: 'المحاسبة',
+      seniorBullets: [
+        'إعداد القوائم المالية الشهرية والربعية وفق IFRS',
+        'إدارة فريق محاسبة وضمان دقة القيود',
+        'تنسيق مع المدققين الخارجيين لإقفال السنة المالية',
+        'تحسين دورة AP/AR وتقصير زمن التحصيل',
+        'إعداد الإقرارات الضريبية (VAT/Zakat) للزكاة والدخل'
+      ],
+      freshBullets: [
+        'تطبيق مبادئ المحاسبة في مشاريع جامعية',
+        'استخدام Excel متقدم (VLOOKUP, Pivot, Macros)',
+        'تدريب على [ERP / SAP / QuickBooks]',
+        'إعداد جداول مطابقة بنكية ومتابعة AP/AR',
+        'شهادة CMA Part 1 / SOCPA إن وجدت'
+      ],
+      skills: ['IFRS','VAT','Zakat','AP/AR','Reconciliation','Excel','SAP','QuickBooks','Audit','Financial Reporting'],
+    },
+    operations: {
+      ar: 'العمليات',
+      seniorBullets: [
+        'إدارة عمليات يومية وتحسين الكفاءة عبر الفرق',
+        'بناء SOPs ومتابعة تنفيذها',
+        'تحليل المؤشرات التشغيلية وتقديم توصيات للقيادة',
+        'تنسيق بين الفرق التشغيلية والمالية والمنتج',
+        'قيادة مشاريع تحسين العمليات (process improvement)'
+      ],
+      freshBullets: [
+        'تدريب على متابعة المؤشرات اليومية',
+        'استخدام Excel وأدوات تحليل البيانات الأساسية',
+        'تنسيق مهام بين فرق متعددة',
+        'متابعة جودة الخدمة وتقديم تقارير دورية',
+        'فهم مبادئ Lean / Six Sigma إن وجدت'
+      ],
+      skills: ['Process Improvement','Project Management','Excel','SOPs','Reporting','Cross-functional Coordination','Lean','Six Sigma'],
+    },
+    admin_office: {
+      ar: 'العمل المكتبي',
+      seniorBullets: [
+        'إدارة عمليات المكتب التنفيذي ودعم القيادة',
+        'تنسيق الاجتماعات والسفر والتقارير',
+        'إدارة فريق إداري وتحسين سير العمل',
+        'متابعة الميزانية المكتبية والمشتريات',
+        'إعداد محاضر اجتماعات وملخصات تنفيذية'
+      ],
+      freshBullets: [
+        'تنظيم الملفات والوثائق إلكترونياً',
+        'تنسيق المواعيد والاجتماعات',
+        'إعداد عروض Power Point ومراسلات بريدية',
+        'استخدام Microsoft 365 / Google Workspace',
+        'دقة في إدخال البيانات ومتابعتها'
+      ],
+      skills: ['Microsoft 365','Google Workspace','Calendar Management','Travel Coordination','Filing','Reporting','Communication'],
+    },
+    it_cyber: {
+      ar: 'تقنية المعلومات والأمن السيبراني',
+      seniorBullets: [
+        'قيادة عمليات الأمن السيبراني وتحسين الوضع الأمني',
+        'إدارة الاستجابة للحوادث (SOC, IR)',
+        'تطوير سياسات الأمن وفق NCA / NIST',
+        'تنسيق المراجعات الأمنية وeنفاذ Compliance',
+        'إدارة فريق IT/Cyber وأدوات المراقبة'
+      ],
+      freshBullets: [
+        'دعم فني للمستخدمين وحل المشكلات اليومية',
+        'إدارة الحسابات والصلاحيات الأساسية',
+        'استخدام أدوات مراقبة الشبكة والأنظمة',
+        'فهم أساسي لـ OWASP, MITRE, NIST',
+        'شهادة CompTIA / Cisco / NCA إن وجدت'
+      ],
+      skills: ['Help Desk','Active Directory','Networking','SOC','SIEM','OWASP','NIST','Linux','Windows Server','PowerShell'],
+    },
+    software: {
+      ar: 'هندسة البرمجيات',
+      seniorBullets: [
+        'قيادة فريق هندسة لتسليم منتجات إنتاجية',
+        'تصميم بنية الخدمات الصغيرة (microservices) وواجهات APIs',
+        'مراجعة كود الفريق ورفع جودة الإنتاج',
+        'تحسين أداء النظام تحت أحمال عالية',
+        'دعم تطوير المهندسين الأصغر وتطبيق ممارسات DevOps'
+      ],
+      freshBullets: [
+        'مشاريع شخصية على GitHub باستخدام [React / Node / Python]',
+        'بناء واجهات REST/GraphQL بسيطة',
+        'استخدام Git وGitHub Actions في سير العمل',
+        'مشاركة في bootcamp / Internship في [الشركة]',
+        'كتابة اختبارات unit/integration للأكواد'
+      ],
+      skills: ['JavaScript','React','Node.js','Python','SQL','Git','REST APIs','Docker','Linux','TypeScript'],
+    },
+    data: {
+      ar: 'البيانات',
+      seniorBullets: [
+        'قيادة بناء منصة بيانات (Data Platform) متكاملة',
+        'تطوير نماذج تحليلية ومؤشرات للقيادة',
+        'تنسيق بين فرق الأعمال وفرق البيانات',
+        'إدارة جودة البيانات (Data Quality)',
+        'إعداد لوحات تحكم تنفيذية (BI)'
+      ],
+      freshBullets: [
+        'تحليل بيانات باستخدام SQL/Python/Pandas',
+        'بناء لوحات تحكم في Power BI/Tableau',
+        'تدريب أو مشاريع في تنظيف وتحويل البيانات',
+        'فهم أساسي لـ ETL وإعداد التقارير',
+        'مشاريع جامعية أو على Kaggle'
+      ],
+      skills: ['SQL','Python','Pandas','Power BI','Tableau','ETL','Data Modeling','Excel'],
+    },
+    product: {
+      ar: 'إدارة المنتجات',
+      seniorBullets: [
+        'قيادة استراتيجية منتج وخارطة طريق متعددة الأرباع',
+        'تنسيق بين الهندسة، التصميم، التسويق، المبيعات',
+        'بناء discovery + experimentation framework',
+        'متابعة مؤشرات المنتج (activation, retention, NPS)',
+        'تقديم تحديثات منتظمة للقيادة وأصحاب المصلحة'
+      ],
+      freshBullets: [
+        'كتابة user stories بسيطة + قبولها (acceptance criteria)',
+        'دعم تنسيق sprint ومتابعة backlog',
+        'تحليل بيانات المستخدمين الأساسية',
+        'مشاركة في user research + interviews',
+        'فهم أساسي لـ Agile / Scrum / Kanban'
+      ],
+      skills: ['Product Management','Agile','Scrum','Roadmapping','User Research','SQL','Analytics','Figma','Jira'],
+    },
+    design: {
+      ar: 'التصميم',
+      seniorBullets: [
+        'قيادة فريق تصميم وبناء design system',
+        'تنفيذ بحث UX وتقديم recommendations',
+        'تنسيق مع الهندسة والمنتج طوال الدورة',
+        'تطوير معايير برية للعلامة (visual + UX)',
+        'مراجعة عمل الفريق وتدريبه'
+      ],
+      freshBullets: [
+        'بناء بورتفوليو من 3-5 مشاريع UI/UX',
+        'إتقان Figma + Adobe XD/Photoshop/Illustrator',
+        'فهم مبادئ التصميم البصري + UX research',
+        'تدريب على wireframing + prototyping',
+        'متابعة معايير accessibility الأساسية'
+      ],
+      skills: ['Figma','Adobe XD','Photoshop','Illustrator','UI Design','UX Research','Wireframing','Prototyping','Design Systems'],
+    },
+    hospitality: {
+      ar: 'الضيافة والمطاعم',
+      seniorBullets: [
+        'إدارة فرع/مطعم ومتابعة مؤشرات النجاح اليومية',
+        'تدريب وتأهيل فريق خدمة الضيوف',
+        'الالتزام بمعايير الصحة والسلامة',
+        'إدارة جدول الورديات والمخزون',
+        'حل شكاوى الضيوف بطريقة احترافية'
+      ],
+      freshBullets: [
+        'خدمة الضيوف بطريقة احترافية',
+        'الالتزام بمعايير المظهر ولباس الفريق',
+        'تعلم سريع للقوائم والمنتجات',
+        'العمل بمرونة في الورديات',
+        'مهارات تواصل قوية بالعربية والإنجليزية'
+      ],
+      skills: ['Customer Service','Cash Handling','POS','Food Safety','Teamwork','Communication','Multitasking'],
+    },
+    retail: {
+      ar: 'التجزئة',
+      seniorBullets: [
+        'إدارة فرع تجزئة ومتابعة مؤشرات المبيعات',
+        'تدريب فريق المبيعات على معايير الخدمة',
+        'إدارة المخزون وضمان توفر المنتجات',
+        'تحقيق أهداف المبيعات اليومية والشهرية',
+        'الالتزام بمعايير العرض والشركة'
+      ],
+      freshBullets: [
+        'خدمة عملاء التجزئة بطريقة احترافية',
+        'استخدام نظام POS للبيع والمرتجعات',
+        'متابعة المخزون وترتيب الرفوف',
+        'مهارات بيع وحديث منتج فعّال',
+        'الالتزام بساعات العمل والورديات'
+      ],
+      skills: ['Retail Sales','POS','Customer Service','Visual Merchandising','Inventory','Communication','Teamwork'],
+    },
+    logistics: {
+      ar: 'الخدمات اللوجستية',
+      seniorBullets: [
+        'إدارة عمليات سلسلة الإمداد ومستودعات',
+        'تحسين زمن التسليم وتقليل التكلفة',
+        'تنسيق بين الموردين والنقل والعمليات',
+        'متابعة مؤشرات الأداء اللوجستي (OTIF, fill rate)',
+        'تطوير الفريق وعمليات الجودة'
+      ],
+      freshBullets: [
+        'دعم عمليات الاستلام والشحن',
+        'استخدام نظام WMS / ERP الأساسي',
+        'متابعة جودة الطرود والوثائق',
+        'تنسيق مع شركات الشحن',
+        'الالتزام بمعايير السلامة'
+      ],
+      skills: ['Supply Chain','Warehouse','WMS','ERP','Inventory','Shipping','SAP','Logistics Coordination'],
+    },
+    healthcare_admin: {
+      ar: 'الإدارة الصحية',
+      seniorBullets: [
+        'إدارة عمليات عيادة/قسم وتحسين تجربة المرضى',
+        'الالتزام بمعايير CBAHI / Joint Commission',
+        'إدارة جداول الأطباء والممرضين',
+        'متابعة مؤشرات الجودة والسلامة',
+        'تنسيق مع التأمين والمحاسبة'
+      ],
+      freshBullets: [
+        'استقبال المرضى وإدارة المواعيد',
+        'استخدام نظام السجلات الطبية الإلكترونية (EMR)',
+        'تنسيق مع التأمين والمحاسبة',
+        'الالتزام بسرية المعلومات الصحية',
+        'مهارات تواصل قوية مع المرضى'
+      ],
+      skills: ['Patient Coordination','EMR','HIS','Insurance Claims','Medical Records','Customer Service'],
+    },
+    education: {
+      ar: 'التعليم',
+      seniorBullets: [
+        'قيادة فريق تعليمي وتطوير المناهج',
+        'متابعة أداء الطلاب وتحسين النتائج',
+        'تطوير المعلمين وبرامج التدريب',
+        'الالتزام بمعايير وزارة التعليم',
+        'بناء علاقات قوية مع أولياء الأمور'
+      ],
+      freshBullets: [
+        'تدريس أساسيات المرحلة [الابتدائية/المتوسطة]',
+        'إعداد خطط الدروس والمواد التعليمية',
+        'متابعة الطلاب وتقديم تقارير',
+        'استخدام التعلم الإلكتروني / LMS',
+        'مهارات إدارة الفصل'
+      ],
+      skills: ['Curriculum','Lesson Planning','LMS','Assessment','Classroom Management','Student Support'],
+    },
+    general_entry: {
+      ar: 'وظائف عامة',
+      seniorBullets: [
+        'إدارة مهام يومية ومتابعة جودة العمل',
+        'العمل ضمن فريق وتحقيق الأهداف',
+        'حل المشكلات اليومية بمرونة',
+        'الالتزام بالوقت والورديات',
+        'تطوير المهارات باستمرار'
+      ],
+      freshBullets: [
+        'استعداد للتعلم والعمل بجدية',
+        'مهارات تواصل أساسية',
+        'الالتزام بالوقت والمكان',
+        'العمل ضمن فريق',
+        'حضور تدريبات الشركة'
+      ],
+      skills: ['Communication','Teamwork','Punctuality','Customer Service','Learning Mindset'],
+    },
+    _default: {
+      ar: 'المجال',
+      seniorBullets: [
+        'إدارة [وظيفة / فريق / مشروع] لتحقيق [نتيجة]',
+        'بناء عمليات وإجراءات لرفع الجودة',
+        'تنسيق مع فرق متعددة لتحقيق الأهداف',
+        'إعداد تقارير دورية للقيادة',
+        'تطوير [الفريق / المهارات / المنتج]'
+      ],
+      freshBullets: [
+        'تدريب أو مشاريع جامعية في مجال [التخصص]',
+        'استخدام الأدوات الأساسية للمجال',
+        'مهارات تواصل وعمل ضمن فريق',
+        'استعداد للتعلم والنمو',
+        'فهم أساسي لـ [مفاهيم المجال]'
+      ],
+      skills: ['Communication','Teamwork','Excel','Problem Solving'],
+    },
+  };
+  function _famRules(family){ return FAMILY_RULES[family] || FAMILY_RULES._default; }
+
+  // Seniority band derived from Diagnosis state (no inventions).
+  function _seniorityBand(d){
+    if (d && d.isSeniorOverride) return 'senior_leadership';
+    var s = (d && d.intent && d.intent.inferredSeniority) || null;
+    if (s === 'senior_leadership' || s === 'executive') return 'senior_leadership';
+    if (s === 'senior')     return 'senior';
+    if (s === 'mid')        return 'mid';
+    if (s === 'junior')     return 'junior';
+    if (s === 'fresh_grad' || s === 'student') return 'fresh_grad';
+    if (d && d.branch === 'C') return 'senior';
+    if (d && d.branch === 'B') return 'junior';
+    if (d && d.branch === 'A') return 'junior';
+    return 'mid';
+  }
+
+  // Tailored summary — 3 short Arabic lines built from facts that EXIST.
+  function _buildSummary(d, job){
+    var band = _seniorityBand(d);
+    var rules = _famRules(d && d.family);
+    var familyAr = rules.ar;
+    var f = (d && d.cvFacts) || {};
+    var yrs = f.yearsExp || null;
+    var lt  = f.latestTitle || '[المسمى الحالي]';
+    var arrMatch = (d && d.cvText) && d.cvText.match(/(\d{1,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)/i);
+    var arrLine = arrMatch ? arrMatch[0] : null;
+
+    if (band === 'senior_leadership') {
+      var l1 = 'قائد ' + familyAr + (yrs ? ' بـ ' + yrs + ' سنة خبرة' : '') + ' في إدارة فرق ونتائج تنفيذية.';
+      var l2 = arrLine
+        ? 'سابقاً، إدارة محفظة ' + arrLine + ' وتحسين مؤشرات الاحتفاظ والتوسع.'
+        : 'سابقاً، قيادة فرق وبناء playbooks وعمليات تنفيذية.';
+      var l3 = 'أبحث الآن عن دور ' + (job.title || '[المسمى المستهدف]') + ' لتطبيق هذه الخبرة على نطاق أوسع.';
+      return l1 + ' ' + l2 + ' ' + l3;
+    }
+    if (band === 'senior' || band === 'mid') {
+      var p1 = (yrs ? yrs + ' سنوات خبرة في ' : 'خبرة عملية في ') + familyAr
+             + (lt && lt !== '[المسمى الحالي]' ? ' كـ ' + lt : '') + '.';
+      var p2 = 'أركز على نتائج قابلة للقياس وتحسين العمليات.';
+      var p3 = 'أبحث عن دور ' + (job.title || '[المسمى المستهدف]') + (job.company ? ' في ' + job.company : '') + '.';
+      return p1 + ' ' + p2 + ' ' + p3;
+    }
+    var q1 = 'خريج/مهتم بمجال ' + familyAr + (f.major ? ' (تخصص ' + f.major + ')' : '') + '.';
+    var q2 = f.projectsEvidence
+      ? 'شغل تدريبي/مشاريع في المجال + أدوات أساسية مرتبطة بالدور.'
+      : 'أدوات وأساسيات المجال + استعداد للتعلم السريع.';
+    var q3 = 'متحمس لبدء مساري كـ ' + (job.title || '[المسمى المستهدف]') + (job.company ? ' في ' + job.company : '') + '.';
+    return q1 + ' ' + q2 + ' ' + q3;
+  }
+
+  // Tailored bullets — drawn from family pool by seniority band.
+  function _buildBullets(d, job){
+    var band = _seniorityBand(d);
+    var rules = _famRules(d && d.family);
+    if (band === 'senior_leadership' || band === 'senior') return rules.seniorBullets.slice();
+    if (band === 'mid') return rules.seniorBullets.slice(0, 3).concat(rules.freshBullets.slice(0, 2));
+    return rules.freshBullets.slice();
+  }
+
+  // Skills to highlight — union of CV tools + family canonical skills (capped).
+  function _buildSkills(d){
+    var rules = _famRules(d && d.family);
+    var cvTools = (d && d.cvFacts && d.cvFacts.tools) || [];
+    var out = [];
+    cvTools.forEach(function(t){ if (out.indexOf(t) === -1) out.push(t); });
+    rules.skills.forEach(function(s){ if (out.indexOf(s) === -1 && out.length < 10) out.push(s); });
+    return out;
+  }
+
+  // Missing-keywords scan — family skills + job title tokens NOT in CV.
+  function _buildMissingKeywords(d, job){
+    var rules = _famRules(d && d.family);
+    var cvLow = ((d && d.cvText) || '').toLowerCase();
+    var combo = cvLow + ' ' + ((job && job.descriptionSnippet) || '').toLowerCase();
+    var titleTokens = ((job && job.title) || '').toLowerCase().split(/[\s,/\-]+/).filter(function(w){ return w.length >= 4; });
+    var pool = rules.skills.concat(titleTokens);
+    var seen = {};
+    var missing = [];
+    pool.forEach(function(k){
+      var kl = String(k).toLowerCase();
+      if (!kl || seen[kl]) return;
+      seen[kl] = true;
+      if (combo.indexOf(kl) === -1 && missing.length < 8) missing.push(k);
+    });
+    return missing;
+  }
+
+  // Cover letter — language flips with job title's script. Senior/mid/fresh tones.
+  function _buildCoverLetter(d, job){
+    var band = _seniorityBand(d);
+    var f = (d && d.cvFacts) || {};
+    var yrs = f.yearsExp || null;
+    var titleEn = _isEnglishTitle(job.title || '');
+    if (titleEn) {
+      var nameEn = '[Your Name]';
+      if (band === 'senior_leadership') {
+        return ['Dear Hiring Team,',
+          'I am applying for the ' + (job.title || '[role]') + ' position at ' + (job.company || '[Company]') + '.',
+          (yrs ? 'With ' + yrs + ' years of leadership experience and direct ownership of team and revenue outcomes' : 'With significant senior-level experience leading teams and owning revenue outcomes')
+          + ', I bring directly relevant senior experience.',
+          'I would welcome the chance to discuss how my approach to playbooks, expansion, and team performance fits your roadmap.',
+          'Best regards,', nameEn].join('\n');
+      }
+      if (band === 'senior' || band === 'mid') {
+        return ['Dear Hiring Team,',
+          'I am applying for the ' + (job.title || '[role]') + ' position at ' + (job.company || '[Company]') + '.',
+          (yrs ? 'With ' + yrs + ' years of relevant experience' : 'With solid hands-on experience') + ' and measurable results, I can contribute on day one.',
+          'I would be happy to discuss how my background maps to your needs.',
+          'Best regards,', nameEn].join('\n');
+      }
+      return ['Dear Hiring Team,',
+        'I am applying for the ' + (job.title || '[role]') + ' position at ' + (job.company || '[Company]') + '.',
+        'I am an early-career candidate with strong foundations, project experience, and a willingness to learn quickly.',
+        'I would welcome a short conversation about how I can contribute to your team.',
+        'Best regards,', nameEn].join('\n');
+    }
+    // Arabic
+    var nameAr = '[الاسم الكامل]';
+    if (band === 'senior_leadership') {
+      return ['تحية طيبة،',
+        'أتقدم لشغل وظيفة ' + (job.title || '[المسمى]') + (job.company ? ' في ' + job.company : '') + '.',
+        (yrs ? 'لديّ ' + yrs + ' سنة' : 'لديّ خبرة قيادية معتبرة') + ' في قيادة الفرق ومسؤولية مباشرة عن مؤشرات النمو والاحتفاظ والتوسع.',
+        'يسعدني مناقشة كيف يمكنني المساهمة في خطة الفريق وتعزيز النتائج التنفيذية.',
+        'مع خالص التقدير،', nameAr].join('\n');
+    }
+    if (band === 'senior' || band === 'mid') {
+      return ['تحية طيبة،',
+        'أتقدم لشغل وظيفة ' + (job.title || '[المسمى]') + (job.company ? ' في ' + job.company : '') + '.',
+        (yrs ? 'لديّ ' + yrs + ' سنوات' : 'لديّ خبرة عملية') + ' في المجال مع نتائج قابلة للقياس.',
+        'يسعدني الاجتماع لمناقشة كيف يمكنني الإضافة للفريق.',
+        'مع خالص التقدير،', nameAr].join('\n');
+    }
+    return ['تحية طيبة،',
+      'أتقدم لشغل وظيفة ' + (job.title || '[المسمى]') + (job.company ? ' في ' + job.company : '') + '.',
+      'أنا في بداية مساري المهني، مع أساس أكاديمي ومشاريع/تدريب مرتبط بالدور، واستعداد للتعلم السريع.',
+      'يسعدني الاجتماع لشرح كيف يمكنني المساهمة في فريقكم.',
+      'مع خالص التقدير،', nameAr].join('\n');
+  }
+
+  // Common application Q&A — bracketed placeholders for anything we can't infer.
+  function _buildAnswers(d, job){
+    var band = _seniorityBand(d);
+    return {
+      interest: 'مهتم بالعمل في ' + (job.company || '[الشركة]') + ' لأن دورها في المجال يطابق مساري المهني وما أرغب في بنائه.',
+      fit: band === 'senior_leadership'
+        ? 'خبرتي القيادية المباشرة في إدارة فرق ومؤشرات تنفيذية تجعلني مرشحاً مناسباً لهذه الوظيفة.'
+        : (band === 'senior' || band === 'mid'
+            ? 'مزيج خبرتي العملية والنتائج القابلة للقياس يجعلني قادراً على المساهمة من اليوم الأول.'
+            : 'استعداد التعلم السريع + الأساس النظري + المشاريع التطبيقية يجعلني مناسباً للدور.'),
+      notice:    '[أدخل فترة الإشعار — مثلاً: شهر / أسبوعين / متاح فوراً]',
+      salary:    '[الراتب المتوقع — لا تذكر رقماً لم تتحقق منه عبر بحث السوق]',
+      authorized:'نعم، مخوّل بالعمل في [الدولة].',
+    };
+  }
+
+  function _buildChecklist(){
+    return [
+      { id: 'cv_summary',   label: 'تحديث ملخص السيرة',                  done: false },
+      { id: 'cv_keywords',  label: 'تضمين كلمات عنوان الوظيفة في السيرة', done: false },
+      { id: 'cv_metrics',   label: 'تقديم الأرقام والإنجازات أولاً',       done: false },
+      { id: 'cover_copied', label: 'نسخ Cover Letter وإرفاقه',           done: false },
+      { id: 'app_tracked',  label: 'تسجيل التقديم في تتبع الوظائف',       done: false },
+    ];
+  }
+
+  function _renderHtml(pkg){
+    var bullets = (pkg.tailoredBullets || []).map(function(b){ return '<li>' + _escape(b) + '</li>'; }).join('');
+    var skills  = (pkg.skillsToHighlight || []).map(function(s){ return '<span class="apk-pill">' + _escape(s) + '</span>'; }).join('');
+    var missing = (pkg.missingKeywords || []).length
+      ? (pkg.missingKeywords || []).map(function(k){ return '<span class="apk-pill apk-pill-warn">' + _escape(k) + '</span>'; }).join('')
+      : '<span style="color:#666;font-size:12px">لا توجد كلمات مفقودة واضحة.</span>';
+    var checklist = (pkg.checklist || []).map(function(i){
+      return '<label class="apk-check"><input type="checkbox" ' + (i.done ? 'checked' : '') + ' onchange="ApplyPackage.toggleChecklist(\'' + _escape(pkg.id) + '\',\'' + _escape(i.id) + '\')"><span>' + _escape(i.label) + '</span></label>';
+    }).join('');
+    var ans = pkg.applicationAnswers || {};
+    return ''
+      + '<div class="apk-honest">هذه صياغة مقترحة بناءً على سيرتك والوظيفة. راجعها قبل الإرسال. لا تضف أي معلومة غير صحيحة.</div>'
+      + '<div class="apk-sec"><div class="apk-h">1. الوظيفة</div>'
+      +   '<div class="apk-job">'
+      +     '<div class="apk-job-title">' + _escape(pkg.jobTitle) + '</div>'
+      +     '<div class="apk-job-meta">' + _escape(pkg.company || '—') + (pkg.matchScore ? ' · ' + Math.round(pkg.matchScore) + '٪ تطابق' : '') + '</div>'
+      +   '</div>'
+      + '</div>'
+      + (pkg.whyMatched && pkg.whyMatched.length
+          ? '<div class="apk-sec"><div class="apk-h">2. ليش هذه مناسبة لك؟</div><ul class="apk-list">'
+              + pkg.whyMatched.map(function(w){ return '<li>' + _escape(w) + '</li>'; }).join('')
+              + '</ul></div>'
+          : '')
+      + '<div class="apk-sec">'
+      +   '<div class="apk-h-row"><div class="apk-h">3. الملخص المهني المقترح</div>'
+      +     '<button class="apk-copy-btn" onclick="ApplyPackage.copySection(\'' + _escape(pkg.id) + '\',\'summary\')">📋 نسخ الملخص</button>'
+      +   '</div>'
+      +   '<div class="apk-block">' + _escape(pkg.tailoredSummary) + '</div>'
+      + '</div>'
+      + '<div class="apk-sec">'
+      +   '<div class="apk-h-row"><div class="apk-h">4. نقاط السيرة التي تعدلها</div>'
+      +     '<button class="apk-copy-btn" onclick="ApplyPackage.copySection(\'' + _escape(pkg.id) + '\',\'bullets\')">📋 نسخ النقاط</button>'
+      +   '</div>'
+      +   '<ul class="apk-list">' + bullets + '</ul>'
+      + '</div>'
+      + '<div class="apk-sec"><div class="apk-h">5. كلمات لازم تظهر في السيرة</div>'
+      +   '<div class="apk-pills">' + skills + '</div>'
+      +   (pkg.missingKeywords && pkg.missingKeywords.length
+            ? '<div class="apk-h" style="margin-top:9px;font-size:12px;color:#9a3412">⚠ كلمات قد تكون مفقودة من سيرتك</div><div class="apk-pills">' + missing + '</div>'
+            : '')
+      + '</div>'
+      + '<div class="apk-sec">'
+      +   '<div class="apk-h-row"><div class="apk-h">6. Cover Letter مختصر</div>'
+      +     '<button class="apk-copy-btn" onclick="ApplyPackage.copySection(\'' + _escape(pkg.id) + '\',\'cover\')">📋 نسخ الرسالة</button>'
+      +   '</div>'
+      +   '<div class="apk-block apk-pre">' + _escape(pkg.coverLetter) + '</div>'
+      + '</div>'
+      + '<div class="apk-sec"><div class="apk-h">7. أسئلة تقديم متوقعة</div>'
+      +   '<div class="apk-qa"><div class="apk-q">ليه مهتم بهذا الدور؟</div><div class="apk-a">' + _escape(ans.interest || '') + '</div></div>'
+      +   '<div class="apk-qa"><div class="apk-q">ليه أنت مناسب؟</div><div class="apk-a">' + _escape(ans.fit || '') + '</div></div>'
+      +   '<div class="apk-qa"><div class="apk-q">فترة الإشعار؟</div><div class="apk-a">' + _escape(ans.notice || '') + '</div></div>'
+      +   '<div class="apk-qa"><div class="apk-q">الراتب المتوقع؟</div><div class="apk-a">' + _escape(ans.salary || '') + '</div></div>'
+      +   '<div class="apk-qa"><div class="apk-q">مخوّل للعمل في الدولة؟</div><div class="apk-a">' + _escape(ans.authorized || '') + '</div></div>'
+      + '</div>'
+      + '<div class="apk-sec"><div class="apk-h">8. Checklist قبل الإرسال</div><div class="apk-checklist">' + checklist + '</div></div>'
+      + '<div class="apk-sec"><button class="btn btn-s btn-full" disabled style="opacity:.6;cursor:not-allowed" title="قريباً">📥 تحميل CV مخصص — قريباً</button></div>';
+  }
+
+  return {
+    build: function(job){
+      var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+      if (!d) {
+        if (typeof showNotif === 'function') showNotif('','','شغّل تشخيص أولاً قبل تجهيز التقديم.');
+        return null;
+      }
+      job = job || {};
+      var arr = _read();
+      // Dedupe: if a package already exists for this job, reuse it.
+      var existing = arr.filter(function(p){ return p.jobId === job.id; })[0];
+      if (existing) return existing;
+      var pkg = {
+        id: _newId(),
+        jobId: job.id || ('job-' + Date.now()),
+        jobTitle: job.title || '',
+        company: job.company || '',
+        jobUrl: job.url || job.applyUrl || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        matchScore: (job.match && job.match.score) || null,
+        whyMatched: (job.whyMatched || []).slice(0, 3),
+        family: d.family,
+        seniorityBand: _seniorityBand(d),
+        tailoredSummary:    _buildSummary(d, job),
+        tailoredBullets:    _buildBullets(d, job),
+        skillsToHighlight:  _buildSkills(d),
+        missingKeywords:    _buildMissingKeywords(d, job),
+        coverLetter:        _buildCoverLetter(d, job),
+        applicationAnswers: _buildAnswers(d, job),
+        checklist:          _buildChecklist(),
+        status: 'draft',
+      };
+      arr.push(pkg);
+      _write(arr);
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'apply_package_built', jobId: pkg.jobId, jobTitle: pkg.jobTitle, company: pkg.company });
+      return pkg;
+    },
+
+    getById: function(id){ var arr = _read(); for (var i = 0; i < arr.length; i++) if (arr[i].id === id) return arr[i]; return null; },
+    list: function(){ return _read().slice().reverse(); },
+    raw:  function(){ return _read(); },
+
+    setStatus: function(id, status){
+      var arr = _read();
+      for (var i = 0; i < arr.length; i++){
+        if (arr[i].id === id){
+          arr[i].status = status;
+          arr[i].updatedAt = new Date().toISOString();
+          _write(arr);
+          return arr[i];
+        }
+      }
+      return null;
+    },
+
+    toggleChecklist: function(id, itemId){
+      var arr = _read();
+      var hit = null;
+      for (var i = 0; i < arr.length; i++) if (arr[i].id === id) { hit = arr[i]; break; }
+      if (!hit) return;
+      (hit.checklist || []).forEach(function(it){ if (it.id === itemId) it.done = !it.done; });
+      // Promote to ready when all checked (unless already applied).
+      if (hit.status !== 'applied' && (hit.checklist || []).every(function(it){ return it.done; })) {
+        hit.status = 'ready';
+      } else if (hit.status === 'ready' && !(hit.checklist || []).every(function(it){ return it.done; })) {
+        hit.status = 'draft';
+      }
+      hit.updatedAt = new Date().toISOString();
+      _write(arr);
+      this.render(id);
+      if (typeof renderDashboard === 'function') renderDashboard();
+    },
+
+    // Called from JobsUI job-card primary CTA. Looks up the cached job to
+    // pick up descriptionSnippet / match.score so the package is rich.
+    openForJob: function(payloadEnc){
+      try {
+        var jobLite = JSON.parse(decodeURIComponent(payloadEnc));
+        var fullJob = jobLite;
+        try {
+          var cache = JSON.parse(localStorage.getItem('darbi_jobs_cache_v1') || 'null');
+          if (cache && cache.data && Array.isArray(cache.data.jobs)) {
+            for (var i = 0; i < cache.data.jobs.length; i++) {
+              if (cache.data.jobs[i].id === jobLite.id) { fullJob = cache.data.jobs[i]; break; }
+            }
+          }
+        } catch(e){}
+        var pkg = this.build(fullJob);
+        if (!pkg) return;
+        this.open(pkg.id);
+      } catch(e){}
+    },
+
+    open: function(id){
+      var modal = document.getElementById('applyPkgModal');
+      if (!modal) return;
+      this.render(id);
+      modal.classList.add('open');
+    },
+
+    render: function(id){
+      var pkg = this.getById(id);
+      var body = document.getElementById('applyPkgBody');
+      if (!pkg || !body) return;
+      body.innerHTML = _renderHtml(pkg);
+      var openBtn = document.getElementById('applyPkgOpenJobBtn');
+      if (openBtn) openBtn.href = pkg.jobUrl || '#';
+      var markBtn = document.getElementById('applyPkgMarkAppliedBtn');
+      if (markBtn) markBtn.setAttribute('data-pkg-id', pkg.id);
+    },
+
+    copySection: function(pkgId, type){
+      var pkg = this.getById(pkgId);
+      if (!pkg) return;
+      var text = '';
+      if (type === 'summary')      text = pkg.tailoredSummary || '';
+      else if (type === 'bullets') text = (pkg.tailoredBullets || []).map(function(b, i){ return (i+1) + '. ' + b; }).join('\n');
+      else if (type === 'cover')   text = pkg.coverLetter || '';
+      var done = function(){ if (typeof showNotif === 'function') showNotif('تم النسخ ✅','','الصقها في سيرتك أو رسالتك.'); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else { done(); }
+    },
+
+    markApplied: function(){
+      var btn = document.getElementById('applyPkgMarkAppliedBtn');
+      var pkgId = btn && btn.getAttribute('data-pkg-id');
+      if (!pkgId) return;
+      var pkg = this.getById(pkgId);
+      if (!pkg) return;
+      // Sync to Application Tracker — dedupe by company+role to avoid double-add.
+      if (typeof Applications !== 'undefined') {
+        var apps = Applications.list();
+        var exists = false;
+        for (var i = 0; i < apps.length; i++) {
+          if (apps[i].company === pkg.company && apps[i].role === pkg.jobTitle) { exists = true; break; }
+        }
+        if (!exists) {
+          var rec = Applications.add({
+            company: pkg.company || '',
+            role:    pkg.jobTitle || '',
+            url:     pkg.jobUrl || '',
+            status:  'applied',
+          });
+          if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'application_logged', application: rec });
+        }
+      }
+      this.setStatus(pkgId, 'applied');
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'apply_package_applied', jobId: pkg.jobId, jobTitle: pkg.jobTitle, company: pkg.company });
+      if (typeof showNotif === 'function') showNotif('تم ✅','','أضفنا التقديم لتتبعك.');
+      if (typeof renderDashboard === 'function') renderDashboard();
+      if (typeof renderApplicationTracker === 'function') renderApplicationTracker();
+      if (typeof closeModal === 'function') closeModal();
+    },
+
+    renderDashboardList: function(){
+      var listEl  = document.getElementById('dbv2ApplyPkgsList');
+      var emptyEl = document.getElementById('dbv2ApplyPkgsEmpty');
+      if (!listEl) return;
+      var pkgs = _read().slice().reverse().slice(0, 4);
+      if (!pkgs.length){
+        listEl.innerHTML = '';
+        if (emptyEl) emptyEl.style.display = '';
+        return;
+      }
+      if (emptyEl) emptyEl.style.display = 'none';
+      listEl.innerHTML = pkgs.map(function(p){
+        var statusLabel = { draft: 'مسوّدة', ready: 'جاهز', applied: 'تم التقديم' }[p.status] || p.status;
+        var statusCls   = { draft: 'is-draft', ready: 'is-ready', applied: 'is-applied' }[p.status] || 'is-draft';
+        var openJob = p.jobUrl
+          ? '<a class="diag-job-cta" target="_blank" rel="noopener" href="' + _escape(p.jobUrl) + '">افتح الوظيفة</a>'
+          : '';
+        var markAppliedBtn = p.status !== 'applied'
+          ? '<button class="diag-job-cta" onclick="ApplyPackage._dashMarkApplied(\'' + _escape(p.id) + '\')">سجلت تقديم</button>'
+          : '';
+        return '<div class="apk-pkg-row">'
+          +    '<div class="apk-pkg-row-l">'
+          +      '<div class="apk-pkg-title">' + _escape(p.jobTitle || '—') + '</div>'
+          +      '<div class="apk-pkg-sub">' + _escape(p.company || '—') + ' · <span class="apk-pkg-status ' + statusCls + '">' + _escape(statusLabel) + '</span></div>'
+          +    '</div>'
+          +    '<div class="apk-pkg-ctas">'
+          +      '<button class="diag-job-cta is-primary" onclick="ApplyPackage.open(\'' + _escape(p.id) + '\')">عرض التجهيز</button>'
+          +      openJob
+          +      markAppliedBtn
+          +    '</div>'
+          +  '</div>';
+      }).join('');
+    },
+
+    // Dashboard-row "سجلت تقديم" — same dedupe path as the modal markApplied.
+    _dashMarkApplied: function(pkgId){
+      var pkg = this.getById(pkgId);
+      if (!pkg) return;
+      if (typeof Applications !== 'undefined') {
+        var apps = Applications.list();
+        var exists = false;
+        for (var i = 0; i < apps.length; i++) {
+          if (apps[i].company === pkg.company && apps[i].role === pkg.jobTitle) { exists = true; break; }
+        }
+        if (!exists) {
+          var rec = Applications.add({
+            company: pkg.company || '',
+            role:    pkg.jobTitle || '',
+            url:     pkg.jobUrl || '',
+            status:  'applied',
+          });
+          if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'application_logged', application: rec });
+        }
+      }
+      this.setStatus(pkgId, 'applied');
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'apply_package_applied', jobId: pkg.jobId, jobTitle: pkg.jobTitle, company: pkg.company });
+      if (typeof showNotif === 'function') showNotif('تم ✅','','أضفنا التقديم لتتبعك.');
+      if (typeof renderDashboard === 'function') renderDashboard();
+      if (typeof renderApplicationTracker === 'function') renderApplicationTracker();
     },
   };
 })();
@@ -8270,6 +9200,8 @@ function closeModal(){
   if (at) at.classList.remove('open');
   var lg = document.getElementById('legalModal');
   if (lg) lg.classList.remove('open');
+  var apk = document.getElementById('applyPkgModal');
+  if (apk) apk.classList.remove('open');
 }
 
 // ══════ Legal + contact modals — minimum content for launch ═════════════
@@ -9105,6 +10037,11 @@ function renderDashboard(){
   // when the user explicitly clicks "ابحث الآن" — keeps dashboard load fast.
   if (typeof JobsUI !== 'undefined' && JobsUI.renderDashboardFromCache) {
     try { JobsUI.renderDashboardFromCache(); } catch(e){}
+  }
+
+  // Paint "تجهيزات التقديم" card from saved packages.
+  if (typeof ApplyPackage !== 'undefined' && ApplyPackage.renderDashboardList) {
+    try { ApplyPackage.renderDashboardList(); } catch(e){}
   }
 }
 </script>
