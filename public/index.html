@@ -1736,7 +1736,7 @@ img,video,iframe{max-width:100%}
 <div id="s-cv" class="app-screen">
 <div class="c"><div style="padding:28px 0 60px">
   <div style="margin-bottom:18px;display:flex;align-items:center;justify-content:space-between">
-    <button class="btn btn-s" style="font-size:13px;padding:8px 14px" onclick="goScreen('s-access')">← رجوع</button>
+    <button class="btn btn-s" style="font-size:13px;padding:8px 14px" onclick="goScreen('s-diagnosis')">← رجوع للتشخيص</button>
     <div style="font-size:12px;color:#aaa" id="cvAccessNote"></div>
   </div>
 
@@ -1845,7 +1845,7 @@ img,video,iframe{max-width:100%}
 
     <!-- For 24h users -->
     <div id="cvExport24h">
-      <div style="background:#f8f8fc;border:1px solid #e8e8f0;border-radius:12px;padding:14px;margin-bottom:12px">
+      <div style="background:#f8f8fc;border:1px solid #e8e8f0;border-radius:12px;padding:14px;margin-bottom:12px" data-pay-hint>
         <div style="font-size:13px;color:#555;line-height:1.65">
           ✅ <strong>وصول 24 ساعة يشمل:</strong> نسخ الأقسام المحسّنة وتجربة القوالب.<br>
           📄 <strong>تحميل PDF نظيف</strong> بدون علامة مائية متاح في Premium.
@@ -1853,17 +1853,17 @@ img,video,iframe{max-width:100%}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-p" style="flex:1;min-width:140px;padding:11px;font-size:13px" onclick="copyCV('all')">📋 نسخ كل الأقسام</button>
-        <button class="btn btn-s" style="flex:1;min-width:140px;padding:11px;font-size:13px" onclick="triggerCheckout('lifetime')">⭐ Premium — تحميل PDF نظيف</button>
+        <button class="btn btn-s" data-pay-cta style="flex:1;min-width:140px;padding:11px;font-size:13px" onclick="triggerCheckout('lifetime')">⭐ Premium — تحميل PDF نظيف</button>
       </div>
     </div>
 
-    <!-- For Premium users -->
+    <!-- For Premium users — only flipped visible when isPaid is true. -->
     <div id="cvExportPremium" style="display:none">
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin-bottom:12px">
         <div style="font-size:13px;color:#166534">✅ Premium — حمّل نسخة نظيفة جاهزة للتقديم.</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-p" style="flex:1;min-width:140px;padding:11px;font-size:13px" onclick="downloadCV('pdf')">📥 تحميل PDF نظيف</button>
+        <button class="btn btn-p" data-pay-cta style="flex:1;min-width:140px;padding:11px;font-size:13px" onclick="downloadCV('pdf')">📥 تحميل PDF نظيف</button>
         <button class="btn btn-s" style="flex:1;min-width:140px;padding:11px;font-size:13px" onclick="copyCV('all')">📋 نسخ النص</button>
       </div>
     </div>
@@ -2493,14 +2493,14 @@ img,video,iframe{max-width:100%}
     </div>
 
     <!-- Starter -->
-    <div class="diag-unlock-opt">
+    <div class="diag-unlock-opt" data-pay-cta>
       <div class="dut-row"><h4>Starter</h4><span class="dut-price">$9<span class="dut-mo">/شهر</span></span></div>
       <p>للباحث النشط: تشخيصات متعددة + تتبع تقديماتك + تدريب أعلى.</p>
       <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="triggerCheckout('starter')">اشترك Starter — $9</button>
     </div>
 
     <!-- Pro — recommended -->
-    <div class="diag-unlock-opt is-recommended">
+    <div class="diag-unlock-opt is-recommended" data-pay-cta>
       <div class="dut-badge">الأكثر مناسبة للباحث الجاد</div>
       <div class="dut-row"><h4>Pro Unlimited</h4><span class="dut-price">$19<span class="dut-mo">/شهر</span></span></div>
       <p>للي يبحث بجدية ويحتاج يستخدم دربي بدون حدود شهرية مزعجة.</p>
@@ -2509,7 +2509,7 @@ img,video,iframe{max-width:100%}
     </div>
 
     <!-- Founder Lifetime -->
-    <div class="diag-unlock-opt">
+    <div class="diag-unlock-opt" data-pay-cta>
       <div class="dut-row"><h4>Founder Lifetime</h4><span class="dut-price">$199<span class="dut-mo"> · مرة واحدة</span></span></div>
       <p>ادفع مرة واحدة. بدون اشتراك شهري.</p>
       <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="triggerCheckout('lifetime')">فعّل Founder — $199</button>
@@ -2577,8 +2577,8 @@ img,video,iframe{max-width:100%}
           <span>شارك خطتي وخذ وقت إضافي</span>
           <span>+24 ساعة</span>
         </button>
-        <!-- Founder LTD — payment path, untouched. Hidden for admin / paid. -->
-        <button class="bp-cta bp-cta-founder" onclick="diagTriggerFounderLTD()" id="bpFounderCta">
+        <!-- Founder LTD — payment path, hidden while PAY_ENABLED=false. -->
+        <button class="bp-cta bp-cta-founder" onclick="diagTriggerFounderLTD()" id="bpFounderCta" data-pay-cta>
           <span>افتح الخطة كاملة — Founder LTD</span>
           <span>$199</span>
         </button>
@@ -2685,7 +2685,7 @@ img,video,iframe{max-width:100%}
     <div id="giEvalBlock" style="display:none"></div>
 
     <div class="diag-cta-row" style="margin-top:6px">
-      <button class="diag-btn-back" onclick="goScreen('s-bridge-plan')">← الرجوع للطريق</button>
+      <button class="diag-btn-back" onclick="goScreen('s-dashboard')">← لوحتي</button>
       <button class="diag-btn-p" id="giSubmitBtn" onclick="giSubmitAnswer()" disabled>التالي ←</button>
     </div>
   </div>
@@ -2731,7 +2731,7 @@ img,video,iframe{max-width:100%}
     </div>
 
     <div class="bp-back-row">
-      <button class="bp-back-link" onclick="goScreen('s-bridge-plan')">← عرض الطريق</button>
+      <button class="bp-back-link" onclick="goScreen('s-dashboard')">← لوحتي</button>
       <button class="bp-back-link" onclick="giStartNewSession()">↻ ابدأ الجلسة التالية</button>
     </div>
   </div>
@@ -2809,7 +2809,7 @@ img,video,iframe{max-width:100%}
     <div class="modal-foot" style="flex-direction:column;gap:8px">
       <a class="btn btn-p btn-full" id="applyPkgOpenJobBtn" target="_blank" rel="noopener" href="#">افتح الوظيفة ←</a>
       <button class="btn btn-s btn-full" id="applyPkgMarkAppliedBtn" data-pkg-id="" onclick="ApplyPackage.markApplied()">سجلت تقديم</button>
-      <button class="btn btn-s btn-full" onclick="closeModal()">رجوع للوظائف</button>
+      <button class="btn btn-s btn-full" id="applyPkgBackBtn" onclick="ApplyPackage.closeBackToOrigin()">إغلاق</button>
     </div>
   </div>
 </div>
@@ -4083,15 +4083,23 @@ function renderDiagnosisScreen(){
     }
   }
 
-  // Branch-specific main CTA copy
+  // Main CTA copy + target — both come from DarbiJourney so the diagnosis
+  // page, the Roadmap below it, and the dashboard "خطوتك الآن" card all
+  // agree on the SAME next action.
   var ctaBtn = document.getElementById('diagResMainCta');
-  if (d.branch === 'A') ctaBtn.textContent = 'ابنِ سيرتي البسيطة →';
-  else if (d.branch === 'B') {
-    var lib = DREAM_ROLE_LIBRARY[d.family];
-    ctaBtn.textContent = (lib && lib.ctaB) ? (lib.ctaB + ' →') : 'ابنِ طريقي للوظيفة →';
+  var jact = (typeof DarbiJourney !== 'undefined' && DarbiJourney.getNextAction) ? DarbiJourney.getNextAction() : null;
+  if (jact && jact.cta) {
+    ctaBtn.textContent = jact.cta + ' ←';
+  } else {
+    // Legacy branch labels — only used if DarbiJourney isn't loaded.
+    if (d.branch === 'A') ctaBtn.textContent = 'ابنِ سيرتي البسيطة →';
+    else if (d.branch === 'B') {
+      var lib = DREAM_ROLE_LIBRARY[d.family];
+      ctaBtn.textContent = (lib && lib.ctaB) ? (lib.ctaB + ' →') : 'ابنِ طريقي للوظيفة →';
+    }
+    else if (d.branch === 'C') ctaBtn.textContent = 'حلّل سيرتي بعمق →';
+    else ctaBtn.textContent = 'ابدأ الآن →';
   }
-  else if (d.branch === 'C') ctaBtn.textContent = 'حلّل سيرتي بعمق →';
-  else ctaBtn.textContent = 'ابدأ الآن →';
 
   // Supporting scores
   document.getElementById('diagSupCV').textContent  = d.supportingScores.cvStrength;
@@ -4128,8 +4136,15 @@ function renderDiagnosisScreen(){
 function diagRouteFromBranch(){
   var d = Diagnosis.get();
   if (!d) { focusAnalyze(); return; }
-  renderBridgePlan();
-  goScreen('s-bridge-plan');
+  // Single canonical journey: route through DarbiJourney so the main CTA on
+  // s-diagnosis goes to the SAME next step as the Roadmap + the dashboard
+  // "خطوتك الآن" card. s-bridge-plan is no longer the entry point.
+  if (typeof DarbiJourney !== 'undefined' && DarbiJourney.getNextAction){
+    var act = DarbiJourney.getNextAction();
+    if (act && typeof act.fn === 'function') { act.fn(); return; }
+  }
+  // Defensive fallback only — never reached in practice.
+  goTool('cv');
 }
 
 // ══════ Roadmap renderer — the canonical post-diagnosis 5-step journey ════
@@ -6149,7 +6164,34 @@ var ApplyPackage = (function(){
       var modal = document.getElementById('applyPkgModal');
       if (!modal) return;
       this.render(id);
+      // Stash origin screen so the back button can route honestly. Only the
+      // diagnosis screen has a #diagJobsCard scroll target; from anywhere
+      // else we just close.
+      var current = (function(){
+        var screens = document.querySelectorAll('.app-screen');
+        for (var i = 0; i < screens.length; i++) {
+          if (screens[i].style && screens[i].style.display !== 'none' && getComputedStyle(screens[i]).display !== 'none') return screens[i].id;
+        }
+        return null;
+      })();
+      modal.setAttribute('data-origin', current || '');
+      var backBtn = document.getElementById('applyPkgBackBtn');
+      if (backBtn) backBtn.textContent = (current === 's-diagnosis') ? 'رجوع للوظائف' : 'إغلاق';
       modal.classList.add('open');
+    },
+
+    // Smart close — scroll the jobs section into view only when the user
+    // actually came from the diagnosis page. Anywhere else: plain close.
+    closeBackToOrigin: function(){
+      var modal = document.getElementById('applyPkgModal');
+      var origin = modal && modal.getAttribute('data-origin');
+      if (typeof closeModal === 'function') closeModal();
+      if (origin === 's-diagnosis') {
+        setTimeout(function(){
+          var el = document.getElementById('diagJobsCard');
+          if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      }
     },
 
     render: function(id){
@@ -8275,6 +8317,32 @@ function selectPay(opt){
 // key is in Railway Variables and verified.
 var PAY_ENABLED = false;
 var PAY_GENERIC_MSG = 'الدفع غير متاح حالياً. تواصل معنا لتفعيل الوصول.';
+
+// Apply the soft-launch payment guard to every [data-pay-cta] node so users
+// don't see paid CTAs while PAY_ENABLED=false. [data-pay-hint] hides
+// aspirational notice copy that references the paid tier. Idempotent; safe
+// to call any time PAY_ENABLED state could have changed.
+function applyPaymentGuardVisibility(){
+  var hide = !PAY_ENABLED;
+  var ctas = document.querySelectorAll('[data-pay-cta]');
+  for (var i = 0; i < ctas.length; i++) {
+    // Skip the Premium download button — its parent #cvExportPremium toggles
+    // display itself based on isPaid. We let that ride.
+    ctas[i].style.display = hide ? 'none' : '';
+  }
+  var hints = document.querySelectorAll('[data-pay-hint]');
+  for (var j = 0; j < hints.length; j++) {
+    hints[j].style.display = hide ? 'none' : '';
+  }
+}
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyPaymentGuardVisibility);
+  } else {
+    // Script already ran after DOM ready — run on next tick.
+    setTimeout(applyPaymentGuardVisibility, 0);
+  }
+}
 
 function triggerCheckout(plan){
   if(!isLoggedIn()){
