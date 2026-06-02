@@ -66,7 +66,9 @@ async function jsearch(profile, errorsOut) {
   const q = profile.targetTitles[0] || profile.searchKeywords[0] || profile.dreamRole;
   if (!q) return [];
   const loc = profile.location || 'Saudi Arabia';
-  const provider = (process.env.JSEARCH_PROVIDER || 'openwebninja').toLowerCase();
+  // Default to RapidAPI — that's where most users get their JSearch key. To
+  // use OpenWeb Ninja's direct front instead, set JSEARCH_PROVIDER=openwebninja.
+  const provider = (process.env.JSEARCH_PROVIDER || 'rapidapi').toLowerCase();
   const cacheKey = 'prov:jsearch:' + provider + ':' + q + '|' + loc;
   const cached = cache.get(cacheKey);
   if (cached) return cached;
