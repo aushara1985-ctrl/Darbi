@@ -476,6 +476,39 @@ button.diag-role-chip-pick:active{transform:translateY(0)}
 .diag-jobs-ctas{display:flex;gap:8px;margin-top:11px}
 .diag-jobs-empty{padding:14px;text-align:center;color:#6b7280;font-size:12.5px;background:#f9fafb;border-radius:10px}
 
+/* Roadmap section — single guided journey after the WOW */
+.rm-card{margin-top:16px;background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #c7d2fe;border-radius:14px;padding:18px}
+.rm-eyebrow{font-size:11px;font-weight:800;color:#4338ca;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
+.rm-h{font-size:17px;font-weight:900;color:#0a0a0a;margin-bottom:5px}
+.rm-sub{font-size:13px;color:#475569;line-height:1.7;margin-bottom:14px}
+.rm-steps{display:flex;flex-direction:column;gap:9px}
+.rm-step{display:flex;gap:11px;align-items:flex-start;background:#fff;border:1px solid #ececf4;border-radius:11px;padding:12px}
+.rm-step.is-next{border-color:#4f46e5;background:#fafaff;box-shadow:0 0 0 3px rgba(79,70,229,.08)}
+.rm-step.is-done{opacity:.78}
+.rm-step.is-locked{opacity:.62}
+.rm-step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:#e0e7ff;color:#4338ca;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center}
+.rm-step.is-done .rm-step-num{background:#dcfce7;color:#166534}
+.rm-step.is-next .rm-step-num{background:#4f46e5;color:#fff}
+.rm-step.is-locked .rm-step-num{background:#f1f5f9;color:#94a3b8}
+.rm-step-body{flex:1;min-width:0}
+.rm-step-title{font-size:14px;font-weight:800;color:#0a0a0a;margin-bottom:3px}
+.rm-step-desc{font-size:12.5px;color:#475569;line-height:1.6;margin-bottom:7px}
+.rm-step-cta{background:#4f46e5;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.rm-step-cta:hover{background:#4338ca}
+.rm-step-cta-s{background:transparent;color:#4338ca;border:1px solid #c7d2fe;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.rm-step-cta-s:hover{background:#eef2ff}
+.rm-step-tag{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;margin-bottom:4px}
+.rm-step.is-done .rm-step-tag{background:#dcfce7;color:#166534}
+.rm-step.is-next .rm-step-tag{background:#fef3c7;color:#92400e}
+.rm-step.is-locked .rm-step-tag{background:#f1f5f9;color:#64748b}
+
+/* Dashboard progress chips (small inline meter) */
+.dbv2-progress-row{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 14px;padding:9px 11px;background:#f8fafc;border-radius:10px;border:1px solid #ececf4}
+.dbv2-chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:99px;background:#fff;border:1px solid #ececf4;color:#475569}
+.dbv2-chip.is-done{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+.dbv2-chip-dot{width:8px;height:8px;border-radius:50%;background:#cbd5e1}
+.dbv2-chip.is-done .dbv2-chip-dot{background:#16a34a}
+
 /* Apply Package modal — tailored CV summary + bullets + cover letter */
 .apk-honest{background:#fef3c7;border:1px solid #fcd34d;border-radius:9px;padding:10px 12px;font-size:12.5px;color:#78350f;line-height:1.6;margin-bottom:14px;font-weight:600}
 .apk-sec{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #f1f5f9}
@@ -1679,8 +1712,8 @@ img,video,iframe{max-width:100%}
   <div class="tools-grid">
     <div class="tool-card" onclick="goTool('cv')">
       <div class="tool-ic">📝</div>
-      <div class="tool-title">تحسين السيرة الذاتية</div>
-      <div class="tool-sub">خطوة بخطوة بناءً على تحليلك</div>
+      <div class="tool-title">تحليل السيرة العميق</div>
+      <div class="tool-sub">وش يوقفك، ليش، وش يلزم يتغير أولاً</div>
       <div style="margin-top:8px"><span class="pill-b">10–15 دقيقة</span></div>
     </div>
     <div class="tool-card" onclick="startGuidedSession()">
@@ -1709,9 +1742,9 @@ img,video,iframe{max-width:100%}
 
   <!-- Header -->
   <div style="margin-bottom:14px">
-    <div class="tag-b">تحسين السيرة بناءً على تشخيصك</div>
-    <h2 style="font-size:22px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">تحسين السيرة الذاتية</h2>
-    <p style="font-size:13px;color:#666" id="cvSubtitle">اختر ما تبغى تنسخه أو تحمّله حسب وصولك.</p>
+    <div class="tag-b">تحليل عميق + إصلاح السيرة</div>
+    <h2 style="font-size:22px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">تحليل السيرة العميق</h2>
+    <p style="font-size:13px;color:#666;line-height:1.7" id="cvSubtitle">نقرأ سيرتك بضوء تشخيصك: وش يوقفك، أيش يلزم يتغير أولاً، ووش لا تضيفه.</p>
   </div>
 
   <!-- Diagnosis recap pill — only shows if a Diagnosis exists. -->
@@ -2097,8 +2130,10 @@ img,video,iframe{max-width:100%}
       </div>
     </div>
 
-    <!-- ════ A. PRIMARY NEXT STEP — what to do RIGHT NOW ════
-         The brain picks the screen + reason. Spec calls this "خطوتك الآن". -->
+    <!-- ════ B. PROGRESS CHIPS — 6 binary milestones from DarbiJourney ════ -->
+    <div class="dbv2-progress-row" id="dbv2ProgressRow" style="display:none"></div>
+
+    <!-- ════ A. PRIMARY NEXT STEP — single canonical action from DarbiJourney ════ -->
     <div class="dbv2-step">
       <div class="dbv2-step-t">خطوتك الآن</div>
       <div id="dbv2NextStepBody" class="dbv2-step-body">—</div>
@@ -2390,6 +2425,14 @@ img,video,iframe{max-width:100%}
   </div>
 
   <button class="diag-cta-primary" id="diagResMainCta" onclick="diagRouteFromBranch()">ابدأ الآن →</button>
+
+  <!-- ─── Roadmap: the canonical post-diagnosis journey ─── -->
+  <div class="rm-card" id="diagRoadmapCard">
+    <div class="rm-eyebrow">خطة دربي لك</div>
+    <div class="rm-h">من الآن إلى أول مقابلة</div>
+    <div class="rm-sub">ما راح نرميك بنصائح عامة. نمشي خطوة خطوة: نصلح السيرة، نختار الوظائف، نجهز التقديم، ونتابع معك.</div>
+    <div class="rm-steps" id="diagRoadmapSteps"></div>
+  </div>
 
   <!-- ─── Jobs we found for you ─── -->
   <div class="diag-jobs" id="diagJobsCard">
@@ -4056,6 +4099,12 @@ function renderDiagnosisScreen(){
   document.getElementById('diagSupInt').textContent = d.supportingScores.interviewReadiness;
   document.getElementById('diagSupPath').textContent = d.supportingScores.pathClarity;
 
+  // Roadmap — the canonical guided journey. One primary CTA only (the current
+  // next action from DarbiJourney). All other steps are locked/done.
+  if (typeof renderRoadmap === 'function') {
+    try { renderRoadmap(); } catch(e){}
+  }
+
   // Kick the real-jobs search asynchronously. Render is non-blocking — the
   // jobs card shows a loading line, then either populates or shows fallback.
   if (typeof JobsUI !== 'undefined' && JobsUI.autoSearchOnDiagnosis){
@@ -4081,6 +4130,73 @@ function diagRouteFromBranch(){
   if (!d) { focusAnalyze(); return; }
   renderBridgePlan();
   goScreen('s-bridge-plan');
+}
+
+// ══════ Roadmap renderer — the canonical post-diagnosis 5-step journey ════
+// Reads DarbiJourney.getState() + getNextAction() and paints into the
+// #diagRoadmapSteps container. Each step is locked / next / done; only the
+// current next action carries a primary CTA. Family-agnostic — all 5 steps
+// apply equally to senior CS, fresh-grad marketing, junior software, etc.
+function renderRoadmap(){
+  var el = document.getElementById('diagRoadmapSteps');
+  if (!el) return;
+  if (typeof DarbiJourney === 'undefined') { el.innerHTML = ''; return; }
+  var st  = DarbiJourney.getState();
+  var nxt = DarbiJourney.getNextAction();
+  var STEPS = [
+    { key: 'cv_audit',      title: 'إصلاح السيرة الأساسية', desc: 'نحول سيرتك من وصف مهام إلى تموضع واضح يناسب هدفك.',           done: st.cvAuditDone,         cta: 'ابدأ إصلاح السيرة',   fn: function(){ goTool('cv'); } },
+    { key: 'job_matches',   title: 'اختيار وظائف مناسبة',   desc: 'نبحث أو نقترح وظائف تناسب مستواك، مو أي إعلان عشوائي.',         done: st.jobsViewed,          cta: 'اعرض الوظائف',         fn: function(){ var card = document.getElementById('diagJobsCard'); if (card && card.scrollIntoView) card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
+    { key: 'apply_package', title: 'تجهيز التقديم',          desc: 'نجهز ملخصك، نقاطك، ورسالة تقديمك لكل وظيفة تختارها.',           done: st.applyPackageCreated, cta: 'جهّزني لأول وظيفة',   fn: function(){ if (typeof ApplyPackage !== 'undefined' && ApplyPackage.list){ var p = ApplyPackage.list(); if (p.length){ ApplyPackage.open(p[0].id); return; } } var card = document.getElementById('diagJobsCard'); if (card && card.scrollIntoView) card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
+    { key: 'apply_now',     title: 'متابعة التقديم',          desc: 'سجّل التقديمات والردود عشان دربي يعرف وش يغيّر.',                done: st.applicationLogged,   cta: 'افتح تقديماتي',        fn: function(){ goScreen('s-dashboard'); setTimeout(function(){ var t = document.getElementById('dbv2Tracker'); if (t && t.scrollIntoView) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120); } },
+    { key: 'interview_prep',title: 'تدريب المقابلة',          desc: 'إذا جاك رد، نحول الوظيفة إلى جلسة تدريب على ٥ أسئلة قبل اللقاء.',done: st.interviewStarted,    cta: 'ابدأ التدريب',          fn: function(){ if (typeof startGuidedSession === 'function') startGuidedSession(); } },
+  ];
+  // Compute locked: all steps after the next action become locked (unless done).
+  var nextIdx = -1;
+  for (var i = 0; i < STEPS.length; i++) {
+    if (!STEPS[i].done) { nextIdx = i; break; }
+  }
+  // Override: if DarbiJourney.getNextAction returned a key, prefer it.
+  if (nxt && nxt.key) {
+    for (var j = 0; j < STEPS.length; j++) {
+      if (STEPS[j].key === nxt.key) { nextIdx = j; break; }
+    }
+  }
+
+  var html = '';
+  for (var k = 0; k < STEPS.length; k++) {
+    var s = STEPS[k];
+    var cls = s.done ? 'is-done' : (k === nextIdx ? 'is-next' : (k > nextIdx ? 'is-locked' : ''));
+    var tagText = s.done ? '✓ تم' : (k === nextIdx ? 'الخطوة التالية' : (k > nextIdx ? 'مقفل' : ''));
+    var num = s.done ? '✓' : (k + 1);
+    var ctaHtml = '';
+    if (k === nextIdx) {
+      ctaHtml = '<button class="rm-step-cta" onclick="__rmRun(' + k + ')">' + _h(s.cta) + ' ←</button>';
+    } else if (s.done) {
+      ctaHtml = '<button class="rm-step-cta-s" onclick="__rmRun(' + k + ')">إعادة فتح</button>';
+    } else {
+      ctaHtml = '<button class="rm-step-cta-s" disabled style="opacity:.5;cursor:not-allowed">' + _h(s.cta) + '</button>';
+    }
+    html += '<div class="rm-step ' + cls + '">'
+      +   '<div class="rm-step-num">' + num + '</div>'
+      +   '<div class="rm-step-body">'
+      +     (tagText ? '<span class="rm-step-tag">' + tagText + '</span><br>' : '')
+      +     '<div class="rm-step-title">' + _h(s.title) + '</div>'
+      +     '<div class="rm-step-desc">' + _h(s.desc) + '</div>'
+      +     ctaHtml
+      +   '</div>'
+      + '</div>';
+  }
+  el.innerHTML = html;
+  // Expose runner globally so onclick can find it.
+  window.__rmRun = function(idx){
+    var step = STEPS[idx];
+    if (step && typeof step.fn === 'function') step.fn();
+  };
+}
+function _h(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
 }
 
 // ══════ Bridge plan — populated from Diagnosis.get() only ═══════════════════
@@ -4746,6 +4862,227 @@ var Applications = (function(){
   };
 })();
 
+// ══════ DarbiJourney — single source of truth for "what step am I on?" ════
+// Reads from the OTHER namespaces (Diagnosis, JobsUI cache, ApplyPackage,
+// Applications, GuidedSession) and writes only its own milestone flags. No
+// CS-specific logic anywhere — every step works for every family/seniority.
+//
+// Public surface:
+//   DarbiJourney.getState()          → flags + counts
+//   DarbiJourney.getNextAction()     → { key, title, why, cta, screen, fn }
+//   DarbiJourney.markCvAuditDone()
+//   DarbiJourney.markJobsViewed()
+//   DarbiJourney.markApplyPackageCreated()
+//   DarbiJourney.markApplicationLogged()
+//   DarbiJourney.markInterviewLogged()
+//   DarbiJourney.progress()          → 6-step progress chip data
+var DarbiJourney = (function(){
+  var KEY = 'darbi_journey_state';
+
+  function _read(){
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ return {}; }
+  }
+  function _write(s){ try { localStorage.setItem(KEY, JSON.stringify(s || {})); } catch(e){} }
+  function _set(k, v){ var s = _read(); s[k] = v; s.updatedAt = new Date().toISOString(); _write(s); }
+  // Defensive guards: every namespace access must handle both `undefined`
+  // (never loaded) AND `null` (explicitly cleared, e.g. in tests).
+  function _ns(name){
+    try {
+      if (typeof window !== 'undefined' && window[name]) return window[name];
+    } catch(e){}
+    try { var v = eval(name); return v || null; } catch(e){ return null; }
+  }
+  function _hasDiag(){
+    var D = _ns('Diagnosis');
+    return !!(D && typeof D.get === 'function' && D.get());
+  }
+  function _hasJobs(){
+    var s = _read();
+    if (s.jobsViewed) return true;
+    try {
+      var c = JSON.parse(localStorage.getItem('darbi_jobs_cache_v1') || 'null');
+      if (c && c.data && Array.isArray(c.data.jobs) && c.data.jobs.length) return true;
+      if (c && c.data && c.data.mode === 'fallback') return true; // user has seen the fallback panel
+    } catch(e){}
+    return false;
+  }
+  function _hasApplyPackage(){
+    var s = _read();
+    if (s.applyPackageCreated) return true;
+    var AP = _ns('ApplyPackage');
+    if (AP && typeof AP.list === 'function' && AP.list().length) return true;
+    return false;
+  }
+  function _hasApplication(){
+    var A = _ns('Applications');
+    return !!(A && typeof A.stats === 'function' && A.stats().total > 0);
+  }
+  function _hasReplyOrInterview(){
+    var A = _ns('Applications');
+    if (!(A && typeof A.stats === 'function')) return false;
+    var s = A.stats();
+    return (s.interview + s.reply + s.accepted) > 0;
+  }
+  function _interviewStarted(){
+    var G = _ns('GuidedSession');
+    if (G && typeof G.get === 'function' && G.get()) return true;
+    var s = _read();
+    return !!s.interviewLogged;
+  }
+
+  // Centralized journey screen routing — keeps callers from knowing about
+  // screen IDs. Each action.fn() invokes the right entry point.
+  function _goDiag(){ if (typeof startDiagnosis === 'function') startDiagnosis(); }
+  function _goCvAudit(){ if (typeof goTool === 'function') goTool('cv'); }
+  function _goJobs(){
+    // Surface the existing jobs section on the diagnosis screen if a diag
+    // exists; otherwise return user to diagnosis flow.
+    if (!_hasDiag()) { _goDiag(); return; }
+    if (typeof renderDiagnosisScreen === 'function') renderDiagnosisScreen();
+    if (typeof goScreen === 'function') goScreen('s-diagnosis');
+    setTimeout(function(){
+      var el = document.getElementById('diagJobsCard');
+      if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+  }
+  function _goApplyPkg(){
+    // Open the most-recent draft if any; else nudge to jobs.
+    if (typeof ApplyPackage !== 'undefined' && ApplyPackage.list){
+      var pkgs = ApplyPackage.list();
+      if (pkgs.length){ ApplyPackage.open(pkgs[0].id); return; }
+    }
+    _goJobs();
+  }
+  function _goApplyNow(){
+    // Same surface as apply package — user opens the modal, copies sections,
+    // then clicks "افتح الوظيفة" then "سجلت تقديم". DarbiJourney just routes.
+    _goApplyPkg();
+  }
+  function _goTracker(){
+    if (typeof goScreen === 'function') goScreen('s-dashboard');
+    setTimeout(function(){
+      var el = document.getElementById('dbv2Tracker');
+      if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+  }
+  function _goInterview(){
+    if (typeof startGuidedSession === 'function') startGuidedSession();
+  }
+
+  // Each action carries: WHY this step matters + a single CTA. The screen
+  // target is opaque (fn-driven) so callers don't need to know specific IDs.
+  function getNextAction(){
+    if (!_hasDiag()){
+      return {
+        key: 'start_diagnosis',
+        title: 'ابدأ بتشخيص دربي',
+        why:   'قبل أي شي ثاني، نحتاج نفهم وين أنت الآن ووين تبغى توصل.',
+        cta:   'ابدأ التشخيص',
+        screen:'s-dream',
+        fn:    _goDiag,
+      };
+    }
+    var s = _read();
+    if (!s.cvAuditDone){
+      return {
+        key: 'cv_audit',
+        title: 'حلّل سيرتك في عمق',
+        why:   'سيرتك حالياً هي اللي توقفك. نبدأ بإصلاح التموضع والملخص قبل أي تقديم.',
+        cta:   'ابدأ تحليل السيرة',
+        screen:'s-cv',
+        fn:    _goCvAudit,
+      };
+    }
+    if (!_hasJobs()){
+      return {
+        key: 'job_matches',
+        title: 'استعرض وظائف مناسبة لك',
+        why:   'سيرتك جاهزة. الخطوة الآن: اختر وظيفة محددة بدل التقديم العشوائي.',
+        cta:   'اعرض الوظائف المناسبة',
+        screen:'s-diagnosis',
+        fn:    _goJobs,
+      };
+    }
+    if (!_hasApplyPackage()){
+      return {
+        key: 'apply_package',
+        title: 'جهّز تقديمك لأول وظيفة',
+        why:   'اختيار وظيفة لا يكفي. نحتاج نجهز ملخص + نقاط + رسالة موجهة لها بالذات.',
+        cta:   'جهّز تقديمك',
+        screen:'s-diagnosis',
+        fn:    _goApplyPkg,
+      };
+    }
+    if (!_hasApplication()){
+      return {
+        key: 'apply_now',
+        title: 'افتح الوظيفة وقدّم',
+        why:   'الباكدج جاهز. الخطوة العملية الآن: قدّم وسجّل التقديم.',
+        cta:   'افتح الوظيفة وقدّم',
+        screen:'s-diagnosis',
+        fn:    _goApplyNow,
+      };
+    }
+    if (_hasReplyOrInterview() && !_interviewStarted()){
+      return {
+        key: 'interview_prep',
+        title: 'ابدأ تدريب المقابلة',
+        why:   'وصلك رد أو مقابلة. نحول الوظيفة لجلسة تدريب على ٥ أسئلة قبل اللقاء.',
+        cta:   'ابدأ التدريب',
+        screen:'s-guided-interview',
+        fn:    _goInterview,
+      };
+    }
+    return {
+      key: 'follow_up',
+      title: 'تابع حالة تقديماتك',
+      why:   'سجل الردود والرفض والمقابلات عشان دربي يقرأ النمط ويعدّل خطتك.',
+      cta:   'افتح تقديماتي',
+      screen:'s-dashboard',
+      fn:    _goTracker,
+    };
+  }
+
+  function getState(){
+    var s = _read();
+    return {
+      hasDiagnosis:         _hasDiag(),
+      cvAuditDone:          !!s.cvAuditDone,
+      jobsViewed:           _hasJobs(),
+      applyPackageCreated:  _hasApplyPackage(),
+      applicationLogged:    _hasApplication(),
+      hasReplyOrInterview:  _hasReplyOrInterview(),
+      interviewStarted:     _interviewStarted(),
+      updatedAt:            s.updatedAt || null,
+    };
+  }
+
+  // Progress chips — 6 binary milestones the user can see complete one by one.
+  function progress(){
+    var st = getState();
+    return [
+      { key: 'diagnosis',   label: 'تشخيص',        done: st.hasDiagnosis },
+      { key: 'cv',          label: 'تحليل السيرة',  done: st.cvAuditDone },
+      { key: 'jobs',        label: 'وظائف',        done: st.jobsViewed },
+      { key: 'package',     label: 'تجهيز تقديم',  done: st.applyPackageCreated },
+      { key: 'apply',       label: 'تقديم',        done: st.applicationLogged },
+      { key: 'interview',   label: 'مقابلة',       done: st.interviewStarted || st.hasReplyOrInterview },
+    ];
+  }
+
+  return {
+    getState:                  getState,
+    getNextAction:             getNextAction,
+    progress:                  progress,
+    markCvAuditDone:           function(){ _set('cvAuditDone', true);          if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'journey_cv_audit_done' }); },
+    markJobsViewed:            function(){ _set('jobsViewed', true);           if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'journey_jobs_viewed' }); },
+    markApplyPackageCreated:   function(){ _set('applyPackageCreated', true);  if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'journey_apply_package_created' }); },
+    markApplicationLogged:     function(){ _set('applicationLogged', true);    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'journey_application_logged' }); },
+    markInterviewLogged:       function(){ _set('interviewLogged', true);      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'journey_interview_logged' }); },
+    reset:                     function(){ _write({}); },
+  };
+})();
+
 // ══════ JobsUI — real-jobs search powered by /api/jobs/search ══════════════
 // Lean state machine:
 //   - cacheKey = dreamRole|family|seniority|location
@@ -4919,6 +5256,8 @@ var JobsUI = (function(){
     }
     if (meta) meta.textContent = 'لقينا لك ' + jobs.length + ' وظيفة مناسبة';
     list.innerHTML = jobs.map(_renderJobCard).join('');
+    // Journey: mark jobs viewed the moment jobs land in front of the user.
+    if (typeof DarbiJourney !== 'undefined') DarbiJourney.markJobsViewed();
   }
 
   // ── Render: dashboard "فرصك هذا الأسبوع" ─────────────────────────────────
@@ -5746,6 +6085,8 @@ var ApplyPackage = (function(){
       arr.push(pkg);
       _write(arr);
       if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'apply_package_built', jobId: pkg.jobId, jobTitle: pkg.jobTitle, company: pkg.company });
+      // Journey: mark apply package created so dashboard + roadmap advance.
+      if (typeof DarbiJourney !== 'undefined') DarbiJourney.markApplyPackageCreated();
       return pkg;
     },
 
@@ -6025,6 +6366,10 @@ function saveAppTracker(){
 
 function updateAppTrackerStatus(id, newStatus){
   Applications.update(id, { status: newStatus });
+  // Journey: when an app moves to reply/interview, mark the journey milestone.
+  if (typeof DarbiJourney !== 'undefined' && (newStatus === 'interview' || newStatus === 'reply')){
+    DarbiJourney.markInterviewLogged();
+  }
   renderApplicationTracker();
   if (typeof renderDashboard === 'function') renderDashboard();
 }
@@ -8471,6 +8816,8 @@ function copyCV(section){
   if (typeof DarbiBrain !== 'undefined' && (section === 'summary' || section === 'all')){
     DarbiBrain.learn({ type: 'cv_summary_used' });
   }
+  // Journey: any successful CV section copy counts as "audit acted on".
+  if (typeof DarbiJourney !== 'undefined') DarbiJourney.markCvAuditDone();
   navigator.clipboard.writeText(text)
     .then(function(){
       var statusMap = { summary:'cvS1status' };
@@ -9593,14 +9940,18 @@ function dbv2ScoreNote(key, val){
 }
 
 // Routes the "ابدأ الآن" button under the next-step card.
-// SINGLE source of truth: DarbiBrain.nextAction(). The fallback chain runs
-// only if the brain hasn't loaded (defensive — shouldn't happen in practice).
+// SINGLE source of truth: DarbiJourney.getNextAction(). The brain stays as
+// a fallback only — the journey state machine is now canonical.
 function dbv2RouteNextStep(){
+  if (typeof DarbiJourney !== 'undefined' && DarbiJourney.getNextAction){
+    var act = DarbiJourney.getNextAction();
+    if (act && typeof act.fn === 'function'){ act.fn(); return; }
+  }
+  // Legacy fallback (journey missing for any reason — defensive)
   if (typeof DarbiBrain !== 'undefined' && DarbiBrain.nextAction){
     var nxt = DarbiBrain.nextAction();
     if (nxt && typeof nxt.fn === 'function'){ nxt.fn(); return; }
   }
-  // Fallback (brain missing for any reason)
   if (typeof GuidedSession !== 'undefined' && GuidedSession.get){
     var g = GuidedSession.get();
     if (g){ renderGuidedInterview(); goScreen('s-guided-interview'); return; }
@@ -9911,27 +10262,41 @@ function renderDashboard(){
     if (placeholder) placeholder.style.display = 'none';
   }
 
-  // ── 3. Next step card — single source of truth: DarbiBrain ──────────
-  var coachMsg = (typeof DarbiBrain !== 'undefined' && DarbiBrain.coach) ? DarbiBrain.coach() : null;
-  var nxt      = (typeof DarbiBrain !== 'undefined' && DarbiBrain.nextAction) ? DarbiBrain.nextAction() : null;
-  if (coachMsg){
-    document.getElementById('dbv2NextStepBody').textContent = coachMsg;
-  } else {
-    var low = dbv2LowestScore(a);
-    document.getElementById('dbv2NextStepBody').textContent = dbv2NextStepCopy(low ? low.key : null);
+  // ── 3. Next step card — single source of truth: DarbiJourney ────────
+  var jact = (typeof DarbiJourney !== 'undefined' && DarbiJourney.getNextAction) ? DarbiJourney.getNextAction() : null;
+  var nxt  = jact; // alias for backwards compatibility below
+  if (jact) {
+    document.getElementById('dbv2NextStepBody').textContent = jact.title;
+  } else if (typeof DarbiBrain !== 'undefined' && DarbiBrain.coach) {
+    document.getElementById('dbv2NextStepBody').textContent = DarbiBrain.coach() || '';
   }
   var reasonEl = document.getElementById('dbv2NextStepReason');
   if (reasonEl){
-    if (nxt && nxt.reason){
+    if (jact && jact.why){
       reasonEl.style.display = 'block';
-      reasonEl.textContent = '↳ ' + nxt.reason;
+      reasonEl.textContent = '↳ ' + jact.why;
     } else {
       reasonEl.style.display = 'none';
     }
   }
   var nxtBtn = document.getElementById('dbv2NextStepBtn');
-  if (nxtBtn && nxt && nxt.label){
-    nxtBtn.textContent = nxt.label + ' ←';
+  if (nxtBtn && jact && jact.cta){
+    nxtBtn.textContent = jact.cta + ' ←';
+  }
+  // Progress chips (B): show only when there's a diagnosis — otherwise the
+  // dashboard's "start diagnosis" state already speaks for itself.
+  var progRow = document.getElementById('dbv2ProgressRow');
+  if (progRow && typeof DarbiJourney !== 'undefined' && DarbiJourney.progress){
+    var chips = DarbiJourney.progress();
+    var anyDone = chips.some(function(c){ return c.done; });
+    if (!anyDone) {
+      progRow.style.display = 'none';
+    } else {
+      progRow.style.display = '';
+      progRow.innerHTML = chips.map(function(c){
+        return '<span class="dbv2-chip ' + (c.done ? 'is-done' : '') + '"><span class="dbv2-chip-dot"></span>' + appTrackerEscape(c.label) + '</span>';
+      }).join('');
+    }
   }
 
   // ── 4. Career path card ──────────────────────────────────────────────
