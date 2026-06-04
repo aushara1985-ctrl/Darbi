@@ -2091,7 +2091,10 @@ img,video,iframe{max-width:100%}
   </div>
 
   <!-- ▸ Live dashboard (shown when an analysis exists) ──────────────────── -->
-  <div id="dbv2Live">
+  <!-- IMPORTANT: default-hidden. Only renderDashboard() flips it visible
+       AFTER successfully populating the header — otherwise placeholder
+       "—" / "0%" values leak into the UI for logged-out users. -->
+  <div id="dbv2Live" style="display:none">
 
     <!-- 1. HEADER CARD -->
     <div class="dbv2-header">
@@ -2108,9 +2111,9 @@ img,video,iframe{max-width:100%}
         <div style="font-size:13px;color:#7f1d1d;margin-bottom:11px;line-height:1.6">تقدر تكمل بنسخ محدود من نتائجك، أو ترفع وصولك بإحدى الخطط:</div>
         <div class="dbv2-expired-tiers">
           <button class="dbv2-btn dbv2-btn-s" onclick="diagOpenShareCard()" style="font-size:12.5px;padding:8px 12px">Free — شارك +24h</button>
-          <button class="dbv2-btn dbv2-btn-s" onclick="triggerCheckout('starter')" style="font-size:12.5px;padding:8px 12px">Starter — $9</button>
-          <button class="dbv2-btn dbv2-btn-p" onclick="triggerCheckout('pro')" style="font-size:12.5px;padding:8px 12px">Pro — $19 ★</button>
-          <button class="dbv2-btn dbv2-btn-s" onclick="triggerCheckout('lifetime')" style="font-size:12.5px;padding:8px 12px">Founder — $199</button>
+          <button class="dbv2-btn dbv2-btn-s" data-pay-cta onclick="triggerCheckout('starter')" style="font-size:12.5px;padding:8px 12px">Starter — $9</button>
+          <button class="dbv2-btn dbv2-btn-p" data-pay-cta onclick="triggerCheckout('pro')" style="font-size:12.5px;padding:8px 12px">Pro — $19 ★</button>
+          <button class="dbv2-btn dbv2-btn-s" data-pay-cta onclick="triggerCheckout('lifetime')" style="font-size:12.5px;padding:8px 12px">Founder — $199</button>
         </div>
         <div style="font-size:11.5px;color:#9ca3af;margin-top:8px">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
       </div>
@@ -2121,10 +2124,11 @@ img,video,iframe{max-width:100%}
         <div class="dbv2-h-cell" id="dbv2HCellRoadmap">خطة تجهيزك: <b id="dbv2RoadmapLen">—</b></div>
         <div class="dbv2-h-cell" id="dbv2HCellDay">اليوم: <b id="dbv2CurrentDay">1</b></div>
       </div>
-      <div class="dbv2-h-readiness-bar"><div id="dbv2ReadinessFill" class="dbv2-h-readiness-fill" style="width:0%"></div></div>
-      <div class="dbv2-h-ctas">
-        <!-- Primary CTA now opens the Guided Interview walkthrough, not the
-             legacy s-interview screen. Label changes based on session state. -->
+      <div class="dbv2-h-readiness-bar" id="dbv2ReadinessBar"><div id="dbv2ReadinessFill" class="dbv2-h-readiness-fill" style="width:0%"></div></div>
+      <!-- Hero CTAs hidden — the dashboard has ONE canonical primary CTA
+           below ("خطوتك الآن") driven by DarbiJourney. Showing additional
+           primaries here conflicts with the journey contract. -->
+      <div class="dbv2-h-ctas" style="display:none">
         <button class="dbv2-btn dbv2-btn-p" id="dbv2GuidedCta" onclick="startGuidedSession()">ابدأ تدريب اليوم</button>
         <button class="dbv2-btn dbv2-btn-s" onclick="goTool('cv')">حسّن سيرتي</button>
       </div>
@@ -2153,7 +2157,10 @@ img,video,iframe{max-width:100%}
       <div id="dbv2LatestNearest" style="font-size:13px;color:#1f2937;margin:6px 0 8px;line-height:1.6;display:none"></div>
       <div class="dbv2-latest-gap" id="dbv2LatestGap" style="display:none">—</div>
       <div class="dbv2-latest-ctas">
-        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2OpenBridge()">عرض الطريق</button>
+        <!-- "عرض الطريق" hidden — s-bridge-plan is legacy. The canonical
+             post-diagnosis roadmap now lives on s-diagnosis (see Roadmap
+             section) and via DarbiJourney.getNextAction(). -->
+        <button class="dbv2-btn dbv2-btn-s" onclick="dbv2OpenBridge()" style="display:none">عرض الطريق</button>
         <button class="dbv2-btn dbv2-btn-s" onclick="dbv2OpenDiagnosis()">عرض التشخيص</button>
         <button class="dbv2-btn dbv2-btn-s" onclick="focusAnalyze()">تحليل جديد</button>
       </div>
@@ -10194,8 +10201,17 @@ function dbv2FmtDate(iso){
 // Single source of truth: Analysis.get(). If no analysis has run yet, the
 // dashboard shows an empty state ONLY (no card grid, no defaults).
 function renderDashboard(){
+  var emptyEl = document.getElementById('dbv2Empty');
+  var liveEl  = document.getElementById('dbv2Live');
   var u = currentUser;
-  if(!u) return;
+  // Logged-out: show the empty state (it already invites the user to start
+  // a diagnosis). NEVER leave the live dashboard visible with stale "—"
+  // placeholders — that's the bug from the prior browser QA screenshot.
+  if(!u){
+    if (emptyEl) emptyEl.style.display = 'block';
+    if (liveEl)  liveEl.style.display  = 'none';
+    return;
+  }
   // Prefer Diagnosis (the new wow result) over the older Analysis. If no
   // diagnosis exists yet, fall back to Analysis. Either populates a target
   // role / supporting scores / a "biggest gap" — the dashboard speaks both.
@@ -10280,6 +10296,10 @@ function renderDashboard(){
   // Show readiness only when there's a real number — otherwise it reads as "0%" debug.
   var cellReadiness = document.getElementById('dbv2HCellReadiness');
   if (cellReadiness) cellReadiness.style.display = (readiness > 0) ? '' : 'none';
+  // Hide the readiness bar entirely when 0 — an empty bar reads as "loading"
+  // or "broken" to users. Show it only when there's real progress to show.
+  var readinessBar = document.getElementById('dbv2ReadinessBar');
+  if (readinessBar) readinessBar.style.display = (readiness > 0) ? '' : 'none';
 
   // Roadmap length — show only when the user has an actual roadmap, not the
   // default 60-day placeholder.
