@@ -224,6 +224,121 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
+       TRACK PICKER — #/track
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-track-card{
+      display:flex;align-items:flex-start;gap:14px;width:100%;
+      background:#fff;border:1.5px solid #ececf4;border-radius:14px;
+      padding:18px;margin-bottom:11px;cursor:pointer;text-align:right;
+      transition:border-color .15s, transform .08s, background .15s;
+    }
+    .v2-track-card:hover{border-color:#c7d2fe;background:#fafaff}
+    .v2-track-card:active{transform:scale(.99)}
+    .v2-track-card.is-selected{border-color:#4f46e5;background:#eef2ff}
+    .v2-track-icon{
+      flex-shrink:0;width:46px;height:46px;border-radius:11px;
+      background:#eef2ff;color:#4338ca;font-size:22px;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .v2-track-card.is-selected .v2-track-icon{background:#4f46e5;color:#fff}
+    .v2-track-body{flex:1;min-width:0}
+    .v2-track-title{font-size:15px;font-weight:800;color:#0a0a0a;margin-bottom:4px}
+    .v2-track-desc{font-size:12.5px;color:#475569;line-height:1.55}
+
+    /* ═══════════════════════════════════════════════════════════════════
+       DREAM ROLE — #/dream
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-input{
+      width:100%;padding:14px 16px;border:1.5px solid #ececf4;border-radius:11px;
+      font-size:15px;font-family:inherit;background:#fff;color:#0a0a0a;
+      transition:border-color .15s;
+    }
+    .v2-input:focus{outline:none;border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.1)}
+    .v2-input-label{font-size:13.5px;font-weight:700;color:#0a0a0a;margin-bottom:8px;display:block}
+    .v2-input-hint{font-size:12px;color:#64748b;margin-top:6px;line-height:1.5}
+
+    .v2-chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+    .v2-chip{
+      background:#f1f5f9;color:#0f172a;font-size:12.5px;font-weight:700;
+      padding:7px 13px;border-radius:99px;cursor:pointer;
+      transition:background .15s;border:1px solid transparent;
+    }
+    .v2-chip:hover{background:#e2e8f0}
+
+    /* ═══════════════════════════════════════════════════════════════════
+       CV UPLOAD — #/cv-upload
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-upload-grid{display:flex;flex-direction:column;gap:11px;margin-bottom:14px}
+    .v2-upload-card{
+      display:flex;align-items:center;gap:13px;
+      background:#fff;border:1.5px dashed #cbd5e1;border-radius:12px;
+      padding:16px;cursor:pointer;
+      transition:border-color .15s, background .15s;
+    }
+    .v2-upload-card:hover{border-color:#4f46e5;background:#fafaff}
+    .v2-upload-card.is-active{border-color:#4f46e5;background:#eef2ff;border-style:solid}
+    .v2-upload-icon{
+      width:42px;height:42px;border-radius:10px;background:#eef2ff;color:#4338ca;
+      display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+    }
+    .v2-upload-body{flex:1;min-width:0}
+    .v2-upload-title{font-size:14px;font-weight:800;color:#0a0a0a;margin-bottom:2px}
+    .v2-upload-desc{font-size:12px;color:#64748b}
+    .v2-divider{
+      display:flex;align-items:center;gap:10px;margin:14px 0;
+      font-size:12px;color:#94a3b8;
+    }
+    .v2-divider::before, .v2-divider::after{
+      content:'';flex:1;height:1px;background:#ececf4;
+    }
+    .v2-textarea{
+      width:100%;min-height:140px;padding:13px 15px;
+      border:1.5px solid #ececf4;border-radius:11px;
+      font-family:inherit;font-size:14px;line-height:1.7;color:#0a0a0a;
+      background:#fff;resize:vertical;
+    }
+    .v2-textarea:focus{outline:none;border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.1)}
+    .v2-file-status{
+      font-size:12.5px;color:#16a34a;font-weight:700;margin-top:8px;
+      display:none;
+    }
+    .v2-file-status.is-error{color:#dc2626}
+
+    /* ═══════════════════════════════════════════════════════════════════
+       QUIZ — #/quiz
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-quiz-card{
+      background:#fff;border:1px solid #ececf4;border-radius:14px;
+      padding:18px;margin-bottom:14px;
+    }
+    .v2-quiz-q{font-size:14.5px;font-weight:800;color:#0a0a0a;margin-bottom:11px;line-height:1.5}
+    .v2-quiz-options{display:flex;flex-direction:column;gap:8px}
+    .v2-quiz-option{
+      width:100%;padding:12px 15px;
+      background:#fafafe;border:1.5px solid #ececf4;border-radius:10px;
+      font-size:13.5px;font-weight:600;color:#0f172a;text-align:right;cursor:pointer;
+      transition:border-color .15s, background .15s, transform .08s;
+    }
+    .v2-quiz-option:hover{border-color:#c7d2fe;background:#fafaff}
+    .v2-quiz-option:active{transform:scale(.99)}
+    .v2-quiz-option.is-selected{
+      border-color:#4f46e5;background:#eef2ff;color:#4338ca;font-weight:800;
+    }
+    .v2-quiz-progress{
+      display:flex;align-items:center;gap:6px;margin-bottom:14px;
+      font-size:12px;color:#64748b;font-weight:700;
+    }
+    .v2-quiz-progress-bar{
+      flex:1;height:6px;background:#f1f5f9;border-radius:99px;overflow:hidden;
+    }
+    .v2-quiz-progress-fill{
+      height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);
+      border-radius:99px;transition:width .25s;
+    }
+
+    .v2-btn:disabled{opacity:.45;cursor:not-allowed}
+
+    /* ═══════════════════════════════════════════════════════════════════
        RESPONSIVE
     ════════════════════════════════════════════════════════════════════ */
     @media (max-width: 520px) {
@@ -646,10 +761,10 @@
   // "coming soon" hype.
   var V2_ROUTES = {
     '#/landing':      { title: '',                    step: 0, back: null,           render: 'renderLanding' },
-    '#/track':        { title: 'وضعك المهني',          step: 1, back: '#/landing',    render: 'renderPlaceholder', phase: 'Phase 0.1' },
-    '#/dream':        { title: 'وش الوظيفة اللي تحلم فيها؟', step: 1, back: '#/track', render: 'renderPlaceholder', phase: 'Phase 0.2' },
-    '#/cv-upload':    { title: 'ارفع سيرتك',           step: 1, back: '#/dream',      render: 'renderPlaceholder', phase: 'Phase 0.3' },
-    '#/quiz':         { title: 'أسئلة سريعة',          step: 1, back: '#/cv-upload',  render: 'renderPlaceholder', phase: 'Phase 0.4' },
+    '#/track':        { title: 'وضعك المهني',          step: 1, back: '#/landing',    render: 'renderTrack' },
+    '#/dream':        { title: 'وش الوظيفة اللي تحلم فيها؟', step: 1, back: '#/track', render: 'renderDream' },
+    '#/cv-upload':    { title: 'ارفع سيرتك',           step: 1, back: '#/dream',      render: 'renderCvUpload' },
+    '#/quiz':         { title: 'أسئلة سريعة',          step: 1, back: '#/cv-upload',  render: 'renderQuiz' },
     '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderPlaceholder', phase: 'Phase 0.5' },
     '#/cv-templates': { title: 'اختر قالب سيرتك',       step: 2, back: '#/diagnosis', render: 'renderPlaceholder', phase: 'Phase 1' },
     '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-templates', render: 'renderPlaceholder', phase: 'Phase 1' },
@@ -664,7 +779,7 @@
 
   // ── Map DarbiJourney.key → V2 route. Used when callers want to advance.
   var V2_ROUTE_FOR_KEY = {
-    start_diagnosis: '#/dream',
+    start_diagnosis: '#/track', // new users land on Track Picker first
     cv_audit:        '#/cv-templates',
     job_matches:     '#/jobs',
     apply_package:   '#/jobs',
@@ -672,6 +787,46 @@
     interview_prep:  '#/interview',
     follow_up:       '#/tracker',
   };
+
+  // ── V2Draft — in-progress onboarding state (track + dream + cv + quiz).
+  // Persists across refresh so users don't lose work. NOT written to the
+  // canonical Diagnosis namespace until the user reaches #/diagnosis and
+  // buildDiagnosis() lands (Phase 0.5). Separate key avoids polluting V1.
+  var V2Draft = (function(){
+    var KEY = 'darbi_v2_draft';
+    function read(){
+      try { return JSON.parse(localStorage.getItem(KEY) || '{}'); }
+      catch(e){ return {}; }
+    }
+    function write(s){ try { localStorage.setItem(KEY, JSON.stringify(s || {})); } catch(e){} }
+    return {
+      get:    function(){ return read(); },
+      set:    function(patch){ var s = read(); Object.assign(s, patch || {}); s.updatedAt = new Date().toISOString(); write(s); return s; },
+      field:  function(k){ return read()[k] || null; },
+      clear:  function(){ try { localStorage.removeItem(KEY); } catch(e){} },
+    };
+  })();
+
+  // ── pdf.js lazy loader — only loads when user hits #/cv-upload.
+  // Same Mozilla CDN URL pattern V1 uses.
+  var _pdfJsLoading = null;
+  function v2LoadPdfJs(){
+    if (typeof pdfjsLib !== 'undefined') return Promise.resolve(pdfjsLib);
+    if (_pdfJsLoading) return _pdfJsLoading;
+    _pdfJsLoading = new Promise(function(resolve, reject){
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
+      s.onload = function(){
+        try {
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+        } catch(e){}
+        resolve(pdfjsLib);
+      };
+      s.onerror = function(){ reject(new Error('pdf.js failed to load')); };
+      document.head.appendChild(s);
+    });
+    return _pdfJsLoading;
+  }
 
   // ── Navigation primitives ───────────────────────────────────────────────
   function v2Go(hash, replace){
@@ -841,6 +996,274 @@
       +     'Landing → Track → Dream → CV Upload → Quiz → <strong>Diagnosis</strong> → CV Templates → CV Builder → Jobs → Apply → Tracker → Interview → Dashboard'
       +   '</div>'
       + '</div>';
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PHASE 0 TASK 2 — Onboarding screens (#/track → #/dream → #/cv-upload → #/quiz)
+  // ════════════════════════════════════════════════════════════════════════
+
+  // ── #/track — Track Picker (4 options). Drives downstream copy / quiz
+  // length / CV template recommendations. Stored as V2Draft.track.
+  var V2_TRACKS = [
+    { key: 'junior_fresh',  icon: '🎓', title: 'خريج جديد / طالب',          desc: 'ما عندي خبرة بعد. أبحث عن أول وظيفة.' },
+    { key: 'junior_mid_exp', icon: '💼', title: 'عندي خبرة وأبي أتطور',     desc: 'سنتين فأكثر، أبحث عن دور أفضل في نفس المجال أو مجاور.' },
+    { key: 'leadership',    icon: '👔', title: 'قائد / مدير',                desc: '٨ سنوات+ في القيادة. أبحث عن دور تنفيذي.' },
+    { key: 'simple_job',    icon: '🛒', title: 'وظيفة بسيطة الآن',           desc: 'كاشير / باريستا / استقبال / مبيعات تجزئة.' },
+  ];
+
+  function renderTrack(app, route){
+    var current = V2Draft.field('track');
+    var cards = V2_TRACKS.map(function(t){
+      var sel = (current === t.key) ? ' is-selected' : '';
+      return ''
+        + '<button type="button" class="v2-track-card' + sel + '" data-track="' + escapeHtml(t.key) + '" onclick="v2PickTrack(\'' + escapeHtml(t.key) + '\')">'
+        +   '<div class="v2-track-icon">' + t.icon + '</div>'
+        +   '<div class="v2-track-body">'
+        +     '<div class="v2-track-title">' + escapeHtml(t.title) + '</div>'
+        +     '<div class="v2-track-desc">' + escapeHtml(t.desc) + '</div>'
+        +   '</div>'
+        + '</button>';
+    }).join('');
+    app.innerHTML = ''
+      + '<h2 class="v2-h1">أحسن إجابة عن <span class="v2-accent">وضعك</span> المهني؟</h2>'
+      + '<p class="v2-sub">جوابك يخلي دربي يفهم اللي تحتاجه فعلاً — مو نفس الرحلة لكل واحد.</p>'
+      + cards
+      + '<button type="button" class="v2-btn v2-btn-primary" id="v2TrackContinue" onclick="v2Go(\'#/dream\')"' + (current ? '' : ' disabled') + ' style="margin-top:14px">متابعة ←</button>';
+  }
+  function v2PickTrack(key){
+    V2Draft.set({ track: key });
+    // Re-render to reflect selection.
+    renderTrack(document.getElementById('v2-app'), V2_ROUTES['#/track']);
+  }
+
+  // ── #/dream — text input + 6 quick-pick chips.
+  var V2_DREAM_CHIPS = [
+    'Marketing Specialist', 'محاسب', 'Software Engineer',
+    'مدير مبيعات', 'HR Specialist', 'مصمم UI/UX',
+  ];
+
+  function renderDream(app, route){
+    var current = V2Draft.field('dreamRole') || '';
+    var chipsHtml = V2_DREAM_CHIPS.map(function(c){
+      return '<span class="v2-chip" onclick="v2SetDream(\'' + escapeHtml(c) + '\')">' + escapeHtml(c) + '</span>';
+    }).join('');
+    app.innerHTML = ''
+      + '<h2 class="v2-h1">وش الوظيفة اللي <span class="v2-accent">تحلم</span> فيها؟</h2>'
+      + '<p class="v2-sub">لا تكتب اللي تقدمت عليه. اكتب اللي تبيه فعلاً. دربي يقارن بين حلمك وسيرتك ويعطيك أقرب طريق.</p>'
+      + '<div class="v2-card">'
+      +   '<label class="v2-input-label" for="v2DreamInput">حلمك المهني</label>'
+      +   '<input type="text" id="v2DreamInput" class="v2-input" placeholder="مثال: مدير تسويق، محاسب، مطور" value="' + escapeHtml(current) + '" oninput="v2OnDreamInput(this.value)" />'
+      +   '<div class="v2-input-hint">اقتراحات سريعة:</div>'
+      +   '<div class="v2-chip-row">' + chipsHtml + '</div>'
+      + '</div>'
+      + '<button type="button" class="v2-btn v2-btn-primary" id="v2DreamContinue" onclick="v2GoFromDream()"' + (current.trim().length >= 2 ? '' : ' disabled') + '>متابعة ←</button>';
+    // Auto-focus input on first render.
+    setTimeout(function(){ var el = document.getElementById('v2DreamInput'); if (el && !current) el.focus(); }, 30);
+  }
+  function v2SetDream(value){
+    var el = document.getElementById('v2DreamInput');
+    if (el) { el.value = value; v2OnDreamInput(value); }
+  }
+  function v2OnDreamInput(value){
+    V2Draft.set({ dreamRole: value });
+    var btn = document.getElementById('v2DreamContinue');
+    if (btn) btn.disabled = !(value && value.trim().length >= 2);
+  }
+  function v2GoFromDream(){
+    var v = V2Draft.field('dreamRole') || '';
+    if (!v.trim()) return;
+    v2Go('#/cv-upload');
+  }
+
+  // ── #/cv-upload — paste / upload / start-from-template trifold.
+  function renderCvUpload(app, route){
+    var current = V2Draft.field('cvText') || '';
+    app.innerHTML = ''
+      + '<h2 class="v2-h1">ارفع <span class="v2-accent">سيرتك</span> أو الصقها</h2>'
+      + '<p class="v2-sub">دربي يقرأ النص الفعلي — مو اسم الملف. كل شي محفوظ محلياً على جهازك فقط حتى تكمّل التشخيص.</p>'
+      + '<div class="v2-upload-grid">'
+      +   '<label for="v2CvFileInput" class="v2-upload-card" id="v2UploadCard">'
+      +     '<div class="v2-upload-icon">📄</div>'
+      +     '<div class="v2-upload-body">'
+      +       '<div class="v2-upload-title">ارفع ملف PDF</div>'
+      +       '<div class="v2-upload-desc">حد أقصى ٥MB — يستخرج النص تلقائياً</div>'
+      +     '</div>'
+      +   '</label>'
+      +   '<input type="file" id="v2CvFileInput" accept=".pdf" style="display:none" onchange="v2HandleCvFile(event)" />'
+      +   '<button type="button" class="v2-upload-card" onclick="v2GoStartTemplate()">'
+      +     '<div class="v2-upload-icon">✨</div>'
+      +     '<div class="v2-upload-body">'
+      +       '<div class="v2-upload-title">ابدأ من قالب جاهز</div>'
+      +       '<div class="v2-upload-desc">للخريجين الجدد بدون سيرة بعد — Phase 1</div>'
+      +     '</div>'
+      +   '</button>'
+      + '</div>'
+      + '<div class="v2-divider">أو الصق النص يدوياً</div>'
+      + '<textarea class="v2-textarea" id="v2CvTextarea" placeholder="الصق محتوى سيرتك هنا..." oninput="v2OnCvTextInput(this.value)">' + escapeHtml(current) + '</textarea>'
+      + '<div id="v2CvFileStatus" class="v2-file-status"></div>'
+      + '<button type="button" class="v2-btn v2-btn-primary" id="v2CvContinue" onclick="v2Go(\'#/quiz\')"' + (current.trim().length >= 30 ? '' : ' disabled') + ' style="margin-top:14px">متابعة ←</button>'
+      + '<div class="v2-input-hint" style="text-align:center;margin-top:8px">على الأقل ٣٠ حرفاً عشان نقدر نحلل</div>';
+  }
+  function v2OnCvTextInput(value){
+    V2Draft.set({ cvText: value });
+    var btn = document.getElementById('v2CvContinue');
+    if (btn) btn.disabled = !(value && value.trim().length >= 30);
+  }
+  function v2GoStartTemplate(){
+    // For Task 2 this routes to the cv-templates placeholder (Phase 1).
+    v2Go('#/cv-templates');
+  }
+  function v2HandleCvFile(ev){
+    var f = ev.target.files && ev.target.files[0];
+    var statusEl = document.getElementById('v2CvFileStatus');
+    var card = document.getElementById('v2UploadCard');
+    if (!f) return;
+    var ext = (f.name.split('.').pop() || '').toLowerCase();
+    if (ext !== 'pdf') {
+      statusEl.textContent = 'حالياً ندعم PDF فقط — الصق النص يدوياً';
+      statusEl.classList.add('is-error');
+      statusEl.style.display = 'block';
+      return;
+    }
+    if (f.size > 5 * 1024 * 1024) {
+      statusEl.textContent = 'الملف أكبر من ٥MB — استخدم ملف أصغر';
+      statusEl.classList.add('is-error');
+      statusEl.style.display = 'block';
+      return;
+    }
+    statusEl.textContent = '⏳ جاري قراءة الملف...';
+    statusEl.classList.remove('is-error');
+    statusEl.style.display = 'block';
+    if (card) card.classList.add('is-active');
+    v2LoadPdfJs().then(function(pdfjs){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var data = new Uint8Array(e.target.result);
+        pdfjs.getDocument({ data: data }).promise.then(function(pdf){
+          var pages = [];
+          var jobs = [];
+          for (var i = 1; i <= pdf.numPages; i++) jobs.push(pdf.getPage(i).then(function(page){
+            return page.getTextContent().then(function(c){
+              return c.items.map(function(it){ return it.str; }).join(' ');
+            });
+          }));
+          Promise.all(jobs).then(function(arr){
+            var text = arr.join('\n').trim();
+            if (text.length < 30) {
+              statusEl.textContent = '⚠ ما قدرنا نقرأ نص كافي — قد يكون ملف صورة. الصق النص يدوياً';
+              statusEl.classList.add('is-error');
+              return;
+            }
+            V2Draft.set({ cvText: text });
+            var ta = document.getElementById('v2CvTextarea');
+            if (ta) ta.value = text;
+            statusEl.textContent = '✓ تم استخراج النص (' + text.length + ' حرفاً)';
+            statusEl.classList.remove('is-error');
+            var btn = document.getElementById('v2CvContinue');
+            if (btn) btn.disabled = false;
+          });
+        }).catch(function(){
+          statusEl.textContent = '⚠ ما قدرنا نقرأ الملف — الصق النص يدوياً';
+          statusEl.classList.add('is-error');
+        });
+      };
+      reader.readAsArrayBuffer(f);
+    }).catch(function(){
+      statusEl.textContent = '⚠ ما قدرنا نحمّل قارئ PDF — الصق النص يدوياً';
+      statusEl.classList.add('is-error');
+    });
+  }
+
+  // ── #/quiz — 5 questions. Same shape as V1 diagSubmitQuiz answers. Adaptive
+  // length (per track) is deferred to Phase 0.5 — Task 2 ships all 5 for all
+  // tracks so we don't lose signal.
+  var V2_QUIZ = [
+    { id: 'appsCount', q: 'قدمت على كم وظيفة آخر ٦ أشهر؟',
+      options: [
+        { value: 'lt5',    label: 'أقل من ٥' },
+        { value: '5_20',   label: '٥ إلى ٢٠' },
+        { value: '20_50',  label: '٢٠ إلى ٥٠' },
+        { value: 'gt50',   label: 'أكثر من ٥٠' },
+      ] },
+    { id: 'repliesCount', q: 'كم رد جاك؟',
+      options: [
+        { value: 'none',      label: 'ولا رد' },
+        { value: '1_2',       label: 'رد واحد أو اثنين' },
+        { value: 'interview', label: 'دخلت مقابلة' },
+        { value: 'final',     label: 'وصلت للمرحلة النهائية' },
+      ] },
+    { id: 'english', q: 'الإنجليزي عندك بصراحة؟',
+      options: [
+        { value: 'weak',      label: 'ضعيف' },
+        { value: 'write',     label: 'أكتب أفضل من الكلام' },
+        { value: 'good',      label: 'جيد' },
+        { value: 'excellent', label: 'ممتاز' },
+      ] },
+    { id: 'frustration', q: 'وش أكثر شي يحبطك؟',
+      options: [
+        { value: 'no_reply',    label: 'ما يردون علي' },
+        { value: 'no_target',   label: 'ما أعرف وش أقدم عليه' },
+        { value: 'no_exp',      label: 'ما عندي خبرة أكتبها' },
+        { value: 'english',     label: 'الإنجليزي' },
+        { value: 'no_results',  label: 'أقدم كثير وما يصير شي' },
+      ] },
+    { id: 'status', q: 'أنت الآن؟',
+      options: [
+        { value: 'student',     label: 'طالب جامعة' },
+        { value: 'fresh_grad',  label: 'خريج جديد' },
+        { value: 'experienced', label: 'عندي خبرة' },
+      ] },
+  ];
+
+  function renderQuiz(app, route){
+    var answers = V2Draft.field('quizAnswers') || {};
+    var total = V2_QUIZ.length;
+    var done = V2_QUIZ.filter(function(q){ return !!answers[q.id]; }).length;
+    var progressPct = Math.round((done / total) * 100);
+    var cardsHtml = V2_QUIZ.map(function(q){
+      var opts = q.options.map(function(o){
+        var sel = (answers[q.id] === o.value) ? ' is-selected' : '';
+        return '<button type="button" class="v2-quiz-option' + sel + '" onclick="v2PickQuizOption(\'' + escapeHtml(q.id) + '\', \'' + escapeHtml(o.value) + '\')">' + escapeHtml(o.label) + '</button>';
+      }).join('');
+      return ''
+        + '<div class="v2-quiz-card">'
+        +   '<div class="v2-quiz-q">' + escapeHtml(q.q) + '</div>'
+        +   '<div class="v2-quiz-options">' + opts + '</div>'
+        + '</div>';
+    }).join('');
+    var allDone = done === total;
+    app.innerHTML = ''
+      + '<h2 class="v2-h1">٥ أسئلة <span class="v2-accent">سريعة</span></h2>'
+      + '<p class="v2-sub">عشان نعطيك تشخيص دقيق مو عام. جوابك يبقى محلياً على جهازك.</p>'
+      + '<div class="v2-quiz-progress">'
+      +   '<span>' + done + ' / ' + total + '</span>'
+      +   '<div class="v2-quiz-progress-bar"><div class="v2-quiz-progress-fill" style="width:' + progressPct + '%"></div></div>'
+      + '</div>'
+      + cardsHtml
+      + '<button type="button" class="v2-btn v2-btn-primary" id="v2QuizContinue" onclick="v2GoFromQuiz()"' + (allDone ? '' : ' disabled') + ' style="margin-top:6px">أرني التشخيص ←</button>';
+  }
+  function v2PickQuizOption(qid, value){
+    var answers = V2Draft.field('quizAnswers') || {};
+    answers[qid] = value;
+    V2Draft.set({ quizAnswers: answers });
+    renderQuiz(document.getElementById('v2-app'), V2_ROUTES['#/quiz']);
+    // After re-render, scroll the just-answered card into view smoothly so
+    // the user sees the next unanswered question without losing context.
+    setTimeout(function(){
+      var unanswered = V2_QUIZ.find(function(q){ return !(V2Draft.field('quizAnswers') || {})[q.id]; });
+      if (!unanswered) {
+        var btn = document.getElementById('v2QuizContinue');
+        if (btn && btn.scrollIntoView) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 80);
+  }
+  function v2GoFromQuiz(){
+    var answers = V2Draft.field('quizAnswers') || {};
+    var complete = V2_QUIZ.every(function(q){ return !!answers[q.id]; });
+    if (!complete) return;
+    // Phase 0.5 will wire this to buildDiagnosis() + Diagnosis.set(). For
+    // Task 2 we just route to the placeholder — the draft is persisted.
+    v2Go('#/diagnosis');
   }
   </script>
 
