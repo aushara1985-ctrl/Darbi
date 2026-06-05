@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<!--
+  Darbi V2 — Preview shell + router scaffold.
+  Phase 0 Task 1: persistent shell, hash-based router, 10 route placeholders,
+  one working dummy screen (#/landing). V1 (public/index.html) is untouched
+  and remains the default experience at "/". V2 is accessible at "/v2".
+
+  Architecture decision (PM-approved Option A): separate file, same backend,
+  same localStorage keys → V2 reads/writes the same state V1 uses, so users
+  can move between V1 and V2 without losing diagnosis / applications / journey.
+
+  All namespaces below are copied verbatim from V1's public/index.html so the
+  storage shape stays identical. The only V2-specific layer is the router,
+  the shell, and the screen renderers (none of which exist yet beyond the
+  landing dummy).
+
+  Hard rules (per darbi-greploop skill):
+  - No payment CTAs while PAY_ENABLED=false.
+  - No "قريباً" / "Premium" placeholders in the main journey.
+  - No legacy V1 screens referenced from V2 (s-bridge-plan, s-access,
+    s-paywall, s-ugc, s-analysis, s-interview).
+  - No backend changes beyond serving this file at GET /v2.
+-->
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="دربي V2 — مساعد المسار المهني السعودي">
+  <title>دربي V2 — معاينة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════
+       V2 BASE + RESET
+    ════════════════════════════════════════════════════════════════════ */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Cairo',system-ui,-apple-system,sans-serif;
+      background:#fafafe;
+      color:#0a0a0a;
+      line-height:1.6;
+      font-size:15px;
+      -webkit-font-smoothing:antialiased;
+    }
+    button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+    a{color:inherit;text-decoration:none}
+    input,textarea,select{font-family:inherit;font-size:inherit}
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PERSISTENT SHELL — top bar + drawer + main
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-shell{min-height:100vh;display:flex;flex-direction:column}
+
+    .v2-top{
+      position:sticky;top:0;z-index:30;
+      background:#fff;
+      border-bottom:1px solid #ececf4;
+      box-shadow:0 1px 0 rgba(15,23,42,0.02);
+    }
+    .v2-top-row1{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      max-width:880px;margin:0 auto;padding:11px 18px;
+    }
+    .v2-logo{
+      display:flex;align-items:center;gap:8px;
+      font-weight:900;font-size:15px;color:#0a0a0a;letter-spacing:-.3px;
+    }
+    .v2-logo-mark{
+      width:28px;height:28px;border-radius:8px;
+      background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;
+      display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;
+    }
+
+    .v2-stepper{display:flex;align-items:center;gap:4px;flex:1;justify-content:center;max-width:280px}
+    .v2-step{
+      width:28px;height:4px;border-radius:99px;background:#e2e8f0;flex:1;max-width:36px;
+      transition:background .2s;
+    }
+    .v2-step.is-done{background:#16a34a}
+    .v2-step.is-now{background:#4f46e5}
+
+    .v2-top-actions{display:flex;align-items:center;gap:6px}
+    .v2-icon-btn{
+      width:36px;height:36px;border-radius:9px;
+      display:flex;align-items:center;justify-content:center;
+      color:#475569;font-size:18px;
+      transition:background .15s;
+    }
+    .v2-icon-btn:hover{background:#f1f5f9}
+    .v2-avatar{
+      background:#eef2ff;color:#4338ca;font-weight:800;font-size:13px;
+    }
+
+    .v2-top-row2{
+      display:flex;align-items:center;gap:10px;
+      max-width:880px;margin:0 auto;padding:9px 18px 11px;
+      border-top:1px solid #f1f5f9;
+    }
+    .v2-back{
+      background:transparent;color:#4338ca;font-size:13px;font-weight:700;
+      padding:5px 10px;border-radius:7px;
+      transition:background .15s;
+    }
+    .v2-back:hover{background:#eef2ff}
+    .v2-title{font-size:14px;font-weight:800;color:#0a0a0a;flex:1;text-align:center}
+    .v2-action-slot{min-width:60px;text-align:left}
+
+    /* ═══════════════════════════════════════════════════════════════════
+       DRAWER (slide-out nav from right in RTL)
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-drawer-overlay{
+      position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:40;
+      opacity:0;pointer-events:none;transition:opacity .2s;
+    }
+    .v2-drawer-overlay.is-open{opacity:1;pointer-events:auto}
+    .v2-drawer{
+      position:fixed;top:0;right:0;bottom:0;width:260px;max-width:80vw;
+      background:#fff;z-index:50;
+      box-shadow:-4px 0 16px rgba(15,23,42,.1);
+      transform:translateX(100%);transition:transform .25s;
+      overflow-y:auto;
+    }
+    .v2-drawer.is-open{transform:translateX(0)}
+    .v2-drawer-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:15px 18px;border-bottom:1px solid #ececf4;
+    }
+    .v2-drawer-head h3{font-size:14px;font-weight:800;color:#0a0a0a}
+    .v2-drawer-close{
+      width:28px;height:28px;border-radius:7px;font-size:18px;color:#475569;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .v2-drawer-close:hover{background:#f1f5f9}
+    .v2-drawer-list{display:flex;flex-direction:column;padding:8px 6px}
+    .v2-drawer-list a{
+      display:flex;align-items:center;gap:10px;
+      padding:11px 14px;border-radius:9px;
+      font-size:14px;font-weight:600;color:#0f172a;
+    }
+    .v2-drawer-list a:hover{background:#f8fafc}
+    .v2-drawer-list a.is-active{background:#eef2ff;color:#4338ca}
+    .v2-drawer-list .v2-drawer-logout{color:#dc2626;margin-top:14px;border-top:1px solid #ececf4;padding-top:14px;border-radius:0}
+
+    /* ═══════════════════════════════════════════════════════════════════
+       MAIN CONTAINER
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-main{
+      flex:1;
+      max-width:680px;width:100%;margin:0 auto;
+      padding:22px 18px 60px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       SHARED COMPONENTS — used by Phase 0+ screens
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-card{
+      background:#fff;border:1px solid #ececf4;border-radius:14px;
+      padding:18px;margin-bottom:14px;
+    }
+    .v2-h1{
+      font-size:23px;font-weight:900;color:#0a0a0a;letter-spacing:-.5px;
+      line-height:1.35;margin-bottom:6px;
+    }
+    .v2-h1 .v2-accent{color:#4f46e5}
+    .v2-sub{font-size:14px;color:#475569;line-height:1.7;margin-bottom:16px}
+
+    .v2-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      padding:13px 22px;border-radius:11px;
+      font-size:14.5px;font-weight:800;cursor:pointer;
+      font-family:inherit;transition:transform .08s,background .15s;
+    }
+    .v2-btn:active{transform:scale(.98)}
+    .v2-btn-primary{background:#4f46e5;color:#fff;width:100%}
+    .v2-btn-primary:hover{background:#4338ca}
+    .v2-btn-secondary{background:transparent;color:#4338ca;border:1px solid #c7d2fe}
+    .v2-btn-secondary:hover{background:#eef2ff}
+    .v2-btn-ghost{background:transparent;color:#475569;font-weight:700;padding:8px 12px}
+    .v2-btn-ghost:hover{background:#f8fafc}
+
+    .v2-empty-state{
+      padding:36px 22px;text-align:center;color:#475569;
+      background:#fff;border:1px dashed #cbd5e1;border-radius:14px;
+    }
+    .v2-empty-state .v2-empty-emoji{font-size:34px;margin-bottom:10px}
+    .v2-empty-state h3{font-size:17px;font-weight:800;color:#0a0a0a;margin-bottom:6px}
+    .v2-empty-state p{font-size:13px;color:#475569;line-height:1.7;margin-bottom:14px}
+
+    /* ═══════════════════════════════════════════════════════════════════
+       LANDING — dummy Task 1 screen
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-hero{
+      background:linear-gradient(135deg,#eef2ff 0%,#f5f3ff 100%);
+      border-radius:18px;
+      padding:32px 22px 26px;
+      text-align:center;
+      margin-bottom:18px;
+    }
+    .v2-hero-badge{
+      display:inline-block;background:#fff;color:#4338ca;
+      font-size:11.5px;font-weight:800;letter-spacing:.4px;
+      padding:5px 12px;border-radius:99px;border:1px solid #c7d2fe;
+      margin-bottom:14px;
+    }
+    .v2-hero h1{
+      font-size:28px;font-weight:900;color:#0a0a0a;letter-spacing:-1px;
+      line-height:1.25;margin-bottom:10px;
+    }
+    .v2-hero h1 .v2-accent{color:#4f46e5}
+    .v2-hero p{font-size:14px;color:#475569;line-height:1.75;margin-bottom:20px}
+    .v2-hero-meta{
+      display:flex;align-items:center;justify-content:center;gap:14px;
+      font-size:12px;color:#475569;margin-top:14px;flex-wrap:wrap;
+    }
+    .v2-hero-meta span{display:inline-flex;align-items:center;gap:5px}
+
+    .v2-ok-banner{
+      background:#dcfce7;border:1px solid #86efac;color:#166534;
+      padding:11px 14px;border-radius:10px;
+      font-size:13px;font-weight:700;text-align:center;
+      margin-bottom:14px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 520px) {
+      .v2-top-row1{padding:10px 14px}
+      .v2-stepper{display:none}
+      .v2-top-row2{padding:8px 14px 10px}
+      .v2-main{padding:18px 14px 50px}
+      .v2-hero{padding:26px 18px 22px}
+      .v2-hero h1{font-size:24px}
+      .v2-h1{font-size:21px}
+    }
+
+    @media (min-width: 521px) and (max-width: 720px) {
+      .v2-stepper{max-width:200px}
+    }
+  </style>
+</head>
+<body>
+  <div class="v2-shell">
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         TOP BAR — sticky, always visible
+    ═══════════════════════════════════════════════════════════════════ -->
+    <header class="v2-top">
+      <div class="v2-top-row1">
+        <a class="v2-logo" href="#/landing" onclick="v2Go('#/landing');return false;">
+          <span class="v2-logo-mark">د</span>
+          <span>Darbi · دربي</span>
+        </a>
+        <div class="v2-stepper" id="v2Stepper" aria-label="مرحلتك في الرحلة">
+          <span class="v2-step" data-step="1"></span>
+          <span class="v2-step" data-step="2"></span>
+          <span class="v2-step" data-step="3"></span>
+          <span class="v2-step" data-step="4"></span>
+          <span class="v2-step" data-step="5"></span>
+        </div>
+        <div class="v2-top-actions">
+          <button class="v2-icon-btn" onclick="v2ToggleDrawer()" aria-label="القائمة">☰</button>
+          <button class="v2-icon-btn v2-avatar" onclick="v2Go('#/account')" aria-label="حسابي">د</button>
+        </div>
+      </div>
+      <div class="v2-top-row2" id="v2TopRow2">
+        <button class="v2-back" id="v2Back" onclick="v2Back()" style="display:none">← رجوع</button>
+        <h1 class="v2-title" id="v2Title">—</h1>
+        <div class="v2-action-slot" id="v2ActionSlot"></div>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         DRAWER NAV — opened by ☰
+    ═══════════════════════════════════════════════════════════════════ -->
+    <div class="v2-drawer-overlay" id="v2DrawerOverlay" onclick="v2ToggleDrawer()"></div>
+    <nav class="v2-drawer" id="v2Drawer" aria-label="قائمة التنقل">
+      <div class="v2-drawer-head">
+        <h3>القائمة</h3>
+        <button class="v2-drawer-close" onclick="v2ToggleDrawer()" aria-label="إغلاق">×</button>
+      </div>
+      <div class="v2-drawer-list">
+        <a data-route="#/dashboard" onclick="v2Go('#/dashboard');return false;">🏠 لوحتي</a>
+        <a data-route="#/diagnosis" onclick="v2Go('#/diagnosis');return false;">🎯 التشخيص</a>
+        <a data-route="#/cv-templates" onclick="v2Go('#/cv-templates');return false;">📝 سيرتي</a>
+        <a data-route="#/jobs" onclick="v2Go('#/jobs');return false;">💼 الوظائف</a>
+        <a data-route="#/tracker" onclick="v2Go('#/tracker');return false;">📋 تقديماتي</a>
+        <a data-route="#/account" onclick="v2Go('#/account');return false;">👤 حسابي</a>
+        <a data-route="#/legal" onclick="v2Go('#/legal');return false;">📞 الخصوصية والشروط</a>
+        <a class="v2-drawer-logout" onclick="v2Logout();return false;">🚪 تسجيل خروج</a>
+      </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         MAIN — router renders here
+    ═══════════════════════════════════════════════════════════════════ -->
+    <main id="v2-app" class="v2-main"></main>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SHARED UTILITIES (copied verbatim from V1 public/index.html)
+       Identical behavior so V1 and V2 share auth tokens, etc.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+  /* eslint-disable */
+
+  // apiFetch — attaches Bearer JWT from localStorage.darbi_token.
+  function apiFetch(path, opts){
+    opts = opts || {};
+    var headers = Object.assign({}, opts.headers || {});
+    var body = opts.body;
+    if (body && !(body instanceof FormData) && typeof body !== 'string') {
+      body = JSON.stringify(body);
+      if (!headers['Content-Type']) headers['Content-Type'] = 'application/json';
+    }
+    var token = localStorage.getItem('darbi_token');
+    if (token && !headers['Authorization']) headers['Authorization'] = 'Bearer ' + token;
+    return fetch(path, Object.assign({}, opts, { headers: headers, body: body }));
+  }
+
+  // Arabic dialect normalization — used by Diagnosis intent matching.
+  function _arNormalize(s){
+    if (!s) return '';
+    return String(s)
+      .toLowerCase()
+      .replace(/[أإآ]/g, 'ا')
+      .replace(/ة/g, 'ه')
+      .replace(/ى/g, 'ي')
+      .replace(/ـ/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // HTML-escape util — shared by every namespace that writes to innerHTML.
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  // currentUser holder — V2 won't write to it from Task 1, but Access reads it.
+  // Future tasks will hydrate via /api/darbi/me on init.
+  var currentUser = null;
+  var ADMIN_EMAILS = ['aushara1985@gmail.com'];
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STATE NAMESPACES (copied verbatim from V1 — same localStorage keys
+       so V1 and V2 share state. NONE of these will execute side effects
+       until a screen actually calls them.)
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+  /* eslint-disable */
+
+  // ── Diagnosis (key: darbi_diagnosis) ─────────────────────────────────────
+  var Diagnosis = (function(){
+    var KEY = 'darbi_diagnosis';
+    return {
+      get: function(){
+        try { return JSON.parse(localStorage.getItem(KEY) || 'null'); }
+        catch(e){ return null; }
+      },
+      set: function(d){ try { localStorage.setItem(KEY, JSON.stringify(d)); } catch(e){} },
+      clear: function(){ try { localStorage.removeItem(KEY); } catch(e){} },
+      has: function(){ return !!this.get(); },
+    };
+  })();
+
+  // ── Access (key: darbi_access_state) ─────────────────────────────────────
+  var Access = (function(){
+    var KEY = 'darbi_access_state';
+    function read(){ try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){ return null; } }
+    function write(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+    return {
+      isAdmin: function(){
+        try { if (localStorage.getItem('darbi_access_status') === 'admin') return true; } catch(e){}
+        if (currentUser && currentUser.email && ADMIN_EMAILS.indexOf(String(currentUser.email).toLowerCase()) !== -1) return true;
+        return false;
+      },
+      state: function(){
+        if (this.isAdmin()) return { status: 'admin', founderLTD: false, expiresAt: null, earnedHours: 0, referralsCount: 0 };
+        var s = read();
+        if (!s) return { status: 'none', founderLTD: false, expiresAt: null, earnedHours: 0, referralsCount: 0 };
+        if (s.founderLTD) return Object.assign({}, s, { status: 'founder_ltd' });
+        if (s.expiresAt && Date.now() > s.expiresAt) return Object.assign({}, s, { status: 'expired' });
+        return s;
+      },
+      startFree24h: function(){
+        var existing = read() || {};
+        if (existing.founderLTD) return;
+        var s = { status: 'free_24h', startedAt: Date.now(), expiresAt: Date.now() + 24*60*60*1000,
+          earnedHours: existing.earnedHours || 0, referralsCount: existing.referralsCount || 0, founderLTD: false };
+        write(s); return s;
+      },
+      earn: function(hours){
+        var s = read();
+        if (!s) s = { status: 'free_24h', startedAt: Date.now(), expiresAt: Date.now(), earnedHours: 0, referralsCount: 0, founderLTD: false };
+        s.earnedHours = (s.earnedHours || 0) + hours;
+        var base = s.expiresAt && s.expiresAt > Date.now() ? s.expiresAt : Date.now();
+        s.expiresAt = base + hours * 60 * 60 * 1000;
+        var max = Date.now() + 30 * 24 * 60 * 60 * 1000;
+        if (s.expiresAt > max) s.expiresAt = max;
+        s.status = 'free_24h';
+        write(s); return s;
+      },
+      setFounderLTD: function(){
+        var s = read() || {};
+        s.founderLTD = true; s.status = 'founder_ltd'; s.expiresAt = null;
+        write(s); return s;
+      },
+      canUse: function(){
+        var st = this.state();
+        return st.status === 'admin' || st.status === 'founder_ltd' || st.status === 'free_24h';
+      },
+    };
+  })();
+
+  // ── DarbiBrain (key: darbi_brain) — MINIMAL stub for V2
+  // V1's full brain has 339 LOC of nextAction/coach logic that V2 doesn't
+  // need (DarbiJourney is canonical). V2 keeps just the event log so
+  // Applications.add can still fire learn() events without crashing.
+  var DarbiBrain = (function(){
+    var KEY = 'darbi_brain';
+    var MAX_EVENTS = 100;
+    function read(){
+      try {
+        var s = JSON.parse(localStorage.getItem(KEY) || 'null') || {};
+        if (!Array.isArray(s.events)) s.events = [];
+        if (!s.taskStatus || typeof s.taskStatus !== 'object') s.taskStatus = {};
+        return s;
+      } catch(e){ return { events: [], taskStatus: {}, lastUpdated: null }; }
+    }
+    function write(s){
+      try {
+        s.lastUpdated = new Date().toISOString();
+        if (Array.isArray(s.events) && s.events.length > MAX_EVENTS) s.events = s.events.slice(-MAX_EVENTS);
+        localStorage.setItem(KEY, JSON.stringify(s));
+      } catch(e){}
+    }
+    return {
+      learn: function(event){
+        if (!event || !event.type) return;
+        var s = read();
+        s.events.push({ type: event.type, payload: event.payload || null, ts: new Date().toISOString() });
+        write(s);
+      },
+      allEvents: function(){ return read().events; },
+      taskStatus: function(){ return read().taskStatus; },
+      reset: function(){ try { localStorage.removeItem(KEY); } catch(e){} },
+    };
+  })();
+
+  // ── Applications (key: darbi_applications) — verbatim from V1 ────────────
+  var Applications = (function(){
+    var KEY = 'darbi_applications';
+    function read(){
+      try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; }
+      catch(e){ return []; }
+    }
+    function write(arr){ try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch(e){} }
+    function nowIso(){ return new Date().toISOString(); }
+    function newId(){ return 'app-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8); }
+    var STATUS_EVENT = { reply:'reply_received', interview:'interview_received', rejected:'rejected', accepted:'accepted' };
+    return {
+      list: function(){ return read().slice().reverse(); },
+      raw:  function(){ return read(); },
+      add: function(input){
+        var arr = read();
+        var app = {
+          id: newId(),
+          company: String((input && input.company) || '').trim().slice(0, 80),
+          role:    String((input && input.role)    || '').trim().slice(0, 80),
+          url:     String((input && input.url)     || '').trim().slice(0, 400),
+          appliedAt: (input && input.appliedAt) || nowIso().slice(0, 10),
+          status:    (input && input.status)    || 'applied',
+          createdAt: nowIso(), updatedAt: nowIso(),
+        };
+        arr.push(app); write(arr);
+        if (typeof DarbiBrain !== 'undefined' && DarbiBrain.learn){
+          DarbiBrain.learn({ type: 'application_logged', payload: { id: app.id, status: app.status } });
+          if (STATUS_EVENT[app.status]) DarbiBrain.learn({ type: STATUS_EVENT[app.status], payload: { id: app.id } });
+        }
+        return app;
+      },
+      update: function(id, patch){
+        var arr = read();
+        var idx = arr.findIndex(function(a){ return a.id === id; });
+        if (idx < 0) return null;
+        var prevStatus = arr[idx].status;
+        Object.assign(arr[idx], patch || {}, { updatedAt: nowIso() });
+        write(arr);
+        var newStatus = arr[idx].status;
+        if (patch && patch.status && patch.status !== prevStatus){
+          if (typeof DarbiBrain !== 'undefined' && DarbiBrain.learn && STATUS_EVENT[newStatus]){
+            DarbiBrain.learn({ type: STATUS_EVENT[newStatus], payload: { id: id } });
+          }
+        }
+        return arr[idx];
+      },
+      remove: function(id){ var arr = read().filter(function(a){ return a.id !== id; }); write(arr); },
+      stats: function(){
+        var arr = read();
+        var s = { total: arr.length, applied: 0, reply: 0, interview: 0, rejected: 0, accepted: 0 };
+        arr.forEach(function(a){ if (s[a.status] != null) s[a.status]++; });
+        s.replies = s.reply + s.interview + s.rejected + s.accepted;
+        return s;
+      },
+      insight: function(){
+        var s = this.stats();
+        if (s.total === 0)                              return null;
+        if (s.accepted > 0)                             return 'ممتاز. سجّل وش اشتغل معك عشان نبني منه توصيات أقوى.';
+        if (s.interview > 0)                            return 'أنت تصل للمقابلة. نركز الآن على إجابات المقابلة.';
+        if (s.total >= 20 && s.replies === 0)           return 'هنا المشكلة غالباً في مطابقة السيرة أو اختيار الوظائف.';
+        if (s.total < 5)                                return 'عدد تقديماتك قليل. قبل ما نحكم على السيرة، نحتاج توسع التقديم.';
+        return null;
+      },
+    };
+  })();
+
+  // ── DarbiJourney (key: darbi_journey_state) — verbatim from V1 ───────────
+  // Note: The fn() callbacks reference V1 screen functions (startDiagnosis,
+  // goTool, renderDiagnosisScreen, goScreen, startGuidedSession). In V2 we
+  // ignore .fn() and use V2_ROUTE_FOR_KEY instead (see v2JourneyRoute below).
+  var DarbiJourney = (function(){
+    var KEY = 'darbi_journey_state';
+    function _read(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ return {}; } }
+    function _write(s){ try { localStorage.setItem(KEY, JSON.stringify(s || {})); } catch(e){} }
+    function _set(k, v){ var s = _read(); s[k] = v; s.updatedAt = new Date().toISOString(); _write(s); }
+    function _ns(name){
+      try { if (typeof window !== 'undefined' && window[name]) return window[name]; } catch(e){}
+      try { var v = eval(name); return v || null; } catch(e){ return null; }
+    }
+    function _hasDiag(){
+      var D = _ns('Diagnosis');
+      return !!(D && typeof D.get === 'function' && D.get());
+    }
+    function _hasJobs(){
+      var s = _read();
+      if (s.jobsViewed) return true;
+      try {
+        var c = JSON.parse(localStorage.getItem('darbi_jobs_cache_v1') || 'null');
+        if (c && c.data && Array.isArray(c.data.jobs) && c.data.jobs.length) return true;
+        if (c && c.data && c.data.mode === 'fallback') return true;
+      } catch(e){}
+      return false;
+    }
+    function _hasApplyPackage(){
+      var s = _read();
+      if (s.applyPackageCreated) return true;
+      var AP = _ns('ApplyPackage');
+      if (AP && typeof AP.list === 'function' && AP.list().length) return true;
+      return false;
+    }
+    function _hasApplication(){
+      var A = _ns('Applications');
+      return !!(A && typeof A.stats === 'function' && A.stats().total > 0);
+    }
+    function _hasReplyOrInterview(){
+      var A = _ns('Applications');
+      if (!(A && typeof A.stats === 'function')) return false;
+      var s = A.stats();
+      return (s.interview + s.reply + s.accepted) > 0;
+    }
+    function _interviewStarted(){
+      var G = _ns('GuidedSession');
+      if (G && typeof G.get === 'function' && G.get()) return true;
+      var s = _read();
+      return !!s.interviewLogged;
+    }
+    function getNextAction(){
+      if (!_hasDiag()){
+        return { key:'start_diagnosis', title:'ابدأ بتشخيص دربي',
+          why:'قبل أي شي ثاني، نحتاج نفهم وين أنت الآن ووين تبغى توصل.', cta:'ابدأ التشخيص' };
+      }
+      var s = _read();
+      if (!s.cvAuditDone){
+        return { key:'cv_audit', title:'حلّل سيرتك في عمق',
+          why:'سيرتك حالياً هي اللي توقفك. نبدأ بإصلاح التموضع والملخص قبل أي تقديم.', cta:'ابدأ تحليل السيرة' };
+      }
+      if (!_hasJobs()){
+        return { key:'job_matches', title:'استعرض وظائف مناسبة لك',
+          why:'سيرتك جاهزة. الخطوة الآن: اختر وظيفة محددة بدل التقديم العشوائي.', cta:'اعرض الوظائف المناسبة' };
+      }
+      if (!_hasApplyPackage()){
+        return { key:'apply_package', title:'جهّز تقديمك لأول وظيفة',
+          why:'اختيار وظيفة لا يكفي. نحتاج نجهز ملخص + نقاط + رسالة موجهة لها بالذات.', cta:'جهّز تقديمك' };
+      }
+      if (!_hasApplication()){
+        return { key:'apply_now', title:'افتح الوظيفة وقدّم',
+          why:'الباكدج جاهز. الخطوة العملية الآن: قدّم وسجّل التقديم.', cta:'افتح الوظيفة وقدّم' };
+      }
+      if (_hasReplyOrInterview() && !_interviewStarted()){
+        return { key:'interview_prep', title:'ابدأ تدريب المقابلة',
+          why:'وصلك رد أو مقابلة. نحول الوظيفة لجلسة تدريب على ٥ أسئلة قبل اللقاء.', cta:'ابدأ التدريب' };
+      }
+      return { key:'follow_up', title:'تابع حالة تقديماتك',
+        why:'سجل الردود والرفض والمقابلات عشان دربي يقرأ النمط ويعدّل خطتك.', cta:'افتح تقديماتي' };
+    }
+    function getState(){
+      var s = _read();
+      return {
+        hasDiagnosis: _hasDiag(),
+        cvAuditDone: !!s.cvAuditDone,
+        jobsViewed: _hasJobs(),
+        applyPackageCreated: _hasApplyPackage(),
+        applicationLogged: _hasApplication(),
+        hasReplyOrInterview: _hasReplyOrInterview(),
+        interviewStarted: _interviewStarted(),
+        updatedAt: s.updatedAt || null,
+      };
+    }
+    function progress(){
+      var st = getState();
+      return [
+        { key:'diagnosis',  label:'تشخيص',       done: st.hasDiagnosis },
+        { key:'cv',         label:'تحليل السيرة', done: st.cvAuditDone },
+        { key:'jobs',       label:'وظائف',       done: st.jobsViewed },
+        { key:'package',    label:'تجهيز تقديم', done: st.applyPackageCreated },
+        { key:'apply',      label:'تقديم',       done: st.applicationLogged },
+        { key:'interview',  label:'مقابلة',      done: st.interviewStarted || st.hasReplyOrInterview },
+      ];
+    }
+    return {
+      getState: getState, getNextAction: getNextAction, progress: progress,
+      markCvAuditDone:         function(){ _set('cvAuditDone', true);          DarbiBrain.learn({ type: 'journey_cv_audit_done' }); },
+      markJobsViewed:          function(){ _set('jobsViewed', true);           DarbiBrain.learn({ type: 'journey_jobs_viewed' }); },
+      markApplyPackageCreated: function(){ _set('applyPackageCreated', true);  DarbiBrain.learn({ type: 'journey_apply_package_created' }); },
+      markApplicationLogged:   function(){ _set('applicationLogged', true);    DarbiBrain.learn({ type: 'journey_application_logged' }); },
+      markInterviewLogged:     function(){ _set('interviewLogged', true);      DarbiBrain.learn({ type: 'journey_interview_logged' }); },
+      reset:                   function(){ _write({}); },
+    };
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       V2 ROUTER + SHELL
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+  /* eslint-disable */
+
+  // ── Route table: 10 routes. All inactive routes show a placeholder card
+  // with a "قيد البناء (Phase X)" label — clear acknowledgement, not lying
+  // "coming soon" hype.
+  var V2_ROUTES = {
+    '#/landing':      { title: '',                    step: 0, back: null,           render: 'renderLanding' },
+    '#/track':        { title: 'وضعك المهني',          step: 1, back: '#/landing',    render: 'renderPlaceholder', phase: 'Phase 0.1' },
+    '#/dream':        { title: 'وش الوظيفة اللي تحلم فيها؟', step: 1, back: '#/track', render: 'renderPlaceholder', phase: 'Phase 0.2' },
+    '#/cv-upload':    { title: 'ارفع سيرتك',           step: 1, back: '#/dream',      render: 'renderPlaceholder', phase: 'Phase 0.3' },
+    '#/quiz':         { title: 'أسئلة سريعة',          step: 1, back: '#/cv-upload',  render: 'renderPlaceholder', phase: 'Phase 0.4' },
+    '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderPlaceholder', phase: 'Phase 0.5' },
+    '#/cv-templates': { title: 'اختر قالب سيرتك',       step: 2, back: '#/diagnosis', render: 'renderPlaceholder', phase: 'Phase 1' },
+    '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-templates', render: 'renderPlaceholder', phase: 'Phase 1' },
+    '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderPlaceholder', phase: 'Phase 0.6' },
+    '#/apply':        { title: 'جهّز تقديمك',           step: 4, back: '#/jobs',      render: 'renderPlaceholder', phase: 'Phase 0.7' },
+    '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.8' },
+    '#/interview':    { title: 'تدريب المقابلة',         step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.9' },
+    '#/dashboard':    { title: 'لوحتي',                 step: 0, back: null,          render: 'renderPlaceholder', phase: 'Phase 0.10' },
+    '#/account':      { title: 'حسابي',                 step: 0, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.11' },
+    '#/legal':        { title: 'الخصوصية والشروط',      step: 0, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.12' },
+  };
+
+  // ── Map DarbiJourney.key → V2 route. Used when callers want to advance.
+  var V2_ROUTE_FOR_KEY = {
+    start_diagnosis: '#/dream',
+    cv_audit:        '#/cv-templates',
+    job_matches:     '#/jobs',
+    apply_package:   '#/jobs',
+    apply_now:       '#/jobs',
+    interview_prep:  '#/interview',
+    follow_up:       '#/tracker',
+  };
+
+  // ── Navigation primitives ───────────────────────────────────────────────
+  function v2Go(hash, replace){
+    if (!hash || !V2_ROUTES[hash]) hash = '#/landing';
+    if (replace) {
+      window.history.replaceState({ route: hash }, '', hash);
+    } else {
+      window.history.pushState({ route: hash }, '', hash);
+    }
+    v2RenderRoute(hash);
+  }
+  function v2Back(){
+    var current = location.hash || '#/landing';
+    var route = V2_ROUTES[current];
+    if (route && route.back) {
+      v2Go(route.back);
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      v2Go('#/landing', true);
+    }
+  }
+  function v2ToggleDrawer(){
+    var d = document.getElementById('v2Drawer');
+    var o = document.getElementById('v2DrawerOverlay');
+    if (!d || !o) return;
+    var open = !d.classList.contains('is-open');
+    d.classList.toggle('is-open', open);
+    o.classList.toggle('is-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  function v2Logout(){
+    try { localStorage.removeItem('darbi_token'); } catch(e){}
+    v2ToggleDrawer();
+    v2Go('#/landing', true);
+  }
+  function v2JourneyRoute(){
+    var act = DarbiJourney.getNextAction();
+    return V2_ROUTE_FOR_KEY[act.key] || '#/dashboard';
+  }
+
+  // ── Shell render — updates the top bar to match the route ───────────────
+  function v2RenderShell(routeInfo){
+    var titleEl   = document.getElementById('v2Title');
+    var backEl    = document.getElementById('v2Back');
+    var stepperEl = document.getElementById('v2Stepper');
+    var row2El    = document.getElementById('v2TopRow2');
+
+    if (titleEl) titleEl.textContent = routeInfo.title || '';
+    if (backEl)  backEl.style.display = routeInfo.back ? '' : 'none';
+
+    // Step indicator: only show on journey routes (step 1-5). Hide on
+    // landing / dashboard / account / legal.
+    if (stepperEl) {
+      var showStep = routeInfo.step >= 1 && routeInfo.step <= 5;
+      stepperEl.style.display = showStep ? 'flex' : 'none';
+      if (showStep) {
+        var steps = stepperEl.querySelectorAll('.v2-step');
+        for (var i = 0; i < steps.length; i++) {
+          steps[i].classList.remove('is-done', 'is-now');
+          var n = i + 1;
+          if (n < routeInfo.step) steps[i].classList.add('is-done');
+          else if (n === routeInfo.step) steps[i].classList.add('is-now');
+        }
+      }
+    }
+    // Row 2 is only useful when there's a title or a back button. Hide on landing.
+    if (row2El) {
+      var hasContent = !!routeInfo.title || !!routeInfo.back;
+      row2El.style.display = hasContent ? '' : 'none';
+    }
+    // Highlight active drawer link.
+    var links = document.querySelectorAll('.v2-drawer-list a[data-route]');
+    for (var j = 0; j < links.length; j++) {
+      links[j].classList.toggle('is-active', links[j].getAttribute('data-route') === location.hash);
+    }
+  }
+
+  // ── Route dispatcher ────────────────────────────────────────────────────
+  function v2RenderRoute(hash){
+    hash = hash || location.hash || '#/landing';
+    var route = V2_ROUTES[hash];
+    if (!route) {
+      hash = '#/landing';
+      route = V2_ROUTES[hash];
+      window.history.replaceState({ route: hash }, '', hash);
+    }
+    v2RenderShell(route);
+    var app = document.getElementById('v2-app');
+    if (!app) return;
+    // Close drawer on navigation.
+    var drawer = document.getElementById('v2Drawer');
+    if (drawer && drawer.classList.contains('is-open')) v2ToggleDrawer();
+    // Scroll to top on every navigation.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    // Dispatch to renderer.
+    var fnName = route.render;
+    if (typeof window[fnName] === 'function') {
+      window[fnName](app, route);
+    } else {
+      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">⚙️</div><h3>—</h3><p>renderer غير معرّف.</p></div>';
+    }
+  }
+
+  // Browser back/forward + initial load + hashchange.
+  window.addEventListener('popstate', function(){ v2RenderRoute(location.hash); });
+  window.addEventListener('hashchange', function(){ v2RenderRoute(location.hash); });
+  window.addEventListener('DOMContentLoaded', function(){
+    var initial = location.hash || '#/landing';
+    if (!V2_ROUTES[initial]) initial = '#/landing';
+    window.history.replaceState({ route: initial }, '', initial);
+    v2RenderRoute(initial);
+  });
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SCREEN RENDERERS — Task 1 ships #/landing only.
+       Every other route falls back to renderPlaceholder() which prints an
+       honest "قيد البناء — Phase X" card. Not lying "coming soon" because
+       these routes are not in the published main journey yet.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+  /* eslint-disable */
+
+  // ── #/landing — the only real screen in Task 1 ──────────────────────────
+  function renderLanding(app, route){
+    app.innerHTML = ''
+      + '<div class="v2-ok-banner">✓ V2 Shell يشتغل — Phase 0 Task 1</div>'
+      + '<section class="v2-hero">'
+      +   '<span class="v2-hero-badge">دربي V2 — معاينة مبكّرة</span>'
+      +   '<h1>قدمت ١٠ مرات وما <span class="v2-accent">جاك رد؟</span></h1>'
+      +   '<p>المشكلة مو فيك. المشكلة في الطريق. نشخّص وضعك المهني، نصلح السيرة، ونرتب التقديم خطوة خطوة.</p>'
+      +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(v2JourneyRoute())">ابدأ التشخيص ←</button>'
+      +   '<div class="v2-hero-meta">'
+      +     '<span>⏱ دقيقة واحدة</span>'
+      +     '<span>🎁 مجاني للبدء</span>'
+      +     '<span>🚫 بدون اشتراك</span>'
+      +   '</div>'
+      + '</section>'
+      + '<div class="v2-card" style="background:#f8fafc;border-style:dashed">'
+      +   '<div style="font-size:11.5px;font-weight:800;color:#64748b;letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px">حالة المعاينة</div>'
+      +   '<p style="font-size:13px;color:#475569;line-height:1.7">V2 يقرأ نفس حالتك من V1 ('
+      +     'تشخيصك، تقديماتك، رحلتك). '
+      +     'لو سويت تشخيص في V1، تقدر تكمله هنا. '
+      +     'لو ما سويت، اضغط "ابدأ التشخيص" — حالياً نوديك للنسخة V1 من الصفحة لأن شاشة V2 للتشخيص قيد البناء.'
+      +   '</p>'
+      + '</div>';
+    // Override: since #/dream + #/diagnosis are still placeholders, the
+    // "ابدأ التشخيص" button on the V2 landing routes through DarbiJourney
+    // but the destination renders the honest placeholder. That's fine for
+    // Task 1 — future tasks build the real screens.
+  }
+
+  // ── Placeholder renderer for routes not built yet ──────────────────────
+  function renderPlaceholder(app, route){
+    app.innerHTML = ''
+      + '<div class="v2-empty-state">'
+      +   '<div class="v2-empty-emoji">🛠</div>'
+      +   '<h3>' + escapeHtml(route.title || 'شاشة قيد البناء') + '</h3>'
+      +   '<p>هذه الشاشة جزء من <strong>' + escapeHtml(route.phase || 'مرحلة قادمة') + '</strong> من بناء V2. '
+      +     'حالياً جاهز فقط: <strong>Shell + Router + الصفحة الرئيسية</strong>.</p>'
+      +   '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/landing\')">رجوع للرئيسية</button>'
+      + '</div>'
+      + '<div class="v2-card" style="margin-top:14px;background:#fafafe">'
+      +   '<div style="font-size:11.5px;font-weight:800;color:#64748b;letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px">المسار في V2</div>'
+      +   '<div style="font-size:12.5px;color:#475569;line-height:1.8">'
+      +     'Landing → Track → Dream → CV Upload → Quiz → <strong>Diagnosis</strong> → CV Templates → CV Builder → Jobs → Apply → Tracker → Interview → Dashboard'
+      +   '</div>'
+      + '</div>';
+  }
+  </script>
+
+</body>
+</html>

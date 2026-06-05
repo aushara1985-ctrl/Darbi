@@ -1193,6 +1193,14 @@ app.use('/api', (req, res) => {
   res.status(404).json({ error: 'not_found', path: req.originalUrl });
 });
 
+// ══════ V2 preview shell (Phase 0 Task 1) ═════════════════════════════════
+// Separate file at public/v2.html. V1 (public/index.html) stays at "/".
+// V2 reads the same localStorage keys so state moves seamlessly between
+// V1 and V2. Backend is unchanged — both versions hit the same /api/* routes.
+app.get('/v2', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/v2.html'));
+});
+
 // ══════ SPA catch-all (registered last on purpose) ══════════════════════════
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
