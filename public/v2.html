@@ -339,6 +339,106 @@
     .v2-btn:disabled{opacity:.45;cursor:not-allowed}
 
     /* ═══════════════════════════════════════════════════════════════════
+       DIAGNOSIS — #/diagnosis (the WOW)
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-dx-hero{
+      background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+      border-radius:18px;padding:24px 22px;color:#fff;margin-bottom:16px;
+      box-shadow:0 4px 20px rgba(79,70,229,.18);
+    }
+    .v2-dx-hero-eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px}
+    .v2-dx-hero-role{font-size:24px;font-weight:900;letter-spacing:-.5px;line-height:1.3}
+
+    .v2-dx-card{
+      background:#fff;border:1px solid #ececf4;border-radius:14px;
+      padding:18px;margin-bottom:13px;
+    }
+    .v2-dx-card-h{font-size:11.5px;font-weight:800;color:#4338ca;letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px}
+    .v2-dx-card-body{font-size:14.5px;color:#0a0a0a;line-height:1.75}
+
+    .v2-dx-roles{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+    .v2-dx-role{
+      background:#dcfce7;color:#166534;font-size:12.5px;font-weight:700;
+      padding:7px 13px;border-radius:99px;
+    }
+    .v2-dx-role.is-pick{
+      background:#eef2ff;color:#4338ca;cursor:pointer;
+      transition:background .15s;border:1px solid transparent;
+    }
+    .v2-dx-role.is-pick:hover{background:#c7d2fe}
+
+    .v2-dx-interpret{
+      background:linear-gradient(135deg,#fef3c7,#fde68a);
+      border:1px solid #f59e0b;border-radius:14px;
+      padding:16px;margin-bottom:13px;
+    }
+    .v2-dx-interpret-h{font-size:11.5px;font-weight:800;color:#78350f;letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px}
+    .v2-dx-interpret-body{font-size:14.5px;color:#1f2937;font-weight:700;line-height:1.7}
+
+    .v2-dx-firstfix{
+      background:#fef3c7;border:1.5px solid #fcd34d;border-radius:14px;
+      padding:16px;margin-bottom:13px;
+    }
+    .v2-dx-firstfix-eyebrow{font-size:11px;font-weight:800;color:#92400e;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+    .v2-dx-firstfix-body{font-size:14px;color:#78350f;line-height:1.7;font-weight:700}
+
+    .v2-dx-roadmap{
+      background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+      border:1px solid #c7d2fe;border-radius:14px;
+      padding:18px;margin-bottom:13px;
+    }
+    .v2-dx-roadmap-h{font-size:16px;font-weight:900;color:#0a0a0a;margin-bottom:4px}
+    .v2-dx-roadmap-sub{font-size:12.5px;color:#475569;line-height:1.7;margin-bottom:13px}
+    .v2-dx-steps{display:flex;flex-direction:column;gap:8px}
+    .v2-dx-step{
+      display:flex;gap:11px;align-items:flex-start;background:#fff;
+      border:1px solid #ececf4;border-radius:11px;padding:12px;
+    }
+    .v2-dx-step.is-next{border-color:#4f46e5;background:#fafaff;box-shadow:0 0 0 3px rgba(79,70,229,.08)}
+    .v2-dx-step.is-done{opacity:.7}
+    .v2-dx-step.is-locked{opacity:.55}
+    .v2-dx-step-num{
+      flex-shrink:0;width:28px;height:28px;border-radius:50%;
+      background:#e0e7ff;color:#4338ca;font-weight:900;font-size:13px;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .v2-dx-step.is-done .v2-dx-step-num{background:#dcfce7;color:#166534}
+    .v2-dx-step.is-next .v2-dx-step-num{background:#4f46e5;color:#fff}
+    .v2-dx-step.is-locked .v2-dx-step-num{background:#f1f5f9;color:#94a3b8}
+    .v2-dx-step-body{flex:1;min-width:0}
+    .v2-dx-step-title{font-size:13.5px;font-weight:800;color:#0a0a0a;margin-bottom:2px}
+    .v2-dx-step-tag{display:inline-block;font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:99px;margin-bottom:3px}
+    .v2-dx-step.is-done .v2-dx-step-tag{background:#dcfce7;color:#166534}
+    .v2-dx-step.is-next .v2-dx-step-tag{background:#fef3c7;color:#92400e}
+    .v2-dx-step.is-locked .v2-dx-step-tag{background:#f1f5f9;color:#64748b}
+
+    .v2-dx-scores{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:12px}
+    .v2-dx-score{
+      background:#fafafe;border:1px solid #ececf4;border-radius:10px;padding:10px 12px;
+    }
+    .v2-dx-score-label{font-size:10.5px;color:#64748b;margin-bottom:4px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+    .v2-dx-score-val{font-size:18px;font-weight:900;color:#0a0a0a;letter-spacing:-.3px}
+
+    .v2-dx-loading{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:50px 20px;color:#475569;
+    }
+    .v2-dx-loading-spin{
+      width:36px;height:36px;border:3px solid #e0e7ff;border-top-color:#4f46e5;
+      border-radius:50%;animation:v2spin 1s linear infinite;margin-bottom:14px;
+    }
+    @keyframes v2spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .v2-dx-loading-text{font-size:13.5px;font-weight:700;margin-bottom:4px;color:#0a0a0a}
+    .v2-dx-loading-sub{font-size:12px;color:#64748b}
+
+    .v2-dx-error{
+      background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;
+      padding:13px 16px;border-radius:11px;
+      font-size:13px;font-weight:700;line-height:1.7;
+      display:flex;align-items:flex-start;gap:10px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
        RESPONSIVE
     ════════════════════════════════════════════════════════════════════ */
     @media (max-width: 520px) {
@@ -765,7 +865,7 @@
     '#/dream':        { title: 'وش الوظيفة اللي تحلم فيها؟', step: 1, back: '#/track', render: 'renderDream' },
     '#/cv-upload':    { title: 'ارفع سيرتك',           step: 1, back: '#/dream',      render: 'renderCvUpload' },
     '#/quiz':         { title: 'أسئلة سريعة',          step: 1, back: '#/cv-upload',  render: 'renderQuiz' },
-    '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderPlaceholder', phase: 'Phase 0.5' },
+    '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderDiagnosis' },
     '#/cv-templates': { title: 'اختر قالب سيرتك',       step: 2, back: '#/diagnosis', render: 'renderPlaceholder', phase: 'Phase 1' },
     '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-templates', render: 'renderPlaceholder', phase: 'Phase 1' },
     '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderPlaceholder', phase: 'Phase 0.6' },
@@ -1261,9 +1361,584 @@
     var answers = V2Draft.field('quizAnswers') || {};
     var complete = V2_QUIZ.every(function(q){ return !!answers[q.id]; });
     if (!complete) return;
-    // Phase 0.5 will wire this to buildDiagnosis() + Diagnosis.set(). For
-    // Task 2 we just route to the placeholder — the draft is persisted.
     v2Go('#/diagnosis');
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PHASE 0 TASK 3 — Diagnosis screen + buildDiagnosis logic
+  // Inlines V1's extractCvFacts, DREAM_ROLE_LIBRARY, ARABIC_LABEL_TO_FAMILY,
+  // detectDreamFamily, detectSimpleJobIntent, inferStatusFromCV,
+  // determineBranch, resolveDreamIntent, localHeuristicIntent, and a slimmer
+  // v2AnalyzeCareerFit (drops JD parsing since V2 has no JD input here).
+  // ════════════════════════════════════════════════════════════════════════
+
+  // ── extractCvFacts (verbatim from V1) ──────────────────────────────────
+  function extractCvFacts(cvText){
+    var out = { major: null, gradYear: null, latestTitle: null, yearsExp: null, languages: [], tools: [] };
+    if (!cvText || cvText.length < 30) return out;
+    var t = cvText;
+    var tn = _arNormalize(t);
+    var majorAr = t.match(/(?:بكالوريوس|ماجستير|دبلوم|دكتوراه)[\s:،,-]+([^\n،,.\-–|]{3,60})/);
+    if (majorAr && majorAr[1]) out.major = majorAr[1].trim().slice(0, 60);
+    if (!out.major){
+      var majorAr2 = t.match(/(?:تخصص|قسم)[\s:،,-]+([^\n،,.\-–|]{3,60})/);
+      if (majorAr2 && majorAr2[1]) out.major = majorAr2[1].trim().slice(0, 60);
+    }
+    if (!out.major){
+      var majorEn = t.match(/\b(?:bachelor(?:'s)?|master(?:'s)?|b\.?\s?sc\.?|m\.?\s?sc\.?|b\.?\s?a\.?|degree|major)\b[^a-zA-Z]{0,8}(?:of|in)?\s+([A-Z][A-Za-z &]{2,50})/);
+      if (majorEn && majorEn[1]) out.major = majorEn[1].trim().slice(0, 60);
+    }
+    var thisYear = new Date().getFullYear();
+    var yearMatches = (t.match(/\b(19[9]\d|20[0-3]\d)\b/g) || [])
+      .map(function(y){ return parseInt(y, 10); })
+      .filter(function(y){ return y >= 1990 && y <= thisYear + 1; });
+    if (yearMatches.length) out.gradYear = Math.max.apply(null, yearMatches);
+    var expIdx = t.search(/(?:experience|work experience|الخبرة العملية|الخبرات|خبرات|الخبرة)/i);
+    if (expIdx !== -1){
+      var after = t.slice(expIdx, expIdx + 600).split(/\n+/);
+      for (var i = 1; i < after.length && i < 8; i++){
+        var line = (after[i] || '').trim().replace(/^[-•·*\s]+/, '');
+        if (line.length >= 4 && line.length <= 80 && !/^\d/.test(line) && !/^[a-z0-9_.@-]+$/i.test(line)){
+          out.latestTitle = line.slice(0, 80); break;
+        }
+      }
+    }
+    var yrsPatterns = [
+      /(\d{1,2})\+?\s*(?:years?|yrs?)\s*(?:of\s*)?(?:experience|exp\b)/i,
+      /خبره?\s*(?:تزيد\s*عن\s*)?(\d{1,2})\+?\s*(?:سنه|سنوات|سنين)/,
+      /(\d{1,2})\+?\s*(?:سنه|سنوات|سنين)\s*(?:من\s*)?الخبره/,
+    ];
+    var yrsCandidates = [];
+    yrsPatterns.forEach(function(re){ var m = tn.match(re) || t.match(re); if (m && m[1]) yrsCandidates.push(parseInt(m[1], 10)); });
+    if (yrsCandidates.length) out.yearsExp = Math.max.apply(null, yrsCandidates.filter(function(n){ return n > 0 && n < 60; }));
+    var langDict = [
+      { re: /\b(arabic|عربي)\b/i,  v: 'Arabic'  },
+      { re: /\b(english|انجليزي|إنجليزي|انجليزيه)\b/i, v: 'English' },
+      { re: /\b(french|فرنسي)\b/i, v: 'French'  },
+      { re: /\b(german|deutsch|الماني|ألماني)\b/i, v: 'German' },
+      { re: /\b(spanish|اسباني|إسباني)\b/i, v: 'Spanish' },
+      { re: /\b(urdu|اردو|أردو)\b/i, v: 'Urdu' },
+    ];
+    langDict.forEach(function(d){ if (d.re.test(t)) out.languages.push(d.v); });
+    var toolDict = ['Excel','Word','PowerPoint','Outlook','Microsoft 365','Google Workspace','Salesforce','HubSpot','Zoho','SAP','QuickBooks','Tableau','Power BI','Canva','Figma','Photoshop','Illustrator','Adobe XD','Python','SQL','JavaScript','React','Node','Zendesk','Freshdesk','Intercom','Jira','Slack','AutoCAD','Revit'];
+    toolDict.forEach(function(name){
+      var re = new RegExp('\\b' + name.replace(/[.+]/g, '\\$&') + '\\b', 'i');
+      if (re.test(t)) out.tools.push(name);
+    });
+    out.languages = out.languages.slice(0, 6);
+    out.tools     = out.tools.slice(0, 8);
+    out.projectsEvidence = (function(){
+      var hits = 0;
+      if (/\bproject(s)?\b|مشاريع|مشروع/i.test(t)) hits++;
+      if (/\binternship|training|تدريب\b|تدريبي/i.test(t)) hits++;
+      if (/\bportfolio|بورتفوليو\b/i.test(t)) hits++;
+      if (/\bgithub|behance|dribbble\b/i.test(t)) hits++;
+      return hits >= 1;
+    })();
+    out.customerFacing = (function(){
+      var hits = 0;
+      if (/customer|client|عملاء|عميل/i.test(t)) hits++;
+      if (/support|دعم|service|خدمه|خدمة/i.test(t)) hits++;
+      if (/communicat|تواصل|interact/i.test(t)) hits++;
+      if (/handled.*complain|resolved.*issue|شكوى|شكاو/i.test(t)) hits++;
+      return hits >= 2;
+    })();
+    out.leadershipEvidence = (function(){
+      var hits = 0;
+      if (/\bled\b|قاد|قدت|قاده|قيادة|قياده/i.test(t)) hits++;
+      if (/\bmanaged\b|ادار|أدار|إدارة|اداره/i.test(t)) hits++;
+      if (/team.*\d+|\d+.*team|فريق.*\d+|\d+.*فريق/i.test(t)) hits++;
+      if (/\bmentored|coach(ed)?|درّبت|درب/i.test(t)) hits++;
+      if (/\bsupervisor|manager|head of|director|lead\b/i.test(t)) hits++;
+      return hits >= 1;
+    })();
+    return out;
+  }
+
+  // ── DREAM_ROLE_LIBRARY (verbatim from V1) ──────────────────────────────
+  var DREAM_ROLE_LIBRARY = {
+    marketing: { familyAr:'تسويق', keywords:['تسويق','marketing','social media','digital marketing','seo','content','إعلانات','تسويق رقمي'],
+      nearestRoles:['Marketing Assistant','Social Media Assistant','Content Coordinator','Sales/Marketing Assistant'],
+      commonGaps:['ما عندك Portfolio يثبت تسويق','ما في حملات أو أمثلة فعلية','ما تذكر أدوات التسويق (Canva, Meta, Analytics)','الإنجازات بدون أرقام أو نتائج'],
+      bridgePlan:['ابني 3 أمثلة حملات بسيطة (post + ad + tiny analytics)','أعد كتابة مشاريع الجامعة بلغة تسويقية مع نتائج','أضف أدوات: Canva, Excel, Meta basics, content calendar','جهّز إجابة سؤال: "ليش التسويق؟" في ٣ جمل قوية'],
+      interviewPrep:'ليش التسويق؟ + مثال حملة قمت بها أو تتمنى تعمل مثلها', ctaB:'ابنِ طريقي للتسويق' },
+    hr: { familyAr:'موارد بشرية', keywords:['hr','موارد بشرية','تنمية بشرية','recruitment','توظيف','talent','موظفين','استقطاب'],
+      nearestRoles:['HR Assistant','Recruitment Coordinator','Admin Assistant','Talent Acquisition Assistant'],
+      commonGaps:['ما في أمثلة عمليات HR (تنظيم، متابعة، سرية)','ما في أدلة على Excel أو Reporting','ما في خبرة تواصل مع موظفين أو متقدمين','السيرة عامة بدون لغة HR'],
+      bridgePlan:['حوّل مشاريع التنسيق/تنظيم في الجامعة لأمثلة HR','أضف Excel + admin keywords + reporting','تعلّم اساسيات Saudization و GOSI و Mudad','جهّز إجابة: "ليش HR؟" مع مثال موقف من حياتك'],
+      interviewPrep:'ليش HR؟ + موقف نظّمت فيه ناس أو حليت مشكلة بينهم', ctaB:'ابنِ طريقي للـ HR' },
+    accounting: { familyAr:'محاسبة', keywords:['محاسبة','accounting','محاسب','finance','مالية','بنوك','banking','audit','تدقيق'],
+      nearestRoles:['Accounting Assistant','Junior Accountant','Finance Assistant','Data Entry / Accounts Clerk'],
+      commonGaps:['ما في أمثلة Excel متقدم','ما تذكر invoices/reconciliation/GL','ما في تعرض على برامج محاسبية (SAP, QuickBooks, Zoho)','الانتباه للتفاصيل غير مثبت'],
+      bridgePlan:['حوّل مواد الجامعة (cost, financial, audit) لإنجازات على السيرة','أضف Excel + accounting terms (AP, AR, GL, reconciliation)','سجّل في Zoho Books تجريبي وعمل 3 invoices','جهّز إجابة: "كيف تحافظ على الدقة تحت الضغط؟"'],
+      interviewPrep:'كيف تتعامل مع الأرقام تحت الضغط؟ + لماذا اخترت المحاسبة؟', ctaB:'ابنِ طريقي للمحاسبة' },
+    sales: { familyAr:'مبيعات', keywords:['sales','مبيعات','account executive','مندوب مبيعات','telesales','بيع'],
+      nearestRoles:['Sales Representative','Retail Sales Associate','Telesales Agent','Sales Coordinator'],
+      commonGaps:['ما في أمثلة إقناع أو تعامل مع عملاء','ما في targets أو أرقام مبيعات','ما في follow-up قابل للقياس','مهارات التواصل غير مثبتة'],
+      bridgePlan:['حوّل أي تجربة عميل/مشروع للغة المبيعات (target → effort → result)','أضف objection handling + follow-up + CRM keywords','جهّز قصة "أقنعت شخص بشي صعب" في ٤٥ ثانية','استمع لـ 5 مكالمات مبيعات على YouTube ودوّن العبارات'],
+      interviewPrep:'بعني هذا القلم + موقف اقنعت فيه عميل صعب', ctaB:'ابنِ طريقي للمبيعات' },
+    customer_service: { familyAr:'خدمة عملاء', keywords:['خدمة عملاء','customer service','customer care','customer support','call center','كول سنتر','عناية عملاء','دعم العملاء','عناية بالعملاء','عناية بالعميل','خدمة العملاء','موظف فرع','contact center','client services'],
+      nearestRoles:['Customer Service Representative','Call Center Agent','Branch Customer Service','Reception / Front Desk'],
+      commonGaps:['ما في أمثلة على حل شكاوى','ما في أدلة تواصل تحت الضغط','ما تذكر CRM أو ticketing','السيرة عامة بدون لغة الخدمة'],
+      bridgePlan:['اكتب سيناريو "عميل غاضب يطلب refund خارج السياسة" + خطوات حلك','أضف complaint resolution + de-escalation + communication keywords','تعرّف على أدوات تذاكر شائعة (Zendesk, Freshdesk demo)','جهّز إجابة: "أصعب عميل واجهته"'],
+      interviewPrep:'عميل غاضب — كيف تتعامل؟ + ليش الخدمة؟', ctaB:'ابنِ طريقي لخدمة العملاء' },
+    it_cyber: { familyAr:'تقنية / أمن سيبراني', keywords:['it','cybersecurity','أمن سيبراني','تقنية','helpdesk','soc','it support','شبكات','networking'],
+      nearestRoles:['IT Support Trainee','Helpdesk Agent','SOC Trainee','Technical Support Assistant'],
+      commonGaps:['ما في مشاريع labs أو home setup','ما في certificates (CompTIA, Security+, Cisco)','ما في GitHub/portfolio','ما في أمثلة troubleshooting'],
+      bridgePlan:['ابني 2-3 home labs (TryHackMe, HackTheBox starter)','احصل على شهادة واحدة on-track (Google IT Support أو Security+)','وثّق troubleshooting examples على GitHub بسيط','جهّز إجابة: "كيف تتعلم تقنية جديدة؟" مع مثال حقيقي'],
+      interviewPrep:'كيف تتعلم تقنية جديدة؟ + اشرح فيشينج لشخص غير تقني', ctaB:'ابنِ طريقي للتقنية' },
+    design: { familyAr:'تصميم', keywords:['design','تصميم','graphic','ui/ux','ui','ux','مصمم','figma','adobe'],
+      nearestRoles:['Junior Designer','Social Media Designer','Canva Designer','UI/UX Trainee'],
+      commonGaps:['ما في portfolio منشور','ما في عينات بصرية','ما تشرح process التصميم','ما تذكر أدوات (Figma, Adobe, Canva)'],
+      bridgePlan:['ابني 3 مشاريع portfolio (post + UI screen + branding)','انشر على Behance أو Google Drive وضع اللينك في السيرة','أضف أدوات + design process بكل مشروع','جهّز "ليش هذا التصميم؟" — تشرح قراراتك بدل ما تعرضها'],
+      interviewPrep:'اشرح قرار تصميم اتخذته + كيف تتعامل مع feedback صعب', ctaB:'ابنِ طريقي للتصميم' },
+    admin_office: { familyAr:'إداري / مكتبي', keywords:['إداري','admin','office','coordinator','منسق','executive assistant','سكرتير','data entry'],
+      nearestRoles:['Admin Assistant','Office Coordinator','Operations Assistant','Data Entry'],
+      commonGaps:['ما في أمثلة تنظيم','ما في Excel/reporting evidence','ما في scheduling/follow-up','المهام مذكورة كقائمة عامة'],
+      bridgePlan:['حوّل أي تنظيم سابق (جامعة، عائلة، تطوع) لإنجاز مهني','أضف Excel + scheduling tools + reporting','تعلم أساسيات Microsoft 365 (Outlook, Teams, OneDrive)','جهّز "كيف تنظّم وقتك تحت ضغط؟" مع مثال'],
+      interviewPrep:'كيف تنظّم وقتك تحت الضغط؟ + موقف أنقذ فيه التنظيم خطأ', ctaB:'ابنِ طريقي للإداري' },
+  };
+  var ARABIC_LABEL_TO_FAMILY = {
+    'خدمة عملاء':'customer_service','مبيعات':'sales','تسويق':'marketing','موارد بشرية':'hr',
+    'محاسبة':'accounting','تقنية':'it_cyber','تصميم':'design','إدارة / تنسيق':'admin_office','وظيفة بسيطة الآن':'simple_job',
+  };
+
+  function detectDreamFamily(dreamText){
+    if (!dreamText) return 'unknown';
+    var t = _arNormalize(dreamText);
+    for (var family in DREAM_ROLE_LIBRARY){
+      var lib = DREAM_ROLE_LIBRARY[family];
+      if (lib.keywords && lib.keywords.some(function(k){ return t.indexOf(_arNormalize(k)) !== -1; })) return family;
+    }
+    return 'unknown';
+  }
+  function detectSimpleJobIntent(dreamText){
+    if (!dreamText) return false;
+    var t = String(dreamText).toLowerCase();
+    var kw = ['كاشير','cashier','باريستا','barista','ماكدونالد','starbucks','retail','تجزئة','فرع','مطعم','استقبال','reception','مقهى','وظيفة بسيطة','وظيفه بسيطه','بسيط'];
+    return kw.some(function(k){ return t.indexOf(k.toLowerCase()) !== -1; });
+  }
+  function inferStatusFromCV(cvText){
+    if (!cvText || cvText.length < 80) return 'unknown';
+    if (/\bmanager\b|\bdirector\b|\bhead of\b|\blead\b|managed [a-z]+ team|led [a-z]+ team|years.* experience|سنوات خبرة|سنين خبرة|\b(5|6|7|8|9|10|11|12|13|14|15|20)\+?\s*(year|years|سنة|سنوات|سنين)/i.test(cvText)) return 'experienced';
+    if (/\b(student|طالب|طالبة|undergraduate|سنة ثالثة|سنة رابعة|year\s*3|year\s*4)\b/i.test(cvText)) return 'student';
+    var thisYear = new Date().getFullYear();
+    for (var i = 0; i < 3; i++) {
+      var y = thisYear - i;
+      if (cvText.indexOf(String(y)) !== -1 && /(graduat|تخرّج|تخرج|بكالوريوس|دبلوم|ماجستير|bachelor|master|degree)/i.test(cvText)) return 'fresh_grad';
+    }
+    if (/\b(intern|تدريب|fresh graduate|خريج جديد)\b/i.test(cvText)) return 'fresh_grad';
+    return 'unknown';
+  }
+  function determineBranch(answers, cvText){
+    var status = answers.status || inferStatusFromCV(cvText);
+    if (detectSimpleJobIntent(answers.dreamRole)) return 'A';
+    if (status === 'experienced') return 'C';
+    return 'B';
+  }
+
+  // Slimmer V2 career-fit analyzer — drops the V1 JD-parser path since the
+  // diagnosis flow has no JD input. Returns the same shape buildDiagnosis
+  // expects, with reasonable defaults.
+  function v2AnalyzeCareerFit(cvText, dreamRole){
+    var cv = cvText || '';
+    var cvL = cv.toLowerCase();
+    var seniority = inferStatusFromCV(cv);
+    var cvStrength = 30;
+    if (/\d+%|\d+m\s*sar|arr|mrr/i.test(cv)) cvStrength += 20;
+    if (/led|managed|built|launched|grew|improved|delivered|قاد|أدار|طوّر/i.test(cv)) cvStrength += 10;
+    if (cv.length > 1500) cvStrength += 8;
+    if (cv.length > 3000) cvStrength += 5;
+    if (/customer success|churn|retention|health score|playbook|renewal|onboarding/i.test(cv)) cvStrength += 12;
+    if (seniority === 'experienced') cvStrength += 15;
+    cvStrength = Math.min(Math.max(cvStrength, 15), 92);
+    // jobFit = cvStrength biased + keyword overlap with the dream role.
+    var jobFit = Math.round(cvStrength * 0.7);
+    var dreamWords = String(dreamRole || '').toLowerCase().split(/\s+/).filter(function(w){ return w.length > 3; });
+    var overlap = dreamWords.filter(function(w){ return cvL.indexOf(w) !== -1; }).length;
+    jobFit += overlap * 5;
+    jobFit = Math.min(Math.max(jobFit, 15), 88);
+    return {
+      cvStrengthScore: Math.round(cvStrength),
+      jobFitScore:     Math.round(jobFit),
+      interviewReadinessScore: 25,
+      readinessScore:  Math.round((cvStrength * 0.5 + jobFit * 0.5)),
+    };
+  }
+
+  // ── Intent resolution — uses /api/darbi/resolve-intent + local fallback ──
+  function localHeuristicIntent(dreamRole, cvText){
+    var family = detectDreamFamily(dreamRole);
+    var seniority = inferStatusFromCV(cvText);
+    return {
+      family: family || 'unknown',
+      confidence: family && family !== 'unknown' ? 55 : 18,
+      normalizedDreamRole: _arNormalize(dreamRole || ''),
+      inferredSeniority: seniority || 'unknown',
+      reason: family && family !== 'unknown' ? 'تطابق محلي مع عائلة ' + family : 'ما طابق أي مفهوم واضح',
+      nearestRoleLogic: 'local',
+      isSimpleJob: family === 'simple_job' || detectSimpleJobIntent(dreamRole),
+      source: 'local',
+    };
+  }
+  async function resolveDreamIntent(args){
+    var dreamRole = (args && args.dreamRole) || '';
+    var cvText    = (args && args.cvText)    || '';
+    var quizAnswers = (args && args.quizAnswers) || null;
+    try {
+      var res = await fetch('/api/darbi/resolve-intent', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dreamRole: dreamRole, cvText: cvText, quizAnswers: quizAnswers }),
+      });
+      if (res.ok){
+        var data = await res.json();
+        if (data && data.intent && data.intent.family) return data.intent;
+      }
+    } catch(e){ /* fall through to local */ }
+    return localHeuristicIntent(dreamRole, cvText);
+  }
+
+  // ── buildDiagnosis (verbatim from V1, but uses v2AnalyzeCareerFit) ─────
+  async function buildDiagnosis(dreamRole, cvText, answers, intentOverride){
+    var intent = intentOverride || await resolveDreamIntent({ dreamRole: dreamRole, cvText: cvText, quizAnswers: answers });
+    var family = intent.family || 'unknown';
+    var confidentFamily = (intent.confidence || 0) >= 60 && family !== 'unknown';
+    var branch = determineBranch(answers, cvText);
+    if (intent.isSimpleJob === true || family === 'simple_job') branch = 'A';
+    var lib = confidentFamily ? (DREAM_ROLE_LIBRARY[family] || null) : null;
+    var facts = extractCvFacts(cvText);
+    var rec = v2AnalyzeCareerFit(cvText, dreamRole);
+
+    // currentReality
+    var currentReality;
+    if (branch === 'A') {
+      currentReality = 'سيرتك بسيطة، وهذا في الواقع مناسب لوظيفة مباشرة. ما تحتاج تعقّدها — تحتاج طريقة تقديم أذكى.';
+    } else if (!confidentFamily) {
+      var seen = [];
+      if (facts && facts.major) seen.push('تخصصك ' + facts.major);
+      if (facts && facts.latestTitle) seen.push('آخر دور لك "' + facts.latestTitle + '"');
+      if (facts && facts.yearsExp) seen.push(facts.yearsExp + ' سنوات خبرة');
+      if (facts && facts.customerFacing) seen.push('تعرّض لتجربة عملاء');
+      if (facts && facts.leadershipEvidence) seen.push('إشارات لقيادة فريق');
+      currentReality = seen.length
+        ? 'من سيرتك واضح: ' + seen.slice(0, 3).join('، ') + '. لكن هدفك "' + dreamRole + '" ما نقدر نربطه باتجاه واضح. نحتاج تحدد المسار وندخل بعمق.'
+        : 'هدفك "' + dreamRole + '" ما طابق أي مسار معروف. اختر اتجاه من الخيارات تحت ونرسم لك الطريق.';
+    } else if (branch === 'B') {
+      var bMods = '';
+      if (facts && facts.customerFacing && family === 'customer_service') bMods = ' الزين إنه عندك تعرّض لتجربة عملاء في سيرتك — نبني عليه.';
+      if (facts && facts.leadershipEvidence && (family === 'admin_office' || family === 'hr')) bMods = ' عندك إشارات تنظيمية في سيرتك — نوظفها.';
+      if (facts && facts.tools && facts.tools.length && family === 'it_cyber') bMods = ' الأدوات في سيرتك (' + facts.tools.slice(0,2).join('، ') + ') مدخل صح للتقنية.';
+      // Defensive: confidentFamily can be true while lib is null when OpenAI
+      // returns a family the V1 library doesn't have (e.g. customer_success).
+      // Use the raw intent family in that case rather than crashing.
+      var bFamAr = lib ? lib.familyAr : (intent.family || 'مجالك');
+      currentReality = 'أنت في بداية مسار ' + bFamAr + '. سيرتك ما تثبت بعد الدليل المطلوب لدور متخصص كامل، لكن الهدف ممكن.' + bMods;
+    } else {
+      var cMods = '';
+      if (facts && facts.yearsExp) cMods = ' (شفنا ' + facts.yearsExp + ' سنوات خبرة في سيرتك)';
+      if (facts && facts.leadershipEvidence) cMods += '، وفي إشارات قيادة';
+      var cFamAr = lib ? lib.familyAr : (intent.family || 'مجالك');
+      currentReality = 'عندك خبرة في ' + cFamAr + cMods + '. السيرة موجودة، لكن لا تطابق لغة الإعلانات بسرعة كافية، أو تستهدف أدوار أعلى من أقرب مدخل.';
+    }
+
+    // biggestGap
+    var biggestGap;
+    if (branch === 'A') {
+      biggestGap = 'لو قدمت أونلاين فقط، صعب يردون. مدير الفرع يشوف 50 وجه باليوم ونسي اسمك. الحل: روح بنفسك للفروع.';
+    } else if (branch === 'B') {
+      if (lib && lib.commonGaps && lib.commonGaps.length) biggestGap = 'سيرتك ' + lib.commonGaps[0] + '. لما الـ HR يفتحها لـ 7 ثواني، ما يلقى الدليل اللي يحتاجه يوصلك للمقابلة.';
+      else if (!confidentFamily) biggestGap = 'نحتاج نحدد اتجاهك أكثر عشان نعطيك طريق واقعي. اختر أقرب اتجاه من الخيارات تحت — راح نعيد التشخيص حالًا على المسار اللي تختاره.';
+      else biggestGap = 'سيرتك ما تثبت بعد المهارات اللي تطلبها هذي الوظيفة. الـ HR لا يستنتج، يبحث عن دليل واضح.';
+    } else {
+      if (answers.appsCount === 'lt5') biggestGap = 'المشكلة غالباً مو في سيرتك — في عدد تقديماتك. 5 تقديمات في 6 أشهر مو funnel، خبر بسيط. تحتاج 30+ تقديم بأسبوع لتلقى رد واحد.';
+      else if (answers.repliesCount === 'none' && (answers.appsCount === 'gt50' || answers.appsCount === '20_50')) biggestGap = 'قدمت كثير وما يردون = إشارة قوية إن السيرة لا تطابق لغة الإعلانات، أو تستهدف أدوار أعلى من أقرب مدخل واقعي لك.';
+      else biggestGap = 'سيرتك تصف مهام، ما تثبت نتائج. + غالباً تقدم على أدوار أعلى من أقرب مدخل واقعي لك الآن.';
+    }
+
+    // nearestWinnableRoles
+    var nearestRoles;
+    var openaiRoles = (Array.isArray(intent.nearestRoleLogic) && intent.nearestRoleLogic.length) ? intent.nearestRoleLogic : null;
+    if (branch === 'A') nearestRoles = ['كاشير','باريستا','موظف خدمة عملاء فرع','استقبال','مبيعات تجزئة'];
+    else if (lib && openaiRoles) nearestRoles = openaiRoles.slice(0, 5);
+    else if (lib) nearestRoles = lib.nearestRoles.slice(0, 4);
+    else if (openaiRoles) nearestRoles = openaiRoles.slice(0, 5);
+    else nearestRoles = ['خدمة عملاء','مبيعات','تسويق','موارد بشرية','محاسبة','تقنية','تصميم','إدارة / تنسيق','وظيفة بسيطة الآن'];
+
+    // bridgePlan
+    var bridgePlan;
+    if (branch === 'A') bridgePlan = ['سيرة من صفحة واحدة (الاسم، التواصل، التعليم، المهارات الحياتية، أي شغل بسيط/تطوع)','سكربت ٣٠ ثانية تقوله للمسؤول في الفرع','حدد ٥ فروع قريبة منك وروح لها بكرة الصبح','لا تعتمد على البريد. التقديم وجهاً لوجه يفتح الباب أسرع'];
+    else if (branch === 'B' && lib) bridgePlan = lib.bridgePlan.slice();
+    else if (branch === 'C') bridgePlan = ['حدد إعلان واحد محدد تستهدفه — مو 10','عدّل سيرتك تطابق لغة الإعلان (3 تعديلات جراحية: ملخص + كلمات + ترتيب الإنجازات)','بدّل من 5 تقديمات لـ 30 تقديم بأسبوع — وسّع قنواتك','لا تعتمد على بوابة واحدة. LinkedIn + Bayt + معارف + تقديم مباشر للشركة'];
+    else bridgePlan = ['حدد اتجاهك بدقة أكثر (تخصصك + ٣ أدوار محتملة)','حسّن ملخص السيرة ليعكس هدفك الواضح','أضف كلمات الأدوار اللي تستهدفها','ابدأ تقديم منظم: ٣ شركات اليوم'];
+
+    // firstFix
+    var firstFix;
+    if (branch === 'A') firstFix = 'اطبع سيرتك من صفحة واحدة الليلة + روح ٣ فروع غدا الصبح. هذا أسرع من ١٠٠ تقديم أونلاين.';
+    else if (branch === 'B' && lib) firstFix = 'الخطوة الأولى: ' + lib.bridgePlan[0] + '. تأخذ ٣٠ دقيقة، تغيّر شكل سيرتك بالكامل.';
+    else if (branch === 'C') firstFix = 'اختر إعلان واحد فقط الليلة + أعد ترتيب أعلى ٣ إنجازات في سيرتك بحيث تظهر الأرقام أولاً. ٢٠ دقيقة شغل.';
+    else {
+      var hint = '';
+      if (facts){
+        if (facts.major)             hint = ' (شفنا تخصصك: ' + facts.major + ')';
+        else if (facts.latestTitle)  hint = ' (آخر دور لك: ' + facts.latestTitle + ')';
+        else if (facts.yearsExp)     hint = ' (خبرتك: ' + facts.yearsExp + ' سنوات)';
+        else if (facts.customerFacing) hint = ' (شفنا تعرّض عملاء في سيرتك)';
+      }
+      firstFix = 'اختر اتجاه من الخيارات تحت' + hint + ' — بمجرد ما تضغط، يعاد التشخيص فورًا ويصير الطريق واضح.';
+    }
+
+    // ─── Senior-CV override ───────────────────────────────────────────────
+    var rawCv = (cvText || '');
+    var seniorSignals = 0;
+    if (facts && facts.yearsExp && facts.yearsExp >= 8) seniorSignals++;
+    if (/\b(head of|director|vp|vice president|chief|c-?level|cxo|cco|cmo|coo|cto|ceo)\b/i.test(rawCv)) seniorSignals++;
+    if (/\bmanager of (cs|customer|managers|team|the team|csms)\b/i.test(rawCv)) seniorSignals++;
+    if (/\b(\d{2,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)\b/i.test(rawCv)) seniorSignals++;
+    if (/\barr\b|\bmrr\b|\bnrr\b|\bgrr\b|\bnet retention|gross retention|retention rate\b/i.test(rawCv)) seniorSignals++;
+    if (/\b(managed|led|leading|leadership)\b.{0,30}(team|people|staff|directs?|reports?)/i.test(rawCv)) seniorSignals++;
+    if (/\b(playbook|playbooks|health scoring|health score|qbr|executive (reporting|review)|expansion (revenue|playbook)|strategy)\b/i.test(rawCv)) seniorSignals++;
+    if (facts && facts.leadershipEvidence) seniorSignals++;
+    var isSeniorCV = seniorSignals >= 2;
+    var dreamIsLeadership = /\b(director|head of|vp\b|vice president|chief|lead\b|leader|principal)\b/i.test(dreamRole || '');
+
+    if (isSeniorCV && dreamIsLeadership && branch === 'C') {
+      var BANNED_FOR_SENIOR = /(\bcsm\b|customer success manager(?!.*senior|.*lead|.*enterprise)|specialist|coordinator|client support|call center|agent|junior|trainee|assistant|مبتدئ|متدرب|مساعد|ممثل خدمة)/i;
+      var filtered = (nearestRoles || []).filter(function(r){ return !BANNED_FOR_SENIOR.test(r); });
+      var dreamLc = (dreamRole || '').toLowerCase();
+      var seniorPool;
+      if (/customer success|cs\b|عملاء|cs leadership/i.test(dreamLc)) {
+        seniorPool = ['Head of Customer Success','Senior Customer Success Manager (Enterprise)','Director of Customer Success — smaller SaaS','CS Operations Lead'];
+      } else if (/sales|مبيعات|account/i.test(dreamLc)) {
+        seniorPool = ['Head of Sales — smaller SaaS','Senior Account Executive (Enterprise)','Sales Operations Lead','Director of Sales — smaller company'];
+      } else if (/marketing|تسويق|growth|brand/i.test(dreamLc)) {
+        seniorPool = ['Head of Marketing — smaller SaaS','Senior Marketing Manager','Growth Lead','Director of Marketing — smaller company'];
+      } else if (/engineering|tech|cto|software/i.test(dreamLc)) {
+        seniorPool = ['Engineering Manager','Staff Engineer','Head of Engineering — smaller SaaS','Tech Lead'];
+      } else {
+        seniorPool = ['Senior ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, ''),'Head of ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, '') + ' — smaller company',(dreamRole || 'Director') + ' at a smaller SaaS','Operations Lead'];
+      }
+      var seniorRoles = [];
+      filtered.forEach(function(r){ if (seniorRoles.indexOf(r) === -1) seniorRoles.push(r); });
+      seniorPool.forEach(function(r){ if (seniorRoles.indexOf(r) === -1) seniorRoles.push(r); });
+      nearestRoles = seniorRoles.slice(0, 4);
+      var arrMatch = rawCv.match(/(\d{1,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)/i);
+      var yrsCopy = (facts && facts.yearsExp) ? (facts.yearsExp + ' سنوات خبرة') : 'خبرة قيادية فعلية';
+      var arrCopy = arrMatch ? (' + ARR ' + arrMatch[0]) : '';
+      currentReality = 'عندك ' + yrsCopy + ' في القيادة' + arrCopy + ' — السيرة فيها الدليل، لكن مكتوبة كمهام تشغيلية، مو كقصة قائد تنفيذي.';
+      biggestGap = 'الفجوة ليست في خبرتك. الفجوة في التموضع (positioning) — السيرة تحتاج تعيد صياغة كل دور كقائد يملك ARR، retention، expansion، أداء فريق، وتقارير تنفيذية.';
+      firstFix = 'أعد كتابة الملخص المهني في ٣ أسطر فقط: ARR managed + retention% + team size. هذا أعلى-تأثير تعديل اليوم — أهم من تقديم على ١٠ وظائف.';
+    }
+
+    // interpretation
+    var interpretation;
+    if (isSeniorCV && dreamIsLeadership && branch === 'C') {
+      interpretation = 'أنت لا تحتاج تبدأ من جديد. أنت تحتاج تعيد صياغة خبرتك كقائد ' + (/customer success|cs\b|عملاء/i.test((dreamRole||'').toLowerCase()) ? 'CS' : 'تنفيذي') + ' — مو كموظف عمليات.';
+    } else if (branch === 'A') {
+      interpretation = 'مشكلتك مو في سيرتك، مشكلتك في القناة. التقديم وجهاً لوجه يفتح الباب أسرع من ١٠٠ تقديم أونلاين.';
+    } else if (branch === 'B') {
+      var iFamAr = lib ? lib.familyAr : (intent.family || 'مجالك');
+      interpretation = confidentFamily ? ('أنت في بداية مسار ' + iFamAr + '. تحتاج تثبت الدليل في السيرة قبل ما تقدم — مو تقدم وتنتظر.') : 'هدفك واضح، لكن مسارك المهني يحتاج اتجاه. اختر اتجاه واحد من الخيارات تحت ونرسم الطريق.';
+    } else if (branch === 'C') {
+      if (answers.appsCount === 'lt5') interpretation = 'مشكلتك مو السيرة، مشكلتك حجم القمع. ٥ تقديمات في ٦ أشهر ما تكفي تعرف وين الخلل.';
+      else if (answers.repliesCount === 'none' && (answers.appsCount === 'gt50' || answers.appsCount === '20_50')) interpretation = 'قدمت كثير وما يردون = إشارة قوية إن السيرة لا تطابق لغة الإعلانات، أو تستهدف أدوار أعلى من المدخل الواقعي.';
+      else interpretation = 'سيرتك تصف مهام بدل ما تثبت نتائج. + غالباً تستهدف أعلى من أقرب مدخل واقعي لك الآن.';
+    } else {
+      interpretation = 'نحتاج نحدد اتجاهك بدقة أكثر. اختر من الخيارات تحت ونعيد التشخيص فوراً.';
+    }
+
+    // scores
+    var pathClarity = branch === 'A' ? 80 : (branch === 'B' && lib ? 65 : (branch === 'C' ? 70 : 35));
+    var sup = {
+      cvStrength: rec.cvStrengthScore || 30,
+      dreamMatch: Math.min(rec.jobFitScore || 30, branch === 'C' ? 80 : (branch === 'B' ? 55 : 70)),
+      interviewReadiness: rec.interviewReadinessScore || 25,
+      pathClarity: pathClarity,
+    };
+
+    return {
+      dreamRole: dreamRole, family: family, branch: branch,
+      intent: { family: intent.family, confidence: intent.confidence || 0, inferredSeniority: intent.inferredSeniority || 'unknown', reason: intent.reason || '', source: intent.source || 'unknown', isSimpleJob: !!intent.isSimpleJob },
+      confidentFamily: confidentFamily,
+      needsDirectionPick: !confidentFamily && branch !== 'A',
+      inferredStatus: answers.status || inferStatusFromCV(cvText),
+      cvTextLength: (cvText || '').length,
+      applicationsCount: answers.appsCount || null,
+      repliesCount: answers.repliesCount || null,
+      englishLevel: answers.english || null,
+      frustration: answers.frustration || null,
+      currentReality: currentReality, biggestGap: biggestGap, nearestWinnableRoles: nearestRoles,
+      bridgePlan: bridgePlan, firstFix: firstFix, interpretation: interpretation,
+      isSeniorOverride: !!(isSeniorCV && dreamIsLeadership && branch === 'C'),
+      supportingScores: sup,
+      interviewPrep: lib ? lib.interviewPrep : 'ليش هذا المسار؟ + موقف يثبت قدراتك',
+      cvFacts: facts, cvText: cvText, createdAt: new Date().toISOString(),
+    };
+  }
+
+  // ── Diagnosis screen flow ───────────────────────────────────────────────
+  async function renderDiagnosis(app, route){
+    // Path 1: a Diagnosis already exists (from V1 or previous V2 session).
+    var existing = Diagnosis.get();
+    if (existing) { _v2PaintDiagnosis(app, existing); return; }
+    // Path 2: we have a complete V2Draft — build a fresh diagnosis.
+    var draft = V2Draft.get();
+    var dreamRole = (draft.dreamRole || '').trim();
+    var cvText    = (draft.cvText    || '').trim();
+    var answers   = draft.quizAnswers || {};
+    var quizComplete = V2_QUIZ.every(function(q){ return !!answers[q.id]; });
+    if (!dreamRole || !cvText || !quizComplete) {
+      app.innerHTML = ''
+        + '<div class="v2-empty-state">'
+        +   '<div class="v2-empty-emoji">📝</div>'
+        +   '<h3>اكمل التشخيص أولاً</h3>'
+        +   '<p>نحتاج حلمك المهني + سيرتك + الإجابة على ٥ أسئلة عشان نعطيك تشخيص دقيق.</p>'
+        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/track\')">ابدأ التشخيص ←</button>'
+        + '</div>';
+      return;
+    }
+    // Show loading + run buildDiagnosis async.
+    app.innerHTML = ''
+      + '<div class="v2-dx-loading">'
+      +   '<div class="v2-dx-loading-spin"></div>'
+      +   '<div class="v2-dx-loading-text">نحلل سيرتك مع حلمك...</div>'
+      +   '<div class="v2-dx-loading-sub">يستغرق ثواني — نسأل دربي عن المسار الصح</div>'
+      + '</div>';
+    try {
+      // Inject dreamRole into answers for determineBranch's simple-job check.
+      answers.dreamRole = dreamRole;
+      var diag = await buildDiagnosis(dreamRole, cvText, answers);
+      Diagnosis.set(diag);
+      // V2 doesn't auto-mark Journey milestones here — diagnosis is the
+      // canonical "diagnosis done" marker (DarbiJourney._hasDiag() reads it).
+      _v2PaintDiagnosis(app, diag);
+    } catch(e){
+      app.innerHTML = ''
+        + '<div class="v2-dx-error">'
+        +   '<span>⚠</span>'
+        +   '<div>ما قدرنا نبني التشخيص الآن. تأكد إن الانترنت شغّال وحاول مرة ثانية.<br>'
+        +     '<button class="v2-btn v2-btn-secondary" onclick="renderDiagnosis(document.getElementById(\'v2-app\'), V2_ROUTES[\'#/diagnosis\'])" style="margin-top:10px">حاول مرة أخرى</button>'
+        +   '</div>'
+        + '</div>';
+    }
+  }
+
+  function _v2PaintDiagnosis(app, d){
+    // Roadmap from DarbiJourney (locked/next/done).
+    var st  = DarbiJourney.getState();
+    var nxt = DarbiJourney.getNextAction();
+    var STEPS = [
+      { key:'cv_audit',      title:'إصلاح السيرة الأساسية', done: st.cvAuditDone },
+      { key:'job_matches',   title:'اختيار وظائف مناسبة',    done: st.jobsViewed },
+      { key:'apply_package', title:'تجهيز التقديم',           done: st.applyPackageCreated },
+      { key:'apply_now',     title:'متابعة التقديم',           done: st.applicationLogged },
+      { key:'interview_prep',title:'تدريب المقابلة',           done: st.interviewStarted },
+    ];
+    var nextIdx = -1;
+    for (var i = 0; i < STEPS.length; i++) { if (!STEPS[i].done) { nextIdx = i; break; } }
+    if (nxt && nxt.key) {
+      for (var j = 0; j < STEPS.length; j++) { if (STEPS[j].key === nxt.key) { nextIdx = j; break; } }
+    }
+    var stepsHtml = STEPS.map(function(s, k){
+      var cls = s.done ? 'is-done' : (k === nextIdx ? 'is-next' : (k > nextIdx ? 'is-locked' : ''));
+      var tag = s.done ? '✓ تم' : (k === nextIdx ? 'الخطوة التالية' : (k > nextIdx ? 'مقفل' : ''));
+      var num = s.done ? '✓' : (k + 1);
+      return '<div class="v2-dx-step ' + cls + '">'
+        +   '<div class="v2-dx-step-num">' + num + '</div>'
+        +   '<div class="v2-dx-step-body">'
+        +     (tag ? '<span class="v2-dx-step-tag">' + tag + '</span><br>' : '')
+        +     '<div class="v2-dx-step-title">' + escapeHtml(s.title) + '</div>'
+        +   '</div>'
+        + '</div>';
+    }).join('');
+
+    // Roles. If needsDirectionPick = true, render as clickable chips that
+    // rebuild the diagnosis with the chosen direction.
+    var rolesHtml;
+    if (d.needsDirectionPick) {
+      rolesHtml = (d.nearestWinnableRoles || []).map(function(r){
+        var fam = ARABIC_LABEL_TO_FAMILY[r] || null;
+        if (fam) return '<button type="button" class="v2-dx-role is-pick" onclick="v2RebuildWithFamily(\'' + escapeHtml(fam) + '\')">' + escapeHtml(r) + ' ←</button>';
+        return '<span class="v2-dx-role">' + escapeHtml(r) + '</span>';
+      }).join('');
+    } else {
+      rolesHtml = (d.nearestWinnableRoles || []).map(function(r){
+        return '<span class="v2-dx-role">' + escapeHtml(r) + '</span>';
+      }).join('');
+    }
+
+    var sup = d.supportingScores || {};
+    var ctaLabel = (nxt && nxt.cta) || 'متابعة';
+
+    app.innerHTML = ''
+      // Hero — dream
+      + '<div class="v2-dx-hero">'
+      +   '<div class="v2-dx-hero-eyebrow">حلمك</div>'
+      +   '<div class="v2-dx-hero-role">' + escapeHtml(d.dreamRole) + '</div>'
+      + '</div>'
+      // Current reality
+      + '<div class="v2-dx-card">'
+      +   '<div class="v2-dx-card-h">وضعك الحالي من سيرتك</div>'
+      +   '<div class="v2-dx-card-body">' + escapeHtml(d.currentReality) + '</div>'
+      + '</div>'
+      // Nearest roles
+      + '<div class="v2-dx-card">'
+      +   '<div class="v2-dx-card-h">أقرب وظيفة تقدر تفوز فيها الآن</div>'
+      +   '<div class="v2-dx-roles">' + rolesHtml + '</div>'
+      + '</div>'
+      // Interpretation (one-liner)
+      + (d.interpretation ? '<div class="v2-dx-interpret"><div class="v2-dx-interpret-h">القراءة في سطر واحد</div><div class="v2-dx-interpret-body">' + escapeHtml(d.interpretation) + '</div></div>' : '')
+      // First fix
+      + '<div class="v2-dx-firstfix">'
+      +   '<div class="v2-dx-firstfix-eyebrow">أول خطوة اليوم</div>'
+      +   '<div class="v2-dx-firstfix-body">' + escapeHtml(d.firstFix) + '</div>'
+      + '</div>'
+      // Primary CTA — routes via DarbiJourney
+      + '<button type="button" class="v2-btn v2-btn-primary" onclick="v2Go(v2JourneyRoute())" style="margin-bottom:14px">' + escapeHtml(ctaLabel) + ' ←</button>'
+      // Roadmap
+      + '<div class="v2-dx-roadmap">'
+      +   '<div class="v2-dx-roadmap-h">خطة دربي لك</div>'
+      +   '<div class="v2-dx-roadmap-sub">خطوة خطوة من هنا إلى أول مقابلة. الخطوة التالية محددة بناءً على تقدمك.</div>'
+      +   '<div class="v2-dx-steps">' + stepsHtml + '</div>'
+      + '</div>'
+      // Below the fold — gap + bridge + scores
+      + '<div class="v2-dx-card">'
+      +   '<div class="v2-dx-card-h">أكبر سبب محتمل لعدم الرد</div>'
+      +   '<div class="v2-dx-card-body">' + escapeHtml(d.biggestGap) + '</div>'
+      + '</div>'
+      + '<div class="v2-dx-card">'
+      +   '<div class="v2-dx-card-h">الجسر بينك وبين وظيفة الحلم</div>'
+      +   '<ol style="padding-right:18px;font-size:14px;color:#0a0a0a;line-height:1.8;margin:0">'
+      +     (d.bridgePlan || []).map(function(s){ return '<li style="margin-bottom:5px">' + escapeHtml(s) + '</li>'; }).join('')
+      +   '</ol>'
+      + '</div>'
+      + '<div class="v2-dx-card">'
+      +   '<div class="v2-dx-card-h">قياس مبدئي</div>'
+      +   '<div class="v2-dx-scores">'
+      +     '<div class="v2-dx-score"><div class="v2-dx-score-label">قوة السيرة</div><div class="v2-dx-score-val">' + (sup.cvStrength || 0) + '%</div></div>'
+      +     '<div class="v2-dx-score"><div class="v2-dx-score-label">مطابقة الحلم</div><div class="v2-dx-score-val">' + (sup.dreamMatch || 0) + '%</div></div>'
+      +     '<div class="v2-dx-score"><div class="v2-dx-score-label">جاهزية المقابلة</div><div class="v2-dx-score-val">' + (sup.interviewReadiness || 0) + '%</div></div>'
+      +     '<div class="v2-dx-score"><div class="v2-dx-score-label">وضوح الطريق</div><div class="v2-dx-score-val">' + (sup.pathClarity || 0) + '%</div></div>'
+      +   '</div>'
+      + '</div>';
+  }
+
+  // Direction-pick rebuild (low confidence path): user clicks a family chip.
+  async function v2RebuildWithFamily(family){
+    var draft = V2Draft.get();
+    var dreamRole = (draft.dreamRole || '').trim();
+    var cvText    = (draft.cvText    || '').trim();
+    var answers   = draft.quizAnswers || {};
+    answers.dreamRole = dreamRole;
+    var app = document.getElementById('v2-app');
+    if (app) app.innerHTML = '<div class="v2-dx-loading"><div class="v2-dx-loading-spin"></div><div class="v2-dx-loading-text">نعيد بناء التشخيص...</div></div>';
+    try {
+      var intentOverride = { family: family, confidence: 90, source: 'user_pick', isSimpleJob: family === 'simple_job', inferredSeniority: inferStatusFromCV(cvText) };
+      var diag = await buildDiagnosis(dreamRole, cvText, answers, intentOverride);
+      Diagnosis.set(diag);
+      _v2PaintDiagnosis(app, diag);
+    } catch(e){
+      if (app) app.innerHTML = '<div class="v2-dx-error"><span>⚠</span><div>ما قدرنا نعيد البناء — حاول مرة أخرى.</div></div>';
+    }
   }
   </script>
 
