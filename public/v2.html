@@ -559,6 +559,119 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
+       JOBS — #/jobs
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-jobs-bar{
+      display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+      background:#fff;border:1px solid #ececf4;border-radius:11px;
+      padding:11px 13px;margin-bottom:13px;
+    }
+    .v2-jobs-bar-label{font-size:12.5px;color:#475569;font-weight:700;flex-shrink:0}
+    .v2-jobs-bar-input{
+      flex:1;min-width:140px;padding:8px 12px;
+      border:1.5px solid #ececf4;border-radius:9px;
+      font-family:inherit;font-size:13px;color:#0a0a0a;background:#fafafe;
+    }
+    .v2-jobs-bar-input:focus{outline:none;border-color:#4f46e5;background:#fff}
+    .v2-jobs-bar-refresh{
+      background:#eef2ff;color:#4338ca;border:none;
+      padding:8px 13px;border-radius:9px;cursor:pointer;
+      font-size:12.5px;font-weight:700;font-family:inherit;white-space:nowrap;
+      transition:background .15s;
+    }
+    .v2-jobs-bar-refresh:hover{background:#c7d2fe}
+
+    .v2-jobs-meta{
+      font-size:13px;color:#0a0a0a;font-weight:700;
+      margin-bottom:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    }
+    .v2-jobs-meta b{color:#4338ca}
+    .v2-jobs-mode-pill{
+      background:#dcfce7;color:#166534;font-size:11px;font-weight:800;
+      padding:3px 9px;border-radius:99px;letter-spacing:.3px;
+    }
+    .v2-jobs-mode-pill.is-fallback{background:#fef3c7;color:#92400e}
+
+    .v2-job-card{
+      background:#fff;border:1px solid #ececf4;border-radius:13px;
+      padding:14px;margin-bottom:10px;
+      transition:border-color .15s, background .15s;
+    }
+    .v2-job-card.is-low{opacity:.78}
+    .v2-job-card[data-removed="1"]{display:none}
+    .v2-job-row1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+    .v2-job-title{font-size:14.5px;font-weight:800;color:#0a0a0a;line-height:1.4;flex:1;min-width:0}
+    .v2-job-match{
+      flex-shrink:0;font-size:12px;font-weight:800;
+      background:#dcfce7;color:#166534;padding:3px 9px;border-radius:99px;white-space:nowrap;
+    }
+    .v2-job-match.is-mid{background:#fef3c7;color:#92400e}
+    .v2-job-match.is-low{background:#fee2e2;color:#991b1b}
+    .v2-job-row2{
+      display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:#475569;margin-bottom:8px;
+    }
+    .v2-job-meta-tag{display:inline-flex;align-items:center;gap:4px}
+    .v2-job-source{
+      background:#eef2ff;color:#4338ca;padding:2px 8px;border-radius:99px;
+      font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;
+    }
+    .v2-job-why{font-size:12.5px;color:#0f172a;line-height:1.6;margin-bottom:6px}
+    .v2-job-tip{
+      font-size:12px;color:#0c4a6e;background:#e0f2fe;border-radius:8px;
+      padding:7px 10px;line-height:1.55;margin-bottom:8px;
+    }
+    .v2-job-flags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+    .v2-job-flag{
+      font-size:11px;background:#fee2e2;color:#991b1b;
+      padding:2px 8px;border-radius:99px;font-weight:700;
+    }
+    .v2-job-ctas{display:flex;gap:6px;flex-wrap:wrap}
+    .v2-job-cta{
+      flex:1;min-width:90px;padding:8px 10px;border-radius:9px;
+      font-size:12.5px;font-weight:700;cursor:pointer;
+      border:1px solid #ececf4;background:#fff;color:#0a0a0a;
+      font-family:inherit;text-align:center;
+      transition:background .15s;
+    }
+    .v2-job-cta.is-primary{background:#4f46e5;color:#fff;border-color:#4f46e5}
+    .v2-job-cta.is-primary:hover{background:#4338ca}
+    .v2-job-cta:not(.is-primary):hover{background:#f9fafb}
+
+    .v2-jobs-fb{
+      background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;
+      padding:14px;font-size:13px;color:#475569;line-height:1.7;margin-bottom:13px;
+    }
+    .v2-jobs-fb-h{font-size:13.5px;font-weight:800;color:#0a0a0a;margin-bottom:6px}
+    .v2-jobs-fb-titles{margin:8px 0;padding-right:18px}
+    .v2-jobs-fb-titles li{margin-bottom:4px;font-size:12.5px;color:#0a0a0a;font-weight:600}
+    .v2-jobs-fb-search{margin-top:11px}
+    .v2-jobs-fb-search-row{margin-bottom:7px;font-size:12.5px}
+    .v2-jobs-fb-search-row b{color:#0a0a0a;display:block;margin-bottom:3px;font-weight:700}
+    .v2-jobs-fb-link{
+      display:inline-block;font-size:11.5px;color:#4338ca;text-decoration:none;
+      background:#eef2ff;padding:3px 9px;border-radius:99px;margin-left:6px;
+      transition:background .15s;
+    }
+    .v2-jobs-fb-link:hover{background:#c7d2fe}
+
+    .v2-jobs-empty{
+      padding:30px 20px;text-align:center;color:#64748b;
+      background:#f9fafb;border-radius:12px;font-size:13px;line-height:1.7;
+    }
+
+    .v2-jobs-error{
+      background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;
+      padding:13px 16px;border-radius:11px;
+      font-size:13px;font-weight:700;line-height:1.7;
+      display:flex;align-items:flex-start;gap:10px;margin-bottom:13px;
+    }
+
+    .v2-jobs-loading{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:50px 20px;color:#475569;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
        RESPONSIVE
     ════════════════════════════════════════════════════════════════════ */
     @media (max-width: 520px) {
@@ -988,7 +1101,7 @@
     '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderDiagnosis' },
     '#/cv-templates': { title: 'اختر قالب سيرتك',       step: 2, back: '#/diagnosis',     render: 'renderCvTemplates' },
     '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-templates',  render: 'renderCvBuilder' },
-    '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderPlaceholder', phase: 'Phase 0.6' },
+    '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderJobs' },
     '#/apply':        { title: 'جهّز تقديمك',           step: 4, back: '#/jobs',      render: 'renderPlaceholder', phase: 'Phase 0.7' },
     '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.8' },
     '#/interview':    { title: 'تدريب المقابلة',         step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.9' },
@@ -2679,6 +2792,284 @@
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(out).then(done).catch(done);
     } else { done(); }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PHASE 1 TASK 5 — Jobs screen (#/jobs)
+  // Reads Diagnosis + V2Draft + saved V2 CV + journey state.
+  // POSTs to existing /api/jobs/search (same endpoint V1 uses).
+  // Renders live cards OR honest fallback (target titles + LinkedIn/Bayt/
+  // Google search links). NEVER fakes jobs. NO PDF / Premium / coming-soon.
+  // ════════════════════════════════════════════════════════════════════════
+
+  // Shared cache key with V1 JobsUI so users moving V1 ↔ V2 see same state.
+  var V2_JOBS_CACHE_KEY = 'darbi_jobs_cache_v1';
+  function _v2JobsCacheRead(){
+    try { return JSON.parse(localStorage.getItem(V2_JOBS_CACHE_KEY) || 'null'); }
+    catch(e){ return null; }
+  }
+  function _v2JobsCacheWrite(data){
+    try { localStorage.setItem(V2_JOBS_CACHE_KEY, JSON.stringify({ at: Date.now(), data: data })); } catch(e){}
+  }
+  function _v2JobsCacheClear(){ try { localStorage.removeItem(V2_JOBS_CACHE_KEY); } catch(e){} }
+
+  // Dismissed jobs (per session) — "ليست مناسبة" hides locally.
+  var V2_DISMISSED_JOBS = {};
+  function _v2DismissJob(jobId){ if (jobId) V2_DISMISSED_JOBS[jobId] = 1; }
+  function _v2IsDismissed(jobId){ return !!V2_DISMISSED_JOBS[jobId]; }
+
+  // Build the request body. Uses Diagnosis (canonical, written by Task 3)
+  // for dreamRole / family / cvText / cvFacts / seniority hints.
+  function _v2JobsBuildRequest(diagnosis, location, limit){
+    if (!diagnosis) return null;
+    return {
+      dreamRole: diagnosis.dreamRole || '',
+      diagnosis: {
+        family: diagnosis.family || null,
+        intent: diagnosis.intent || null,
+        isSeniorOverride: !!diagnosis.isSeniorOverride,
+      },
+      cvFacts: diagnosis.cvFacts || null,
+      cvText:  diagnosis.cvText  || null,
+      location: location || null,
+      limit:    limit || 10,
+    };
+  }
+
+  async function v2JobsFetch(diagnosis, location){
+    var body = _v2JobsBuildRequest(diagnosis, location, 10);
+    if (!body) return { success: false, error: 'no_diagnosis' };
+    try {
+      var r = await fetch('/api/jobs/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!r.ok) {
+        if (r.status === 429) return { success: false, error: 'rate_limit' };
+        return { success: false, error: 'http_' + r.status };
+      }
+      var data = await r.json();
+      if (data && data.success) {
+        _v2JobsCacheWrite(data);
+        if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'jobs_searched', mode: data.mode, count: (data.jobs||[]).length });
+      }
+      return data;
+    } catch(e) {
+      return { success: false, error: 'network' };
+    }
+  }
+
+  function _v2MatchClass(score){
+    if (score >= 60) return '';
+    if (score >= 35) return 'is-mid';
+    return 'is-low';
+  }
+  function _v2SourceLabel(src){
+    return {
+      greenhouse:'Greenhouse', lever:'Lever', ashby:'Ashby',
+      workable:'Workable', smartrecruiters:'SmartRecruiters',
+      jsearch:'JSearch', adzuna:'Adzuna', jooble:'Jooble',
+      serpapi:'Google Jobs', theirstack:'TheirStack',
+    }[src] || src || '';
+  }
+
+  function _v2JobsRenderCard(j, idx){
+    var score = (j.match && j.match.score) || 0;
+    var matchCls = _v2MatchClass(score);
+    var flags = (j.match && j.match.flags) || [];
+    var flagsHtml = flags.length
+      ? '<div class="v2-job-flags">' + flags.map(function(f){
+          return '<span class="v2-job-flag">' + escapeHtml(f.ar || f.key) + '</span>';
+        }).join('') + '</div>'
+      : '';
+    var why = (j.whyMatched || []).map(escapeHtml).join(' · ');
+    var openHref = j.applyUrl || j.url || '#';
+    var safeId = escapeHtml(j.id || ('job-' + idx));
+    var safePayload = encodeURIComponent(JSON.stringify({
+      id: j.id, title: j.title, company: j.company, url: openHref, source: j.source,
+    }));
+    return ''
+      + '<div class="v2-job-card' + (score < 35 ? ' is-low' : '') + '" data-job-id="' + safeId + '">'
+      +   '<div class="v2-job-row1">'
+      +     '<div class="v2-job-title">' + escapeHtml(j.title || '—') + '</div>'
+      +     '<span class="v2-job-match ' + matchCls + '">' + Math.round(score) + '٪</span>'
+      +   '</div>'
+      +   '<div class="v2-job-row2">'
+      +     '<span class="v2-job-meta-tag">🏢 ' + escapeHtml(j.company || '—') + '</span>'
+      +     (j.location ? '<span class="v2-job-meta-tag">📍 ' + escapeHtml(j.location) + '</span>' : '')
+      +     (j.source ? '<span class="v2-job-source">' + escapeHtml(_v2SourceLabel(j.source)) + '</span>' : '')
+      +   '</div>'
+      +   (why ? '<div class="v2-job-why">✓ ' + why + '</div>' : '')
+      +   (j.cvFixTip ? '<div class="v2-job-tip">💡 ' + escapeHtml(j.cvFixTip) + '</div>' : '')
+      +   flagsHtml
+      +   '<div class="v2-job-ctas">'
+      +     '<button class="v2-job-cta is-primary" onclick="v2JobsApply(\'' + safePayload + '\')">جهّز تقديمي ←</button>'
+      +     '<a class="v2-job-cta" href="' + escapeHtml(openHref) + '" target="_blank" rel="noopener" onclick="v2JobsOpen(\'' + safePayload + '\')">افتح الوظيفة</a>'
+      +     '<button class="v2-job-cta" onclick="v2JobsNotFit(\'' + safePayload + '\')">ليست مناسبة</button>'
+      +   '</div>'
+      + '</div>';
+  }
+
+  // Honest fallback — surfaces the family target titles + search links
+  // (LinkedIn / Bayt / Google Jobs). NEVER renders fake job cards.
+  function _v2JobsRenderFallback(fb){
+    if (!fb) return '';
+    var titles = (fb.targetTitles || []).map(escapeHtml);
+    var links = fb.searchLinks || [];
+    var titlesHtml = titles.length
+      ? '<div class="v2-jobs-fb-h">مسميات بحث جاهزة</div><ul class="v2-jobs-fb-titles">' +
+        titles.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ul>'
+      : '';
+    var linksHtml = links.length
+      ? '<div class="v2-jobs-fb-search">' + links.map(function(l){
+          return '<div class="v2-jobs-fb-search-row">' +
+            '<b>' + escapeHtml(l.label) + '</b>' +
+            (l.linkedin ? '<a class="v2-jobs-fb-link" target="_blank" rel="noopener" href="' + escapeHtml(l.linkedin) + '">LinkedIn</a>' : '') +
+            (l.bayt     ? '<a class="v2-jobs-fb-link" target="_blank" rel="noopener" href="' + escapeHtml(l.bayt)     + '">Bayt</a>'     : '') +
+            (l.google   ? '<a class="v2-jobs-fb-link" target="_blank" rel="noopener" href="' + escapeHtml(l.google)   + '">Google Jobs</a>'   : '') +
+            '</div>';
+        }).join('') + '</div>'
+      : '';
+    return ''
+      + '<div class="v2-jobs-fb">'
+      +   '<strong style="color:#0a0a0a">' + escapeHtml(fb.message || 'البحث التلقائي غير مفعّل حالياً. هذه روابط بحث جاهزة حسب هدفك.') + '</strong>'
+      +   titlesHtml + linksHtml
+      + '</div>';
+  }
+
+  function _v2JobsPaint(app, data, locationVal){
+    var diagnosis = Diagnosis.get();
+    var dreamRole = (diagnosis && diagnosis.dreamRole) || '';
+    var barHtml = ''
+      + '<div class="v2-jobs-bar">'
+      +   '<span class="v2-jobs-bar-label">المدينة:</span>'
+      +   '<input type="text" class="v2-jobs-bar-input" id="v2JobsLocation" placeholder="مثال: الرياض، Remote" value="' + escapeHtml(locationVal || '') + '" />'
+      +   '<button class="v2-jobs-bar-refresh" onclick="v2JobsRefresh()">🔄 بحث جديد</button>'
+      + '</div>';
+
+    if (!data) {
+      app.innerHTML = barHtml +
+        '<div class="v2-jobs-loading"><div class="v2-dx-loading-spin"></div>' +
+        '<div class="v2-dx-loading-text">نبحث في صفحات وظائف الشركات...</div>' +
+        '<div class="v2-dx-loading-sub">ثواني فقط</div></div>';
+      return;
+    }
+    if (!data.success) {
+      var msg = data.error === 'rate_limit'
+        ? 'بحثت كثير في وقت قصير. جرّب بعد دقيقة.'
+        : (data.error === 'network' ? 'ما قدرنا نوصل للسيرفر. تأكد إن الانترنت شغّال.' : 'حصل خطأ. حاول مرة أخرى.');
+      app.innerHTML = barHtml + '<div class="v2-jobs-error"><span>⚠</span><div>' + escapeHtml(msg) + '</div></div>';
+      return;
+    }
+
+    // Live mode + jobs present → cards.
+    if (data.mode === 'live' && Array.isArray(data.jobs) && data.jobs.length) {
+      var visibleJobs = data.jobs.filter(function(j){ return !_v2IsDismissed(j.id); });
+      var cardsHtml = visibleJobs.map(_v2JobsRenderCard).join('');
+      var sourcesUsedHtml = (data.sourcesUsed && data.sourcesUsed.length)
+        ? '<span class="v2-jobs-mode-pill">live · ' + escapeHtml(data.sourcesUsed.map(function(s){ return s.provider || s.company; }).join(', ')) + '</span>'
+        : '<span class="v2-jobs-mode-pill">live</span>';
+      app.innerHTML = barHtml
+        + '<div class="v2-jobs-meta">لقينا لك <b>' + visibleJobs.length + '</b> وظيفة مناسبة لـ <b>' + escapeHtml(dreamRole) + '</b> ' + sourcesUsedHtml + '</div>'
+        + cardsHtml;
+      return;
+    }
+    // Live mode but zero jobs → no-results state.
+    if (data.mode === 'live') {
+      app.innerHTML = barHtml +
+        '<div class="v2-jobs-empty">ما لقينا وظائف مناسبة الآن لـ <b>' + escapeHtml(dreamRole) + '</b>. جرّب توسيع المدينة أو الرجوع لاحقاً.</div>';
+      return;
+    }
+    // Fallback mode — honest message + target titles + search links. NO
+    // fake job cards. NO "جهّز تقديمي" — there's nothing real to prepare for.
+    app.innerHTML = barHtml
+      + '<div class="v2-jobs-meta">هدفك: <b>' + escapeHtml(dreamRole) + '</b> <span class="v2-jobs-mode-pill is-fallback">fallback</span></div>'
+      + _v2JobsRenderFallback(data.fallback);
+  }
+
+  // ── #/jobs renderer ───────────────────────────────────────────────────
+  async function renderJobs(app, route){
+    var d = Diagnosis.get();
+    if (!d) {
+      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">📝</div><h3>اكمل التشخيص أولاً</h3>'
+        + '<p>نحتاج تشخيصك عشان نقترح وظائف تناسب وضعك.</p>'
+        + '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/track\')">ابدأ التشخيص ←</button></div>';
+      return;
+    }
+    var draft = V2Draft.get();
+    var locationVal = (draft && draft.location) || '';
+
+    // Try cache first (≤30 min, same dreamRole as current diagnosis).
+    var cached = _v2JobsCacheRead();
+    var fresh = cached && (Date.now() - cached.at < 30 * 60 * 1000)
+      && cached.data && cached.data.searchProfile
+      && cached.data.searchProfile.dreamRole === d.dreamRole;
+    if (fresh) {
+      _v2JobsPaint(app, cached.data, locationVal);
+      if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markJobsViewed) DarbiJourney.markJobsViewed();
+      return;
+    }
+
+    // Live fetch.
+    _v2JobsPaint(app, null, locationVal); // loading state
+    var data = await v2JobsFetch(d, locationVal);
+    _v2JobsPaint(app, data, locationVal);
+    // Mark jobs viewed on first successful render (live OR fallback both
+    // count — the user has been shown jobs guidance).
+    if (data && data.success && typeof DarbiJourney !== 'undefined' && DarbiJourney.markJobsViewed) {
+      DarbiJourney.markJobsViewed();
+    }
+  }
+
+  // Manual refresh button — reads the location input + invalidates cache.
+  async function v2JobsRefresh(){
+    var app = document.getElementById('v2-app');
+    var locInput = document.getElementById('v2JobsLocation');
+    var locationVal = locInput ? locInput.value.trim() : '';
+    V2Draft.set({ location: locationVal });
+    _v2JobsCacheClear();
+    var d = Diagnosis.get();
+    if (!d) return;
+    _v2JobsPaint(app, null, locationVal);
+    var data = await v2JobsFetch(d, locationVal);
+    _v2JobsPaint(app, data, locationVal);
+    if (data && data.success && typeof DarbiJourney !== 'undefined' && DarbiJourney.markJobsViewed) {
+      DarbiJourney.markJobsViewed();
+    }
+  }
+
+  // Job card action: "جهّز تقديمي" — routes to #/apply with the job context.
+  // The #/apply screen is still a placeholder in this task; Task 6 builds it.
+  function v2JobsApply(payloadEnc){
+    try {
+      var p = JSON.parse(decodeURIComponent(payloadEnc));
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'apply_started', job: p });
+      // Stash the selected job so #/apply can read it without re-fetching.
+      try { localStorage.setItem('darbi_v2_selected_job', JSON.stringify(p)); } catch(e){}
+      v2Go('#/apply?j=' + encodeURIComponent(p.id || ''));
+    } catch(e){}
+  }
+
+  // Job card action: "افتح الوظيفة" — anchor opens in new tab; we record
+  // the event + advance journey.
+  function v2JobsOpen(payloadEnc){
+    try {
+      var p = JSON.parse(decodeURIComponent(payloadEnc));
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'job_opened', job: p });
+    } catch(e){}
+  }
+
+  // Job card action: "ليست مناسبة" — local hide + DarbiBrain.learn for
+  // future ranking signal.
+  function v2JobsNotFit(payloadEnc){
+    try {
+      var p = JSON.parse(decodeURIComponent(payloadEnc));
+      _v2DismissJob(p.id);
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'job_dismissed', job: p });
+      var card = document.querySelector('[data-job-id="' + (p.id || '') + '"]');
+      if (card && card.parentNode) card.parentNode.removeChild(card);
+    } catch(e){}
   }
 
   // Direction-pick rebuild (low confidence path): user clicks a family chip.
