@@ -761,6 +761,102 @@
     .v2-ap-success-sub{font-size:13px;color:#166534;line-height:1.7}
 
     /* ═══════════════════════════════════════════════════════════════════
+       TRACKER — #/tracker
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-tk-weekly{
+      background:#fff;border:1px solid #ececf4;border-radius:13px;
+      padding:14px 16px;margin-bottom:12px;
+    }
+    .v2-tk-weekly-h{
+      font-size:13px;font-weight:800;color:#0a0a0a;margin-bottom:5px;
+      display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;
+    }
+    .v2-tk-weekly-meta{font-size:12px;color:#475569;margin-bottom:9px}
+    .v2-tk-weekly-meta b{color:#4338ca}
+    .v2-tk-weekly-bar{
+      height:8px;background:#f1f5f9;border-radius:99px;overflow:hidden;
+    }
+    .v2-tk-weekly-bar-fill{
+      height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);
+      border-radius:99px;transition:width .3s;
+    }
+    .v2-tk-weekly-bar-fill.is-met{background:linear-gradient(90deg,#16a34a,#10b981)}
+
+    .v2-tk-next{
+      background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+      border:1px solid #c7d2fe;border-radius:13px;
+      padding:14px 16px;margin-bottom:13px;
+    }
+    .v2-tk-next.is-accepted{background:linear-gradient(135deg,#dcfce7,#f0fdf4);border-color:#86efac}
+    .v2-tk-next.is-rejected{background:linear-gradient(135deg,#fef3c7,#fef9c3);border-color:#fcd34d}
+    .v2-tk-next.is-interview{background:linear-gradient(135deg,#fef3c7,#fdf4ff);border-color:#f59e0b}
+    .v2-tk-next-h{font-size:14px;font-weight:800;color:#0a0a0a;margin-bottom:5px}
+    .v2-tk-next-body{font-size:13px;color:#475569;line-height:1.7;margin-bottom:11px}
+    .v2-tk-next-cta{
+      background:#4f46e5;color:#fff;border:none;
+      padding:10px 16px;border-radius:9px;cursor:pointer;
+      font-size:13px;font-weight:800;font-family:inherit;
+      transition:background .15s;
+    }
+    .v2-tk-next-cta:hover{background:#4338ca}
+    .v2-tk-next.is-accepted .v2-tk-next-cta{background:#16a34a}
+    .v2-tk-next.is-accepted .v2-tk-next-cta:hover{background:#15803d}
+
+    .v2-tk-list-h{
+      font-size:11.5px;font-weight:800;color:#475569;letter-spacing:.4px;
+      text-transform:uppercase;margin-bottom:9px;
+    }
+
+    .v2-tk-row{
+      background:#fff;border:1px solid #ececf4;border-radius:11px;
+      padding:13px;margin-bottom:9px;
+    }
+    .v2-tk-row-1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+    .v2-tk-role{font-size:14px;font-weight:800;color:#0a0a0a;line-height:1.4;flex:1;min-width:160px}
+    .v2-tk-company{font-size:12px;color:#475569;margin-top:2px}
+    .v2-tk-meta{font-size:11.5px;color:#64748b;display:flex;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+    .v2-tk-meta b{color:#475569;font-weight:700}
+
+    .v2-tk-status-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:8px}
+    .v2-tk-status-label{font-size:12px;color:#475569;font-weight:700}
+    .v2-tk-status-sel{
+      background:#fafafe;border:1.5px solid #ececf4;border-radius:8px;
+      padding:6px 10px;font-size:12.5px;font-weight:700;color:#0a0a0a;
+      font-family:inherit;cursor:pointer;
+    }
+    .v2-tk-status-sel:focus{outline:none;border-color:#4f46e5}
+    .v2-tk-status-pill{
+      font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:99px;
+      text-transform:uppercase;letter-spacing:.3px;
+    }
+    .v2-tk-status-pill.is-applied{background:#eef2ff;color:#4338ca}
+    .v2-tk-status-pill.is-reply{background:#fef3c7;color:#92400e}
+    .v2-tk-status-pill.is-interview{background:#dbeafe;color:#1e40af}
+    .v2-tk-status-pill.is-rejected{background:#fee2e2;color:#991b1b}
+    .v2-tk-status-pill.is-accepted{background:#dcfce7;color:#166534}
+
+    .v2-tk-row-actions{display:flex;gap:5px;flex-wrap:wrap}
+    .v2-tk-row-action{
+      background:#fff;border:1px solid #ececf4;color:#0a0a0a;
+      padding:6px 10px;border-radius:8px;cursor:pointer;
+      font-size:11.5px;font-weight:700;font-family:inherit;white-space:nowrap;
+      transition:background .15s;text-decoration:none;display:inline-block;
+    }
+    .v2-tk-row-action:hover{background:#f9fafb}
+    .v2-tk-row-action.is-primary{background:#4f46e5;color:#fff;border-color:#4f46e5}
+    .v2-tk-row-action.is-primary:hover{background:#4338ca}
+    .v2-tk-row-action.is-danger{color:#991b1b}
+    .v2-tk-row-action.is-danger:hover{background:#fee2e2}
+
+    .v2-tk-empty{
+      background:#f9fafb;border:1px dashed #cbd5e1;border-radius:13px;
+      padding:34px 22px;text-align:center;
+    }
+    .v2-tk-empty-emoji{font-size:34px;margin-bottom:9px}
+    .v2-tk-empty-h{font-size:16px;font-weight:800;color:#0a0a0a;margin-bottom:5px}
+    .v2-tk-empty-sub{font-size:12.5px;color:#475569;line-height:1.7;margin-bottom:14px}
+
+    /* ═══════════════════════════════════════════════════════════════════
        RESPONSIVE
     ════════════════════════════════════════════════════════════════════ */
     @media (max-width: 520px) {
@@ -1192,7 +1288,7 @@
     '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-templates',  render: 'renderCvBuilder' },
     '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderJobs' },
     '#/apply':        { title: 'جهّز تقديمك',           step: 4, back: '#/jobs',      render: 'renderApply' },
-    '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.8' },
+    '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/jobs',      render: 'renderTracker' },
     '#/interview':    { title: 'تدريب المقابلة',         step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.9' },
     '#/dashboard':    { title: 'لوحتي',                 step: 0, back: null,          render: 'renderPlaceholder', phase: 'Phase 0.10' },
     '#/account':      { title: 'حسابي',                 step: 0, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.11' },
@@ -3565,6 +3661,211 @@
         +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/jobs\')">جهّز تقديم آخر ←</button>'
         + '</div>';
     }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PHASE 1 TASK 7 — Application Tracker (#/tracker)
+  // The loop engine: list applied jobs, update outcomes, drive next action.
+  // Reads from Applications namespace (same shape V1 uses). Status updates
+  // auto-log to DarbiBrain (via Applications.update). markInterviewLogged
+  // fires only when user explicitly clicks "جهّز للمقابلة" — separates
+  // "got an interview" from "started preparing".
+  // ════════════════════════════════════════════════════════════════════════
+
+  // ── Weekly stats: count apps where appliedAt is within last 7 days ────
+  function _v2TrackerWeeklyStats(){
+    if (typeof Applications === 'undefined' || !Applications.raw) return { thisWeek: 0, target: 10, total: 0 };
+    var apps = Applications.raw();
+    var weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    var thisWeek = 0;
+    apps.forEach(function(a){
+      var t = Date.parse(a.appliedAt || a.createdAt || 0);
+      if (isFinite(t) && t >= weekAgo) thisWeek++;
+    });
+    return { thisWeek: thisWeek, target: 10, total: apps.length };
+  }
+
+  // ── Pick the journey-aware "next action" card content ────────────────
+  function _v2TrackerNextActionCard(stats){
+    // Highest-priority status first: accepted > interview > reply > rejected > applied > empty
+    if (stats.accepted > 0) {
+      return {
+        cls: 'is-accepted',
+        h: '🎉 مبروك! وصلت',
+        body: 'تم قبولك في وظيفة. خذ وقتك للاحتفال + ابدأ التحضير لأول يوم. لو تبي تستمر في البحث عن خيارات أخرى، تقدر.',
+        cta: null, ctaRoute: null,
+      };
+    }
+    if (stats.interview > 0) {
+      return {
+        cls: 'is-interview',
+        h: '🎯 عندك مقابلة! جهّز نفسك',
+        body: 'نوصيك تجلس مع دربي في جلسة تدريب ٥ أسئلة قبل المقابلة. نغطي السؤال الأهم في دورك.',
+        cta: 'جهّز للمقابلة ←', ctaRoute: '#/interview',
+      };
+    }
+    if (stats.reply > 0) {
+      return {
+        cls: '',
+        h: '📬 وصلك رد',
+        body: 'راجع الرد بعناية. لو طلبوا مقابلة، حدّث الحالة هنا. لو رفض غير مباشر، نشوف الخيارات الأخرى.',
+        cta: 'عرض الوظائف', ctaRoute: '#/jobs',
+      };
+    }
+    if (stats.rejected > 0 && stats.applied === 0 && stats.reply === 0 && stats.interview === 0) {
+      return {
+        cls: 'is-rejected',
+        h: 'لا تحبط — نراجع الاستهداف',
+        body: 'الرفض جزء من العملية. نراجع نوع الوظائف اللي تستهدفها ونجهز تقديم أفضل. عادة المشكلة في المطابقة، مو فيك.',
+        cta: 'عرض الوظائف من جديد ←', ctaRoute: '#/jobs',
+      };
+    }
+    if (stats.applied > 0) {
+      // Use insight() if available — based on V1 Applications.insight() logic.
+      var insight = (Applications.insight && Applications.insight()) || null;
+      var body = insight || ('عندك ' + stats.applied + ' تقديم تنتظر الرد. حدّث الحالة هنا لما يجيك أي رد، وراح نتابع معك.');
+      return {
+        cls: '',
+        h: 'استمر في التقديم',
+        body: body,
+        cta: 'جهّز تقديم آخر', ctaRoute: '#/jobs',
+      };
+    }
+    return null; // empty state handled separately
+  }
+
+  // ── Single application row ────────────────────────────────────────────
+  function _v2TrackerRow(app){
+    var status = app.status || 'applied';
+    var statusLabels = {
+      applied: 'في الانتظار',
+      reply: 'وصل رد',
+      interview: 'مقابلة',
+      rejected: 'رفض',
+      accepted: 'قبول',
+    };
+    var openLink = app.url
+      ? '<a class="v2-tk-row-action" target="_blank" rel="noopener" href="' + escapeHtml(app.url) + '" onclick="v2TrackerOpenJob(\'' + escapeHtml(app.id) + '\')">↗ افتح الوظيفة</a>'
+      : '';
+    var prepBtn = (status === 'reply' || status === 'interview')
+      ? '<button class="v2-tk-row-action is-primary" onclick="v2TrackerPrepInterview(\'' + escapeHtml(app.id) + '\')">جهّز للمقابلة</button>'
+      : '';
+    var appliedDate = '';
+    if (app.appliedAt) {
+      try {
+        appliedDate = '<span>📅 <b>قُدّم:</b> ' + escapeHtml(app.appliedAt) + '</span>';
+      } catch(e){}
+    }
+    return ''
+      + '<div class="v2-tk-row" data-app-id="' + escapeHtml(app.id) + '">'
+      +   '<div class="v2-tk-row-1">'
+      +     '<div>'
+      +       '<div class="v2-tk-role">' + escapeHtml(app.role || '—') + '</div>'
+      +       '<div class="v2-tk-company">' + escapeHtml(app.company || '—') + '</div>'
+      +     '</div>'
+      +     '<span class="v2-tk-status-pill is-' + status + '">' + escapeHtml(statusLabels[status] || status) + '</span>'
+      +   '</div>'
+      +   '<div class="v2-tk-meta">' + appliedDate + '</div>'
+      +   '<div class="v2-tk-status-row">'
+      +     '<span class="v2-tk-status-label">عدّل الحالة:</span>'
+      +     '<select class="v2-tk-status-sel" onchange="v2TrackerStatusUpdate(\'' + escapeHtml(app.id) + '\', this.value)">'
+      +       '<option value="applied"' + (status === 'applied' ? ' selected' : '') + '>في الانتظار</option>'
+      +       '<option value="reply"' + (status === 'reply' ? ' selected' : '') + '>وصل رد</option>'
+      +       '<option value="interview"' + (status === 'interview' ? ' selected' : '') + '>مقابلة</option>'
+      +       '<option value="rejected"' + (status === 'rejected' ? ' selected' : '') + '>رفض</option>'
+      +       '<option value="accepted"' + (status === 'accepted' ? ' selected' : '') + '>قبول</option>'
+      +     '</select>'
+      +   '</div>'
+      +   '<div class="v2-tk-row-actions">'
+      +     openLink
+      +     prepBtn
+      +     '<button class="v2-tk-row-action is-danger" onclick="v2TrackerRemove(\'' + escapeHtml(app.id) + '\')">🗑 حذف</button>'
+      +   '</div>'
+      + '</div>';
+  }
+
+  // ── #/tracker main renderer ───────────────────────────────────────────
+  function renderTracker(app, route){
+    if (typeof Applications === 'undefined' || !Applications.list) {
+      app.innerHTML = '<div class="v2-jobs-error"><span>⚠</span><div>تتبع التقديمات غير متوفر.</div></div>';
+      return;
+    }
+    var apps = Applications.list();
+    var stats = Applications.stats();
+    var weekly = _v2TrackerWeeklyStats();
+
+    // Empty state
+    if (!apps.length) {
+      app.innerHTML = ''
+        + '<div class="v2-tk-empty">'
+        +   '<div class="v2-tk-empty-emoji">📋</div>'
+        +   '<div class="v2-tk-empty-h">ما عندك تقديمات بعد</div>'
+        +   '<div class="v2-tk-empty-sub">لما تجهّز تقديم لأي وظيفة وتسجّله، يبان هنا.<br>دربي يقرأ النمط من ردودك ويعدّل خطتك بناءً عليه.</div>'
+        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/jobs\')">اعرض الوظائف ←</button>'
+        + '</div>';
+      return;
+    }
+
+    // Weekly progress
+    var pct = Math.min(100, Math.round((weekly.thisWeek / weekly.target) * 100));
+    var metCls = weekly.thisWeek >= weekly.target ? ' is-met' : '';
+    var weeklyHtml = ''
+      + '<div class="v2-tk-weekly">'
+      +   '<div class="v2-tk-weekly-h"><span>📊 تقدمك هذا الأسبوع</span><span style="font-size:11.5px;color:#64748b">إجمالي: ' + weekly.total + '</span></div>'
+      +   '<div class="v2-tk-weekly-meta">قدمت على <b>' + weekly.thisWeek + '</b> من هدف <b>' + weekly.target + '</b> تقديم</div>'
+      +   '<div class="v2-tk-weekly-bar"><div class="v2-tk-weekly-bar-fill' + metCls + '" style="width:' + pct + '%"></div></div>'
+      + '</div>';
+
+    // Journey-aware next action card
+    var nextCard = _v2TrackerNextActionCard(stats);
+    var nextHtml = nextCard
+      ? '<div class="v2-tk-next ' + nextCard.cls + '">'
+        +   '<div class="v2-tk-next-h">' + escapeHtml(nextCard.h) + '</div>'
+        +   '<div class="v2-tk-next-body">' + escapeHtml(nextCard.body) + '</div>'
+        +   (nextCard.cta && nextCard.ctaRoute ? '<button class="v2-tk-next-cta" onclick="v2Go(\'' + escapeHtml(nextCard.ctaRoute) + '\')">' + escapeHtml(nextCard.cta) + '</button>' : '')
+        + '</div>'
+      : '';
+
+    // Applications list
+    var listHtml = '<div class="v2-tk-list-h">تقديماتك (' + apps.length + ')</div>'
+      + apps.map(_v2TrackerRow).join('');
+
+    app.innerHTML = weeklyHtml + nextHtml + listHtml
+      + '<div style="margin-top:13px;text-align:center"><button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/jobs\')">+ جهّز تقديم جديد</button></div>';
+  }
+
+  // ── Tracker actions ───────────────────────────────────────────────────
+  function v2TrackerStatusUpdate(appId, newStatus){
+    if (typeof Applications === 'undefined' || !Applications.update) return;
+    // Applications.update auto-logs DarbiBrain event for the status transition.
+    Applications.update(appId, { status: newStatus });
+    // Journey-state side effects: NONE here. Interview prep is started by
+    // the explicit "جهّز للمقابلة" click below, not by the status change
+    // itself — separates "got an interview" from "started preparing".
+    var appEl = document.getElementById('v2-app');
+    if (appEl) renderTracker(appEl, V2_ROUTES['#/tracker']);
+  }
+
+  function v2TrackerOpenJob(appId){
+    // Anchor opens externally. Just log.
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'tracker_job_opened', payload: { id: appId } });
+  }
+
+  function v2TrackerPrepInterview(appId){
+    // Mark journey milestone + route to interview screen (still placeholder
+    // until Task 8). The journey state machine will then surface "follow_up"
+    // as the next action after interview is logged.
+    if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markInterviewLogged) DarbiJourney.markInterviewLogged();
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'interview_prep_started', payload: { id: appId } });
+    v2Go('#/interview?j=' + encodeURIComponent(appId));
+  }
+
+  function v2TrackerRemove(appId){
+    if (typeof Applications === 'undefined' || !Applications.remove) return;
+    if (!confirm('احذف هذا التقديم من قائمتك؟')) return;
+    Applications.remove(appId);
+    var appEl = document.getElementById('v2-app');
+    if (appEl) renderTracker(appEl, V2_ROUTES['#/tracker']);
   }
 
   // Direction-pick rebuild (low confidence path): user clicks a family chip.
