@@ -1896,7 +1896,7 @@
       commonGaps:['ما في أمثلة عمليات HR (تنظيم، متابعة، سرية)','ما في أدلة على Excel أو Reporting','ما في خبرة تواصل مع موظفين أو متقدمين','السيرة عامة بدون لغة HR'],
       bridgePlan:['حوّل مشاريع التنسيق/تنظيم في الجامعة لأمثلة HR','أضف Excel + admin keywords + reporting','تعلّم اساسيات Saudization و GOSI و Mudad','جهّز إجابة: "ليش HR؟" مع مثال موقف من حياتك'],
       interviewPrep:'ليش HR؟ + موقف نظّمت فيه ناس أو حليت مشكلة بينهم', ctaB:'ابنِ طريقي للـ HR' },
-    accounting: { familyAr:'محاسبة', keywords:['محاسبة','accounting','محاسب','finance','مالية','بنوك','banking','audit','تدقيق'],
+    accounting: { familyAr:'محاسبة', keywords:['محاسبة','accounting','accountant','محاسب','audit','تدقيق','bookkeep','vat','zakat'],
       nearestRoles:['Accounting Assistant','Junior Accountant','Finance Assistant','Data Entry / Accounts Clerk'],
       commonGaps:['ما في أمثلة Excel متقدم','ما تذكر invoices/reconciliation/GL','ما في تعرض على برامج محاسبية (SAP, QuickBooks, Zoho)','الانتباه للتفاصيل غير مثبت'],
       bridgePlan:['حوّل مواد الجامعة (cost, financial, audit) لإنجازات على السيرة','أضف Excel + accounting terms (AP, AR, GL, reconciliation)','سجّل في Zoho Books تجريبي وعمل 3 invoices','جهّز إجابة: "كيف تحافظ على الدقة تحت الضغط؟"'],
@@ -1926,6 +1926,31 @@
       commonGaps:['ما في أمثلة تنظيم','ما في Excel/reporting evidence','ما في scheduling/follow-up','المهام مذكورة كقائمة عامة'],
       bridgePlan:['حوّل أي تنظيم سابق (جامعة، عائلة، تطوع) لإنجاز مهني','أضف Excel + scheduling tools + reporting','تعلم أساسيات Microsoft 365 (Outlook, Teams, OneDrive)','جهّز "كيف تنظّم وقتك تحت ضغط؟" مع مثال'],
       interviewPrep:'كيف تنظّم وقتك تحت الضغط؟ + موقف أنقذ فيه التنظيم خطأ', ctaB:'ابنِ طريقي للإداري' },
+    // ─── Issue #1 expansion — 4 new families added so OpenAI's wider intent
+    // taxonomy (server/jobs/families.js has 20 families) maps cleanly without
+    // forcing customer_success → customer_service downgrade. Each entry is
+    // entry-level focused (branch B); senior-leadership override handles
+    // executive roles via its own pool inside buildDiagnosis.
+    customer_success: { familyAr:'نجاح العملاء', keywords:['customer success','csm','cs manager','نجاح العملاء','customer experience','cx','client success','retention manager','account management'],
+      nearestRoles:['Customer Success Associate','Junior CSM','CS Coordinator','Onboarding Specialist'],
+      commonGaps:['ما في أمثلة على retention أو expansion','ما تذكر Salesforce/Gainsight/HubSpot','الإنجازات بدون أرقام (NRR, CSAT, NPS)','ما تظهر مسؤولية محفظة عملاء'],
+      bridgePlan:['حوّل تجربة الخدمة لأمثلة retention/expansion','أضف Salesforce + Gainsight basics + CRM keywords','تعلّم playbooks وhealth scoring أساسيات','جهّز "كيف تنقذ عميل قارب على الإلغاء؟"'],
+      interviewPrep:'موقف رحّلت فيه عميل صعب + كيف ترفع NRR؟', ctaB:'ابنِ طريقي لنجاح العملاء' },
+    software: { familyAr:'هندسة البرمجيات', keywords:['software engineer','software developer','مطور','مبرمج','مهندس برمجيات','frontend','backend','fullstack','full stack','react','node','python developer','java developer','tech stack'],
+      nearestRoles:['Junior Software Engineer','Frontend Developer','Backend Developer','QA Engineer'],
+      commonGaps:['ما في GitHub/portfolio link','ما تذكر stack محدد','ما في مشاريع تطبيقية كافية','ما في unit tests أو CI/CD'],
+      bridgePlan:['ابني 3 مشاريع GitHub + README واضح لكل واحد','شارك في open source أو بـ 1 bootcamp project كامل','احصل على شهادة AWS/GCP/Azure تأسيسية','اكتب blog post واحد عن مشكلة قنية حليتها'],
+      interviewPrep:'مشروع بنيته بنفسك + كيف تصحح bug صعب', ctaB:'ابنِ طريقي للهندسة' },
+    finance: { familyAr:'المالية', keywords:['finance','fp&a','financial analyst','corporate finance','investor relations','modeling','forecasting','مالية','محلل مالي','تمويل','تخطيط مالي'],
+      nearestRoles:['Junior Financial Analyst','Finance Associate','FP&A Analyst','Treasury Analyst'],
+      commonGaps:['ما في Excel متقدم (Pivot, VLOOKUP, Macros)','ما تذكر financial modeling أو DCF','ما في تعرض على ERP/SAP','ما في certifications (CFA Level 1, CMA)'],
+      bridgePlan:['ابني 3 financial models بسيطة (3-statement, DCF, LBO)','أضف Excel متقدم + SQL أساسي + Power BI','احصل على CFA Level 1 سجل أو CMA Part 1','جهّز "اشرح DCF لشخص غير مالي"'],
+      interviewPrep:'اشرح NPV/DCF + موقف تفهمت فيه مشكلة مالية معقدة', ctaB:'ابنِ طريقي للمالية' },
+    operations: { familyAr:'العمليات', keywords:['operations','ops','business operations','ops manager','supply chain','process improvement','lean','six sigma','عمليات','سلسلة الإمداد'],
+      nearestRoles:['Operations Coordinator','Operations Analyst','Supply Chain Analyst','Process Improvement Associate'],
+      commonGaps:['ما في أمثلة process improvement','ما تذكر Lean/Six Sigma','ما في cross-functional coordination','الإنجازات بدون % تحسن أو وفر تكلفة'],
+      bridgePlan:['حوّل أي مشروع تنسيق لـ "وفّرت X% وقت أو مال"','تعلّم Lean basics + Six Sigma Yellow Belt مجاني','أضف Excel + reporting + SOPs writing','جهّز "كيف تحسّن عملية بطيئة؟" مع مثال'],
+      interviewPrep:'موقف حسّنت فيه عملية + كيف تتعامل مع cross-functional pushback', ctaB:'ابنِ طريقي للعمليات' },
   };
   var ARABIC_LABEL_TO_FAMILY = {
     'خدمة عملاء':'customer_service','مبيعات':'sales','تسويق':'marketing','موارد بشرية':'hr',
@@ -2487,6 +2512,63 @@
         'دقة في إدخال البيانات ومتابعتها',
       ],
     },
+    // ─── Issue #1 expansion ──────────────────────────────────────────────
+    customer_success: {
+      senior: [
+        'قيادة فريق CSMs لإدارة محفظة ARR بقيمة [اكتب القيمة]',
+        'بناء playbooks للاحتفاظ (NRR/GRR) وعمليات التوسع (expansion)',
+        'تنفيذ مراجعات تنفيذية (QBR) مع كبار العملاء',
+        'تصميم نظام health scoring لتحديد العملاء المعرضين للخسارة',
+      ],
+      junior: [
+        'دعم رحلة العميل من التفعيل إلى التجديد',
+        'استخدام Salesforce/Gainsight لتسجيل تفاعلات العملاء',
+        'متابعة مؤشرات CSAT/NPS وتحليل أسباب الانخفاض',
+        'تنسيق مع المنتج والمبيعات لتوسيع الاستخدام',
+      ],
+    },
+    software: {
+      senior: [
+        'قيادة فريق هندسة لتسليم منتجات إنتاجية',
+        'تصميم بنية الخدمات الصغيرة (microservices) وواجهات APIs',
+        'مراجعة كود الفريق ورفع جودة الإنتاج',
+        'تحسين أداء النظام تحت أحمال عالية',
+      ],
+      junior: [
+        'مشاريع شخصية على GitHub باستخدام [React / Node / Python]',
+        'بناء واجهات REST/GraphQL بسيطة',
+        'استخدام Git + GitHub Actions في سير العمل',
+        'كتابة اختبارات unit/integration للأكواد',
+      ],
+    },
+    finance: {
+      senior: [
+        'إعداد القوائم المالية الشهرية والربعية',
+        'إدارة فريق مالي ودعم اتخاذ القرار',
+        'تحليل FP&A ودعم خطط الميزانية',
+        'تحسين الكفاءة المالية ومؤشرات النقد',
+      ],
+      junior: [
+        'مهارات Excel متقدمة (Pivot, VLOOKUP, Macros)',
+        'تدريب أو مشاريع في FP&A',
+        'فهم القوائم المالية الأساسية',
+        'استخدام أنظمة ERP في بيئة تدريب',
+      ],
+    },
+    operations: {
+      senior: [
+        'إدارة عمليات يومية وتحسين الكفاءة عبر الفرق',
+        'بناء SOPs ومتابعة تنفيذها',
+        'تحليل المؤشرات التشغيلية وتقديم توصيات للقيادة',
+        'قيادة مشاريع تحسين العمليات (process improvement)',
+      ],
+      junior: [
+        'تدريب على متابعة المؤشرات اليومية',
+        'استخدام Excel وأدوات تحليل البيانات الأساسية',
+        'تنسيق مهام بين فرق متعددة',
+        'فهم مبادئ Lean / Six Sigma',
+      ],
+    },
   };
 
   // ── Family-specific skill pools (for ATS template skill row). Always merged
@@ -2497,7 +2579,11 @@
     accounting:       ['IFRS','VAT','Zakat','AP/AR','Reconciliation','Excel','SAP','QuickBooks','Audit'],
     sales:            ['B2B Sales','Prospecting','Salesforce','HubSpot','Pipeline Management','Negotiation','CRM'],
     customer_service: ['Customer Communication','Zendesk','Freshdesk','Ticket Management','Conflict Resolution','CSAT','SLA'],
+    customer_success: ['Retention','Expansion','Renewals','Onboarding','Customer Health','NRR','GRR','Playbooks','Salesforce','Gainsight'],
     it_cyber:         ['Help Desk','Active Directory','Networking','SOC','SIEM','OWASP','NIST','Linux'],
+    software:         ['JavaScript','React','Node.js','Python','SQL','Git','REST APIs','Docker','Linux','TypeScript'],
+    finance:          ['IFRS','FP&A','Financial Analysis','Excel','SAP','Power BI','Forecasting','Budgeting','DCF'],
+    operations:       ['Process Improvement','Project Management','Excel','SOPs','Reporting','Cross-functional Coordination','Lean','Six Sigma'],
     design:           ['Figma','Adobe XD','Photoshop','Illustrator','UI Design','UX Research','Wireframing','Prototyping'],
     admin_office:     ['Microsoft 365','Google Workspace','Calendar Management','Travel Coordination','Filing','Reporting'],
   };
