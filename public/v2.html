@@ -2014,16 +2014,29 @@
     var dreamRole = (args && args.dreamRole) || '';
     var cvText    = (args && args.cvText)    || '';
     var quizAnswers = (args && args.quizAnswers) || null;
+    // 12s hard timeout — Issue #3 fix. Without this, a slow/down backend
+    // leaves the diagnosis loading spinner hanging forever. The
+    // localHeuristicIntent fallback below gives the user an honest result
+    // (typically prompts the direction-pick chips) rather than a frozen UI.
+    var controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var to = setTimeout(function(){ if (controller) controller.abort(); }, 12000);
     try {
       var res = await fetch('/api/darbi/resolve-intent', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dreamRole: dreamRole, cvText: cvText, quizAnswers: quizAnswers }),
+        signal: controller ? controller.signal : undefined,
       });
+      clearTimeout(to);
       if (res.ok){
         var data = await res.json();
         if (data && data.intent && data.intent.family) return data.intent;
       }
-    } catch(e){ /* fall through to local */ }
+    } catch(e){
+      // AbortError (timeout) OR network OR JSON parse — all swallow and use
+      // the local heuristic fallback. Never surface raw error to the user.
+      clearTimeout(to);
+    }
     return localHeuristicIntent(dreamRole, cvText);
   }
 
