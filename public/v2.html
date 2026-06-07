@@ -672,6 +672,95 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
+       APPLY PACKAGE — #/apply
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-ap-job{
+      background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+      border:1px solid #c7d2fe;border-radius:14px;
+      padding:14px 16px;margin-bottom:14px;
+    }
+    .v2-ap-job-title{font-size:15.5px;font-weight:900;color:#0a0a0a;margin-bottom:4px;line-height:1.4}
+    .v2-ap-job-meta{font-size:12.5px;color:#475569;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .v2-ap-job-meta b{color:#4338ca}
+
+    .v2-ap-honest{
+      background:#fef3c7;border:1px solid #fcd34d;
+      padding:10px 13px;border-radius:10px;
+      font-size:12.5px;color:#78350f;line-height:1.6;font-weight:600;
+      margin-bottom:12px;
+    }
+
+    .v2-ap-step{
+      background:#fff;border:1px solid #ececf4;border-radius:13px;
+      padding:16px;margin-bottom:12px;
+      position:relative;
+    }
+    .v2-ap-step-h{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom:11px;flex-wrap:wrap;
+    }
+    .v2-ap-step-h-l{display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+    .v2-ap-step-num{
+      flex-shrink:0;width:26px;height:26px;border-radius:50%;
+      background:#4f46e5;color:#fff;font-weight:900;font-size:13px;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .v2-ap-step-title{font-size:14.5px;font-weight:800;color:#0a0a0a}
+    .v2-ap-step-copy{
+      background:#eef2ff;color:#4338ca;border:none;
+      padding:6px 10px;border-radius:7px;cursor:pointer;
+      font-size:11.5px;font-weight:700;font-family:inherit;white-space:nowrap;
+      transition:background .15s;
+    }
+    .v2-ap-step-copy:hover{background:#c7d2fe}
+    .v2-ap-step-body{font-size:13.5px;color:#0a0a0a;line-height:1.75}
+    .v2-ap-step-body p{margin-bottom:7px}
+    .v2-ap-step-body p:last-child{margin-bottom:0}
+    .v2-ap-step-body ul,.v2-ap-step-body ol{padding-right:18px;margin-bottom:7px}
+    .v2-ap-step-body li{margin-bottom:4px}
+
+    .v2-ap-pillrow{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+    .v2-ap-pill{
+      background:#dcfce7;color:#166534;font-size:11.5px;font-weight:700;
+      padding:3px 9px;border-radius:99px;
+    }
+    .v2-ap-pill.is-missing{background:#fee2e2;color:#991b1b}
+
+    .v2-ap-qa{margin-bottom:8px}
+    .v2-ap-q{font-size:12.5px;font-weight:700;color:#0a0a0a;margin-bottom:3px}
+    .v2-ap-a{
+      font-size:12px;color:#475569;line-height:1.7;
+      background:#fafafe;border:1px solid #ececf4;border-radius:8px;
+      padding:7px 10px;
+    }
+
+    .v2-ap-check{
+      display:flex;align-items:center;gap:8px;font-size:12.5px;color:#0a0a0a;
+      cursor:pointer;line-height:1.5;padding:5px 0;
+    }
+    .v2-ap-check input{width:16px;height:16px;cursor:pointer;accent-color:#4f46e5}
+
+    .v2-ap-actions{
+      position:sticky;bottom:0;z-index:5;
+      background:#fff;border:1px solid #ececf4;border-radius:13px;
+      padding:11px;margin-top:14px;
+      display:flex;flex-direction:column;gap:7px;
+      box-shadow:0 -4px 12px rgba(15,23,42,.05);
+    }
+    .v2-ap-actions .v2-btn{padding:12px 18px;font-size:14px}
+    .v2-ap-actions-row{display:flex;gap:7px;flex-wrap:wrap}
+    .v2-ap-actions-row .v2-btn{flex:1;min-width:130px;padding:10px 14px;font-size:13px}
+
+    .v2-ap-success{
+      background:linear-gradient(135deg,#dcfce7,#f0fdf4);
+      border:1px solid #86efac;border-radius:14px;
+      padding:24px 20px;text-align:center;margin-bottom:13px;
+    }
+    .v2-ap-success-emoji{font-size:36px;margin-bottom:8px}
+    .v2-ap-success-h{font-size:17px;font-weight:900;color:#0a0a0a;margin-bottom:5px}
+    .v2-ap-success-sub{font-size:13px;color:#166534;line-height:1.7}
+
+    /* ═══════════════════════════════════════════════════════════════════
        RESPONSIVE
     ════════════════════════════════════════════════════════════════════ */
     @media (max-width: 520px) {
@@ -1102,7 +1191,7 @@
     '#/cv-templates': { title: 'اختر قالب سيرتك',       step: 2, back: '#/diagnosis',     render: 'renderCvTemplates' },
     '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-templates',  render: 'renderCvBuilder' },
     '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderJobs' },
-    '#/apply':        { title: 'جهّز تقديمك',           step: 4, back: '#/jobs',      render: 'renderPlaceholder', phase: 'Phase 0.7' },
+    '#/apply':        { title: 'جهّز تقديمك',           step: 4, back: '#/jobs',      render: 'renderApply' },
     '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.8' },
     '#/interview':    { title: 'تدريب المقابلة',         step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.9' },
     '#/dashboard':    { title: 'لوحتي',                 step: 0, back: null,          render: 'renderPlaceholder', phase: 'Phase 0.10' },
@@ -3070,6 +3159,412 @@
       var card = document.querySelector('[data-job-id="' + (p.id || '') + '"]');
       if (card && card.parentNode) card.parentNode.removeChild(card);
     } catch(e){}
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PHASE 1 TASK 6 — Apply Package (#/apply)
+  // Generates tailored summary + CV adjustments + cover letter + checklist
+  // for ONE specific job. Reuses V2_FAMILY_BULLETS / V2_FAMILY_SKILLS from
+  // Task 4. Metrics (ARR/NRR/team size) ONLY when regex-detected in actual
+  // cvText. Cover letter language flips AR ↔ EN based on job title script.
+  // ════════════════════════════════════════════════════════════════════════
+
+  // ── Selected-job resolution ───────────────────────────────────────────
+  function v2GetSelectedJob(){
+    // 1. Try the explicit stash set by v2JobsApply().
+    try {
+      var raw = localStorage.getItem('darbi_v2_selected_job');
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && parsed.id) return parsed;
+      }
+    } catch(e){}
+    // 2. Fall back to ?j= from the current hash + lookup in cache.
+    var jid = v2HashParam('j');
+    if (jid) {
+      try {
+        var cache = JSON.parse(localStorage.getItem(V2_JOBS_CACHE_KEY) || 'null');
+        if (cache && cache.data && Array.isArray(cache.data.jobs)) {
+          for (var i = 0; i < cache.data.jobs.length; i++) {
+            if (cache.data.jobs[i].id === jid) return cache.data.jobs[i];
+          }
+        }
+      } catch(e){}
+    }
+    return null;
+  }
+
+  // ── English-title detection (for cover letter language) ───────────────
+  function _v2IsEnglishTitle(t){
+    var s = (t || '').trim();
+    if (!s) return false;
+    return !/[؀-ۿ]/.test(s);
+  }
+
+  // ── Match-summary "why this job suits you" ────────────────────────────
+  function _v2APBuildMatchSummary(job, diagnosis, facts, band){
+    var family = diagnosis.family || 'unknown';
+    var fam = DREAM_ROLE_LIBRARY[family];
+    var bullets = [];
+    if (job.whyMatched && job.whyMatched.length) {
+      bullets = bullets.concat(job.whyMatched.slice(0, 3));
+    }
+    if (facts.tools && facts.tools.length) {
+      var sharedTools = facts.tools.slice(0, 3);
+      bullets.push('أدواتك (' + sharedTools.join('، ') + ') مذكورة في سيرتك — أبرزها في التقديم.');
+    }
+    if (band === 'senior' && facts.yearsExp) {
+      bullets.push(facts.yearsExp + ' سنوات خبرة في المجال = ميزة قوية لهذا الدور.');
+    }
+    if (band === 'junior' && (facts.projectsEvidence || facts.major)) {
+      bullets.push('مشاريعك/تخصصك يمكن استخدامها كدليل عملي بدل سنوات الخبرة.');
+    }
+    if (!bullets.length) {
+      bullets.push('هذا الدور قريب من ' + (fam ? fam.familyAr : 'مسارك') + ' — جوابك في الـ quiz يدل على أنه ضمن دائرة استهدافك.');
+    }
+    // Risk flags from ranker (if any).
+    var risks = [];
+    if (job.match && Array.isArray(job.match.flags) && job.match.flags.length) {
+      job.match.flags.slice(0, 2).forEach(function(f){
+        risks.push(f.ar || f.key);
+      });
+    }
+    return { bullets: bullets, risks: risks };
+  }
+
+  // ── CV adjustments — family + seniority + job keywords ────────────────
+  function _v2APBuildCvAdjustments(job, diagnosis, facts, band){
+    var family = diagnosis.family || 'admin_office';
+    var bullets = (V2_FAMILY_BULLETS[family] && V2_FAMILY_BULLETS[family][band === 'senior' ? 'senior' : 'junior']) || V2_FAMILY_BULLETS.admin_office.junior;
+    // Show 3-4 family-aware adjustment bullets.
+    var picks = bullets.slice(0, 4);
+    // Keywords to add — merge cvFacts.tools + family skills, capped.
+    var famSkills = V2_FAMILY_SKILLS[family] || [];
+    var cvTools = (facts.tools || []);
+    var allKw = [];
+    famSkills.forEach(function(k){ if (allKw.indexOf(k) === -1) allKw.push(k); });
+    cvTools.forEach(function(k){ if (allKw.indexOf(k) === -1) allKw.push(k); });
+    // Missing-from-CV scan: anything in family skills NOT in cvText is "missing".
+    var cvLow = (diagnosis.cvText || '').toLowerCase();
+    var missing = famSkills.filter(function(k){ return cvLow.indexOf(k.toLowerCase()) === -1; }).slice(0, 5);
+    var present = famSkills.filter(function(k){ return cvLow.indexOf(k.toLowerCase()) !== -1; }).slice(0, 5);
+    // Also surface the user's ACTUAL extracted tools (React, Node, Excel, etc.)
+    // — these are guaranteed to be in CV (extractCvFacts pulled them out) and
+    // are highest-signal for the family-aware family lookup to miss them.
+    (facts.tools || []).forEach(function(t){
+      if (present.indexOf(t) === -1 && present.length < 8) present.push(t);
+    });
+    // Senior + ARR/NRR mention only if actually in CV.
+    var arrMatch = (diagnosis.cvText || '').match(/(\d{1,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)/i);
+    var seniorMetricLine = (band === 'senior' && arrMatch) ? ('أبرز ' + arrMatch[0] + ' في الملخص المهني (السطر الأول، قبل أي شي تاني).') : null;
+    return { picks: picks, present: present, missing: missing, seniorMetricLine: seniorMetricLine };
+  }
+
+  // ── Cover letter — AR by default, EN if job title is purely Latin ─────
+  function _v2APBuildCoverLetter(job, diagnosis, facts, band){
+    var dreamRole = diagnosis.dreamRole || job.title || 'الدور المستهدف';
+    var company = job.company || '[الشركة]';
+    var yrs = facts.yearsExp;
+    var arrMatch = (diagnosis.cvText || '').match(/(\d{1,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)/i);
+    var titleEn = _v2IsEnglishTitle(job.title || '');
+    if (titleEn) {
+      var nameEn = '[Your Name]';
+      var lines;
+      if (band === 'senior') {
+        lines = [
+          'Dear Hiring Team,',
+          'I am applying for the ' + (job.title || '[role]') + ' position at ' + company + '.',
+          (yrs ? 'With ' + yrs + ' years of senior experience in ' + (DREAM_ROLE_LIBRARY[diagnosis.family]||{}).familyAr || (diagnosis.family||'the field')
+                : 'With significant senior experience in the field')
+            + (arrMatch ? ' and direct ownership of ' + arrMatch[0] : '')
+            + ', I bring directly relevant leadership experience.',
+          'I would welcome the chance to discuss how my background aligns with your roadmap.',
+          'Best regards,', nameEn,
+        ];
+      } else {
+        lines = [
+          'Dear Hiring Team,',
+          'I am applying for the ' + (job.title || '[role]') + ' position at ' + company + '.',
+          (yrs && yrs >= 1
+            ? 'With ' + yrs + ' years of hands-on experience'
+            : 'As an early-career candidate with strong foundations, project experience, and a willingness to learn quickly')
+            + ', I am positioned to contribute on day one.',
+          'I would be happy to discuss how my background maps to your needs.',
+          'Best regards,', nameEn,
+        ];
+      }
+      return lines.join('\n');
+    }
+    // Arabic
+    var nameAr = '[الاسم الكامل]';
+    if (band === 'senior') {
+      return [
+        'تحية طيبة،',
+        'أتقدم لشغل وظيفة ' + (job.title || '[المسمى]') + ' في ' + company + '.',
+        (yrs ? 'لديّ ' + yrs + ' سنوات' : 'لديّ خبرة قيادية معتبرة') + ' في القيادة' +
+          (arrMatch ? ' وملكية مباشرة لـ ' + arrMatch[0] : '') +
+          '، مع مسؤولية مباشرة عن مؤشرات النمو والاحتفاظ والتوسع.',
+        'يسعدني مناقشة كيف يمكنني المساهمة في خطة الفريق وتعزيز النتائج التنفيذية.',
+        'مع خالص التقدير،', nameAr,
+      ].join('\n');
+    }
+    return [
+      'تحية طيبة،',
+      'أتقدم لشغل وظيفة ' + (job.title || '[المسمى]') + ' في ' + company + '.',
+      (yrs && yrs >= 1
+        ? 'لديّ ' + yrs + ' سنوات خبرة عملية في المجال مع نتائج قابلة للقياس.'
+        : 'أنا في بداية مساري المهني، مع أساس أكاديمي ومشاريع/تدريب مرتبط بالدور، واستعداد للتعلم السريع.'),
+      'يسعدني الاجتماع لشرح كيف يمكنني المساهمة في فريقكم.',
+      'مع خالص التقدير،', nameAr,
+    ].join('\n');
+  }
+
+  // ── Checklist + expected questions ────────────────────────────────────
+  function _v2APBuildChecklist(job, diagnosis, band){
+    var checklist = [
+      'حدّثت ملخص السيرة بحيث يطابق عنوان الوظيفة',
+      'تضمين كلمات مفتاحية من الوصف الوظيفي',
+      'تقديم الأرقام والإنجازات الحقيقية أولاً',
+      'مراجعة الإملاء والقواعد بعناية',
+      'نسخ Cover Letter وإرفاقه',
+    ];
+    var questions = [];
+    if (band === 'senior') {
+      questions.push({ q: 'لماذا هذا الدور تحديداً الآن؟',
+        a: 'اذكر دافع قيادي محدد: مرحلة جديدة من النمو / تحدّي مختلف / فرصة لتوسيع الأثر.' });
+      questions.push({ q: 'ما أكبر نتيجة تنفيذية حققتها؟',
+        a: 'حدّث رقم واحد قابل للقياس + السياق + قرار اتخذته. لا تخترع أرقام.' });
+    } else {
+      questions.push({ q: 'لماذا اخترت هذا المجال؟',
+        a: 'دافع شخصي + مشروع/تجربة دفعتك لاختياره.' });
+      questions.push({ q: 'كيف تتعلم تقنية/مهارة جديدة؟',
+        a: 'مثال محدد لمهارة تعلّمتها مؤخراً + كيف تعلّمتها.' });
+    }
+    questions.push({ q: 'فترة الإشعار + الراتب المتوقع؟',
+      a: 'فترة الإشعار: [أدخل المدة]. الراتب: [راجع متوسط السوق ثم أجب بنطاق مرن].' });
+    return { checklist: checklist, questions: questions };
+  }
+
+  // ── Build the full package ────────────────────────────────────────────
+  function v2BuildApplyPackage(job, diagnosis){
+    if (!job || !diagnosis) return null;
+    var facts = diagnosis.cvFacts || extractCvFacts(diagnosis.cvText || '');
+    var band = (diagnosis.isSeniorOverride || (facts.yearsExp && facts.yearsExp >= 8) || (diagnosis.intent && diagnosis.intent.inferredSeniority === 'senior_leadership')) ? 'senior'
+             : (facts.yearsExp && facts.yearsExp >= 5) ? 'senior'
+             : 'junior';
+    return {
+      job: job,
+      band: band,
+      family: diagnosis.family || 'unknown',
+      match:     _v2APBuildMatchSummary(job, diagnosis, facts, band),
+      cvAdjust:  _v2APBuildCvAdjustments(job, diagnosis, facts, band),
+      cover:     _v2APBuildCoverLetter(job, diagnosis, facts, band),
+      checklist: _v2APBuildChecklist(job, diagnosis, band),
+    };
+  }
+
+  // ── Apply screen renderer ─────────────────────────────────────────────
+  function renderApply(app, route){
+    var d = Diagnosis.get();
+    if (!d) {
+      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">📝</div><h3>اكمل التشخيص أولاً</h3>'
+        + '<p>نحتاج تشخيصك عشان نجهز تقديمك.</p>'
+        + '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/track\')">ابدأ التشخيص ←</button></div>';
+      return;
+    }
+    var job = v2GetSelectedJob();
+    if (!job) {
+      app.innerHTML = ''
+        + '<div class="v2-empty-state">'
+        +   '<div class="v2-empty-emoji">🔍</div>'
+        +   '<h3>ما لقينا الوظيفة المختارة</h3>'
+        +   '<p>الجلسة انتهت أو الوظيفة غير متوفرة. ارجع للوظائف واختر وظيفة من الجديد.</p>'
+        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/jobs\')">رجوع للوظائف ←</button>'
+        + '</div>';
+      return;
+    }
+    var pkg = v2BuildApplyPackage(job, d);
+    if (!pkg) {
+      app.innerHTML = '<div class="v2-jobs-error"><span>⚠</span><div>ما قدرنا نجهز الباكدج. حاول مرة أخرى.</div></div>';
+      return;
+    }
+    _v2RenderApplyPackage(app, pkg);
+  }
+
+  function _v2RenderApplyPackage(app, pkg){
+    var job = pkg.job;
+    var openHref = job.applyUrl || job.url || '#';
+    var safePayload = encodeURIComponent(JSON.stringify({
+      id: job.id, title: job.title, company: job.company, url: openHref, source: job.source,
+    }));
+    // Step 1: Match summary
+    var risksHtml = (pkg.match.risks && pkg.match.risks.length)
+      ? '<div class="v2-ap-pillrow">' + pkg.match.risks.map(function(r){
+          return '<span class="v2-ap-pill is-missing">⚠ ' + escapeHtml(r) + '</span>';
+        }).join('') + '</div>'
+      : '';
+    var step1Body = ''
+      + '<ul>' + pkg.match.bullets.map(function(b){ return '<li>' + escapeHtml(b) + '</li>'; }).join('') + '</ul>'
+      + risksHtml;
+
+    // Step 2: CV adjustments
+    var presentHtml = pkg.cvAdjust.present.length
+      ? '<div style="font-size:12px;color:#0a0a0a;font-weight:700;margin-top:9px">كلمات موجودة في سيرتك:</div>' +
+        '<div class="v2-ap-pillrow">' + pkg.cvAdjust.present.map(function(s){ return '<span class="v2-ap-pill">' + escapeHtml(s) + '</span>'; }).join('') + '</div>'
+      : '';
+    var missingHtml = pkg.cvAdjust.missing.length
+      ? '<div style="font-size:12px;color:#0a0a0a;font-weight:700;margin-top:9px">كلمات ينقص ذكرها — أضفها إن كانت لديك فعلاً:</div>' +
+        '<div class="v2-ap-pillrow">' + pkg.cvAdjust.missing.map(function(s){ return '<span class="v2-ap-pill is-missing">+ ' + escapeHtml(s) + '</span>'; }).join('') + '</div>'
+      : '';
+    var seniorLine = pkg.cvAdjust.seniorMetricLine
+      ? '<div style="font-size:13px;color:#78350f;background:#fef3c7;border:1px solid #fcd34d;border-radius:9px;padding:9px 12px;margin-top:9px;font-weight:700">💡 ' + escapeHtml(pkg.cvAdjust.seniorMetricLine) + '</div>'
+      : '';
+    var step2Body = ''
+      + '<ul>' + pkg.cvAdjust.picks.map(function(b){ return '<li>' + escapeHtml(b) + '</li>'; }).join('') + '</ul>'
+      + presentHtml + missingHtml + seniorLine;
+
+    // Step 3: Cover letter
+    var step3Body = '<div style="white-space:pre-line;font-size:13.5px;color:#0a0a0a;line-height:1.85">' + escapeHtml(pkg.cover) + '</div>';
+
+    // Step 4: Checklist + expected questions
+    var checkHtml = pkg.checklist.checklist.map(function(c, i){
+      return '<label class="v2-ap-check"><input type="checkbox"><span>' + escapeHtml(c) + '</span></label>';
+    }).join('');
+    var qaHtml = pkg.checklist.questions.map(function(qa){
+      return '<div class="v2-ap-qa"><div class="v2-ap-q">' + escapeHtml(qa.q) + '</div><div class="v2-ap-a">' + escapeHtml(qa.a) + '</div></div>';
+    }).join('');
+    var step4Body = checkHtml + '<div style="margin-top:11px;font-size:12px;color:#0a0a0a;font-weight:800">أسئلة متوقعة في المقابلة:</div>' + qaHtml;
+
+    app.innerHTML = ''
+      // Job header
+      + '<div class="v2-ap-job">'
+      +   '<div class="v2-ap-job-title">' + escapeHtml(job.title || '—') + '</div>'
+      +   '<div class="v2-ap-job-meta">'
+      +     '🏢 <b>' + escapeHtml(job.company || '—') + '</b>'
+      +     (job.location ? ' · 📍 ' + escapeHtml(job.location) : '')
+      +     (job.match && job.match.score ? ' · ' + Math.round(job.match.score) + '٪ تطابق' : '')
+      +   '</div>'
+      + '</div>'
+      // Honest banner
+      + '<div class="v2-ap-honest">هذي صياغة مقترحة بناءً على تشخيصك والوظيفة. <strong>راجعها قبل الإرسال.</strong> لا تضف أرقام أو شركات أو شهادات غير حقيقية.</div>'
+      // Step 1
+      + '<div class="v2-ap-step">'
+      +   '<div class="v2-ap-step-h"><div class="v2-ap-step-h-l">'
+      +     '<div class="v2-ap-step-num">1</div>'
+      +     '<div class="v2-ap-step-title">لماذا هذه الوظيفة مناسبة لك؟</div>'
+      +   '</div><button class="v2-ap-step-copy" onclick="v2ApplyCopy(\'summary\')">📋 نسخ</button></div>'
+      +   '<div class="v2-ap-step-body" id="v2ApStep1">' + step1Body + '</div>'
+      + '</div>'
+      // Step 2
+      + '<div class="v2-ap-step">'
+      +   '<div class="v2-ap-step-h"><div class="v2-ap-step-h-l">'
+      +     '<div class="v2-ap-step-num">2</div>'
+      +     '<div class="v2-ap-step-title">تعديلات السيرة لهذه الوظيفة</div>'
+      +   '</div><button class="v2-ap-step-copy" onclick="v2ApplyCopy(\'cv\')">📋 نسخ</button></div>'
+      +   '<div class="v2-ap-step-body" id="v2ApStep2">' + step2Body + '</div>'
+      + '</div>'
+      // Step 3
+      + '<div class="v2-ap-step">'
+      +   '<div class="v2-ap-step-h"><div class="v2-ap-step-h-l">'
+      +     '<div class="v2-ap-step-num">3</div>'
+      +     '<div class="v2-ap-step-title">رسالة التقديم / Cover Letter</div>'
+      +   '</div><button class="v2-ap-step-copy" onclick="v2ApplyCopy(\'cover\')">📋 نسخ الرسالة</button></div>'
+      +   '<div class="v2-ap-step-body" id="v2ApStep3">' + step3Body + '</div>'
+      + '</div>'
+      // Step 4
+      + '<div class="v2-ap-step">'
+      +   '<div class="v2-ap-step-h"><div class="v2-ap-step-h-l">'
+      +     '<div class="v2-ap-step-num">4</div>'
+      +     '<div class="v2-ap-step-title">Checklist + أسئلة متوقعة</div>'
+      +   '</div></div>'
+      +   '<div class="v2-ap-step-body" id="v2ApStep4">' + step4Body + '</div>'
+      + '</div>'
+      // Actions (sticky)
+      + '<div class="v2-ap-actions">'
+      +   '<a class="v2-btn v2-btn-primary" target="_blank" rel="noopener" href="' + escapeHtml(openHref) + '" onclick="v2ApplyOpenJob(\'' + safePayload + '\')">افتح الوظيفة وقدّم ←</a>'
+      +   '<div class="v2-ap-actions-row">'
+      +     '<button class="v2-btn v2-btn-secondary" onclick="v2ApplyMarkApplied(\'' + safePayload + '\')">سجلت تقديم</button>'
+      +     '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/jobs\')">رجوع للوظائف</button>'
+      +   '</div>'
+      + '</div>';
+    // Stash pkg + payload for action handlers.
+    window.__v2Ap = { pkg: pkg, payload: safePayload };
+  }
+
+  // ── Apply actions ─────────────────────────────────────────────────────
+  function v2ApplyCopy(type){
+    var s = window.__v2Ap;
+    if (!s || !s.pkg) return;
+    var text = '';
+    if (type === 'summary') {
+      text = (s.pkg.match.bullets || []).map(function(b){ return '• ' + b; }).join('\n');
+      if (s.pkg.match.risks && s.pkg.match.risks.length) {
+        text += '\n\nمخاطر:\n' + s.pkg.match.risks.map(function(r){ return '⚠ ' + r; }).join('\n');
+      }
+    } else if (type === 'cv') {
+      text = 'تعديلات السيرة:\n' + (s.pkg.cvAdjust.picks || []).map(function(b){ return '• ' + b; }).join('\n');
+      if (s.pkg.cvAdjust.missing && s.pkg.cvAdjust.missing.length) {
+        text += '\n\nكلمات ينقص ذكرها:\n' + s.pkg.cvAdjust.missing.join(' · ');
+      }
+      if (s.pkg.cvAdjust.seniorMetricLine) {
+        text += '\n\n' + s.pkg.cvAdjust.seniorMetricLine;
+      }
+    } else if (type === 'cover') {
+      text = s.pkg.cover || '';
+    }
+    var done = function(){
+      // Successful copy of any section marks "apply_started" in the journey.
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'apply_copy', section: type });
+      alert('✓ تم النسخ.');
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(done);
+    } else { done(); }
+  }
+
+  function v2ApplyOpenJob(payloadEnc){
+    try {
+      var p = JSON.parse(decodeURIComponent(payloadEnc));
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'apply_job_opened', job: p });
+    } catch(e){}
+  }
+
+  function v2ApplyMarkApplied(payloadEnc){
+    var p;
+    try { p = JSON.parse(decodeURIComponent(payloadEnc)); } catch(e){ return; }
+    if (!p) return;
+    // De-dupe by company+role; if already applied, just advance UI.
+    var existing = false;
+    if (typeof Applications !== 'undefined' && Applications.list) {
+      var apps = Applications.list();
+      for (var i = 0; i < apps.length; i++) {
+        if (apps[i].company === (p.company || '') && apps[i].role === (p.title || '')) { existing = true; break; }
+      }
+    }
+    if (!existing && typeof Applications !== 'undefined' && Applications.add) {
+      Applications.add({
+        company: p.company || '',
+        role:    p.title   || '',
+        url:     p.url     || '',
+        status:  'applied',
+      });
+    }
+    if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markApplicationLogged) DarbiJourney.markApplicationLogged();
+    // Clear the selected-job stash so a fresh apply session starts from jobs.
+    try { localStorage.removeItem('darbi_v2_selected_job'); } catch(e){}
+    var app = document.getElementById('v2-app');
+    if (app) {
+      app.innerHTML = ''
+        + '<div class="v2-ap-success">'
+        +   '<div class="v2-ap-success-emoji">✅</div>'
+        +   '<div class="v2-ap-success-h">تم تسجيل تقديمك</div>'
+        +   '<div class="v2-ap-success-sub">' + escapeHtml(p.title || 'الوظيفة') + ' في <strong>' + escapeHtml(p.company || 'الشركة') + '</strong></div>'
+        + '</div>'
+        + '<div class="v2-card" style="text-align:center">'
+        +   '<p style="font-size:14px;color:#0a0a0a;line-height:1.7;margin-bottom:12px"><strong>الخطوة التالية:</strong> تابع النتيجة. لما يجيك رد أو مقابلة، حدّث الحالة في تتبع التقديمات وراح نجهّز لك جلسة تدريب.</p>'
+        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/jobs\')">جهّز تقديم آخر ←</button>'
+        + '</div>';
+    }
   }
 
   // Direction-pick rebuild (low confidence path): user clicks a family chip.
