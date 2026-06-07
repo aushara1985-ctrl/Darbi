@@ -439,6 +439,126 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
+       CV TEMPLATES PICKER — #/cv-templates
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-tpl-card{
+      display:block;width:100%;text-align:right;
+      background:#fff;border:1.5px solid #ececf4;border-radius:14px;
+      padding:18px;margin-bottom:11px;cursor:pointer;
+      transition:border-color .15s, background .15s, transform .08s;
+      position:relative;
+    }
+    .v2-tpl-card:hover{border-color:#c7d2fe;background:#fafaff}
+    .v2-tpl-card:active{transform:scale(.99)}
+    .v2-tpl-card.is-recommended{border-color:#16a34a;background:linear-gradient(135deg,#fff,#f0fdf4)}
+    .v2-tpl-badge{
+      position:absolute;top:12px;left:14px;
+      background:#16a34a;color:#fff;font-size:10.5px;font-weight:800;
+      padding:3px 9px;border-radius:99px;letter-spacing:.3px;
+    }
+    .v2-tpl-head{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+    .v2-tpl-icon{
+      width:38px;height:38px;border-radius:10px;
+      background:#eef2ff;color:#4338ca;font-size:18px;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .v2-tpl-card.is-recommended .v2-tpl-icon{background:#dcfce7;color:#166534}
+    .v2-tpl-title{font-size:15.5px;font-weight:800;color:#0a0a0a}
+    .v2-tpl-desc{font-size:12.5px;color:#475569;line-height:1.6;margin-bottom:9px}
+    .v2-tpl-tags{display:flex;flex-wrap:wrap;gap:5px}
+    .v2-tpl-tag{
+      background:#f1f5f9;color:#475569;font-size:10.5px;font-weight:700;
+      padding:3px 8px;border-radius:99px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       CV BUILDER — #/cv-builder
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-cvb-toolbar{
+      display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+      background:#fff;border:1px solid #ececf4;border-radius:11px;
+      padding:10px 13px;margin-bottom:12px;
+      position:sticky;top:103px;z-index:5;
+      box-shadow:0 1px 4px rgba(15,23,42,.04);
+    }
+    .v2-cvb-toolbar-info{font-size:12px;color:#475569;font-weight:700;flex:1;min-width:120px}
+    .v2-cvb-toolbar-info b{color:#0a0a0a}
+    .v2-cvb-toolbar-btn{
+      background:#eef2ff;color:#4338ca;border:none;
+      padding:7px 12px;border-radius:8px;cursor:pointer;
+      font-size:12px;font-weight:700;font-family:inherit;white-space:nowrap;
+      transition:background .15s;
+    }
+    .v2-cvb-toolbar-btn:hover{background:#c7d2fe}
+    .v2-cvb-toolbar-btn.is-primary{background:#4f46e5;color:#fff}
+    .v2-cvb-toolbar-btn.is-primary:hover{background:#4338ca}
+
+    .v2-cvb-honest{
+      background:#fef3c7;border:1px solid #fcd34d;
+      padding:10px 13px;border-radius:10px;
+      font-size:12.5px;color:#78350f;line-height:1.6;font-weight:600;
+      margin-bottom:12px;
+    }
+
+    .v2-cvb-preview{
+      background:#fff;border:1px solid #ececf4;border-radius:14px;
+      padding:24px 22px;margin-bottom:14px;
+      min-height:200px;
+    }
+    .v2-cvb-section{position:relative;margin-bottom:18px;padding-bottom:10px}
+    .v2-cvb-section:last-child{margin-bottom:0;padding-bottom:0}
+    .v2-cvb-section-h{
+      font-size:11.5px;font-weight:800;color:#4338ca;letter-spacing:.4px;
+      text-transform:uppercase;margin-bottom:7px;border-bottom:1px solid #ececf4;padding-bottom:5px;
+      display:flex;align-items:center;justify-content:space-between;gap:8px;
+    }
+    .v2-cvb-section-edit{
+      background:transparent;color:#4338ca;border:none;cursor:pointer;
+      font-size:11.5px;font-weight:700;padding:2px 6px;border-radius:6px;
+      font-family:inherit;
+    }
+    .v2-cvb-section-edit:hover{background:#eef2ff}
+    .v2-cvb-section-body{font-size:13.5px;color:#0a0a0a;line-height:1.75}
+    .v2-cvb-section-body p{margin-bottom:8px}
+    .v2-cvb-section-body p:last-child{margin-bottom:0}
+    .v2-cvb-section-body ul,.v2-cvb-section-body ol{padding-right:18px;margin-bottom:8px}
+    .v2-cvb-section-body li{margin-bottom:4px}
+    .v2-cvb-section-body strong{color:#0a0a0a}
+    .v2-cvb-placeholder{
+      background:#fef3c7;color:#78350f;font-weight:700;
+      padding:1px 8px;border-radius:99px;font-size:12px;
+      display:inline-block;
+    }
+
+    .v2-cvb-edit-modal{
+      position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:80;
+      display:none;align-items:center;justify-content:center;
+      padding:20px;
+    }
+    .v2-cvb-edit-modal.is-open{display:flex}
+    .v2-cvb-edit-card{
+      background:#fff;border-radius:14px;
+      max-width:560px;width:100%;max-height:90vh;overflow-y:auto;
+      padding:18px;
+    }
+    .v2-cvb-edit-h{font-size:15px;font-weight:800;color:#0a0a0a;margin-bottom:9px}
+    .v2-cvb-edit-hint{font-size:12px;color:#64748b;margin-bottom:10px;line-height:1.6}
+    .v2-cvb-edit-textarea{
+      width:100%;min-height:200px;
+      padding:11px 13px;border:1.5px solid #ececf4;border-radius:10px;
+      font-family:inherit;font-size:14px;line-height:1.7;color:#0a0a0a;
+      background:#fafafe;resize:vertical;
+    }
+    .v2-cvb-edit-textarea:focus{outline:none;border-color:#4f46e5;background:#fff}
+    .v2-cvb-edit-actions{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+    .v2-cvb-edit-actions .v2-btn{flex:1;min-width:120px;padding:11px 16px}
+
+    .v2-cvb-saved-status{
+      font-size:11.5px;color:#16a34a;font-weight:700;
+      margin-right:8px;display:inline-flex;align-items:center;gap:4px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
        RESPONSIVE
     ════════════════════════════════════════════════════════════════════ */
     @media (max-width: 520px) {
@@ -866,8 +986,8 @@
     '#/cv-upload':    { title: 'ارفع سيرتك',           step: 1, back: '#/dream',      render: 'renderCvUpload' },
     '#/quiz':         { title: 'أسئلة سريعة',          step: 1, back: '#/cv-upload',  render: 'renderQuiz' },
     '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderDiagnosis' },
-    '#/cv-templates': { title: 'اختر قالب سيرتك',       step: 2, back: '#/diagnosis', render: 'renderPlaceholder', phase: 'Phase 1' },
-    '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-templates', render: 'renderPlaceholder', phase: 'Phase 1' },
+    '#/cv-templates': { title: 'اختر قالب سيرتك',       step: 2, back: '#/diagnosis',     render: 'renderCvTemplates' },
+    '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-templates',  render: 'renderCvBuilder' },
     '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderPlaceholder', phase: 'Phase 0.6' },
     '#/apply':        { title: 'جهّز تقديمك',           step: 4, back: '#/jobs',      render: 'renderPlaceholder', phase: 'Phase 0.7' },
     '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.8' },
@@ -929,8 +1049,18 @@
   }
 
   // ── Navigation primitives ───────────────────────────────────────────────
+  // Strip any "?query" suffix when looking up the route entry. Query params
+  // are still preserved in the URL hash so v2HashParam() can read them.
+  function v2RouteKey(hash){
+    if (!hash) return '#/landing';
+    var qIdx = hash.indexOf('?');
+    var bare = qIdx === -1 ? hash : hash.slice(0, qIdx);
+    return V2_ROUTES[bare] ? bare : '#/landing';
+  }
   function v2Go(hash, replace){
-    if (!hash || !V2_ROUTES[hash]) hash = '#/landing';
+    if (!hash) hash = '#/landing';
+    // Validate the bare path; if unknown, fall back to landing entirely.
+    if (!V2_ROUTES[v2RouteKey(hash)]) hash = '#/landing';
     if (replace) {
       window.history.replaceState({ route: hash }, '', hash);
     } else {
@@ -1008,7 +1138,8 @@
   // ── Route dispatcher ────────────────────────────────────────────────────
   function v2RenderRoute(hash){
     hash = hash || location.hash || '#/landing';
-    var route = V2_ROUTES[hash];
+    var bare = v2RouteKey(hash);
+    var route = V2_ROUTES[bare];
     if (!route) {
       hash = '#/landing';
       route = V2_ROUTES[hash];
@@ -1920,6 +2051,634 @@
       +     '<div class="v2-dx-score"><div class="v2-dx-score-label">وضوح الطريق</div><div class="v2-dx-score-val">' + (sup.pathClarity || 0) + '%</div></div>'
       +   '</div>'
       + '</div>';
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PHASE 1 TASK 4 — CV Builder (#/cv-templates + #/cv-builder)
+  // 5 real templates that read from Diagnosis + V2Draft + cvFacts. NO PDF,
+  // NO Premium, NO "قريباً" in the main journey. Placeholders are clearly
+  // bracketed Arabic ([أضف ...]) so users edit them — never invented numbers.
+  // ════════════════════════════════════════════════════════════════════════
+
+  // ── Family-aware bullet pools (8 families × 2 bands). Used by ATS,
+  // Achievement, and Executive templates. NO invented metrics — all numbers
+  // appear as bracketed placeholders the user fills in from their real CV.
+  var V2_FAMILY_BULLETS = {
+    marketing: {
+      senior: [
+        'قيادة استراتيجية تسويق متعددة القنوات تستهدف [الجمهور المستهدف]',
+        'إدارة ميزانية إعلانات على Google/Meta وتحسين العائد على الإنفاق',
+        'بناء فريق محتوى وتنسيقه مع المنتج والمبيعات',
+        'إعداد تقارير شهرية بمؤشرات CAC وLTV وROAS',
+      ],
+      junior: [
+        'تدريب على تخطيط حملات تسويق رقمي في [اسم الشركة]',
+        'إدارة سوشيال ميديا لمشروع جامعي/مجتمعي حقق [النتيجة إن وجدت]',
+        'إنشاء محتوى بصري باستخدام Canva / Figma',
+        'تحليل أداء المحتوى عبر Google Analytics و Meta Insights',
+      ],
+    },
+    hr: {
+      senior: [
+        'قيادة استراتيجية التوظيف لـ [أضف عدد الموظفين] موظف',
+        'إعداد سياسات الموارد البشرية ومواءمتها مع نظام العمل السعودي',
+        'تطوير برامج تأهيل وتدريب الموظفين الجدد',
+        'بناء وتنفيذ نظام تقييم الأداء السنوي',
+      ],
+      junior: [
+        'تدريب على مهام التوظيف والاستقطاب في [اسم الشركة]',
+        'متابعة سيرة المتقدمين عبر [ATS]',
+        'تنسيق مقابلات بين المرشحين ومديري التوظيف',
+        'دعم برامج تأهيل الموظفين الجدد',
+      ],
+    },
+    accounting: {
+      senior: [
+        'إعداد القوائم المالية الشهرية والربعية وفق IFRS',
+        'إدارة فريق محاسبة وضمان دقة القيود',
+        'تنسيق مع المدققين الخارجيين لإقفال السنة المالية',
+        'إعداد الإقرارات الضريبية (VAT/Zakat) للزكاة والدخل',
+      ],
+      junior: [
+        'تطبيق مبادئ المحاسبة المالية في مشاريع جامعية',
+        'استخدام Excel متقدم (VLOOKUP, Pivot, Macros)',
+        'تدريب على [ERP / SAP / QuickBooks] خلال التدريب الميداني',
+        'إعداد جداول مطابقة بنكية ومتابعة قيود AP/AR',
+      ],
+    },
+    sales: {
+      senior: [
+        'قيادة فريق مبيعات لتحقيق هدف سنوي بقيمة [أضف قيمة الهدف]',
+        'بناء pipeline منظم وتحسين معدلات التحويل',
+        'تطوير شراكات استراتيجية مع عملاء مؤسسيين',
+        'استخدام Salesforce/HubSpot لتتبع الفرص والتنبؤ',
+      ],
+      junior: [
+        'تدريب في قسم المبيعات على prospecting و building leads',
+        'استخدام Salesforce/HubSpot لتسجيل الأنشطة',
+        'مهارات تواصل قوية بالعربية والإنجليزية',
+        'فهم أساسي لـ B2B sales funnel',
+      ],
+    },
+    customer_service: {
+      senior: [
+        'قيادة فريق خدمة عملاء لتحقيق SLA عالي ورضا قوي',
+        'بناء عمليات الاستجابة عبر القنوات (هاتف، دردشة، بريد)',
+        'تحليل بيانات الشكاوى لتحسين المنتج/الخدمة',
+        'تطوير برامج تدريب لممثلي خدمة العملاء',
+      ],
+      junior: [
+        'دعم العملاء عبر الهاتف والدردشة والبريد',
+        'استخدام أنظمة Ticketing (Zendesk / Freshdesk)',
+        'الالتزام بزمن استجابة وحل واضح',
+        'تصعيد الحالات المعقدة للفرق المختصة',
+      ],
+    },
+    it_cyber: {
+      senior: [
+        'قيادة عمليات الأمن السيبراني وتحسين الوضع الأمني',
+        'إدارة الاستجابة للحوادث (SOC / IR)',
+        'تطوير سياسات الأمن وفق NCA / NIST',
+        'إدارة فريق IT/Cyber وأدوات المراقبة',
+      ],
+      junior: [
+        'دعم فني للمستخدمين وحل المشكلات اليومية',
+        'إدارة الحسابات والصلاحيات الأساسية',
+        'استخدام أدوات مراقبة الشبكة والأنظمة',
+        'فهم أساسي لـ OWASP / MITRE / NIST',
+      ],
+    },
+    design: {
+      senior: [
+        'قيادة فريق تصميم وبناء design system',
+        'تنفيذ بحث UX وتقديم recommendations',
+        'تنسيق مع الهندسة والمنتج طوال الدورة',
+        'تطوير معايير بصرية للعلامة (visual + UX)',
+      ],
+      junior: [
+        'بناء بورتفوليو من 3-5 مشاريع UI/UX',
+        'إتقان Figma + Adobe XD/Photoshop/Illustrator',
+        'فهم مبادئ التصميم البصري + UX research',
+        'تدريب على wireframing + prototyping',
+      ],
+    },
+    admin_office: {
+      senior: [
+        'إدارة عمليات المكتب التنفيذي ودعم القيادة',
+        'تنسيق الاجتماعات والسفر والتقارير',
+        'إدارة فريق إداري وتحسين سير العمل',
+        'إعداد محاضر اجتماعات وملخصات تنفيذية',
+      ],
+      junior: [
+        'تنظيم الملفات والوثائق إلكترونياً',
+        'تنسيق المواعيد والاجتماعات',
+        'استخدام Microsoft 365 / Google Workspace',
+        'دقة في إدخال البيانات ومتابعتها',
+      ],
+    },
+  };
+
+  // ── Family-specific skill pools (for ATS template skill row). Always merged
+  // with cvFacts.tools so the user's real toolset shows up first.
+  var V2_FAMILY_SKILLS = {
+    marketing:        ['Digital Marketing','Content','SEO','Social Media','Google Ads','Meta Ads','Analytics','Canva','HubSpot'],
+    hr:               ['Recruitment','Onboarding','Employee Relations','Performance Management','HRIS','Payroll','Labor Law'],
+    accounting:       ['IFRS','VAT','Zakat','AP/AR','Reconciliation','Excel','SAP','QuickBooks','Audit'],
+    sales:            ['B2B Sales','Prospecting','Salesforce','HubSpot','Pipeline Management','Negotiation','CRM'],
+    customer_service: ['Customer Communication','Zendesk','Freshdesk','Ticket Management','Conflict Resolution','CSAT','SLA'],
+    it_cyber:         ['Help Desk','Active Directory','Networking','SOC','SIEM','OWASP','NIST','Linux'],
+    design:           ['Figma','Adobe XD','Photoshop','Illustrator','UI Design','UX Research','Wireframing','Prototyping'],
+    admin_office:     ['Microsoft 365','Google Workspace','Calendar Management','Travel Coordination','Filing','Reporting'],
+  };
+
+  // ── Templates registry ────────────────────────────────────────────────
+  var V2_CV_TEMPLATES = {
+    fresh_graduate: {
+      ar: 'خريج جديد', icon: '🎓',
+      desc: 'يبرز التعليم، المشاريع، والأدوات أولاً. لا لغة قائد. لا ادعاء خبرة.',
+      tags: ['تعليم أولاً', 'مشاريع', 'بدون خبرة كثيرة'],
+      genFn: 'tplFreshGraduate',
+    },
+    ats_optimized: {
+      ar: 'متوافق مع ATS', icon: '⚙️',
+      desc: 'هيكل واضح: ملخص + مهارات + خبرة. كلمات مفتاحية تساعد على عبور أنظمة الفرز.',
+      tags: ['ATS friendly', 'كلمات مفتاحية', 'الأكثر شيوعاً'],
+      genFn: 'tplAtsOptimized',
+    },
+    achievement_focused: {
+      ar: 'محور النتائج', icon: '🎯',
+      desc: 'الأرقام والإنجازات أولاً. للأدوار التي تتطلب دليل نتائج. لا ادعاء أرقام غير حقيقية.',
+      tags: ['نتائج', 'أرقام أولاً', 'متوسط/سنيور'],
+      genFn: 'tplAchievementFocused',
+    },
+    executive_brief: {
+      ar: 'موجز تنفيذي', icon: '👔',
+      desc: 'صفحة واحدة قيادية: نطاق + نتائج تنفيذية + خط مسيرة. لا تضمين خدمة عملاء.',
+      tags: ['قيادي', 'صفحة واحدة', '8+ سنوات'],
+      genFn: 'tplExecutiveBrief',
+    },
+    one_pager_basic: {
+      ar: 'صفحة واحدة بسيطة', icon: '📄',
+      desc: 'للوظائف البسيطة (كاشير، باريستا، استقبال). معلومات شخصية + تعليم + توفر.',
+      tags: ['وظائف بسيطة', 'عربي', 'سهل القراءة'],
+      genFn: 'tplOnePagerBasic',
+    },
+  };
+
+  // ── Recommendation: picks one template id from diagnosis + draft signals.
+  function v2RecommendTemplate(diagnosis, draft){
+    var facts = (diagnosis && diagnosis.cvFacts) || {};
+    var track = (draft && draft.track) || '';
+    // Branch A or simple_job track → One-Pager
+    if ((diagnosis && diagnosis.branch === 'A') || track === 'simple_job') return 'one_pager_basic';
+    // Senior leadership signals → Executive Brief
+    if (diagnosis && diagnosis.isSeniorOverride) return 'executive_brief';
+    if (track === 'leadership' && facts.yearsExp && facts.yearsExp >= 8) return 'executive_brief';
+    // Achievement-Focused when CV contains real numbers AND seniority is mid+
+    var cvHasMetrics = !!(diagnosis && diagnosis.cvText && /\d+%|\d+m\s*(sar|usd|aed|arr)|arr|mrr|nrr/i.test(diagnosis.cvText));
+    if (cvHasMetrics && facts.yearsExp && facts.yearsExp >= 3) return 'achievement_focused';
+    // Fresh grad or junior → Fresh Graduate
+    if (track === 'junior_fresh' || (facts.yearsExp != null && facts.yearsExp < 2)) return 'fresh_graduate';
+    if (diagnosis && diagnosis.branch === 'B') return 'fresh_graduate';
+    // Default
+    return 'ats_optimized';
+  }
+
+  // ── Section builder helpers ───────────────────────────────────────────
+  function _ph(text){ return '<span class="v2-cvb-placeholder">[' + escapeHtml(text) + ']</span>'; }
+  function _phPlain(text){ return '[' + text + ']'; }
+  function _list(items, fn){ return '<ul>' + items.map(fn).join('') + '</ul>'; }
+  function _listPlain(items){ return items.map(function(x){ return '• ' + x; }).join('\n'); }
+
+  function _famKey(diagnosis){
+    var f = diagnosis && diagnosis.family;
+    if (f && V2_FAMILY_BULLETS[f]) return f;
+    return 'admin_office'; // safe neutral fallback
+  }
+  function _seniorityBand(diagnosis, facts){
+    if (diagnosis && diagnosis.isSeniorOverride) return 'senior';
+    if (facts && facts.yearsExp && facts.yearsExp >= 5) return 'senior';
+    if (diagnosis && diagnosis.branch === 'C') return 'senior';
+    return 'junior';
+  }
+  function _famBullets(diagnosis, facts){
+    var fam = _famKey(diagnosis);
+    var band = _seniorityBand(diagnosis, facts);
+    return (V2_FAMILY_BULLETS[fam] && V2_FAMILY_BULLETS[fam][band]) || V2_FAMILY_BULLETS.admin_office[band];
+  }
+  function _famSkills(diagnosis, facts){
+    var fam = _famKey(diagnosis);
+    var cvTools = (facts && Array.isArray(facts.tools)) ? facts.tools : [];
+    var famSkills = V2_FAMILY_SKILLS[fam] || [];
+    var merged = [];
+    cvTools.forEach(function(t){ if (merged.indexOf(t) === -1) merged.push(t); });
+    famSkills.forEach(function(s){ if (merged.indexOf(s) === -1 && merged.length < 10) merged.push(s); });
+    return merged;
+  }
+
+  // ── Common header — used by every template ────────────────────────────
+  function _hdrHtml(diagnosis){
+    var dream = (diagnosis && diagnosis.dreamRole) || _phPlain('المسمى المستهدف');
+    return ''
+      + '<p><strong>' + _ph('الاسم الكامل') + '</strong><br>'
+      + escapeHtml(dream) + ' &nbsp;·&nbsp; ' + _ph('المدينة') + '<br>'
+      + _ph('رقم الجوال') + ' &nbsp;·&nbsp; ' + _ph('البريد الإلكتروني') + ' &nbsp;·&nbsp; ' + _ph('LinkedIn') + '</p>';
+  }
+  function _hdrPlain(diagnosis){
+    var dream = (diagnosis && diagnosis.dreamRole) || _phPlain('المسمى المستهدف');
+    return _phPlain('الاسم الكامل') + '\n' + dream + ' · ' + _phPlain('المدينة') + '\n' +
+      _phPlain('رقم الجوال') + ' · ' + _phPlain('البريد الإلكتروني') + ' · ' + _phPlain('LinkedIn');
+  }
+
+  // ──────────────────────────────────────────────────────────────────────
+  // TEMPLATE GENERATORS — each returns { name, sections: [{id,title,html,plain}] }
+  // ──────────────────────────────────────────────────────────────────────
+
+  function tplFreshGraduate(diagnosis, facts, draft){
+    var dream = (diagnosis && diagnosis.dreamRole) || '[المسمى]';
+    var major = facts.major || _phPlain('التخصص');
+    var grad  = facts.gradYear || _phPlain('سنة التخرج');
+    var langs = (facts.languages && facts.languages.length) ? facts.languages : ['Arabic','English'];
+    var tools = (facts.tools && facts.tools.length) ? facts.tools : null;
+    var famKey = _famKey(diagnosis);
+    var skills = _famSkills(diagnosis, facts);
+
+    return {
+      name: 'Fresh Graduate',
+      sections: [
+        { id: 'header', title: 'الترويسة',
+          html: _hdrHtml(diagnosis),
+          plain: _hdrPlain(diagnosis) },
+        { id: 'objective', title: 'الهدف المهني',
+          html: '<p>خريج/خريجة ' + escapeHtml(major) + (facts.gradYear ? ' (' + facts.gradYear + ')' : '') +
+            ' أبحث عن دور <strong>' + escapeHtml(dream) + '</strong> أبدأ فيه مسيرتي المهنية. حماس عالي للتعلم السريع والمساهمة من اليوم الأول.</p>',
+          plain: 'خريج/خريجة ' + major + (facts.gradYear ? ' (' + facts.gradYear + ')' : '') +
+            ' أبحث عن دور ' + dream + ' أبدأ فيه مسيرتي المهنية. حماس عالي للتعلم السريع والمساهمة من اليوم الأول.' },
+        { id: 'education', title: 'التعليم',
+          html: '<p><strong>' + _ph('اسم الجامعة') + '</strong> · ' + escapeHtml(major) + ' · ' + escapeHtml(String(grad)) + '<br>' +
+            _ph('المعدل التراكمي إن أحببت إضافته') + '</p>',
+          plain: _phPlain('اسم الجامعة') + ' · ' + major + ' · ' + grad + '\n' + _phPlain('المعدل التراكمي إن أحببت إضافته') },
+        { id: 'projects', title: 'مشاريع / تدريب',
+          html: _list([
+            'مشروع/تدريب ' + _ph('عنوان المشروع') + ' — ' + _ph('وصف موجز للنتيجة'),
+            'مشروع/تدريب ' + _ph('عنوان المشروع') + ' — ' + _ph('وصف موجز للنتيجة'),
+            (facts.projectsEvidence ? 'مشاريع جامعية إضافية متعلقة بـ ' + escapeHtml((DREAM_ROLE_LIBRARY[famKey]||{}).familyAr || dream) : 'تطوع/نشاط طلابي ذو علاقة بالمجال — ' + _ph('وصف موجز')),
+          ], function(x){ return '<li>' + x + '</li>'; }),
+          plain: _listPlain([
+            'مشروع/تدريب ' + _phPlain('عنوان المشروع') + ' — ' + _phPlain('وصف موجز للنتيجة'),
+            'مشروع/تدريب ' + _phPlain('عنوان المشروع') + ' — ' + _phPlain('وصف موجز للنتيجة'),
+            (facts.projectsEvidence ? 'مشاريع جامعية إضافية متعلقة بالمجال' : 'تطوع/نشاط طلابي ذو علاقة بالمجال — ' + _phPlain('وصف موجز')),
+          ]) },
+        { id: 'skills', title: 'مهارات',
+          html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>',
+          plain: skills.join(' · ') },
+        { id: 'languages', title: 'اللغات',
+          html: '<p>' + langs.map(escapeHtml).join(' · ') + '</p>',
+          plain: langs.join(' · ') },
+        (tools ? { id: 'tools', title: 'أدوات',
+          html: '<p>' + tools.map(escapeHtml).join(' · ') + '</p>',
+          plain: tools.join(' · ') } : null),
+      ].filter(Boolean),
+    };
+  }
+
+  function tplAtsOptimized(diagnosis, facts, draft){
+    var dream = (diagnosis && diagnosis.dreamRole) || '[المسمى]';
+    var fam = _famKey(diagnosis);
+    var famAr = (DREAM_ROLE_LIBRARY[fam] || {}).familyAr || 'المجال';
+    var yrs = facts.yearsExp;
+    var skills = _famSkills(diagnosis, facts);
+    var bullets = _famBullets(diagnosis, facts);
+    var summaryLine1 = (yrs ? yrs + ' سنوات خبرة في ' : 'خبرة في ') + famAr;
+    var summaryLine2 = facts.latestTitle ? ('كآخر دور: ' + facts.latestTitle) : 'أبحث عن دور ' + dream;
+    var summaryLine3 = 'أركز على نتائج قابلة للقياس وتحسين العمليات.';
+    return {
+      name: 'ATS-Optimized',
+      sections: [
+        { id: 'header', title: 'الترويسة',
+          html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
+        { id: 'summary', title: 'الملخص المهني',
+          html: '<p>' + escapeHtml(summaryLine1) + '. ' + escapeHtml(summaryLine2) + '. ' + escapeHtml(summaryLine3) + '</p>',
+          plain: summaryLine1 + '. ' + summaryLine2 + '. ' + summaryLine3 },
+        { id: 'skills', title: 'مهارات / كلمات مفتاحية',
+          html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>',
+          plain: skills.join(' · ') },
+        { id: 'experience', title: 'الخبرة',
+          html: '<p><strong>' + _ph('المسمى الوظيفي') + '</strong> — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى') + '</p>' +
+            _list(bullets, function(b){ return '<li>' + escapeHtml(b) + '</li>'; }),
+          plain: _phPlain('المسمى الوظيفي') + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى') + '\n' + _listPlain(bullets) },
+        { id: 'education', title: 'التعليم',
+          html: '<p>' + (facts.major ? '<strong>' + escapeHtml(facts.major) + '</strong> · ' : '<strong>' + _ph('التخصص') + '</strong> · ') +
+            (facts.gradYear ? facts.gradYear + ' · ' : '') + _ph('اسم الجامعة') + '</p>',
+          plain: (facts.major || _phPlain('التخصص')) + ' · ' + (facts.gradYear || '') + ' · ' + _phPlain('اسم الجامعة') },
+      ],
+    };
+  }
+
+  function tplAchievementFocused(diagnosis, facts, draft){
+    var dream = (diagnosis && diagnosis.dreamRole) || '[المسمى]';
+    var yrs = facts.yearsExp;
+    var skills = _famSkills(diagnosis, facts);
+    var bullets = _famBullets(diagnosis, facts);
+    var headline = (yrs ? yrs + ' سنوات في ' : '') + (facts.latestTitle ? facts.latestTitle : dream);
+    return {
+      name: 'Achievement-Focused',
+      sections: [
+        { id: 'header', title: 'الترويسة',
+          html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
+        { id: 'headline', title: 'العنوان',
+          html: '<p><strong>' + escapeHtml(headline) + '</strong> — أبحث عن دور ' + escapeHtml(dream) + '</p>',
+          plain: headline + ' — أبحث عن دور ' + dream },
+        { id: 'top_results', title: 'أعلى ٤ نتائج',
+          html: _list([
+            'نتيجة ' + _ph('الرقم') + ' — ' + (bullets[0] || _phPlain('وصف الإنجاز')),
+            'نتيجة ' + _ph('الرقم') + ' — ' + (bullets[1] || _phPlain('وصف الإنجاز')),
+            'نتيجة ' + _ph('الرقم') + ' — ' + (bullets[2] || _phPlain('وصف الإنجاز')),
+            'نتيجة ' + _ph('الرقم') + ' — ' + (bullets[3] || _phPlain('وصف الإنجاز')),
+          ], function(x){ return '<li>' + x + '</li>'; }),
+          plain: _listPlain([
+            _phPlain('الرقم') + ' — ' + (bullets[0] || _phPlain('وصف الإنجاز')),
+            _phPlain('الرقم') + ' — ' + (bullets[1] || _phPlain('وصف الإنجاز')),
+            _phPlain('الرقم') + ' — ' + (bullets[2] || _phPlain('وصف الإنجاز')),
+            _phPlain('الرقم') + ' — ' + (bullets[3] || _phPlain('وصف الإنجاز')),
+          ]) },
+        { id: 'experience', title: 'الخبرة',
+          html: '<p><strong>' + (facts.latestTitle || _ph('المسمى الوظيفي')) + '</strong> — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى') + '</p>' +
+            _list(bullets, function(b){ return '<li>' + escapeHtml(b) + '</li>'; }),
+          plain: (facts.latestTitle || _phPlain('المسمى الوظيفي')) + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى') + '\n' + _listPlain(bullets) },
+        { id: 'skills', title: 'مهارات',
+          html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>',
+          plain: skills.join(' · ') },
+      ],
+    };
+  }
+
+  function tplExecutiveBrief(diagnosis, facts, draft){
+    var dream = (diagnosis && diagnosis.dreamRole) || '[المسمى التنفيذي]';
+    var yrs = facts.yearsExp;
+    var hasArr = diagnosis && diagnosis.cvText && diagnosis.cvText.match(/(\d{1,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)/i);
+    var arrText = hasArr ? hasArr[0] : null;
+    var summary = (yrs ? yrs + ' سنوات في ' : '') + 'القيادة التنفيذية' +
+      (arrText ? ' — إدارة محفظة ' + arrText : '') + '. أركز على نتائج قابلة للقياس: نمو ARR، احتفاظ، توسع، وأداء فريق.';
+    return {
+      name: 'Executive Brief',
+      sections: [
+        { id: 'header', title: 'الترويسة',
+          html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
+        { id: 'exec_summary', title: 'موجز تنفيذي',
+          html: '<p>' + escapeHtml(summary) + ' أبحث عن دور <strong>' + escapeHtml(dream) + '</strong>.</p>',
+          plain: summary + ' أبحث عن دور ' + dream + '.' },
+        { id: 'scope', title: 'النطاق',
+          html: '<p>' +
+            '<strong>الفريق:</strong> ' + (hasArr ? _ph('عدد التقارير المباشرة') : _ph('حجم الفريق')) + ' · ' +
+            '<strong>الميزانية/الإيرادات:</strong> ' + (arrText ? escapeHtml(arrText) : _ph('ARR / الميزانية')) + ' · ' +
+            '<strong>المنطقة:</strong> ' + _ph('السعودية / الخليج / MENA') +
+            '</p>',
+          plain: 'الفريق: ' + (hasArr ? _phPlain('عدد التقارير المباشرة') : _phPlain('حجم الفريق')) +
+            ' · الميزانية/الإيرادات: ' + (arrText || _phPlain('ARR / الميزانية')) +
+            ' · المنطقة: ' + _phPlain('السعودية / الخليج / MENA') },
+        { id: 'top_results', title: 'أعلى ٣ نتائج تنفيذية',
+          html: _list([
+            'حسّنت ' + _ph('المؤشر مثل NRR/GRR') + ' من ' + _ph('قبل %') + ' إلى ' + _ph('بعد %'),
+            'قُدت ' + _ph('المبادرة الاستراتيجية') + ' حققت ' + _ph('النتيجة بالأرقام'),
+            'بنيت ' + _ph('الفريق / النظام / الـ playbook') + ' أدى إلى ' + _ph('النتيجة'),
+          ], function(x){ return '<li>' + x + '</li>'; }),
+          plain: _listPlain([
+            'حسّنت ' + _phPlain('المؤشر مثل NRR/GRR') + ' من ' + _phPlain('قبل %') + ' إلى ' + _phPlain('بعد %'),
+            'قُدت ' + _phPlain('المبادرة الاستراتيجية') + ' حققت ' + _phPlain('النتيجة بالأرقام'),
+            'بنيت ' + _phPlain('الفريق / النظام / الـ playbook') + ' أدى إلى ' + _phPlain('النتيجة'),
+          ]) },
+        { id: 'career_timeline', title: 'خط مسيرة',
+          html: _list([
+            (facts.latestTitle || _phPlain('آخر دور')) + ' — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى'),
+            _phPlain('دور سابق') + ' — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى'),
+            _phPlain('بداية المسار') + ' — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى'),
+          ], function(x){ return '<li>' + x + '</li>'; }),
+          plain: _listPlain([
+            (facts.latestTitle || _phPlain('آخر دور')) + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى'),
+            _phPlain('دور سابق') + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى'),
+            _phPlain('بداية المسار') + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى'),
+          ]) },
+      ],
+    };
+  }
+
+  function tplOnePagerBasic(diagnosis, facts, draft){
+    var dream = (diagnosis && diagnosis.dreamRole) || _phPlain('الوظيفة المرغوبة');
+    return {
+      name: 'One-Pager Basic',
+      sections: [
+        { id: 'header', title: 'معلومات شخصية',
+          html: '<p><strong>' + _ph('الاسم الكامل') + '</strong><br>' +
+            _ph('العمر') + ' · ' + _ph('المدينة') + '<br>' +
+            _ph('رقم الجوال') + ' · ' + _ph('البريد الإلكتروني') + '</p>',
+          plain: _phPlain('الاسم الكامل') + '\n' + _phPlain('العمر') + ' · ' + _phPlain('المدينة') + '\n' +
+            _phPlain('رقم الجوال') + ' · ' + _phPlain('البريد الإلكتروني') },
+        { id: 'objective', title: 'هدفي',
+          html: '<p>أبحث عن وظيفة <strong>' + escapeHtml(dream) + '</strong>. مستعد للالتزام بالدوام وتعلم سريع.</p>',
+          plain: 'أبحث عن وظيفة ' + dream + '. مستعد للالتزام بالدوام وتعلم سريع.' },
+        { id: 'education', title: 'التعليم',
+          html: '<p>' + _ph('المرحلة الدراسية') + ' · ' + _ph('اسم المدرسة/الجامعة') + ' · ' + _ph('السنة') + '</p>',
+          plain: _phPlain('المرحلة الدراسية') + ' · ' + _phPlain('اسم المدرسة/الجامعة') + ' · ' + _phPlain('السنة') },
+        { id: 'skills', title: 'مهارات حياتية',
+          html: '<p>تواصل جيد · العمل ضمن فريق · الالتزام بالوقت · اللباقة مع العملاء · العربية والإنجليزية الأساسية</p>',
+          plain: 'تواصل جيد · العمل ضمن فريق · الالتزام بالوقت · اللباقة مع العملاء · العربية والإنجليزية الأساسية' },
+        { id: 'availability', title: 'التوفر',
+          html: '<p>متاح/متاحة للبدء من ' + _ph('التاريخ') + '. مستعد/مستعدة للورديات.</p>',
+          plain: 'متاح/متاحة للبدء من ' + _phPlain('التاريخ') + '. مستعد/مستعدة للورديات.' },
+      ],
+    };
+  }
+
+  // ── Build a template by id. Reads Diagnosis + V2Draft + cvFacts. ──────
+  function v2GenerateCv(templateId, diagnosis){
+    var tpl = V2_CV_TEMPLATES[templateId];
+    if (!tpl) return null;
+    var draft = V2Draft.get();
+    var facts = (diagnosis && diagnosis.cvFacts) || extractCvFacts(diagnosis && diagnosis.cvText || draft.cvText || '');
+    var fn = window[tpl.genFn];
+    if (typeof fn !== 'function') return null;
+    return Object.assign({ id: templateId }, fn(diagnosis, facts || {}, draft));
+  }
+
+  // ── CV storage (key: darbi_cv_v2). Stores per-section edits + template id.
+  var V2Cv = {
+    KEY: 'darbi_cv_v2',
+    get: function(){ try { return JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch(e){ return null; } },
+    save: function(state){ try { state.updatedAt = new Date().toISOString(); localStorage.setItem(this.KEY, JSON.stringify(state)); } catch(e){} },
+    clear: function(){ try { localStorage.removeItem(this.KEY); } catch(e){} },
+  };
+
+  // ── #/cv-templates renderer ───────────────────────────────────────────
+  function renderCvTemplates(app, route){
+    var d = Diagnosis.get();
+    if (!d) {
+      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">📝</div><h3>اكمل التشخيص أولاً</h3>'
+        + '<p>نحتاج تشخيصك عشان نقترح لك قالب يناسب وضعك.</p>'
+        + '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/track\')">ابدأ التشخيص ←</button></div>';
+      return;
+    }
+    var draft = V2Draft.get();
+    var recommended = v2RecommendTemplate(d, draft);
+    var cardsHtml = Object.keys(V2_CV_TEMPLATES).map(function(id){
+      var t = V2_CV_TEMPLATES[id];
+      var rec = (id === recommended);
+      return '<button type="button" class="v2-tpl-card' + (rec ? ' is-recommended' : '') + '" onclick="v2Go(\'#/cv-builder?t=' + escapeHtml(id) + '\')">'
+        + (rec ? '<span class="v2-tpl-badge">موصى به لك</span>' : '')
+        + '<div class="v2-tpl-head">'
+        +   '<div class="v2-tpl-icon">' + t.icon + '</div>'
+        +   '<div class="v2-tpl-title">' + escapeHtml(t.ar) + '</div>'
+        + '</div>'
+        + '<div class="v2-tpl-desc">' + escapeHtml(t.desc) + '</div>'
+        + '<div class="v2-tpl-tags">' + t.tags.map(function(tag){ return '<span class="v2-tpl-tag">' + escapeHtml(tag) + '</span>'; }).join('') + '</div>'
+        + '</button>';
+    }).join('');
+    app.innerHTML = ''
+      + '<h2 class="v2-h1">اختر قالب <span class="v2-accent">سيرتك</span></h2>'
+      + '<p class="v2-sub">٥ قوالب حقيقية، كلها مجانية، بدون "Premium" أو "قريباً". اخترنا لك الأنسب بناءً على تشخيصك.</p>'
+      + cardsHtml;
+  }
+
+  // ── Read ?t= from current hash ────────────────────────────────────────
+  function v2HashParam(name){
+    var h = location.hash || '';
+    var qIdx = h.indexOf('?');
+    if (qIdx === -1) return null;
+    var params = h.slice(qIdx + 1).split('&');
+    for (var i = 0; i < params.length; i++) {
+      var kv = params[i].split('=');
+      if (decodeURIComponent(kv[0]) === name) return decodeURIComponent(kv[1] || '');
+    }
+    return null;
+  }
+
+  // ── #/cv-builder renderer ─────────────────────────────────────────────
+  function renderCvBuilder(app, route){
+    var d = Diagnosis.get();
+    if (!d) { v2Go('#/cv-templates'); return; }
+    var draft = V2Draft.get();
+    var templateId = v2HashParam('t') || v2RecommendTemplate(d, draft);
+    var saved = V2Cv.get();
+    // If a previous save exists for the SAME template id, restore its edits.
+    var edits = (saved && saved.templateId === templateId && saved.sections) ? saved.sections : {};
+
+    function paint(){
+      var cv = v2GenerateCv(templateId, d);
+      if (!cv) {
+        app.innerHTML = '<div class="v2-dx-error"><span>⚠</span><div>قالب غير معروف.</div></div>';
+        return;
+      }
+      // Apply edits on top of generated content.
+      var sectionsHtml = cv.sections.map(function(s){
+        var html = (edits[s.id] && edits[s.id].html) || s.html;
+        return ''
+          + '<div class="v2-cvb-section" data-section-id="' + escapeHtml(s.id) + '">'
+          +   '<div class="v2-cvb-section-h">' + escapeHtml(s.title)
+          +     '<button class="v2-cvb-section-edit" onclick="v2CvbEditSection(\'' + escapeHtml(s.id) + '\')">✏️ تعديل</button>'
+          +   '</div>'
+          +   '<div class="v2-cvb-section-body" data-section-body="' + escapeHtml(s.id) + '">' + html + '</div>'
+          + '</div>';
+      }).join('');
+      var hasSaved = !!(saved && saved.templateId === templateId);
+      app.innerHTML = ''
+        + '<div class="v2-cvb-toolbar">'
+        +   '<div class="v2-cvb-toolbar-info">قالب: <b>' + escapeHtml(V2_CV_TEMPLATES[templateId].ar) + '</b>' + (hasSaved ? '<span class="v2-cvb-saved-status">✓ محفوظة</span>' : '') + '</div>'
+        +   '<button class="v2-cvb-toolbar-btn is-primary" onclick="v2CvbCopy(\'html\')">📋 نسخ HTML</button>'
+        +   '<button class="v2-cvb-toolbar-btn" onclick="v2CvbCopy(\'plain\')">📋 نسخ نص عادي</button>'
+        +   '<button class="v2-cvb-toolbar-btn" onclick="v2CvbSave()">💾 حفظ</button>'
+        + '</div>'
+        + '<div class="v2-cvb-honest">هذي صياغة مقترحة من التشخيص. <strong>راجعها قبل الإرسال.</strong> العناصر بين أقواس [...] تحتاج تعبئة من بياناتك الحقيقية. لا تخترع أرقام أو شركات أو شهادات.</div>'
+        + '<div class="v2-cvb-preview" id="v2CvbPreview">' + sectionsHtml + '</div>'
+        // Edit modal
+        + '<div class="v2-cvb-edit-modal" id="v2CvbEditModal">'
+        +   '<div class="v2-cvb-edit-card">'
+        +     '<div class="v2-cvb-edit-h" id="v2CvbEditTitle">تعديل القسم</div>'
+        +     '<div class="v2-cvb-edit-hint">حرّر المحتوى. تقدر تستخدم HTML بسيط (<b>, <i>, <ul>, <li>). الأقواس [...] تحتاج تعبئة من بياناتك.</div>'
+        +     '<textarea class="v2-cvb-edit-textarea" id="v2CvbEditTextarea"></textarea>'
+        +     '<div class="v2-cvb-edit-actions">'
+        +       '<button class="v2-btn v2-btn-primary" onclick="v2CvbEditApply()">حفظ التعديل</button>'
+        +       '<button class="v2-btn v2-btn-secondary" onclick="v2CvbEditCancel()">إلغاء</button>'
+        +     '</div>'
+        +   '</div>'
+        + '</div>';
+    }
+
+    // Stash everything onto window so the action handlers can find it.
+    window.__v2Cvb = {
+      templateId: templateId,
+      diagnosis: d,
+      edits: edits,
+      currentEditId: null,
+      get cv(){ return v2GenerateCv(this.templateId, this.diagnosis); },
+      repaint: paint,
+    };
+    paint();
+  }
+
+  function v2CvbEditSection(sectionId){
+    var s = window.__v2Cvb;
+    if (!s) return;
+    var cv = s.cv;
+    var section = (cv && cv.sections.find(function(x){ return x.id === sectionId; })) || null;
+    if (!section) return;
+    var current = (s.edits[sectionId] && s.edits[sectionId].html) || section.html;
+    s.currentEditId = sectionId;
+    document.getElementById('v2CvbEditTitle').textContent = 'تعديل: ' + section.title;
+    document.getElementById('v2CvbEditTextarea').value = current;
+    document.getElementById('v2CvbEditModal').classList.add('is-open');
+  }
+  function v2CvbEditApply(){
+    var s = window.__v2Cvb;
+    if (!s || !s.currentEditId) return;
+    var newHtml = document.getElementById('v2CvbEditTextarea').value || '';
+    s.edits[s.currentEditId] = { html: newHtml };
+    v2CvbEditCancel();
+    s.repaint();
+  }
+  function v2CvbEditCancel(){
+    var s = window.__v2Cvb;
+    if (s) s.currentEditId = null;
+    var m = document.getElementById('v2CvbEditModal');
+    if (m) m.classList.remove('is-open');
+  }
+  function v2CvbSave(){
+    var s = window.__v2Cvb;
+    if (!s) return;
+    V2Cv.save({ templateId: s.templateId, sections: s.edits });
+    if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markCvAuditDone) DarbiJourney.markCvAuditDone();
+    s.repaint();
+  }
+  function v2CvbCopy(mode){
+    var s = window.__v2Cvb;
+    if (!s) return;
+    var cv = s.cv;
+    if (!cv) return;
+    var out;
+    if (mode === 'html') {
+      out = cv.sections.map(function(sec){
+        var html = (s.edits[sec.id] && s.edits[sec.id].html) || sec.html;
+        return '<h3>' + sec.title + '</h3>\n' + html;
+      }).join('\n\n');
+    } else {
+      // Plain text: strip HTML tags from any edited section to get a clean
+      // plaintext export. Falls back to the generator's plain field for
+      // unedited sections.
+      out = cv.sections.map(function(sec){
+        var html = s.edits[sec.id] && s.edits[sec.id].html;
+        var plain;
+        if (html != null) plain = html.replace(/<[^>]+>/g, '').replace(/\s+\n/g, '\n').trim();
+        else plain = sec.plain;
+        return '== ' + sec.title + ' ==\n' + plain;
+      }).join('\n\n');
+    }
+    var done = function(){
+      // First successful copy = "cv audit done" milestone for journey routing.
+      if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markCvAuditDone) DarbiJourney.markCvAuditDone();
+      alert('✓ تم النسخ. الصق سيرتك في Word أو Google Docs.');
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(out).then(done).catch(done);
+    } else { done(); }
   }
 
   // Direction-pick rebuild (low confidence path): user clicks a family chip.
