@@ -857,6 +857,108 @@
     .v2-tk-empty-sub{font-size:12.5px;color:#475569;line-height:1.7;margin-bottom:14px}
 
     /* ═══════════════════════════════════════════════════════════════════
+       INTERVIEW — Task 8 (Guided Session)
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-iv-context{
+      background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;
+      padding:12px 14px;margin-bottom:13px;
+    }
+    .v2-iv-context-eyebrow{
+      font-size:11px;font-weight:800;color:#4338ca;letter-spacing:.4px;
+      text-transform:uppercase;margin-bottom:4px;
+    }
+    .v2-iv-context-role{font-size:15px;font-weight:800;color:#0a0a0a;line-height:1.3}
+    .v2-iv-context-co{font-size:12.5px;color:#475569;margin-top:2px}
+    .v2-iv-context-meta{font-size:11.5px;color:#64748b;margin-top:6px}
+
+    .v2-iv-progress{
+      background:#fff;border:1px solid #ececf4;border-radius:11px;
+      padding:11px 13px;margin-bottom:13px;
+    }
+    .v2-iv-progress-row{
+      display:flex;justify-content:space-between;align-items:center;
+      font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;
+    }
+    .v2-iv-progress-bar{
+      height:6px;background:#f1f5f9;border-radius:99px;overflow:hidden;
+    }
+    .v2-iv-progress-bar-fill{
+      height:100%;background:#4f46e5;border-radius:99px;
+      transition:width .25s ease;
+    }
+    .v2-iv-progress-bar-fill.is-done{background:#16a34a}
+
+    .v2-iv-q{
+      background:#fff;border:1px solid #ececf4;border-radius:13px;
+      padding:16px 16px 14px;margin-bottom:11px;
+    }
+    .v2-iv-q-tag{
+      display:inline-block;font-size:10.5px;font-weight:800;
+      letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;
+      border-radius:99px;background:#eef2ff;color:#4338ca;margin-bottom:8px;
+    }
+    .v2-iv-q-tag.is-family{background:#fef3c7;color:#92400e}
+    .v2-iv-q-tag.is-done{background:#dcfce7;color:#166534}
+    .v2-iv-q-text{font-size:16.5px;font-weight:800;color:#0a0a0a;line-height:1.45;margin-bottom:10px}
+    .v2-iv-q-why{
+      background:#fafafe;border-radius:9px;padding:9px 12px;
+      font-size:12.5px;color:#475569;line-height:1.7;margin-bottom:10px;
+    }
+    .v2-iv-q-why b{color:#4338ca;font-weight:800}
+    .v2-iv-q-focus-h{
+      font-size:11.5px;font-weight:800;color:#475569;
+      letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px;
+    }
+    .v2-iv-q-focus{
+      list-style:none;padding:0;margin:0 0 11px;
+    }
+    .v2-iv-q-focus li{
+      font-size:13.5px;color:#0a0a0a;line-height:1.6;
+      padding:5px 0 5px 18px;position:relative;
+    }
+    .v2-iv-q-focus li::before{
+      content:'•';position:absolute;right:auto;left:auto;
+      margin-right:-12px;color:#4f46e5;font-weight:900;
+    }
+    [dir="rtl"] .v2-iv-q-focus li{padding:5px 18px 5px 0}
+    [dir="rtl"] .v2-iv-q-focus li::before{position:absolute;right:0;margin:0}
+
+    .v2-iv-q-actions{
+      display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px;
+    }
+    .v2-iv-btn{
+      background:#fff;border:1px solid #ececf4;color:#0a0a0a;
+      padding:9px 14px;border-radius:9px;cursor:pointer;
+      font-size:12.5px;font-weight:700;font-family:inherit;
+      transition:background .15s;
+    }
+    .v2-iv-btn:hover{background:#f9fafb}
+    .v2-iv-btn:disabled{opacity:.45;cursor:not-allowed}
+    .v2-iv-btn.is-primary{background:#4f46e5;color:#fff;border-color:#4f46e5}
+    .v2-iv-btn.is-primary:hover{background:#4338ca}
+    .v2-iv-btn.is-success{background:#16a34a;color:#fff;border-color:#16a34a}
+    .v2-iv-btn.is-success:hover{background:#15803d}
+
+    .v2-iv-finish-card{
+      background:linear-gradient(135deg,#16a34a 0%,#15803d 100%);
+      color:#fff;border-radius:13px;padding:18px 16px;text-align:center;
+      margin-bottom:11px;
+    }
+    .v2-iv-finish-h{font-size:18px;font-weight:900;margin-bottom:5px}
+    .v2-iv-finish-sub{font-size:13px;opacity:.92;line-height:1.6;margin-bottom:12px}
+    .v2-iv-finish-cta{
+      background:#fff;color:#15803d;border:none;
+      padding:10px 18px;border-radius:9px;cursor:pointer;
+      font-size:13px;font-weight:800;font-family:inherit;
+    }
+    .v2-iv-finish-cta:hover{background:#f0fdf4}
+
+    .v2-iv-list-h{
+      font-size:11.5px;font-weight:800;color:#475569;letter-spacing:.4px;
+      text-transform:uppercase;margin:14px 0 9px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
        RESPONSIVE
     ════════════════════════════════════════════════════════════════════ */
     @media (max-width: 520px) {
@@ -1289,7 +1391,7 @@
     '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderJobs' },
     '#/apply':        { title: 'جهّز تقديمك',           step: 4, back: '#/jobs',      render: 'renderApply' },
     '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/jobs',      render: 'renderTracker' },
-    '#/interview':    { title: 'تدريب المقابلة',         step: 5, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.9' },
+    '#/interview':    { title: 'تدريب المقابلة',         step: 5, back: '#/tracker',   render: 'renderInterview' },
     '#/dashboard':    { title: 'لوحتي',                 step: 0, back: null,          render: 'renderPlaceholder', phase: 'Phase 0.10' },
     '#/account':      { title: 'حسابي',                 step: 0, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.11' },
     '#/legal':        { title: 'الخصوصية والشروط',      step: 0, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.12' },
@@ -3991,6 +4093,505 @@
     } catch(e){
       if (app) app.innerHTML = '<div class="v2-dx-error"><span>⚠</span><div>ما قدرنا نعيد البناء — حاول مرة أخرى.</div></div>';
     }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PHASE 0 TASK 8 — #/interview Guided Session
+  // Closes the interview branch of the journey loop. No fake content:
+  // every question is a universally useful prep prompt; the family-specific
+  // Q5 picks a real behavioral scenario for the user's career family.
+  // ════════════════════════════════════════════════════════════════════════
+
+  // Per-application progress (which question index is current).
+  // Key: darbi_interview_progress  →  { <appId>: { idx, completedAt } }
+  var _IV_PROGRESS_KEY = 'darbi_interview_progress';
+  function _v2IvReadProgress(){
+    try { return JSON.parse(localStorage.getItem(_IV_PROGRESS_KEY) || '{}'); }
+    catch(e){ return {}; }
+  }
+  function _v2IvWriteProgress(p){
+    try { localStorage.setItem(_IV_PROGRESS_KEY, JSON.stringify(p || {})); } catch(e){}
+  }
+  function _v2IvGetIdx(appId){
+    var p = _v2IvReadProgress();
+    var rec = p[appId];
+    return (rec && typeof rec.idx === 'number') ? rec.idx : 0;
+  }
+  function _v2IvSetIdx(appId, idx){
+    var p = _v2IvReadProgress();
+    p[appId] = Object.assign({}, p[appId] || {}, { idx: idx });
+    _v2IvWriteProgress(p);
+  }
+  function _v2IvMarkCompleted(appId){
+    var p = _v2IvReadProgress();
+    p[appId] = Object.assign({}, p[appId] || {}, { completedAt: new Date().toISOString() });
+    _v2IvWriteProgress(p);
+  }
+  function _v2IvIsCompleted(appId){
+    var p = _v2IvReadProgress();
+    return !!(p[appId] && p[appId].completedAt);
+  }
+
+  // Family → real behavioral scenario for Q5. Drawn from common interview
+  // prompts in each career family. NO invented numbers, NO fake companies.
+  // Falls back to admin_office prompt for unknown families.
+  var V2_INTERVIEW_FAMILY_Q = {
+    customer_success: {
+      q: 'احكِ لي عن عميل كان قريب من الإلغاء — كيف تعاملت معه؟',
+      focus: [
+        'وضح علامات الخطر اللي لاحظتها (انخفاض استخدام، شكاوى متكررة)',
+        'كيف ربطت السبب بقيمة المنتج، مو فقط عرضت خصم',
+        'الإجراء اللي اتخذته + من شاركك (Account Manager / Product)',
+        'النتيجة: تجديد، توسعة، أو خروج مرتب — كل واحدة درس',
+      ],
+    },
+    customer_service: {
+      q: 'احكِ لي عن عميل غاضب وكيف امتصيت موقفه؟',
+      focus: [
+        'كيف بدأت بالاستماع قبل الحل',
+        'الخطوات اللي طبقتها (acknowledge → empathize → solve)',
+        'متى صعّدت المشكلة لمشرف ومتى حليتها بنفسك',
+        'النتيجة وكيف تابعت بعدها',
+      ],
+    },
+    sales: {
+      q: 'احكِ لي عن صفقة خسرتها — وش تعلمت منها؟',
+      focus: [
+        'مرحلة الخسارة (qualification / demo / negotiation / contract)',
+        'السبب الحقيقي (مو فقط السعر)',
+        'وش غيّرت في طريقتك بعدها',
+        'صفقة شبيهة ربحتها بعد التعديل',
+      ],
+    },
+    marketing: {
+      q: 'احكِ لي عن حملة لم تحقق هدفها — وش كانت قراءتك؟',
+      focus: [
+        'الهدف الأصلي والقياس (CTR / CAC / conversions)',
+        'الفرضية اللي بنيت عليها الحملة',
+        'وين انكسرت (audience / creative / channel / timing)',
+        'التعديل اللي اقترحته على الحملة التالية',
+      ],
+    },
+    hr: {
+      q: 'احكِ لي عن وضع توظيف صعب — وكيف أدرته؟',
+      focus: [
+        'الدور والمتطلبات اللي صعبت البحث',
+        'القنوات والمصادر اللي توسّعت فيها',
+        'كيف نسّقت بين Hiring Manager والمرشحين',
+        'النتيجة + وش غيّرت في playbook التوظيف',
+      ],
+    },
+    finance: {
+      q: 'احكِ لي عن تحليل مالي غيّر قرار في شركتك؟',
+      focus: [
+        'السؤال اللي حاول الـ stakeholder يجاوب عليه',
+        'البيانات اللي جمعتها والافتراضات اللي بنيتها',
+        'كيف عرضت النتيجة (تحليل سيناريوهات / حساسية)',
+        'القرار النهائي والأثر على الميزانية / الـ runway',
+      ],
+    },
+    accounting: {
+      q: 'احكِ لي عن خطأ محاسبي اكتشفته — وكيف تعاملت؟',
+      focus: [
+        'كيف لاحظت الفرق (تسوية / تدقيق / تقرير شهري)',
+        'حجم الفرق وأثره على القوائم',
+        'الخطوات اللي اتخذتها (إبلاغ، تصحيح، توثيق)',
+        'الإجراء اللي وضعته لمنع تكراره',
+      ],
+    },
+    operations: {
+      q: 'احكِ لي عن عملية محسّنتها — وكيف قستها؟',
+      focus: [
+        'العملية قبل التحسين والوجع الفعلي',
+        'الأسلوب (Lean / SOP / أتمتة) + ليش اخترته',
+        'كيف نسقت مع الفرق المتأثرة',
+        'القياس قبل/بعد (وقت، تكلفة، أخطاء)',
+      ],
+    },
+    admin_office: {
+      q: 'احكِ لي عن يوم وصلتك ٥ مهام طارئة دفعة وحدة — كيف رتّبت؟',
+      focus: [
+        'كيف عرفت الأولوية (حسب الإلحاح، حسب الأثر)',
+        'متى استشرت المدير ومتى قررت بنفسك',
+        'كيف تواصلت مع الأشخاص اللي ينتظرون منك',
+        'وش غيّرت بعدها في طريقة عملك',
+      ],
+    },
+    it_cyber: {
+      q: 'احكِ لي عن حادث أمني/تقني تعاملت معه؟',
+      focus: [
+        'كيف اكتشفت المشكلة (alert / report / proactive scan)',
+        'الإجراءات الفورية (containment) قبل الإصلاح',
+        'الإصلاح + توثيق الجذور (root cause)',
+        'التحسين الدائم بعدها (process / control / training)',
+      ],
+    },
+    software: {
+      q: 'احكِ لي عن bug صعب — وكيف وصلت لجذره؟',
+      focus: [
+        'كيف عيّنت نطاق المشكلة (reproduce + logs)',
+        'الفرضيات اللي اختبرتها وكيف استبعدتها',
+        'الحل المؤقت vs الجذري — متى استخدمت كل واحد',
+        'وش اضفت من tests / monitoring لمنع التكرار',
+      ],
+    },
+    data: {
+      q: 'احكِ لي عن تحليل بيانات غيّر قرار العمل؟',
+      focus: [
+        'السؤال الفعلي للـ stakeholder',
+        'مصادر البيانات + كيف تحققت من جودتها',
+        'الـ insight اللي طلع وكيف عرضته',
+        'القرار النهائي والأثر القابل للقياس',
+      ],
+    },
+    product: {
+      q: 'احكِ لي عن feature ما حقق المتوقع — وش قرأت من البيانات؟',
+      focus: [
+        'الفرضية الأصلية والـ success metric',
+        'البيانات بعد الإطلاق (adoption / retention)',
+        'مقابلات المستخدمين اللي عملتها بعدها',
+        'القرار: تعديل، إيقاف، أو تجربة جديدة',
+      ],
+    },
+    design: {
+      q: 'احكِ لي عن قرار تصميم اعترض عليه stakeholder — كيف دافعت؟',
+      focus: [
+        'القرار وأسبابه (بحث / hierarchy / accessibility)',
+        'كيف استمعت لاعتراض الـ stakeholder',
+        'الـ trade-off اللي قدمته أو تنازلت عنه',
+        'النتيجة في المنتج بعد الإطلاق',
+      ],
+    },
+    hospitality: {
+      q: 'احكِ لي عن نزيل اشتكى من تجربته — كيف عالجت؟',
+      focus: [
+        'كيف بدأت بالإصغاء وعدم المقاطعة',
+        'الإجراء الفوري + التعويض المناسب',
+        'كيف نقلت الدرس للفريق',
+        'النتيجة + هل عاد النزيل أو ترك تقييم إيجابي',
+      ],
+    },
+    retail: {
+      q: 'احكِ لي عن يوم كان فيه ضغط مبيعات شديد — كيف نظّمت؟',
+      focus: [
+        'كيف وزعت الأدوار على الفريق',
+        'كيف حافظت على تجربة العميل وقت الضغط',
+        'وش تابعت في الشيفت (مخزون، صف، شكاوى)',
+        'الدرس وكيف طبقته في الشيفت اللي بعده',
+      ],
+    },
+    logistics: {
+      q: 'احكِ لي عن شحنة تأخرت — كيف تعاملت مع التداعيات؟',
+      focus: [
+        'سبب التأخير (مصدر، نقل، جمارك، سوء توقع)',
+        'كيف أبلغت العميل / Stakeholders',
+        'الحل المؤقت + التعديل في العملية',
+        'القياس بعدها (on-time rate / حالات شكوى)',
+      ],
+    },
+    healthcare_admin: {
+      q: 'احكِ لي عن وضع تعارض فيه إجراء إداري مع راحة المريض — كيف توازنت؟',
+      focus: [
+        'الإجراء واللائحة المنظمة له',
+        'كيف فهمت قلق المريض/الأهل',
+        'الحل اللي قدمته داخل الإجراء، مو حوله',
+        'النتيجة + هل تم تحديث الإجراء بعدها',
+      ],
+    },
+    education: {
+      q: 'احكِ لي عن طالب تأخر دراسياً — كيف ساعدته؟',
+      focus: [
+        'تشخيص السبب (فهم / تركيز / ظرف خارجي)',
+        'الخطة (مواد، توقيت، تواصل مع الأهل)',
+        'كيف قست التقدم',
+        'النتيجة + الدرس للطلاب التاليين',
+      ],
+    },
+    general_entry: {
+      q: 'احكِ لي عن موقف صعب في الشغل وكيف تصرّفت؟',
+      focus: [
+        'السياق باختصار (الموقف / الدور / الضغط)',
+        'القرار اللي اتخذته وليش',
+        'كيف تواصلت مع المعنيين',
+        'النتيجة + وش تعلمت',
+      ],
+    },
+    simple_job: {
+      q: 'احكِ لي عن يوم كان فيه ضغط ولاحظت زبون منزعج — وش سويت؟',
+      focus: [
+        'كيف لاحظت بدري',
+        'وش قلت أو سويت لتهدئة الموقف',
+        'متى استدعيت المسؤول ومتى أنت حليت',
+        'وش غيّرت في طريقتك بعدها',
+      ],
+    },
+  };
+
+  // Build the per-application question list. 4 universal + 1 family + 1
+  // closing question = 6 total. Order matters (mirrors typical interview
+  // flow: opener → motivation → behavioral → self-awareness → family →
+  // candidate-asks).
+  function _v2InterviewQuestions(diagnosis, application){
+    var fam = (diagnosis && diagnosis.family) || 'general_entry';
+    if (!V2_INTERVIEW_FAMILY_Q[fam]) fam = 'general_entry';
+    var famQ = V2_INTERVIEW_FAMILY_Q[fam];
+    var role = (application && application.role)    || (diagnosis && diagnosis.dreamRole) || 'الدور';
+    var company = (application && application.company) || '';
+
+    return [
+      {
+        id: 'intro',
+        tag: 'افتتاحية',
+        q: 'حدثني عن نفسك',
+        why: 'أكثر سؤال متوقع وأقل سؤال يجاوب عليه الناس بطريقة جيدة. <b>القاعدة:</b> ٩٠ ثانية، ليس سيرة حياة.',
+        focus: [
+          'جملتان عن دورك الحالي / آخر دور (مو من المدرسة)',
+          'إنجاز واحد تفتخر فيه — رقم أو نتيجة قابلة للقياس',
+          'مهارة محورية تربطها بالدور المتقدّم له',
+          'سبب اهتمامك بهذا الدور تحديداً — لازم يكون له علاقة بـ ' + (company || role),
+        ],
+      },
+      {
+        id: 'motivation',
+        tag: 'الدافع',
+        q: company ? 'ليش تبي تشتغل في ' + company + ' بالذات؟' : 'ليش تبي تشتغل معنا؟',
+        why: 'يكشف لو سويت بحث جدّي عن الشركة، أو جاي تقدم على أي مكان. <b>القاعدة:</b> اذكر شي محدد، ليس عام.',
+        focus: [
+          'شي محدد عن منتج/سوق/قيم الشركة قرأته أو جربته',
+          'كيف يربط هذا بمسار مسيرتك (مو فقط "أحب التطور")',
+          'وش تعرضه أنت للشركة (مهارة / خبرة / منظور)',
+          'تجنّب: الرواتب، المنافع، أو "اسم الشركة قوي"',
+        ],
+      },
+      {
+        id: 'star',
+        tag: 'سلوكي عام',
+        q: 'احكِ لي عن مشروع/موقف صعب — وكيف تعاملت معه؟',
+        why: 'الجواب الجيد دائماً يستخدم STAR. <b>S</b>ituation, <b>T</b>ask, <b>A</b>ction, <b>R</b>esult — لا تخلط بينها.',
+        focus: [
+          'S — الوضع باختصار (٢٠ ثانية): المكان والوقت والتعقيد',
+          'T — مهمتك أنت تحديداً (مو الفريق)',
+          'A — ٢-٣ خطوات اتخذتها أنت + سبب كل خطوة',
+          'R — النتيجة بأرقام إن أمكن، ودرس تعلمته',
+        ],
+      },
+      {
+        id: 'weakness',
+        tag: 'وعي ذاتي',
+        q: 'ما هي نقطة ضعفك؟',
+        why: 'فخ شائع: "أنا perfectionist" — هذا جواب مكسور. <b>القاعدة:</b> ضعف حقيقي + كيف تشتغل عليه.',
+        focus: [
+          'ضعف فعلي مرتبط بالعمل (ليس شيء قاتل للدور)',
+          'موقف ملموس صار فيك بسبب هذا الضعف',
+          'الخطوات اللي اتخذتها لتحسينه (تدريب، أدوات، تفويض)',
+          'كيف تقيس التحسن — مو فقط "صرت أفضل"',
+        ],
+      },
+      {
+        id: 'family_behavioral',
+        tag: 'سلوكي خاص بدورك',
+        family: true,
+        q: famQ.q,
+        why: 'سؤال شائع في مقابلات هذا التخصص. الإجابة هنا تظهر فهمك العملي للدور، مو فقط النظري.',
+        focus: famQ.focus,
+      },
+      {
+        id: 'candidate_asks',
+        tag: 'أسئلتك أنت',
+        q: 'في النهاية: عندك أسئلة لي؟',
+        why: '"لا، شكراً" = جواب خاسر. أفضل المرشحين عندهم ٣ أسئلة جاهزة. <b>القاعدة:</b> أسئلة عميقة، ليس "متى أبدأ؟".',
+        focus: [
+          'سؤال عن الفريق: "وش تركيبة الفريق وكيف يقاس النجاح في أول ٩٠ يوم؟"',
+          'سؤال عن التحدي: "ما أكبر تحدٍّ يواجه هذا الدور حالياً؟"',
+          'سؤال عن الثقافة: "كيف يتم اتخاذ القرارات الكبيرة هنا؟"',
+          'احفظها مكتوبة معك — الذاكرة تخون وقت الضغط',
+        ],
+      },
+    ];
+  }
+
+  // Returns the application object for ?j=<id>, or null.
+  function _v2InterviewLookupApp(appId){
+    if (!appId) return null;
+    if (typeof Applications === 'undefined' || !Applications.list) return null;
+    var apps = Applications.list();
+    for (var i = 0; i < apps.length; i++) {
+      if (apps[i].id === appId) return apps[i];
+    }
+    return null;
+  }
+
+  // ── #/interview main renderer ─────────────────────────────────────────
+  function renderInterview(el, route){
+    if (typeof Applications === 'undefined' || !Applications.list) {
+      el.innerHTML = '<div class="v2-jobs-error"><span>⚠</span><div>تدريب المقابلة غير متوفر.</div></div>';
+      return;
+    }
+    var jParam = v2HashParam('j');
+    var diagnosis = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : {};
+
+    // ── Path 1: specific application by ?j= ──
+    if (jParam) {
+      var application = _v2InterviewLookupApp(jParam);
+      if (!application) {
+        el.innerHTML = ''
+          + '<div class="v2-tk-empty">'
+          +   '<div class="v2-tk-empty-emoji">🔎</div>'
+          +   '<div class="v2-tk-empty-h">ما لقينا التقديم المختار</div>'
+          +   '<div class="v2-tk-empty-sub">يمكن انحذف من تقديماتك. ارجع للقائمة واختر تقديم في حالة <b>مقابلة</b>.</div>'
+          +   '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/tracker\')">رجوع لتقديماتك</button>'
+          + '</div>';
+        return;
+      }
+      _v2InterviewRenderSession(el, application, diagnosis);
+      return;
+    }
+
+    // ── Path 2: pick from interview-status apps ──
+    var allApps = Applications.list();
+    var interviewApps = allApps.filter(function(a){ return a.status === 'interview' || a.status === 'reply'; });
+
+    if (!interviewApps.length) {
+      el.innerHTML = ''
+        + '<div class="v2-tk-empty">'
+        +   '<div class="v2-tk-empty-emoji">🎤</div>'
+        +   '<div class="v2-tk-empty-h">ما عندك مقابلات حالياً</div>'
+        +   '<div class="v2-tk-empty-sub">لما تحدّث حالة أي تقديم إلى <b>"وصل رد"</b> أو <b>"مقابلة"</b>، يبدأ التدريب الموجّه هنا.<br>لا تقدّم بدون تدريب — كل دقيقة هنا تساوي ٢٠ دقيقة وقت المقابلة.</div>'
+        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/tracker\')">افتح تقديماتك ←</button>'
+        + '</div>';
+      return;
+    }
+
+    // List picker
+    var rowsHtml = interviewApps.map(function(a){
+      var done = _v2IvIsCompleted(a.id);
+      var pillCls = done ? ' is-done' : '';
+      var pillTxt = done ? '✓ تم التدريب' : 'ابدأ التدريب';
+      return ''
+        + '<div class="v2-tk-row">'
+        +   '<div class="v2-tk-row-1">'
+        +     '<div>'
+        +       '<div class="v2-tk-role">' + escapeHtml(a.role || '—') + '</div>'
+        +       '<div class="v2-tk-company">' + escapeHtml(a.company || '—') + '</div>'
+        +     '</div>'
+        +     '<span class="v2-iv-q-tag' + pillCls + '">' + escapeHtml(pillTxt) + '</span>'
+        +   '</div>'
+        +   '<div class="v2-tk-row-actions">'
+        +     '<button class="v2-tk-row-action is-primary" onclick="v2Go(\'#/interview?j=' + escapeHtml(encodeURIComponent(a.id)) + '\')">' + (done ? 'راجع التدريب' : 'ابدأ التدريب') + ' ←</button>'
+        +   '</div>'
+        + '</div>';
+    }).join('');
+
+    el.innerHTML = ''
+      + '<div class="v2-iv-context">'
+      +   '<div class="v2-iv-context-eyebrow">🎤 تدريب المقابلة</div>'
+      +   '<div class="v2-iv-context-role">جلسة موجّهة — ٦ أسئلة</div>'
+      +   '<div class="v2-iv-context-meta">اختر التقديم اللي بتتدرّب لمقابلته. كل جلسة مفصّلة على عائلة وظيفتك (' + escapeHtml((diagnosis && diagnosis.dreamRole) || 'دورك') + ').</div>'
+      + '</div>'
+      + '<div class="v2-iv-list-h">تقديمات بحاجة لتدريب (' + interviewApps.length + ')</div>'
+      + rowsHtml;
+  }
+
+  // Renders the actual guided session for one application.
+  function _v2InterviewRenderSession(el, application, diagnosis){
+    var questions = _v2InterviewQuestions(diagnosis, application);
+    var total = questions.length;
+    var idx = _v2IvGetIdx(application.id);
+    if (idx < 0) idx = 0;
+    if (idx > total) idx = total; // finished state
+
+    var doneCount = Math.min(idx, total);
+    var pct = Math.round((doneCount / total) * 100);
+    var allDone = doneCount >= total;
+
+    // Context header (company + role + status)
+    var statusMap = { applied: 'في الانتظار', reply: 'وصل رد', interview: 'مقابلة', rejected: 'رفض', accepted: 'قبول' };
+    var ctxHtml = ''
+      + '<div class="v2-iv-context">'
+      +   '<div class="v2-iv-context-eyebrow">🎤 تتدرّب لمقابلة</div>'
+      +   '<div class="v2-iv-context-role">' + escapeHtml(application.role || '—') + '</div>'
+      +   '<div class="v2-iv-context-co">' + escapeHtml(application.company || '—') + '</div>'
+      +   '<div class="v2-iv-context-meta">الحالة: <b>' + escapeHtml(statusMap[application.status] || application.status) + '</b> · تخصصك: <b>' + escapeHtml((diagnosis && diagnosis.dreamRole) || '—') + '</b></div>'
+      + '</div>';
+
+    var progressHtml = ''
+      + '<div class="v2-iv-progress">'
+      +   '<div class="v2-iv-progress-row"><span>تقدمك في الجلسة</span><span>' + doneCount + ' / ' + total + '</span></div>'
+      +   '<div class="v2-iv-progress-bar"><div class="v2-iv-progress-bar-fill' + (allDone ? ' is-done' : '') + '" style="width:' + pct + '%"></div></div>'
+      + '</div>';
+
+    if (allDone) {
+      el.innerHTML = ctxHtml + progressHtml
+        + '<div class="v2-iv-finish-card">'
+        +   '<div class="v2-iv-finish-h">✓ خلصت الجلسة</div>'
+        +   '<div class="v2-iv-finish-sub">٦ أسئلة، بنية واضحة لكل واحد. الباقي عليك: كرّر الإجابات بصوت عالٍ ٣ مرات قبل المقابلة.</div>'
+        +   '<button class="v2-iv-finish-cta" onclick="v2InterviewFinish(\'' + escapeHtml(application.id) + '\')">رجوع لتقديماتي ←</button>'
+        + '</div>'
+        + '<div style="text-align:center;margin-top:6px"><button class="v2-iv-btn" onclick="v2InterviewRestart(\'' + escapeHtml(application.id) + '\')">↺ ابدأ الجلسة من جديد</button></div>';
+      return;
+    }
+
+    var q = questions[idx];
+    var focusList = (q.focus || []).map(function(f){ return '<li>' + escapeHtml(f) + '</li>'; }).join('');
+    var tagCls = q.family ? ' is-family' : '';
+
+    var prevDisabled = idx === 0 ? ' disabled' : '';
+    var isLast = idx === total - 1;
+
+    el.innerHTML = ctxHtml + progressHtml
+      + '<div class="v2-iv-q">'
+      +   '<div class="v2-iv-q-tag' + tagCls + '">' + escapeHtml(q.tag) + ' · سؤال ' + (idx + 1) + '/' + total + '</div>'
+      +   '<div class="v2-iv-q-text">' + escapeHtml(q.q) + '</div>'
+      +   '<div class="v2-iv-q-why">' + q.why + '</div>'
+      +   '<div class="v2-iv-q-focus-h">ركّز على:</div>'
+      +   '<ul class="v2-iv-q-focus">' + focusList + '</ul>'
+      +   '<div class="v2-iv-q-actions">'
+      +     '<button class="v2-iv-btn" onclick="v2InterviewPrev(\'' + escapeHtml(application.id) + '\')"' + prevDisabled + '>← السابق</button>'
+      +     '<button class="v2-iv-btn is-success" onclick="v2InterviewMarkDone(\'' + escapeHtml(application.id) + '\')">' + (isLast ? 'تم — أنهِ الجلسة ✓' : 'تم — التالي ✓') + '</button>'
+      +   '</div>'
+      + '</div>';
+  }
+
+  // Action handlers
+  function v2InterviewMarkDone(appId){
+    var idx = _v2IvGetIdx(appId);
+    var application = _v2InterviewLookupApp(appId);
+    var diagnosis = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : {};
+    var total = application ? _v2InterviewQuestions(diagnosis, application).length : 6;
+    var next = idx + 1;
+    _v2IvSetIdx(appId, next);
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'interview_question_done', payload: { id: appId, qIdx: idx } });
+    if (next >= total) {
+      _v2IvMarkCompleted(appId);
+      // markInterviewLogged is idempotent in DarbiJourney (just sets the bool).
+      if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markInterviewLogged) DarbiJourney.markInterviewLogged();
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'interview_session_completed', payload: { id: appId } });
+    }
+    var el = document.getElementById('v2-app');
+    if (el) renderInterview(el, V2_ROUTES['#/interview']);
+  }
+
+  function v2InterviewPrev(appId){
+    var idx = _v2IvGetIdx(appId);
+    if (idx > 0) _v2IvSetIdx(appId, idx - 1);
+    var el = document.getElementById('v2-app');
+    if (el) renderInterview(el, V2_ROUTES['#/interview']);
+  }
+
+  function v2InterviewRestart(appId){
+    if (!confirm('ابدأ الجلسة من الأول؟')) return;
+    var p = _v2IvReadProgress();
+    delete p[appId];
+    _v2IvWriteProgress(p);
+    var el = document.getElementById('v2-app');
+    if (el) renderInterview(el, V2_ROUTES['#/interview']);
+  }
+
+  function v2InterviewFinish(appId){
+    // Finish = navigate back to tracker. Journey + brain already fired at
+    // the moment of completing the last question.
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'interview_session_closed', payload: { id: appId } });
+    v2Go('#/tracker');
   }
   </script>
 
