@@ -1832,10 +1832,17 @@
         }
       }
     }
+    // Issue #2 fix: original patterns required "experience" right after
+    // "10 years". Many CVs use "(10 years)" parentheses, "10 years in CS",
+    // "10 years as Manager", etc. Added 3 permissive patterns + careful
+    // negative lookahead to exclude "10 years ago/back/later" false-positives.
     var yrsPatterns = [
       /(\d{1,2})\+?\s*(?:years?|yrs?)\s*(?:of\s*)?(?:experience|exp\b)/i,
-      /خبره?\s*(?:تزيد\s*عن\s*)?(\d{1,2})\+?\s*(?:سنه|سنوات|سنين)/,
-      /(\d{1,2})\+?\s*(?:سنه|سنوات|سنين)\s*(?:من\s*)?الخبره/,
+      /\((\d{1,2})\+?\s*(?:years?|yrs?)\)/i,                                                // "(10 years)"
+      /(\d{1,2})\+?\s*(?:years?|yrs?)\s+(?:in|at|with|as|of)\b(?!\s+(?:ago|back|later))/i,  // "10 years in/at/with/as/of"
+      /(?:^|\s)(\d{1,2})\+\s*(?:years?|yrs?)\b(?!\s+(?:ago|back|later))/i,                  // "10+ years" anywhere safe
+      /(?:ال)?خبره?\s*(?:تزيد\s*عن\s*)?(\d{1,2})\+?\s*(?:سنه|سنوات|سنين)/, // "خبرة 8 سنوات" / "الخبرة 8 سنوات"
+      /(\d{1,2})\+?\s*(?:سنه|سنوات|سنين)\s*(?:من\s*)?(?:ال)?خبره/,        // "8 سنوات خبرة" — ال optional
     ];
     var yrsCandidates = [];
     yrsPatterns.forEach(function(re){ var m = tn.match(re) || t.match(re); if (m && m[1]) yrsCandidates.push(parseInt(m[1], 10)); });
