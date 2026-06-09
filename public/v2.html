@@ -2279,6 +2279,26 @@
     var facts = extractCvFacts(cvText);
     var rec = v2AnalyzeCareerFit(cvText, dreamRole);
 
+    // ─── Early family flip (must run BEFORE currentReality / nearestRoles /
+    // bridgePlan / firstFix use the family). The Arabic "خدمة عملاء" overlaps
+    // both customer_service (junior support) and customer_success (CS leader)
+    // worlds. If the CV proves CS-success evidence (ARR, retention, CSM in
+    // title, playbook, book of business) but the classifier landed on
+    // customer_service, we trust the CV and flip the family. Without this,
+    // a 10y Manager-of-CSMs gets recommended "Customer Service Representative".
+    var rawCvForFlip = (cvText || '');
+    var cvProvesCsSuccess = (
+      /\bcsm\b|customer success/i.test(rawCvForFlip)
+      && /\b(arr|nrr|grr|net retention|gross retention|retention rate|book of business|expansion (revenue|playbook)|playbook|health scor)\b/i.test(rawCvForFlip)
+    );
+    if (family === 'customer_service' && cvProvesCsSuccess) {
+      family = 'customer_success';
+      lib = DREAM_ROLE_LIBRARY[family] || lib;
+      confidentFamily = true;
+      intent.family = 'customer_success';
+      intent.source = (intent.source || 'unknown') + '+cv_override';
+    }
+
     // currentReality
     var currentReality;
     if (branch === 'A') {
@@ -2369,20 +2389,32 @@
     if (/\b(playbook|playbooks|health scoring|health score|qbr|executive (reporting|review)|expansion (revenue|playbook)|strategy)\b/i.test(rawCv)) seniorSignals++;
     if (facts && facts.leadershipEvidence) seniorSignals++;
     var isSeniorCV = seniorSignals >= 2;
+    // "Loud senior CV" — unambiguous: 4+ signals means the CV alone proves
+    // senior leadership. We don't need the user to spell "Director" in the
+    // dream field — many senior CS leaders type "Customer Success" or
+    // "خدمة عملاء" because Arabic doesn't cleanly distinguish CS Success
+    // from CS Service. Without this, the override silently fails and a
+    // 10y Manager-of-CSMs gets shown Call Center Agent roles. Fix below.
+    var isLoudSeniorCV = seniorSignals >= 4;
     var dreamIsLeadership = /\b(director|head of|vp\b|vice president|chief|lead\b|leader|principal)\b/i.test(dreamRole || '');
 
-    if (isSeniorCV && dreamIsLeadership && branch === 'C') {
+    var seniorOverrideFires = branch === 'C' && (isLoudSeniorCV || (isSeniorCV && dreamIsLeadership));
+
+    if (seniorOverrideFires) {
       var BANNED_FOR_SENIOR = /(\bcsm\b|customer success manager(?!.*senior|.*lead|.*enterprise)|specialist|coordinator|client support|call center|agent|junior|trainee|assistant|مبتدئ|متدرب|مساعد|ممثل خدمة)/i;
       var filtered = (nearestRoles || []).filter(function(r){ return !BANNED_FOR_SENIOR.test(r); });
       var dreamLc = (dreamRole || '').toLowerCase();
+      // Pick the senior pool from the (possibly CV-overridden) family first,
+      // then fall back to the dream-role text. Stops us from picking sales
+      // titles when the CV proves CS leadership but the dream is vague.
       var seniorPool;
-      if (/customer success|cs\b|عملاء|cs leadership/i.test(dreamLc)) {
+      if (family === 'customer_success' || family === 'customer_service' || /customer success|cs\b|عملاء|cs leadership/i.test(dreamLc)) {
         seniorPool = ['Head of Customer Success','Senior Customer Success Manager (Enterprise)','Director of Customer Success — smaller SaaS','CS Operations Lead'];
-      } else if (/sales|مبيعات|account/i.test(dreamLc)) {
+      } else if (family === 'sales' || /sales|مبيعات|account/i.test(dreamLc)) {
         seniorPool = ['Head of Sales — smaller SaaS','Senior Account Executive (Enterprise)','Sales Operations Lead','Director of Sales — smaller company'];
-      } else if (/marketing|تسويق|growth|brand/i.test(dreamLc)) {
+      } else if (family === 'marketing' || /marketing|تسويق|growth|brand/i.test(dreamLc)) {
         seniorPool = ['Head of Marketing — smaller SaaS','Senior Marketing Manager','Growth Lead','Director of Marketing — smaller company'];
-      } else if (/engineering|tech|cto|software/i.test(dreamLc)) {
+      } else if (family === 'software' || family === 'it_cyber' || /engineering|tech|cto|software/i.test(dreamLc)) {
         seniorPool = ['Engineering Manager','Staff Engineer','Head of Engineering — smaller SaaS','Tech Lead'];
       } else {
         seniorPool = ['Senior ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, ''),'Head of ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, '') + ' — smaller company',(dreamRole || 'Director') + ' at a smaller SaaS','Operations Lead'];
@@ -2401,8 +2433,8 @@
 
     // interpretation
     var interpretation;
-    if (isSeniorCV && dreamIsLeadership && branch === 'C') {
-      interpretation = 'أنت لا تحتاج تبدأ من جديد. أنت تحتاج تعيد صياغة خبرتك كقائد ' + (/customer success|cs\b|عملاء/i.test((dreamRole||'').toLowerCase()) ? 'CS' : 'تنفيذي') + ' — مو كموظف عمليات.';
+    if (seniorOverrideFires) {
+      interpretation = 'أنت لا تحتاج تبدأ من جديد. أنت تحتاج تعيد صياغة خبرتك كقائد ' + ((family === 'customer_success' || family === 'customer_service' || /customer success|cs\b|عملاء/i.test((dreamRole||'').toLowerCase())) ? 'CS' : 'تنفيذي') + ' — مو كموظف عمليات.';
     } else if (branch === 'A') {
       interpretation = 'مشكلتك مو في سيرتك، مشكلتك في القناة. التقديم وجهاً لوجه يفتح الباب أسرع من ١٠٠ تقديم أونلاين.';
     } else if (branch === 'B') {
@@ -2438,7 +2470,7 @@
       frustration: answers.frustration || null,
       currentReality: currentReality, biggestGap: biggestGap, nearestWinnableRoles: nearestRoles,
       bridgePlan: bridgePlan, firstFix: firstFix, interpretation: interpretation,
-      isSeniorOverride: !!(isSeniorCV && dreamIsLeadership && branch === 'C'),
+      isSeniorOverride: !!seniorOverrideFires,
       supportingScores: sup,
       interviewPrep: lib ? lib.interviewPrep : 'ليش هذا المسار؟ + موقف يثبت قدراتك',
       cvFacts: facts, cvText: cvText, createdAt: new Date().toISOString(),
