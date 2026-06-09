@@ -1999,10 +1999,52 @@
 
   // ── extractCvFacts (verbatim from V1) ──────────────────────────────────
   function extractCvFacts(cvText){
-    var out = { major: null, gradYear: null, latestTitle: null, yearsExp: null, languages: [], tools: [] };
+    var out = { major: null, gradYear: null, latestTitle: null, yearsExp: null, languages: [], tools: [],
+                name: null, email: null, phone: null, location: null, linkedin: null,
+                arrAmount: null, retentionPct: null };
     if (!cvText || cvText.length < 30) return out;
     var t = cvText;
     var tn = _arNormalize(t);
+
+    // ── Personal contact info (used to auto-fill CV builder header) ──────
+    // Name: heuristic = first non-empty short line that's letters only (no
+    // digits, no @, no /), max 60 chars. CV templates typically put name first.
+    var lines = t.split(/\r?\n/).map(function(l){ return l.trim(); }).filter(Boolean);
+    for (var li = 0; li < Math.min(lines.length, 5); li++) {
+      var ln = lines[li];
+      // Skip if has digits, @, http, or obvious section keywords
+      if (/[0-9@]|http|https|www\.|^(experience|summary|skills|education|languages|profile|الملخص|الخبرة|المهارات|التعليم)/i.test(ln)) continue;
+      if (ln.length >= 4 && ln.length <= 60 && /^[A-Za-z؀-ۿ][A-Za-z؀-ۿ\s.\-']{3,58}$/.test(ln)) {
+        out.name = ln; break;
+      }
+    }
+    var emailM = t.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i);
+    if (emailM) out.email = emailM[0];
+    // Phone: Saudi 05XX XXX XXXX, optionally prefixed with +966/(966)/966.
+    var phoneM = t.match(/(?:[+(]?9?66[)\s\-]*)?0?5(?:[\s\-()]*\d){8}/);
+    if (phoneM) out.phone = phoneM[0].replace(/[\s()]+/g, ' ').replace(/\s+/g, ' ').trim();
+    // Location: Saudi-major cities (English + Arabic), match first occurrence.
+    var locM = t.match(/\b(Riyadh|Jeddah|Dammam|Khobar|Mecca|Makkah|Medina|Madinah|Taif|Tabuk|Abha|Hail|الرياض|جدة|الدمام|الخبر|مكة|المدينة|الطائف|تبوك|أبها|حائل|الظهران|Dhahran)\b/i);
+    if (locM) out.location = locM[0];
+    var liM = t.match(/(?:linkedin\.com\/in\/|linkedin:\s*)([A-Za-z0-9\-_.]{2,60})/i);
+    if (liM) out.linkedin = 'linkedin.com/in/' + liM[1];
+
+    // Senior-CV metrics — biggest ARR figure (for senior summary auto-fill).
+    // Allow "+" between the number and SAR (e.g. "80M+ SAR ARR" in Ali's CV).
+    var arrAll = t.match(/(\d{1,3})\s*m+\s*\+?\s*(?:sar|usd|aed)?\s*arr/gi) || [];
+    if (arrAll.length) {
+      var arrNums = arrAll.map(function(s){ var n = s.match(/\d+/); return n ? parseInt(n[0], 10) : 0; });
+      out.arrAmount = Math.max.apply(null, arrNums);
+    } else {
+      // fall back: biggest "Xm SAR/USD" anywhere
+      var anyM = t.match(/(\d{1,3})\s*m+\s*\+?\s*(?:sar|usd|aed)/gi) || [];
+      if (anyM.length) {
+        var nums = anyM.map(function(s){ var n = s.match(/\d+/); return n ? parseInt(n[0], 10) : 0; });
+        out.arrAmount = Math.max.apply(null, nums);
+      }
+    }
+    var retM = t.match(/retention[^\d]{0,30}(\d{1,2})\s*%|increasing\s+(?:client|customer)\s+retention\s+by\s+(\d{1,2})/i);
+    if (retM) out.retentionPct = parseInt(retM[1] || retM[2], 10);
     var majorAr = t.match(/(?:بكالوريوس|ماجستير|دبلوم|دكتوراه)[\s:،,-]+([^\n،,.\-–|]{3,60})/);
     if (majorAr && majorAr[1]) out.major = majorAr[1].trim().slice(0, 60);
     if (!out.major){
@@ -2348,11 +2390,38 @@
     // nearestWinnableRoles
     var nearestRoles;
     var openaiRoles = (Array.isArray(intent.nearestRoleLogic) && intent.nearestRoleLogic.length) ? intent.nearestRoleLogic : null;
+    // Cross-family leak guard: OpenAI sometimes returns "Engineering Manager",
+    // "Staff Engineer", "Chief Technology Officer" as senior-leadership picks
+    // for ANY senior CV — even when the family is customer_success, sales,
+    // marketing, etc. Filter them out by family.
+    var CROSS_FAMILY_BAN = {
+      customer_success: /\b(engineer|engineering|swe|cto|sde|developer|programmer|architect|qa engineer|محاسب|accountant|cfo)\b/i,
+      customer_service: /\b(engineer|engineering|swe|cto|developer|architect|accountant|cfo)\b/i,
+      sales:            /\b(engineer|engineering|swe|cto|developer|architect|accountant|cfo)\b/i,
+      marketing:        /\b(engineer|engineering|swe|cto|developer|architect|accountant|cfo|csm\b)\b/i,
+      hr:               /\b(engineer|engineering|swe|cto|developer|architect|accountant|cfo|csm\b|marketing director)\b/i,
+      finance:          /\b(engineer|engineering|swe|cto|developer|architect|csm\b|marketing director)\b/i,
+      accounting:       /\b(engineer|engineering|swe|cto|developer|architect|csm\b|marketing director)\b/i,
+      operations:       /\b(swe|cto|developer|architect|csm\b)\b/i,
+      software:         /\b(csm\b|customer success|accountant|cfo|marketing director|head of sales)\b/i,
+      it_cyber:         /\b(csm\b|customer success|accountant|cfo|marketing director|head of sales)\b/i,
+      admin_office:     /\b(engineer|engineering|swe|cto|developer|architect|csm\b)\b/i,
+    };
+    function filterCrossFamily(roles, fam){
+      var banRe = CROSS_FAMILY_BAN[fam];
+      if (!banRe || !roles) return roles;
+      return roles.filter(function(r){ return !banRe.test(r); });
+    }
     if (branch === 'A') nearestRoles = ['كاشير','باريستا','موظف خدمة عملاء فرع','استقبال','مبيعات تجزئة'];
-    else if (lib && openaiRoles) nearestRoles = openaiRoles.slice(0, 5);
+    else if (lib && openaiRoles) nearestRoles = filterCrossFamily(openaiRoles, family).slice(0, 5);
     else if (lib) nearestRoles = lib.nearestRoles.slice(0, 4);
     else if (openaiRoles) nearestRoles = openaiRoles.slice(0, 5);
     else nearestRoles = ['خدمة عملاء','مبيعات','تسويق','موارد بشرية','محاسبة','تقنية','تصميم','إدارة / تنسيق','وظيفة بسيطة الآن'];
+    // Fallback: if filtering left us with too few, top up from lib.nearestRoles.
+    if (lib && nearestRoles.length < 3) {
+      lib.nearestRoles.forEach(function(r){ if (nearestRoles.indexOf(r) === -1) nearestRoles.push(r); });
+      nearestRoles = nearestRoles.slice(0, 5);
+    }
 
     // bridgePlan
     var bridgePlan;
@@ -2401,8 +2470,12 @@
     var seniorOverrideFires = branch === 'C' && (isLoudSeniorCV || (isSeniorCV && dreamIsLeadership));
 
     if (seniorOverrideFires) {
-      var BANNED_FOR_SENIOR = /(\bcsm\b|customer success manager(?!.*senior|.*lead|.*enterprise)|specialist|coordinator|client support|call center|agent|junior|trainee|assistant|مبتدئ|متدرب|مساعد|ممثل خدمة)/i;
-      var filtered = (nearestRoles || []).filter(function(r){ return !BANNED_FOR_SENIOR.test(r); });
+      var BANNED_FOR_SENIOR = /(\bcsm\b|customer success manager(?!.*senior|.*lead|.*enterprise)|specialist|coordinator|client support|call center|agent|junior|trainee|assistant|مبتدئ|متدرب|مساعد|ممثل خدمة|customer service representative|branch customer service|reception|front desk)/i;
+      // Filter twice: BANNED titles (junior/CS-rep) AND cross-family leaks
+      // (e.g. Engineering Manager / Staff Engineer for a CS leader).
+      var filtered = (nearestRoles || [])
+        .filter(function(r){ return !BANNED_FOR_SENIOR.test(r); });
+      filtered = filterCrossFamily(filtered, family);
       var dreamLc = (dreamRole || '').toLowerCase();
       // Pick the senior pool from the (possibly CV-overridden) family first,
       // then fall back to the dream-role text. Stops us from picking sales
@@ -2908,18 +2981,28 @@
     return merged;
   }
 
-  // ── Common header — used by every template ────────────────────────────
+  // ── Common header — uses CV-extracted facts when available, falls back
+  // to placeholders only for fields we couldn't extract. Stops the "اغبى
+  // CV builder" UX where every field is [الاسم] [المدينة] etc.
+  function _hdrField(value, placeholderLabel){
+    return value ? escapeHtml(value) : _ph(placeholderLabel);
+  }
+  function _hdrFieldPlain(value, placeholderLabel){
+    return value ? value : _phPlain(placeholderLabel);
+  }
   function _hdrHtml(diagnosis){
     var dream = (diagnosis && diagnosis.dreamRole) || _phPlain('المسمى المستهدف');
+    var f = (diagnosis && diagnosis.cvFacts) || {};
     return ''
-      + '<p><strong>' + _ph('الاسم الكامل') + '</strong><br>'
-      + escapeHtml(dream) + ' &nbsp;·&nbsp; ' + _ph('المدينة') + '<br>'
-      + _ph('رقم الجوال') + ' &nbsp;·&nbsp; ' + _ph('البريد الإلكتروني') + ' &nbsp;·&nbsp; ' + _ph('LinkedIn') + '</p>';
+      + '<p><strong>' + _hdrField(f.name, 'الاسم الكامل') + '</strong><br>'
+      + escapeHtml(dream) + ' &nbsp;·&nbsp; ' + _hdrField(f.location, 'المدينة') + '<br>'
+      + _hdrField(f.phone, 'رقم الجوال') + ' &nbsp;·&nbsp; ' + _hdrField(f.email, 'البريد الإلكتروني') + ' &nbsp;·&nbsp; ' + _hdrField(f.linkedin, 'LinkedIn') + '</p>';
   }
   function _hdrPlain(diagnosis){
     var dream = (diagnosis && diagnosis.dreamRole) || _phPlain('المسمى المستهدف');
-    return _phPlain('الاسم الكامل') + '\n' + dream + ' · ' + _phPlain('المدينة') + '\n' +
-      _phPlain('رقم الجوال') + ' · ' + _phPlain('البريد الإلكتروني') + ' · ' + _phPlain('LinkedIn');
+    var f = (diagnosis && diagnosis.cvFacts) || {};
+    return _hdrFieldPlain(f.name, 'الاسم الكامل') + '\n' + dream + ' · ' + _hdrFieldPlain(f.location, 'المدينة') + '\n' +
+      _hdrFieldPlain(f.phone, 'رقم الجوال') + ' · ' + _hdrFieldPlain(f.email, 'البريد الإلكتروني') + ' · ' + _hdrFieldPlain(f.linkedin, 'LinkedIn');
   }
 
   // ──────────────────────────────────────────────────────────────────────
@@ -3048,10 +3131,13 @@
   function tplExecutiveBrief(diagnosis, facts, draft){
     var dream = (diagnosis && diagnosis.dreamRole) || '[المسمى التنفيذي]';
     var yrs = facts.yearsExp;
-    var hasArr = diagnosis && diagnosis.cvText && diagnosis.cvText.match(/(\d{1,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)/i);
-    var arrText = hasArr ? hasArr[0] : null;
+    // Use the MAX ARR figure from the CV, not just the first match. Ali's CV
+    // says "starting from managing a 10M SAR book of business to leading
+    // teams that safeguard 80M+ SAR ARR" — the right number is 80M, not 10M.
+    var arrText = facts.arrAmount ? (facts.arrAmount + 'M+ SAR ARR') : null;
     var summary = (yrs ? yrs + ' سنوات في ' : '') + 'القيادة التنفيذية' +
       (arrText ? ' — إدارة محفظة ' + arrText : '') + '. أركز على نتائج قابلة للقياس: نمو ARR، احتفاظ، توسع، وأداء فريق.';
+    var hasArr = !!arrText;
     return {
       name: 'Executive Brief',
       sections: [
@@ -3221,6 +3307,14 @@
         + '</div>'
         + '<div class="v2-cvb-honest">هذي صياغة مقترحة من التشخيص. <strong>راجعها قبل الإرسال.</strong> العناصر بين أقواس [...] تحتاج تعبئة من بياناتك الحقيقية. لا تخترع أرقام أو شركات أو شهادات.</div>'
         + '<div class="v2-cvb-preview" id="v2CvbPreview">' + sectionsHtml + '</div>'
+        // "Done — what's next?" footer — fixes the "ما أعرف وش أسوي بعد" UX
+        + '<div class="v2-db-section" style="background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);color:#fff;border:none;margin-top:18px">'
+        +   '<div style="font-size:11px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px">⚡ بعد ما تخلّص هنا</div>'
+        +   '<div style="font-size:16px;font-weight:800;margin-bottom:5px;line-height:1.4">جاهز نوريك وظائف مناسبة لك؟</div>'
+        +   '<div style="font-size:13px;opacity:.92;line-height:1.65;margin-bottom:12px">احفظ سيرتك من الزر فوق ↑ (تتحفظ في متصفحك). بعدها روح للوظائف نلقي لك أقرب فرص واقعية بناءً على تشخيصك.</div>'
+        +   '<button class="v2-db-hero-cta" style="margin-left:8px" onclick="v2CvbSave();v2Go(\'#/jobs\')">احفظ + وريني الوظائف ←</button>'
+        +   '<button class="v2-iv-btn" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25)" onclick="v2Go(\'#/jobs\')">تجاوز — للوظائف</button>'
+        + '</div>'
         // Edit modal
         + '<div class="v2-cvb-edit-modal" id="v2CvbEditModal">'
         +   '<div class="v2-cvb-edit-card">'
