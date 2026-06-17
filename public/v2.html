@@ -3569,10 +3569,20 @@
       return;
     }
     if (!data.success) {
+      // API failed (rate-limit / network / 500). DON'T leave the user stuck
+      // on a dead screen — synthesize a client-side fallback from the
+      // diagnosis so they can search manually on LinkedIn/Bayt/Google,
+      // then add the application to the tracker.
       var msg = data.error === 'rate_limit'
-        ? 'بحثت كثير في وقت قصير. جرّب بعد دقيقة.'
-        : (data.error === 'network' ? 'ما قدرنا نوصل للسيرفر. تأكد إن الانترنت شغّال.' : 'حصل خطأ. حاول مرة أخرى.');
-      app.innerHTML = barHtml + '<div class="v2-jobs-error"><span>⚠</span><div>' + escapeHtml(msg) + '</div></div>';
+        ? 'سيرفر البحث مشغول الحين. هذي روابط بحث جاهزة على المسميات اللي تناسبك حسب تشخيصك:'
+        : (data.error === 'network'
+           ? 'مشكلة اتصال — جرّب بعد دقيقة. هذي روابط بحث يدوية تساعدك تبدأ:'
+           : 'البحث التلقائي ما اشتغل الحين. هذي روابط بحث جاهزة من تشخيصك:');
+      var clientFb = _v2JobsClientFallback(dreamRole, locationVal, msg);
+      app.innerHTML = barHtml
+        + '<div class="v2-jobs-meta">هدفك: <b>' + escapeHtml(dreamRole) + '</b> <span class="v2-jobs-mode-pill is-fallback">بحث يدوي</span></div>'
+        + _v2JobsRenderFallback(clientFb)
+        + _v2JobsManualAddCta();
       return;
     }
 
@@ -3596,9 +3606,42 @@
     }
     // Fallback mode — honest message + target titles + search links. NO
     // fake job cards. NO "جهّز تقديمي" — there's nothing real to prepare for.
+    // But DO offer the manual-add CTA so the journey doesn't dead-end.
     app.innerHTML = barHtml
       + '<div class="v2-jobs-meta">هدفك: <b>' + escapeHtml(dreamRole) + '</b> <span class="v2-jobs-mode-pill is-fallback">fallback</span></div>'
-      + _v2JobsRenderFallback(data.fallback);
+      + _v2JobsRenderFallback(data.fallback)
+      + _v2JobsManualAddCta();
+  }
+
+  // ── Client-side fallback builder (used when /api/jobs/search fails).
+  // Uses the diagnosis's nearestWinnableRoles (already family/seniority
+  // correct — Director of CS etc, NOT Customer Service Rep) and generates
+  // real LinkedIn / Bayt / Google Jobs search URLs.
+  function _v2JobsClientFallback(dreamRole, locationVal, msg){
+    var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+    var titles = (d && Array.isArray(d.nearestWinnableRoles) && d.nearestWinnableRoles.length)
+      ? d.nearestWinnableRoles.slice(0, 5)
+      : [dreamRole];
+    var loc = (locationVal || '').trim() || 'Saudi Arabia';
+    function liUrl(t){ return 'https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(t) + '&location=' + encodeURIComponent(loc); }
+    function baytUrl(t){ return 'https://www.bayt.com/en/saudi-arabia/jobs/?q=' + encodeURIComponent(t); }
+    function gjUrl(t){ return 'https://www.google.com/search?q=' + encodeURIComponent(t + ' jobs ' + loc); }
+    var links = titles.map(function(t){
+      return { label: t, linkedin: liUrl(t), bayt: baytUrl(t), google: gjUrl(t) };
+    });
+    return { message: msg, targetTitles: titles, searchLinks: links };
+  }
+
+  // CTA shown below jobs fallback — lets users add a job they found
+  // manually so the journey continues (tracker → interview → dashboard).
+  function _v2JobsManualAddCta(){
+    return ''
+      + '<div class="v2-db-section" style="background:linear-gradient(135deg,#16a34a 0%,#15803d 100%);color:#fff;border:none;margin-top:14px">'
+      +   '<div style="font-size:11px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px">✓ لقيت وظيفة مناسبة؟</div>'
+      +   '<div style="font-size:15.5px;font-weight:800;margin-bottom:5px;line-height:1.4">سجّلها في تقديماتك يدوياً</div>'
+      +   '<div style="font-size:13px;opacity:.92;line-height:1.65;margin-bottom:12px">دربي يقرأ نمط ردودك من تقديماتك. اضغط هنا، ضف الشركة والدور، وكمّل الرحلة بعدها لتدريب المقابلة.</div>'
+      +   '<button class="v2-db-hero-cta" style="background:#fff;color:#15803d" onclick="v2Go(\'#/tracker\')">افتح تقديماتي ←</button>'
+      + '</div>';
   }
 
   // ── #/jobs renderer ───────────────────────────────────────────────────
@@ -4222,15 +4265,19 @@
     var stats = Applications.stats();
     var weekly = _v2TrackerWeeklyStats();
 
-    // Empty state
+    // Empty state — show both "browse jobs" AND a manual-add form so the
+    // journey doesn't dead-end when the jobs API is rate-limited.
     if (!apps.length) {
       app.innerHTML = ''
         + '<div class="v2-tk-empty">'
         +   '<div class="v2-tk-empty-emoji">📋</div>'
         +   '<div class="v2-tk-empty-h">ما عندك تقديمات بعد</div>'
         +   '<div class="v2-tk-empty-sub">لما تجهّز تقديم لأي وظيفة وتسجّله، يبان هنا.<br>دربي يقرأ النمط من ردودك ويعدّل خطتك بناءً عليه.</div>'
-        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/jobs\')">اعرض الوظائف ←</button>'
-        + '</div>';
+        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/jobs\')" style="margin-bottom:10px">اعرض الوظائف ←</button>'
+        +   '<div style="font-size:11px;color:#94a3b8;margin:8px 0">— أو —</div>'
+        +   '<button class="v2-btn v2-btn-secondary" onclick="v2TrackerToggleManualForm()">➕ ضف تقديم يدوياً</button>'
+        + '</div>'
+        + _v2TrackerManualFormHtml();
       return;
     }
 
@@ -4259,7 +4306,73 @@
       + apps.map(_v2TrackerRow).join('');
 
     app.innerHTML = weeklyHtml + nextHtml + listHtml
-      + '<div style="margin-top:13px;text-align:center"><button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/jobs\')">+ جهّز تقديم جديد</button></div>';
+      + '<div style="margin-top:13px;text-align:center;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'
+      +   '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/jobs\')">🔎 ابحث عن وظيفة</button>'
+      +   '<button class="v2-btn v2-btn-secondary" onclick="v2TrackerToggleManualForm()">➕ ضف تقديم يدوياً</button>'
+      + '</div>'
+      + _v2TrackerManualFormHtml();
+  }
+
+  // Manual-add form — hidden by default, shown via v2TrackerToggleManualForm.
+  // Lets users register a job they found outside of #/jobs (e.g. via the
+  // fallback LinkedIn/Bayt links) so the journey continues.
+  function _v2TrackerManualFormHtml(){
+    return ''
+      + '<div id="v2-tk-manual" class="v2-card" style="display:none;margin-top:14px;background:#f9fafb;border:1.5px solid #ececf4">'
+      +   '<div style="font-size:14px;font-weight:800;color:#0a0a0a;margin-bottom:10px">➕ سجّل تقديم جديد</div>'
+      +   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">'
+      +     '<div>'
+      +       '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الشركة *</label>'
+      +       '<input id="v2-tk-m-company" type="text" placeholder="مثلاً: NEOM" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px" />'
+      +     '</div>'
+      +     '<div>'
+      +       '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الدور *</label>'
+      +       '<input id="v2-tk-m-role" type="text" placeholder="مثلاً: Head of CS" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px" />'
+      +     '</div>'
+      +   '</div>'
+      +   '<div style="margin-bottom:10px">'
+      +     '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">رابط الوظيفة (اختياري)</label>'
+      +     '<input id="v2-tk-m-url" type="url" placeholder="https://..." style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px;direction:ltr" />'
+      +   '</div>'
+      +   '<div style="margin-bottom:12px">'
+      +     '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الحالة</label>'
+      +     '<select id="v2-tk-m-status" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px">'
+      +       '<option value="applied">في الانتظار</option>'
+      +       '<option value="reply">وصل رد</option>'
+      +       '<option value="interview">مقابلة</option>'
+      +     '</select>'
+      +   '</div>'
+      +   '<div style="display:flex;gap:8px;justify-content:flex-end">'
+      +     '<button class="v2-btn v2-btn-secondary" onclick="v2TrackerToggleManualForm()">إلغاء</button>'
+      +     '<button class="v2-btn v2-btn-primary" onclick="v2TrackerManualSubmit()">احفظ ✓</button>'
+      +   '</div>'
+      + '</div>';
+  }
+
+  function v2TrackerToggleManualForm(){
+    var el = document.getElementById('v2-tk-manual');
+    if (!el) return;
+    var open = el.style.display !== 'block';
+    el.style.display = open ? 'block' : 'none';
+    if (open) {
+      var first = document.getElementById('v2-tk-m-company');
+      if (first) first.focus();
+    }
+  }
+
+  function v2TrackerManualSubmit(){
+    var co  = (document.getElementById('v2-tk-m-company') || {}).value || '';
+    var rl  = (document.getElementById('v2-tk-m-role')    || {}).value || '';
+    var url = (document.getElementById('v2-tk-m-url')     || {}).value || '';
+    var st  = (document.getElementById('v2-tk-m-status')  || {}).value || 'applied';
+    if (!co.trim() || !rl.trim()) {
+      alert('الشركة والدور مطلوبين عشان نسجّل التقديم.');
+      return;
+    }
+    Applications.add({ company: co.trim(), role: rl.trim(), url: url.trim(), status: st });
+    if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markApplicationLogged) DarbiJourney.markApplicationLogged();
+    var appEl = document.getElementById('v2-app');
+    if (appEl) renderTracker(appEl, V2_ROUTES['#/tracker']);
   }
 
   // ── Tracker actions ───────────────────────────────────────────────────
