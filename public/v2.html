@@ -553,6 +553,121 @@
     .v2-cvb-edit-actions{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
     .v2-cvb-edit-actions .v2-btn{flex:1;min-width:120px;padding:11px 16px}
 
+    /* ═══════════════════════════════════════════════════════════════════
+       DFY-1 — CV Output (#/cv-output)
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-cvo-hero{
+      background:linear-gradient(135deg,#16a34a 0%,#15803d 100%);
+      color:#fff;border-radius:14px;padding:18px 16px;margin-bottom:14px;
+    }
+    .v2-cvo-hero-eyebrow{font-size:12px;font-weight:800;letter-spacing:.5px;opacity:.95;margin-bottom:6px;text-transform:uppercase}
+    .v2-cvo-hero-h{font-size:22px;font-weight:900;line-height:1.3;margin-bottom:5px}
+    .v2-cvo-hero-sub{font-size:13px;opacity:.92}
+    .v2-cvo-hero-sub b{font-weight:800}
+
+    .v2-cvo-chips{
+      background:#fef3c7;border:1px solid #fde68a;border-radius:12px;
+      padding:12px 14px;margin-bottom:12px;
+    }
+    .v2-cvo-chips-h{font-size:12.5px;font-weight:700;color:#78350f;margin-bottom:8px;line-height:1.5}
+    .v2-cvo-chips-row{display:flex;flex-wrap:wrap;gap:6px}
+    .v2-cvo-chip{
+      background:#fff;border:1.5px solid #fbbf24;color:#78350f;
+      padding:6px 12px;border-radius:99px;cursor:pointer;
+      font-size:12.5px;font-weight:700;font-family:inherit;
+    }
+    .v2-cvo-chip:hover{background:#fffbeb;border-color:#f59e0b}
+
+    .v2-cvo-toolbar{
+      display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px;
+    }
+    .v2-cvo-cpy-btn{
+      background:#fff;border:1.5px solid #ececf4;color:#0a0a0a;
+      padding:9px 13px;border-radius:9px;cursor:pointer;
+      font-size:12.5px;font-weight:700;font-family:inherit;
+      transition:background .15s;flex:1;min-width:120px;
+    }
+    .v2-cvo-cpy-btn:hover{background:#fafafe}
+    .v2-cvo-cpy-btn.is-primary{background:#4f46e5;color:#fff;border-color:#4f46e5}
+    .v2-cvo-cpy-btn.is-primary:hover{background:#4338ca}
+
+    .v2-cvo-honest{
+      background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;
+      padding:10px 13px;border-radius:9px;font-size:12.5px;
+      line-height:1.65;margin-bottom:12px;
+    }
+    .v2-cvo-honest strong{color:#312e81;font-weight:800}
+
+    .v2-cvo-preview{
+      background:#fff;border:1px solid #ececf4;border-radius:13px;
+      padding:18px;margin-bottom:14px;
+    }
+    .v2-cvo-section{margin-bottom:14px}
+    .v2-cvo-section:last-child{margin-bottom:0}
+    .v2-cvo-section-h{
+      font-size:11.5px;font-weight:800;color:#4338ca;letter-spacing:.4px;
+      text-transform:uppercase;margin-bottom:7px;
+      border-bottom:1px dashed #ececf4;padding-bottom:5px;
+    }
+    .v2-cvo-section-body{font-size:14px;color:#0a0a0a;line-height:1.8}
+    .v2-cvo-section-body p{margin:0 0 7px}
+    .v2-cvo-section-body ul{padding-right:18px;margin:0}
+    .v2-cvo-section-body li{margin-bottom:4px}
+    .v2-cvo-section-body strong{color:#0a0a0a}
+    .v2-cvo-section-body .v2-cvb-placeholder{
+      background:#fef3c7;color:#78350f;font-weight:700;
+      padding:1px 8px;border-radius:99px;font-size:12px;display:inline-block;
+    }
+
+    .v2-cvo-edit{
+      background:#fafafe;border:1px dashed #cbd5e1;border-radius:11px;
+      padding:11px 13px;margin-bottom:13px;font-family:inherit;
+    }
+    .v2-cvo-edit summary{
+      font-size:13px;color:#475569;font-weight:700;cursor:pointer;
+      list-style:none;outline:none;
+    }
+    .v2-cvo-edit summary::-webkit-details-marker{display:none}
+    .v2-cvo-edit[open] summary{margin-bottom:8px}
+    .v2-cvo-edit-hint{font-size:12.5px;color:#64748b;line-height:1.6;margin-bottom:9px}
+    .v2-cvo-edit-link{
+      background:#fff;border:1.5px solid #ececf4;color:#4338ca;
+      padding:8px 14px;border-radius:8px;cursor:pointer;
+      font-size:12.5px;font-weight:700;font-family:inherit;
+    }
+    .v2-cvo-edit-link:hover{background:#eef2ff;border-color:#c7d2fe}
+
+    .v2-cvo-cta{
+      background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+      color:#fff;border-radius:14px;padding:20px 18px;
+    }
+    .v2-cvo-cta-eyebrow{font-size:11.5px;font-weight:800;opacity:.9;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+    .v2-cvo-cta-h{font-size:18px;font-weight:900;line-height:1.4;margin-bottom:6px}
+    .v2-cvo-cta-sub{font-size:13px;opacity:.92;line-height:1.65;margin-bottom:14px}
+    .v2-cvo-cta-btn{
+      background:#fff;color:#4338ca;border:none;
+      padding:11px 18px;border-radius:10px;cursor:pointer;
+      font-size:14px;font-weight:800;font-family:inherit;
+    }
+    .v2-cvo-cta-btn:hover{background:#f5f3ff}
+
+    .v2-cvo-modal{
+      position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:80;
+      display:none;align-items:center;justify-content:center;padding:20px;
+    }
+    .v2-cvo-modal.is-open{display:flex}
+    .v2-cvo-modal-card{
+      background:#fff;border-radius:14px;max-width:440px;width:100%;padding:18px;
+    }
+    .v2-cvo-modal-h{font-size:15px;font-weight:800;color:#0a0a0a;margin-bottom:10px}
+    .v2-cvo-modal-input{
+      width:100%;padding:11px 13px;border:1.5px solid #ececf4;border-radius:10px;
+      font-family:inherit;font-size:14px;color:#0a0a0a;background:#fafafe;direction:rtl;
+    }
+    .v2-cvo-modal-input:focus{outline:none;border-color:#4f46e5;background:#fff}
+    .v2-cvo-modal-actions{display:flex;gap:8px;margin-top:11px}
+    .v2-cvo-modal-actions .v2-btn{flex:1;padding:11px 16px}
+
     .v2-cvb-saved-status{
       font-size:11.5px;color:#16a34a;font-weight:700;
       margin-right:8px;display:inline-flex;align-items:center;gap:4px;
@@ -1113,7 +1228,7 @@
       <div class="v2-drawer-list">
         <a data-route="#/dashboard" onclick="v2Go('#/dashboard');return false;">🏠 لوحتي</a>
         <a data-route="#/diagnosis" onclick="v2Go('#/diagnosis');return false;">🎯 التشخيص</a>
-        <a data-route="#/cv-templates" onclick="v2Go('#/cv-templates');return false;">📝 سيرتي</a>
+        <a data-route="#/cv-output" onclick="v2Go('#/cv-output');return false;">📝 سيرتي</a>
         <a data-route="#/jobs" onclick="v2Go('#/jobs');return false;">💼 الوظائف</a>
         <a data-route="#/tracker" onclick="v2Go('#/tracker');return false;">📋 تقديماتي</a>
         <a data-route="#/account" onclick="v2Go('#/account');return false;">👤 حسابي</a>
@@ -1480,8 +1595,9 @@
     '#/cv-upload':    { title: 'ارفع سيرتك',           step: 1, back: '#/dream',      render: 'renderCvUpload' },
     '#/quiz':         { title: 'أسئلة سريعة',          step: 1, back: '#/cv-upload',  render: 'renderQuiz' },
     '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderDiagnosis' },
+    '#/cv-output':    { title: 'سيرتك جاهزة',           step: 2, back: '#/diagnosis',     render: 'renderCvOutput' },
     '#/cv-templates': { title: 'اختر قالب سيرتك',       step: 2, back: '#/diagnosis',     render: 'renderCvTemplates' },
-    '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-templates',  render: 'renderCvBuilder' },
+    '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-output',     render: 'renderCvBuilder' },
     '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderJobs' },
     '#/apply':        { title: 'جهّز تقديمك',           step: 4, back: '#/jobs',      render: 'renderApply' },
     '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/jobs',      render: 'renderTracker' },
@@ -1494,7 +1610,7 @@
   // ── Map DarbiJourney.key → V2 route. Used when callers want to advance.
   var V2_ROUTE_FOR_KEY = {
     start_diagnosis: '#/track', // new users land on Track Picker first
-    cv_audit:        '#/cv-templates',
+    cv_audit:        '#/cv-output',
     job_matches:     '#/jobs',
     apply_package:   '#/jobs',
     apply_now:       '#/jobs',
@@ -1835,8 +1951,9 @@
     if (btn) btn.disabled = !(value && value.trim().length >= 30);
   }
   function v2GoStartTemplate(){
-    // For Task 2 this routes to the cv-templates placeholder (Phase 1).
-    v2Go('#/cv-templates');
+    // DFY-1: route to the done-for-you CV Output. Template is picked
+    // internally by v2RecommendTemplate — user never sees the grid.
+    v2Go('#/cv-output');
   }
   function v2HandleCvFile(ev){
     var f = ev.target.files && ev.target.files[0];
@@ -3271,9 +3388,232 @@
   }
 
   // ── #/cv-builder renderer ─────────────────────────────────────────────
+  // ════════════════════════════════════════════════════════════════════════
+  // DFY-1 — #/cv-output (Done-for-you CV)
+  // ─────────────────────────────────────────────────────────────────────────
+  // Replaces the template-picker → section-by-section-editor experience with
+  // a single ready-to-copy CV. The template is picked silently via
+  // v2RecommendTemplate(). Missing personal data (name, email, phone,
+  // location, linkedin) is collected via inline question chips that write
+  // back into Diagnosis.cvFacts — NOT as ugly [الاسم] brackets.
+  // Primary CTA: "اعرض الوظائف المناسبة ←" — this is the first step in the
+  // full career-agent loop, not a dead-end CV editor.
+  // ════════════════════════════════════════════════════════════════════════
+
+  // Stash the active output so action handlers can find it without the
+  // user clicking a section first.
+  function _v2CvoState(){ return window.__v2Cvo || null; }
+
+  function renderCvOutput(app, route){
+    var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+    if (!d) {
+      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">📝</div><h3>اكمل التشخيص أولاً</h3>'
+        + '<p>سيرتك الجاهزة تتبني من تشخيصك. نحتاج نخلص التشخيص الأول.</p>'
+        + '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/track\')">ابدأ التشخيص ←</button></div>';
+      return;
+    }
+    var draft = (typeof V2Draft !== 'undefined' && V2Draft.get) ? V2Draft.get() : {};
+    // Template picked INTERNALLY — user never sees the grid. ?t= override
+    // still works for debug / direct links.
+    var templateId = v2HashParam('t') || v2RecommendTemplate(d, draft);
+    var cv = v2GenerateCv(templateId, d);
+    if (!cv) {
+      app.innerHTML = '<div class="v2-jobs-error"><span>⚠</span><div>ما قدرنا نولّد السيرة. حاول رجوع للتشخيص.</div></div>';
+      return;
+    }
+
+    var facts = d.cvFacts || {};
+    var dreamRole = d.dreamRole || 'دورك المستهدف';
+    var templateAr = (V2_CV_TEMPLATES[templateId] || {}).ar || 'سيرة';
+
+    // ── Missing contact-info chips (replaces visible [brackets]).
+    // Only the high-impact header fields. Per-role placeholders ([المسمى
+    // الوظيفي], [اسم الشركة]) stay inside the optional edit block.
+    var MISSING_FIELDS = [
+      { key:'name',     label:'اسمك الكامل',     placeholder:'مثل: علي العتيبي' },
+      { key:'location', label:'مدينتك',          placeholder:'مثل: الرياض' },
+      { key:'phone',    label:'رقم جوالك',       placeholder:'مثل: 0570097830' },
+      { key:'email',    label:'بريدك الإلكتروني', placeholder:'mail@example.com' },
+      { key:'linkedin', label:'LinkedIn',         placeholder:'linkedin.com/in/...' },
+    ];
+    var missing = MISSING_FIELDS.filter(function(f){ return !facts[f.key]; });
+
+    var chipsHtml = missing.length ? ''
+      + '<div class="v2-cvo-chips">'
+      +   '<div class="v2-cvo-chips-h">نحتاج منك ' + missing.length + ' معلومة بسيطة عشان السيرة تطلع كاملة:</div>'
+      +   '<div class="v2-cvo-chips-row">'
+      +     missing.map(function(f){
+            return '<button type="button" class="v2-cvo-chip" onclick="v2CvoOpenMissing(\'' + escapeHtml(f.key) + '\',\'' + escapeHtml(f.label) + '\',\'' + escapeHtml(f.placeholder) + '\')">+ ' + escapeHtml(f.label) + '</button>';
+          }).join('')
+      +   '</div>'
+      + '</div>'
+      : '';
+
+    // ── CV preview (already auto-filled by _hdrHtml from cvFacts).
+    var sectionsHtml = cv.sections.map(function(s){
+      return ''
+        + '<div class="v2-cvo-section">'
+        +   '<div class="v2-cvo-section-h">' + escapeHtml(s.title) + '</div>'
+        +   '<div class="v2-cvo-section-body">' + s.html + '</div>'
+        + '</div>';
+    }).join('');
+
+    // ── Hero — calm, factual. NOT "اختر قالب".
+    var heroHtml = ''
+      + '<div class="v2-cvo-hero">'
+      +   '<div class="v2-cvo-hero-eyebrow">✓ سيرتك جاهزة</div>'
+      +   '<div class="v2-cvo-hero-h">' + escapeHtml(dreamRole) + '</div>'
+      +   '<div class="v2-cvo-hero-sub">صياغة من تشخيصك — قالب: <b>' + escapeHtml(templateAr) + '</b></div>'
+      + '</div>';
+
+    // ── Copy toolbar — 3 buttons: full / summary / experience-bullets.
+    var copyHtml = ''
+      + '<div class="v2-cvo-toolbar">'
+      +   '<button class="v2-cvo-cpy-btn is-primary" onclick="v2CvoCopy(\'full\')">📋 نسخ السيرة كاملة</button>'
+      +   '<button class="v2-cvo-cpy-btn" onclick="v2CvoCopy(\'summary\')">📋 الملخص فقط</button>'
+      +   '<button class="v2-cvo-cpy-btn" onclick="v2CvoCopy(\'bullets\')">📋 الإنجازات فقط</button>'
+      + '</div>';
+
+    // ── Honest reminder (matches V1 tone but no "[X] تحتاج تعبئة" panic).
+    var honestHtml = ''
+      + '<div class="v2-cvo-honest">صياغة مقترحة من تشخيصك. <strong>راجعها قبل الإرسال.</strong> لا تخترع أرقام أو شركات أو شهادات.</div>';
+
+    // ── Optional edit — collapsed by default. The old section-by-section
+    // editor lives inside <details>, NOT as the main experience.
+    var editHtml = ''
+      + '<details class="v2-cvo-edit">'
+      +   '<summary>↓ تعديل اختياري — لو حاب تغيّر صياغة قسم</summary>'
+      +   '<div class="v2-cvo-edit-hint">اضغط على أي قسم تحت لتفتح محرر بسيط. تقدر تعدل ثم تنسخ من زر <b>نسخ السيرة كاملة</b> فوق.</div>'
+      +   '<button class="v2-cvo-edit-link" onclick="v2Go(\'#/cv-builder?t=' + escapeHtml(templateId) + '\')">افتح المحرر المتقدم ←</button>'
+      + '</details>';
+
+    // ── Primary CTA — wires CV Output to the next step in the loop: Jobs.
+    var ctaHtml = ''
+      + '<div class="v2-cvo-cta">'
+      +   '<div class="v2-cvo-cta-eyebrow">⚡ الخطوة الجاية</div>'
+      +   '<div class="v2-cvo-cta-h">شوف الوظائف المناسبة لـ ' + escapeHtml(dreamRole) + '</div>'
+      +   '<div class="v2-cvo-cta-sub">دربي يبحث على المسميات اللي تناسب تشخيصك. تختار وظيفة → نجهز لك تقديم كامل لها.</div>'
+      +   '<button class="v2-cvo-cta-btn" onclick="v2CvoSaveAndGoJobs()">اعرض الوظائف المناسبة ←</button>'
+      + '</div>';
+
+    app.innerHTML = heroHtml + chipsHtml + copyHtml + honestHtml
+      + '<div class="v2-cvo-preview">' + sectionsHtml + '</div>'
+      + editHtml + ctaHtml
+      // Missing-field modal (hidden until v2CvoOpenMissing is called)
+      + '<div class="v2-cvo-modal" id="v2CvoModal">'
+      +   '<div class="v2-cvo-modal-card">'
+      +     '<div class="v2-cvo-modal-h" id="v2CvoModalH">إضافة معلومة</div>'
+      +     '<input type="text" class="v2-cvo-modal-input" id="v2CvoModalInput" />'
+      +     '<div class="v2-cvo-modal-actions">'
+      +       '<button class="v2-btn v2-btn-secondary" onclick="v2CvoCloseMissing()">إلغاء</button>'
+      +       '<button class="v2-btn v2-btn-primary" onclick="v2CvoSubmitMissing()">حفظ ✓</button>'
+      +     '</div>'
+      +   '</div>'
+      + '</div>';
+
+    window.__v2Cvo = { templateId: templateId, diagnosis: d, cv: cv, missingKey: null };
+
+    // Mark journey milestone — same as the old cv-builder. Dashboard reads
+    // this to know cv_audit is done and surfaces "job_matches" next.
+    if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markCvAuditDone) {
+      DarbiJourney.markCvAuditDone();
+    }
+  }
+
+  // ── Missing-field handlers ────────────────────────────────────────────
+  function v2CvoOpenMissing(key, label, placeholder){
+    var s = _v2CvoState();
+    if (!s) return;
+    s.missingKey = key;
+    var modal = document.getElementById('v2CvoModal');
+    var h     = document.getElementById('v2CvoModalH');
+    var input = document.getElementById('v2CvoModalInput');
+    if (!modal || !h || !input) return;
+    h.textContent = label;
+    input.value = '';
+    input.placeholder = placeholder || '';
+    modal.classList.add('is-open');
+    setTimeout(function(){ input.focus(); }, 50);
+  }
+  function v2CvoCloseMissing(){
+    var modal = document.getElementById('v2CvoModal');
+    if (modal) modal.classList.remove('is-open');
+  }
+  function v2CvoSubmitMissing(){
+    var s = _v2CvoState();
+    if (!s || !s.missingKey) return;
+    var input = document.getElementById('v2CvoModalInput');
+    var val = input ? (input.value || '').trim() : '';
+    if (!val) return;
+    var d = Diagnosis.get();
+    if (!d) return;
+    d.cvFacts = d.cvFacts || {};
+    d.cvFacts[s.missingKey] = val;
+    Diagnosis.set(d);
+    v2CvoCloseMissing();
+    var el = document.getElementById('v2-app');
+    if (el) renderCvOutput(el, V2_ROUTES['#/cv-output']);
+  }
+
+  // ── Copy handlers ─────────────────────────────────────────────────────
+  function _v2CvoTextForMode(mode){
+    var s = _v2CvoState();
+    if (!s || !s.cv) return '';
+    var sections = s.cv.sections;
+    if (mode === 'summary') {
+      var summary = sections.find(function(x){ return x.id === 'summary' || x.id === 'objective' || x.id === 'exec_summary'; });
+      return summary ? summary.plain : sections.map(function(x){ return x.plain; }).join('\n\n');
+    }
+    if (mode === 'bullets') {
+      var bulletKeys = { experience:1, top_results:1, projects:1, achievements:1 };
+      var picked = sections.filter(function(x){ return bulletKeys[x.id]; });
+      if (!picked.length) {
+        // Fallback: pull every line that starts with • from any section
+        return sections.map(function(x){ return x.plain; }).join('\n')
+          .split(/\r?\n/).filter(function(l){ return /^[•\-\*]/.test(l.trim()); }).join('\n');
+      }
+      return picked.map(function(x){ return x.title + '\n' + x.plain; }).join('\n\n');
+    }
+    // 'full'
+    return sections.map(function(x){ return x.title + '\n' + x.plain; }).join('\n\n');
+  }
+  function v2CvoCopy(mode){
+    var text = _v2CvoTextForMode(mode);
+    if (!text) return;
+    var ok = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+        ok = true;
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    } catch(e){ ok = false; }
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'cv_copied', payload: { mode: mode, ok: ok } });
+    // Tiny feedback — toast.
+    var toast = document.createElement('div');
+    toast.textContent = ok ? '✓ تم النسخ' : '⚠ ما قدرنا ننسخ — اضغط مطول واختر نسخ';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0a0a0a;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;z-index:9999;font-family:inherit';
+    document.body.appendChild(toast);
+    setTimeout(function(){ try{ document.body.removeChild(toast); }catch(e){} }, 1800);
+  }
+
+  // ── Primary CTA — save + advance to Jobs (next loop step).
+  function v2CvoSaveAndGoJobs(){
+    var s = _v2CvoState();
+    if (s && typeof V2Cv !== 'undefined' && V2Cv.save) {
+      V2Cv.save({ templateId: s.templateId, sections: {}, savedAt: new Date().toISOString() });
+    }
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'cv_output_to_jobs' });
+    v2Go('#/jobs');
+  }
+
   function renderCvBuilder(app, route){
     var d = Diagnosis.get();
-    if (!d) { v2Go('#/cv-templates'); return; }
+    if (!d) { v2Go('#/cv-output'); return; }
     var draft = V2Draft.get();
     var templateId = v2HashParam('t') || v2RecommendTemplate(d, draft);
     var saved = V2Cv.get();
