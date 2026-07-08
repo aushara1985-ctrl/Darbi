@@ -305,6 +305,60 @@
     .v2-file-status.is-error{color:#dc2626}
 
     /* ═══════════════════════════════════════════════════════════════════
+       CV BUILD (No-CV branch) — #/cv-build (DFY-2)
+    ════════════════════════════════════════════════════════════════════ */
+    .v2-cvbuild-intro{
+      background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;
+      padding:13px 15px;margin-bottom:14px;
+    }
+    .v2-cvbuild-intro-h{font-size:14.5px;font-weight:800;color:#3730a3;margin-bottom:5px}
+    .v2-cvbuild-intro-p{font-size:12.5px;color:#4338ca;line-height:1.65}
+    .v2-cvbuild-sec{
+      background:#fff;border:1px solid #ececf4;border-radius:13px;
+      padding:15px;margin-bottom:12px;
+    }
+    .v2-cvbuild-sec-h{
+      font-size:12px;font-weight:800;color:#4338ca;letter-spacing:.3px;
+      text-transform:uppercase;margin-bottom:11px;
+      display:flex;align-items:center;gap:6px;
+    }
+    .v2-cvbuild-field{margin-bottom:11px}
+    .v2-cvbuild-field:last-child{margin-bottom:0}
+    .v2-cvbuild-label{font-size:12.5px;font-weight:700;color:#475569;display:block;margin-bottom:5px}
+    .v2-cvbuild-label .opt{color:#94a3b8;font-weight:600;font-size:11.5px}
+    .v2-cvbuild-input, .v2-cvbuild-select{
+      width:100%;padding:10px 12px;border:1.5px solid #ececf4;border-radius:9px;
+      font-family:inherit;font-size:13.5px;color:#0a0a0a;background:#fff;
+    }
+    .v2-cvbuild-input:focus, .v2-cvbuild-select:focus{outline:none;border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.08)}
+    .v2-cvbuild-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .v2-cvbuild-toggle{display:flex;gap:8px;margin-bottom:12px}
+    .v2-cvbuild-toggle-btn{
+      flex:1;padding:11px;border:1.5px solid #ececf4;border-radius:10px;
+      background:#fafafe;font-family:inherit;font-size:13px;font-weight:700;
+      color:#475569;cursor:pointer;transition:all .15s;
+    }
+    .v2-cvbuild-toggle-btn.is-active{background:#4f46e5;color:#fff;border-color:#4f46e5}
+    .v2-cvbuild-exp{
+      background:#fafafe;border:1px dashed #cbd5e1;border-radius:10px;
+      padding:12px;margin-bottom:10px;
+    }
+    .v2-cvbuild-exp-h{font-size:12px;font-weight:800;color:#475569;margin-bottom:9px}
+    .v2-cvbuild-langs{display:flex;flex-wrap:wrap;gap:8px}
+    .v2-cvbuild-lang{
+      padding:8px 14px;border:1.5px solid #ececf4;border-radius:99px;
+      background:#fff;font-family:inherit;font-size:12.5px;font-weight:700;
+      color:#475569;cursor:pointer;transition:all .15s;
+    }
+    .v2-cvbuild-lang.is-active{background:#eef2ff;color:#4338ca;border-color:#c7d2fe}
+    .v2-cvbuild-err{
+      background:#fee2e2;border:1px solid #fecaca;color:#991b1b;
+      padding:10px 13px;border-radius:9px;font-size:12.5px;font-weight:700;
+      margin-bottom:12px;display:none;
+    }
+    .v2-cvbuild-err.is-shown{display:block}
+
+    /* ═══════════════════════════════════════════════════════════════════
        QUIZ — #/quiz
     ════════════════════════════════════════════════════════════════════ */
     .v2-quiz-card{
@@ -1593,6 +1647,7 @@
     '#/track':        { title: 'وضعك المهني',          step: 1, back: '#/landing',    render: 'renderTrack' },
     '#/dream':        { title: 'وش الوظيفة اللي تحلم فيها؟', step: 1, back: '#/track', render: 'renderDream' },
     '#/cv-upload':    { title: 'ارفع سيرتك',           step: 1, back: '#/dream',      render: 'renderCvUpload' },
+    '#/cv-build':     { title: 'دربي يبني سيرتك',      step: 1, back: '#/cv-upload',  render: 'renderCvBuild' },
     '#/quiz':         { title: 'أسئلة سريعة',          step: 1, back: '#/cv-upload',  render: 'renderQuiz' },
     '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderDiagnosis' },
     '#/cv-output':    { title: 'سيرتك جاهزة',           step: 2, back: '#/diagnosis',     render: 'renderCvOutput' },
@@ -1931,11 +1986,11 @@
       +     '</div>'
       +   '</label>'
       +   '<input type="file" id="v2CvFileInput" accept=".pdf" style="display:none" onchange="v2HandleCvFile(event)" />'
-      +   '<button type="button" class="v2-upload-card" onclick="v2GoStartTemplate()">'
+      +   '<button type="button" class="v2-upload-card" onclick="v2Go(\'#/cv-build\')">'
       +     '<div class="v2-upload-icon">✨</div>'
       +     '<div class="v2-upload-body">'
-      +       '<div class="v2-upload-title">ابدأ من قالب جاهز</div>'
-      +       '<div class="v2-upload-desc">للخريجين الجدد بدون سيرة بعد — Phase 1</div>'
+      +       '<div class="v2-upload-title">ما عندي سيرة — ابنها لي</div>'
+      +       '<div class="v2-upload-desc">دربي يسألك أسئلة بسيطة ويبني السيرة كاملة</div>'
       +     '</div>'
       +   '</button>'
       + '</div>'
@@ -2014,6 +2069,253 @@
       statusEl.textContent = '⚠ ما قدرنا نحمّل قارئ PDF — الصق النص يدوياً';
       statusEl.classList.add('is-error');
     });
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // DFY-2 — #/cv-build (No-CV branch)
+  // ─────────────────────────────────────────────────────────────────────────
+  // For users who don't have a CV. Darbi asks smart questions, then
+  // SYNTHESIZES a plain-text cvText and writes it to V2Draft.cvText — the
+  // exact same field the PDF-upload path writes. The whole downstream
+  // pipeline (extractCvFacts → buildDiagnosis → v2GenerateCv →
+  // v2BuildApplyPackage) then runs UNCHANGED. This is why DFY-2 needs zero
+  // backend edits and zero changes to the diagnosis pipeline — the graph
+  // proved cvText is the single injection point.
+  // No fake data: every line comes from the user's own answers. Empty
+  // fields are simply omitted, never invented.
+  // ════════════════════════════════════════════════════════════════════════
+
+  var _v2CvBuildState = { hasExp: null };
+
+  function renderCvBuild(app, route){
+    var dream = (typeof V2Draft !== 'undefined' && V2Draft.field) ? (V2Draft.field('dreamRole') || '') : '';
+    var d = V2Draft.get() || {};
+    var b = d.cvBuild || {};
+    if (_v2CvBuildState.hasExp === null) _v2CvBuildState.hasExp = (b.hasExp === true);
+
+    app.innerHTML = ''
+      + '<div class="v2-cvbuild-intro">'
+      +   '<div class="v2-cvbuild-intro-h">✨ دربي يبني سيرتك من الصفر</div>'
+      +   '<div class="v2-cvbuild-intro-p">جاوب على الأسئلة اللي تعرف إجابتها — البقية تقدر تتجاوزها. دربي يصيغها سيرة احترافية، ما يخترع ولا معلومة.</div>'
+      + '</div>'
+      + '<div class="v2-cvbuild-err" id="v2CvBuildErr"></div>'
+
+      // Section 1 — You
+      + '<div class="v2-cvbuild-sec">'
+      +   '<div class="v2-cvbuild-sec-h">👤 معلوماتك</div>'
+      +   '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">الاسم الكامل *</label>'
+      +     '<input type="text" class="v2-cvbuild-input" id="cvb_name" placeholder="مثل: علي العتيبي" value="' + escapeHtml(b.name || '') + '" /></div>'
+      +   '<div class="v2-cvbuild-row">'
+      +     '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">مدينتك *</label>'
+      +       '<input type="text" class="v2-cvbuild-input" id="cvb_city" placeholder="مثل: الرياض" value="' + escapeHtml(b.city || '') + '" /></div>'
+      +     '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">رقم الجوال <span class="opt">(اختياري)</span></label>'
+      +       '<input type="text" class="v2-cvbuild-input" id="cvb_phone" placeholder="05xxxxxxxx" value="' + escapeHtml(b.phone || '') + '" /></div>'
+      +   '</div>'
+      +   '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">البريد الإلكتروني <span class="opt">(اختياري)</span></label>'
+      +     '<input type="email" class="v2-cvbuild-input" id="cvb_email" placeholder="mail@example.com" value="' + escapeHtml(b.email || '') + '" style="direction:ltr" /></div>'
+      + '</div>'
+
+      // Section 2 — Education
+      + '<div class="v2-cvbuild-sec">'
+      +   '<div class="v2-cvbuild-sec-h">🎓 تعليمك</div>'
+      +   '<div class="v2-cvbuild-row">'
+      +     '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">أعلى مؤهل</label>'
+      +       '<select class="v2-cvbuild-select" id="cvb_degree">'
+      +         ['ثانوي','دبلوم','بكالوريوس','ماجستير','دكتوراه'].map(function(dg){
+                  return '<option value="' + dg + '"' + (b.degree === dg ? ' selected' : (!b.degree && dg === 'بكالوريوس' ? ' selected' : '')) + '>' + dg + '</option>';
+                }).join('')
+      +       '</select></div>'
+      +     '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">سنة التخرج <span class="opt">(اختياري)</span></label>'
+      +       '<input type="text" class="v2-cvbuild-input" id="cvb_gradYear" placeholder="2024" value="' + escapeHtml(b.gradYear || '') + '" /></div>'
+      +   '</div>'
+      +   '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">التخصص</label>'
+      +     '<input type="text" class="v2-cvbuild-input" id="cvb_major" placeholder="مثل: المحاسبة، التسويق، هندسة برمجيات" value="' + escapeHtml(b.major || '') + '" /></div>'
+      +   '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">الجامعة / المعهد <span class="opt">(اختياري)</span></label>'
+      +     '<input type="text" class="v2-cvbuild-input" id="cvb_university" placeholder="مثل: جامعة الملك سعود" value="' + escapeHtml(b.university || '') + '" /></div>'
+      + '</div>'
+
+      // Section 3 — Experience
+      + '<div class="v2-cvbuild-sec">'
+      +   '<div class="v2-cvbuild-sec-h">💼 خبرتك</div>'
+      +   '<div class="v2-cvbuild-toggle">'
+      +     '<button type="button" class="v2-cvbuild-toggle-btn' + (_v2CvBuildState.hasExp ? '' : ' is-active') + '" onclick="v2CvBuildSetExp(false)">خريج جديد / بدون خبرة</button>'
+      +     '<button type="button" class="v2-cvbuild-toggle-btn' + (_v2CvBuildState.hasExp ? ' is-active' : '') + '" onclick="v2CvBuildSetExp(true)">عندي خبرة</button>'
+      +   '</div>'
+      +   '<div id="cvb_exp_wrap" style="' + (_v2CvBuildState.hasExp ? '' : 'display:none') + '">'
+      +     _v2CvBuildExpEntry(1, b.exp1 || {})
+      +     + _v2CvBuildExpEntry(2, b.exp2 || {})
+      +     + '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">إجمالي سنوات الخبرة <span class="opt">(اختياري)</span></label>'
+      +       '<input type="text" class="v2-cvbuild-input" id="cvb_yearsExp" placeholder="مثل: 3" value="' + escapeHtml(b.yearsExp || '') + '" style="max-width:120px" /></div>'
+      +   '</div>'
+      +   '<div id="cvb_noexp_hint" style="' + (_v2CvBuildState.hasExp ? 'display:none' : '') + ';font-size:12.5px;color:#64748b;line-height:1.6">تمام — دربي يبني سيرة خريج تركّز على تعليمك ومشاريعك ومهاراتك. تقدر تضيف تدريب أو مشروع تحت.</div>'
+      + '</div>'
+
+      // Section 4 — Projects/Training (optional)
+      + '<div class="v2-cvbuild-sec">'
+      +   '<div class="v2-cvbuild-sec-h">🛠 مشاريع أو تدريب <span style="font-weight:600;color:#94a3b8">(اختياري)</span></div>'
+      +   '<div class="v2-cvbuild-field">'
+      +     '<textarea class="v2-cvbuild-input" id="cvb_projects" rows="3" placeholder="مثل: مشروع تخرج عن تحليل بيانات المبيعات · تدريب صيفي في شركة تسويق" style="min-height:70px;resize:vertical">' + escapeHtml(b.projects || '') + '</textarea>'
+      +   '</div>'
+      + '</div>'
+
+      // Section 5 — Skills
+      + '<div class="v2-cvbuild-sec">'
+      +   '<div class="v2-cvbuild-sec-h">⚡ مهاراتك وأدواتك</div>'
+      +   '<div class="v2-cvbuild-field">'
+      +     '<input type="text" class="v2-cvbuild-input" id="cvb_skills" placeholder="افصل بينها بفاصلة: Excel، تواصل، Photoshop، إدارة وقت" value="' + escapeHtml(b.skills || '') + '" />'
+      +   '</div>'
+      + '</div>'
+
+      // Section 6 — Languages
+      + '<div class="v2-cvbuild-sec">'
+      +   '<div class="v2-cvbuild-sec-h">🗣 اللغات</div>'
+      +   '<div class="v2-cvbuild-langs" id="cvb_langs">'
+      +     ['العربية','الإنجليزية','الفرنسية','الأردية'].map(function(lg){
+              var on = (b.langs || ['العربية']).indexOf(lg) !== -1;
+              return '<button type="button" class="v2-cvbuild-lang' + (on ? ' is-active' : '') + '" data-lang="' + escapeHtml(lg) + '" onclick="this.classList.toggle(\'is-active\')">' + lg + '</button>';
+            }).join('')
+      +   '</div>'
+      + '</div>'
+
+      + '<button type="button" class="v2-btn v2-btn-primary" onclick="v2CvBuildSubmit()" style="margin-top:4px">دربي يبني سيرتي ←</button>'
+      + '<div class="v2-input-hint" style="text-align:center;margin-top:8px">هدفك المهني: <b>' + escapeHtml(dream || 'غير محدد') + '</b> — نبني السيرة حوله</div>';
+  }
+
+  function _v2CvBuildExpEntry(n, e){
+    return ''
+      + '<div class="v2-cvbuild-exp">'
+      +   '<div class="v2-cvbuild-exp-h">خبرة ' + n + (n === 2 ? ' <span style="font-weight:600;color:#94a3b8">(اختياري)</span>' : '') + '</div>'
+      +   '<div class="v2-cvbuild-row">'
+      +     '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">المسمى</label>'
+      +       '<input type="text" class="v2-cvbuild-input" id="cvb_exp' + n + '_role" placeholder="مثل: منسق مبيعات" value="' + escapeHtml(e.role || '') + '" /></div>'
+      +     '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">الشركة</label>'
+      +       '<input type="text" class="v2-cvbuild-input" id="cvb_exp' + n + '_company" placeholder="مثل: شركة كذا" value="' + escapeHtml(e.company || '') + '" /></div>'
+      +   '</div>'
+      +   '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">المدة <span class="opt">(مثل: 2022 - 2024)</span></label>'
+      +     '<input type="text" class="v2-cvbuild-input" id="cvb_exp' + n + '_period" placeholder="2022 - 2024" value="' + escapeHtml(e.period || '') + '" /></div>'
+      +   '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">أهم إنجاز أو مهمة</label>'
+      +     '<input type="text" class="v2-cvbuild-input" id="cvb_exp' + n + '_highlight" placeholder="مثل: نظّمت ملفات العملاء وقللت وقت الرد" value="' + escapeHtml(e.highlight || '') + '" /></div>'
+      + '</div>';
+  }
+
+  function v2CvBuildSetExp(has){
+    _v2CvBuildState.hasExp = has;
+    var wrap = document.getElementById('cvb_exp_wrap');
+    var hint = document.getElementById('cvb_noexp_hint');
+    if (wrap) wrap.style.display = has ? '' : 'none';
+    if (hint) hint.style.display = has ? 'none' : '';
+    // Update toggle button active states
+    var btns = document.querySelectorAll('.v2-cvbuild-toggle-btn');
+    if (btns[0]) btns[0].classList.toggle('is-active', !has);
+    if (btns[1]) btns[1].classList.toggle('is-active', has);
+  }
+
+  function _cvbVal(id){ var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; }
+
+  function v2CvBuildSubmit(){
+    var errEl = document.getElementById('v2CvBuildErr');
+    var name = _cvbVal('cvb_name');
+    var city = _cvbVal('cvb_city');
+    if (!name || !city) {
+      if (errEl) { errEl.textContent = 'نحتاج على الأقل الاسم والمدينة عشان نبدأ.'; errEl.classList.add('is-shown'); }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    // Collect languages
+    var langs = [];
+    var langBtns = document.querySelectorAll('#cvb_langs .v2-cvbuild-lang.is-active');
+    for (var i = 0; i < langBtns.length; i++) langs.push(langBtns[i].getAttribute('data-lang'));
+    if (!langs.length) langs = ['العربية'];
+
+    var b = {
+      name: name, city: city, phone: _cvbVal('cvb_phone'), email: _cvbVal('cvb_email'),
+      degree: _cvbVal('cvb_degree'), major: _cvbVal('cvb_major'),
+      university: _cvbVal('cvb_university'), gradYear: _cvbVal('cvb_gradYear'),
+      hasExp: _v2CvBuildState.hasExp, yearsExp: _cvbVal('cvb_yearsExp'),
+      exp1: { role: _cvbVal('cvb_exp1_role'), company: _cvbVal('cvb_exp1_company'), period: _cvbVal('cvb_exp1_period'), highlight: _cvbVal('cvb_exp1_highlight') },
+      exp2: { role: _cvbVal('cvb_exp2_role'), company: _cvbVal('cvb_exp2_company'), period: _cvbVal('cvb_exp2_period'), highlight: _cvbVal('cvb_exp2_highlight') },
+      projects: _cvbVal('cvb_projects'), skills: _cvbVal('cvb_skills'), langs: langs,
+    };
+
+    var dream = (V2Draft.field && V2Draft.field('dreamRole')) || '';
+    var cvText = _v2SynthesizeCv(b, dream);
+
+    // Write to the SAME field the PDF-upload path uses. Also persist the raw
+    // answers under cvBuild so the user can come back and edit.
+    V2Draft.set({ cvText: cvText, cvBuild: b, cvBuiltFromQuestions: true });
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'cv_built_from_questions', payload: { hasExp: b.hasExp } });
+    v2Go('#/quiz');
+  }
+
+  // Pure function: structured answers → real-CV-shaped plain text.
+  // Formatted so extractCvFacts() can parse name/city/phone/email/major/
+  // gradYear/yearsExp/tools out of it. Omits any field the user left blank —
+  // never invents content.
+  function _v2SynthesizeCv(b, dream){
+    var lines = [];
+    // Header (line 1 = name, line 2 = city · phone · email) — matches
+    // extractCvFacts' name/city/contact heuristics.
+    lines.push(b.name);
+    var contact = [b.city];
+    if (b.phone) contact.push(b.phone);
+    if (b.email) contact.push(b.email);
+    lines.push(contact.join(' · '));
+    lines.push('');
+
+    // Objective — states the dream role + education, no invented claims.
+    var eduPhrase = '';
+    if (b.major) eduPhrase = (b.degree || 'خريج') + ' ' + b.major + (b.gradYear ? ' (' + b.gradYear + ')' : '');
+    var obj = 'الهدف: ' + (dream ? ('دور ' + dream) : 'بدء مسيرة مهنية');
+    if (eduPhrase) obj += ' — ' + eduPhrase + '.';
+    lines.push(obj);
+    lines.push('');
+
+    // Education block (degree keyword + التخصص line for robust parsing).
+    if (b.major || b.university) {
+      lines.push('التعليم:');
+      if (b.major) lines.push((b.degree || 'بكالوريوس') + ' ' + b.major + (b.university ? ' — ' + b.university : '') + (b.gradYear ? ' · ' + b.gradYear : ''));
+      if (b.major) lines.push('التخصص: ' + b.major);
+      lines.push('');
+    }
+
+    // Experience block.
+    if (b.hasExp) {
+      var expLines = [];
+      [b.exp1, b.exp2].forEach(function(e){
+        if (e && (e.role || e.company)) {
+          var head = (e.role || 'دور') + (e.company ? ' — ' + e.company : '') + (e.period ? ' · ' + e.period : '');
+          expLines.push(head);
+          if (e.highlight) expLines.push('• ' + e.highlight);
+        }
+      });
+      if (expLines.length) {
+        lines.push('الخبرة:');
+        if (b.yearsExp) lines.push('خبرة ' + b.yearsExp + ' سنوات');
+        expLines.forEach(function(l){ lines.push(l); });
+        lines.push('');
+      }
+    }
+
+    // Projects / training.
+    if (b.projects) {
+      lines.push('مشاريع وتدريب:');
+      b.projects.split(/[·\n]+/).map(function(p){ return p.trim(); }).filter(Boolean).forEach(function(p){ lines.push('• ' + p); });
+      lines.push('');
+    }
+
+    // Skills.
+    if (b.skills) {
+      lines.push('المهارات:');
+      lines.push(b.skills.split(/[،,]+/).map(function(s){ return s.trim(); }).filter(Boolean).join(' · '));
+      lines.push('');
+    }
+
+    // Languages.
+    if (b.langs && b.langs.length) {
+      lines.push('اللغات: ' + b.langs.join(' · '));
+    }
+
+    return lines.join('\n').trim();
   }
 
   // ── #/quiz — 5 questions. Same shape as V1 diagSubmitQuiz answers. Adaptive
@@ -2141,8 +2443,14 @@
     var phoneM = t.match(/(?:[+(]?9?66[)\s\-]*)?0?5(?:[\s\-()]*\d){8}/);
     if (phoneM) out.phone = phoneM[0].replace(/[\s()]+/g, ' ').replace(/\s+/g, ' ').trim();
     // Location: Saudi-major cities (English + Arabic), match first occurrence.
-    var locM = t.match(/\b(Riyadh|Jeddah|Dammam|Khobar|Mecca|Makkah|Medina|Madinah|Taif|Tabuk|Abha|Hail|الرياض|جدة|الدمام|الخبر|مكة|المدينة|الطائف|تبوك|أبها|حائل|الظهران|Dhahran)\b/i);
-    if (locM) out.location = locM[0];
+    // English cities use \b (word boundary works for Latin). Arabic city
+    // names can't use \b (JS \b is a Latin \w/\W transition — Arabic letters
+    // are \W, so \bجدة\b never matches). Match Arabic names as bare
+    // alternates instead. Order: try English first, then Arabic.
+    var locEn = t.match(/\b(Riyadh|Jeddah|Dammam|Khobar|Mecca|Makkah|Medina|Madinah|Taif|Tabuk|Abha|Hail|Dhahran|Buraidah|Jubail|Yanbu)\b/i);
+    var locAr = t.match(/(الرياض|جدة|الدمام|الخبر|مكة|المدينة المنورة|المدينة|الطائف|تبوك|أبها|حائل|الظهران|بريدة|الجبيل|ينبع|القصيم)/);
+    if (locEn) out.location = locEn[0];
+    else if (locAr) out.location = locAr[0];
     var liM = t.match(/(?:linkedin\.com\/in\/|linkedin:\s*)([A-Za-z0-9\-_.]{2,60})/i);
     if (liM) out.linkedin = 'linkedin.com/in/' + liM[1];
 
@@ -3304,17 +3612,19 @@
       name: 'One-Pager Basic',
       sections: [
         { id: 'header', title: 'معلومات شخصية',
-          html: '<p><strong>' + _ph('الاسم الكامل') + '</strong><br>' +
-            _ph('العمر') + ' · ' + _ph('المدينة') + '<br>' +
-            _ph('رقم الجوال') + ' · ' + _ph('البريد الإلكتروني') + '</p>',
-          plain: _phPlain('الاسم الكامل') + '\n' + _phPlain('العمر') + ' · ' + _phPlain('المدينة') + '\n' +
-            _phPlain('رقم الجوال') + ' · ' + _phPlain('البريد الإلكتروني') },
+          // Auto-fill from cvFacts (name/city/phone/email), same as _hdrHtml.
+          // Age stays a placeholder — we never ask for or invent it.
+          html: '<p><strong>' + _hdrField(facts.name, 'الاسم الكامل') + '</strong><br>' +
+            _ph('العمر') + ' · ' + _hdrField(facts.location, 'المدينة') + '<br>' +
+            _hdrField(facts.phone, 'رقم الجوال') + ' · ' + _hdrField(facts.email, 'البريد الإلكتروني') + '</p>',
+          plain: _hdrFieldPlain(facts.name, 'الاسم الكامل') + '\n' + _phPlain('العمر') + ' · ' + _hdrFieldPlain(facts.location, 'المدينة') + '\n' +
+            _hdrFieldPlain(facts.phone, 'رقم الجوال') + ' · ' + _hdrFieldPlain(facts.email, 'البريد الإلكتروني') },
         { id: 'objective', title: 'هدفي',
           html: '<p>أبحث عن وظيفة <strong>' + escapeHtml(dream) + '</strong>. مستعد للالتزام بالدوام وتعلم سريع.</p>',
           plain: 'أبحث عن وظيفة ' + dream + '. مستعد للالتزام بالدوام وتعلم سريع.' },
         { id: 'education', title: 'التعليم',
-          html: '<p>' + _ph('المرحلة الدراسية') + ' · ' + _ph('اسم المدرسة/الجامعة') + ' · ' + _ph('السنة') + '</p>',
-          plain: _phPlain('المرحلة الدراسية') + ' · ' + _phPlain('اسم المدرسة/الجامعة') + ' · ' + _phPlain('السنة') },
+          html: '<p>' + (facts.major ? '<strong>' + escapeHtml(facts.major) + '</strong> · ' : _ph('المرحلة الدراسية') + ' · ') + _ph('اسم المدرسة/الجامعة') + (facts.gradYear ? ' · ' + facts.gradYear : ' · ' + _ph('السنة')) + '</p>',
+          plain: (facts.major || _phPlain('المرحلة الدراسية')) + ' · ' + _phPlain('اسم المدرسة/الجامعة') + ' · ' + (facts.gradYear || _phPlain('السنة')) },
         { id: 'skills', title: 'مهارات حياتية',
           html: '<p>تواصل جيد · العمل ضمن فريق · الالتزام بالوقت · اللباقة مع العملاء · العربية والإنجليزية الأساسية</p>',
           plain: 'تواصل جيد · العمل ضمن فريق · الالتزام بالوقت · اللباقة مع العملاء · العربية والإنجليزية الأساسية' },
