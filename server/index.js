@@ -48,7 +48,16 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ─── Serve frontend ────────────────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, '../public')));
+// V2 is the product. Root "/" serves V2; V1 is archived at "/v1".
+// Registered BEFORE express.static so the static middleware's default
+// index.html (V1) never wins at "/".
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/v2.html'));
+});
+app.get('/v1', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+app.use(express.static(path.join(__dirname, '../public'), { index: false }));
 
 // ─── DB (PostgreSQL) ──────────────────────────────────────────────────────────
 const { Pool } = require('pg');

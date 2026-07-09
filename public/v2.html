@@ -26,7 +26,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="دربي V2 — مساعد المسار المهني السعودي">
-  <title>دربي V2 — معاينة</title>
+  <title>دربي — مساعدك المهني</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -1592,7 +1592,7 @@
       }
       if (_hasReplyOrInterview() && !_interviewStarted()){
         return { key:'interview_prep', title:'ابدأ تدريب المقابلة',
-          why:'وصلك رد أو مقابلة. نحول الوظيفة لجلسة تدريب على ٥ أسئلة قبل اللقاء.', cta:'ابدأ التدريب' };
+          why:'وصلك رد أو مقابلة. نحول الوظيفة لجلسة تدريب على ٦ أسئلة قبل اللقاء.', cta:'ابدأ التدريب' };
       }
       return { key:'follow_up', title:'تابع حالة تقديماتك',
         why:'سجل الردود والرفض والمقابلات عشان دربي يقرأ النمط ويعدّل خطتك.', cta:'افتح تقديماتي' };
@@ -1847,14 +1847,13 @@
   <script>
   /* eslint-disable */
 
-  // ── #/landing — the only real screen in Task 1 ──────────────────────────
+  // ── #/landing — hero + how-it-works. No dev scaffolding. ────────────────
   function renderLanding(app, route){
     app.innerHTML = ''
-      + '<div class="v2-ok-banner">✓ V2 Shell يشتغل — Phase 0 Task 1</div>'
       + '<section class="v2-hero">'
-      +   '<span class="v2-hero-badge">دربي V2 — معاينة مبكّرة</span>'
-      +   '<h1>قدمت ١٠ مرات وما <span class="v2-accent">جاك رد؟</span></h1>'
-      +   '<p>المشكلة مو فيك. المشكلة في الطريق. نشخّص وضعك المهني، نصلح السيرة، ونرتب التقديم خطوة خطوة.</p>'
+      +   '<span class="v2-hero-badge">مساعدك المهني — من التشخيص للتوظيف</span>'
+      +   '<h1>قدمت وما <span class="v2-accent">جاك رد؟</span></h1>'
+      +   '<p>المشكلة مو فيك. المشكلة في الطريق. نشخّص وضعك، نجهّز سيرتك، ونرتّب تقديمك خطوة خطوة.</p>'
       +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(v2JourneyRoute())">ابدأ التشخيص ←</button>'
       +   '<div class="v2-hero-meta">'
       +     '<span>⏱ دقيقة واحدة</span>'
@@ -1863,17 +1862,14 @@
       +   '</div>'
       + '</section>'
       + '<div class="v2-card" style="background:#f8fafc;border-style:dashed">'
-      +   '<div style="font-size:11.5px;font-weight:800;color:#64748b;letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px">حالة المعاينة</div>'
-      +   '<p style="font-size:13px;color:#475569;line-height:1.7">V2 يقرأ نفس حالتك من V1 ('
-      +     'تشخيصك، تقديماتك، رحلتك). '
-      +     'لو سويت تشخيص في V1، تقدر تكمله هنا. '
-      +     'لو ما سويت، اضغط "ابدأ التشخيص" — حالياً نوديك للنسخة V1 من الصفحة لأن شاشة V2 للتشخيص قيد البناء.'
-      +   '</p>'
+      +   '<div style="font-size:11.5px;font-weight:800;color:#64748b;letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px">كيف يشتغل دربي</div>'
+      +   '<div style="font-size:13px;color:#475569;line-height:1.9">'
+      +     '<div>١ · نشخّص وضعك المهني من حلمك + سيرتك</div>'
+      +     '<div>٢ · نجهّز لك سيرة جاهزة تناسب هدفك</div>'
+      +     '<div>٣ · نلقّي لك وظائف ونرتّب تقديمك</div>'
+      +     '<div>٤ · نتابع ردودك ونجهّزك للمقابلة</div>'
+      +   '</div>'
       + '</div>';
-    // Override: since #/dream + #/diagnosis are still placeholders, the
-    // "ابدأ التشخيص" button on the V2 landing routes through DarbiJourney
-    // but the destination renders the honest placeholder. That's fine for
-    // Task 1 — future tasks build the real screens.
   }
 
   // ── Placeholder renderer for routes not built yet ──────────────────────
@@ -2377,7 +2373,7 @@
     }).join('');
     var allDone = done === total;
     app.innerHTML = ''
-      + '<h2 class="v2-h1">٥ أسئلة <span class="v2-accent">سريعة</span></h2>'
+      + '<h2 class="v2-h1">أسئلة <span class="v2-accent">سريعة</span></h2>'
       + '<p class="v2-sub">عشان نعطيك تشخيص دقيق مو عام. جوابك يبقى محلياً على جهازك.</p>'
       + '<div class="v2-quiz-progress">'
       +   '<span>' + done + ' / ' + total + '</span>'
@@ -4258,7 +4254,7 @@
     // fake job cards. NO "جهّز تقديمي" — there's nothing real to prepare for.
     // But DO offer the manual-add CTA so the journey doesn't dead-end.
     app.innerHTML = barHtml
-      + '<div class="v2-jobs-meta">هدفك: <b>' + escapeHtml(dreamRole) + '</b> <span class="v2-jobs-mode-pill is-fallback">fallback</span></div>'
+      + '<div class="v2-jobs-meta">هدفك: <b>' + escapeHtml(dreamRole) + '</b> <span class="v2-jobs-mode-pill is-fallback">بحث يدوي</span></div>'
       + _v2JobsRenderFallback(data.fallback)
       + _v2JobsManualAddCta();
   }
@@ -4821,7 +4817,7 @@
       return {
         cls: 'is-interview',
         h: '🎯 عندك مقابلة! جهّز نفسك',
-        body: 'نوصيك تجلس مع دربي في جلسة تدريب ٥ أسئلة قبل المقابلة. نغطي السؤال الأهم في دورك.',
+        body: 'نوصيك تجلس مع دربي في جلسة تدريب ٦ أسئلة قبل المقابلة. نغطي السؤال الأهم في دورك.',
         cta: 'جهّز للمقابلة ←', ctaRoute: '#/interview',
       };
     }
