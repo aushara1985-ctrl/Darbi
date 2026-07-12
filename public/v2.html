@@ -38,7 +38,8 @@
     html,body{height:100%}
     body{
       font-family:'Cairo',system-ui,-apple-system,sans-serif;
-      background:#fafafe;
+      background:linear-gradient(180deg,#eef2ff 0%,#f5f3ff 220px,#fafafe 560px,#fafafe 100%);
+      background-attachment:fixed;
       color:#0a0a0a;
       line-height:1.6;
       font-size:15px;
@@ -215,6 +216,46 @@
       font-size:12px;color:#475569;margin-top:14px;flex-wrap:wrap;
     }
     .v2-hero-meta span{display:inline-flex;align-items:center;gap:5px}
+
+    /* Landing — richer first impression (fills the screen, mobile + desktop) */
+    .v2-land-h{
+      font-size:12px;font-weight:800;color:#64748b;letter-spacing:.5px;
+      text-transform:uppercase;margin:20px 4px 10px;
+    }
+    .v2-land-steps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+    .v2-land-step{
+      background:#fff;border:1px solid #ececf4;border-radius:13px;padding:14px;
+      display:flex;gap:10px;align-items:flex-start;
+    }
+    .v2-land-step-n{
+      width:26px;height:26px;flex-shrink:0;border-radius:50%;
+      background:#eef2ff;color:#4338ca;font-weight:900;font-size:13px;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .v2-land-step b{display:block;font-size:14px;color:#0a0a0a;margin-bottom:3px}
+    .v2-land-step span{display:block;font-size:12px;color:#64748b;line-height:1.6}
+    .v2-land-for{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .v2-land-for-item{
+      background:#fff;border:1px solid #ececf4;border-radius:11px;
+      padding:12px 14px;font-size:13px;color:#334155;font-weight:600;
+    }
+    .v2-land-cta{
+      background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+      border-radius:16px;padding:24px 20px;text-align:center;
+      margin:22px 0 16px;
+    }
+    .v2-land-cta-h{font-size:18px;font-weight:900;color:#fff;margin-bottom:14px}
+    .v2-land-cta .v2-btn-primary{background:#fff;color:#4338ca}
+    .v2-land-cta .v2-btn-primary:hover{background:#f5f3ff}
+    .v2-land-footer{
+      display:flex;flex-wrap:wrap;gap:16px;justify-content:center;
+      padding:18px 0 8px;border-top:1px solid #ececf4;margin-top:8px;
+    }
+    .v2-land-footer a{font-size:12.5px;color:#64748b;font-weight:700;cursor:pointer}
+    .v2-land-footer a:hover{color:#4f46e5}
+    @media (max-width:520px){
+      .v2-land-steps,.v2-land-for{grid-template-columns:1fr}
+    }
 
     .v2-ok-banner{
       background:#dcfce7;border:1px solid #86efac;color:#166534;
@@ -1861,14 +1902,33 @@
       +     '<span>🚫 بدون اشتراك</span>'
       +   '</div>'
       + '</section>'
-      + '<div class="v2-card" style="background:#f8fafc;border-style:dashed">'
-      +   '<div style="font-size:11.5px;font-weight:800;color:#64748b;letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px">كيف يشتغل دربي</div>'
-      +   '<div style="font-size:13px;color:#475569;line-height:1.9">'
-      +     '<div>١ · نشخّص وضعك المهني من حلمك + سيرتك</div>'
-      +     '<div>٢ · نجهّز لك سيرة جاهزة تناسب هدفك</div>'
-      +     '<div>٣ · نلقّي لك وظائف ونرتّب تقديمك</div>'
-      +     '<div>٤ · نتابع ردودك ونجهّزك للمقابلة</div>'
-      +   '</div>'
+      // How it works — 4 real steps as cards
+      + '<div class="v2-land-h">كيف يشتغل دربي</div>'
+      + '<div class="v2-land-steps">'
+      +   '<div class="v2-land-step"><div class="v2-land-step-n">١</div><div><b>نشخّص وضعك</b><span>من حلمك المهني + سيرتك، نعطيك تشخيص صريح</span></div></div>'
+      +   '<div class="v2-land-step"><div class="v2-land-step-n">٢</div><div><b>نجهّز سيرتك</b><span>سيرة جاهزة تناسب هدفك — من بياناتك، بدون تعبئة</span></div></div>'
+      +   '<div class="v2-land-step"><div class="v2-land-step-n">٣</div><div><b>نلقّي لك وظائف</b><span>ونجهّز لك تقديم كامل لكل وظيفة تختارها</span></div></div>'
+      +   '<div class="v2-land-step"><div class="v2-land-step-n">٤</div><div><b>نتابع ونجهّزك</b><span>نتابع ردودك ونجهّزك للمقابلة خطوة خطوة</span></div></div>'
+      + '</div>'
+      // Who it's for — honest, no fake claims
+      + '<div class="v2-land-h">دربي لك لو</div>'
+      + '<div class="v2-land-for">'
+      +   '<div class="v2-land-for-item">🎓 خريج جديد وما تعرف من وين تبدأ</div>'
+      +   '<div class="v2-land-for-item">🔁 تبي تغيّر مجالك المهني</div>'
+      +   '<div class="v2-land-for-item">📨 قدمت كثير وما جاك رد</div>'
+      +   '<div class="v2-land-for-item">📝 ما عندك سيرة، أو سيرتك قديمة</div>'
+      + '</div>'
+      // Bottom CTA
+      + '<div class="v2-land-cta">'
+      +   '<div class="v2-land-cta-h">جاهز نبدأ؟</div>'
+      +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(v2JourneyRoute())">ابدأ التشخيص — دقيقة واحدة ←</button>'
+      + '</div>'
+      // Footer map — so the user always sees where everything is
+      + '<div class="v2-land-footer">'
+      +   '<a onclick="v2Go(\'#/dashboard\');return false;">لوحتي</a>'
+      +   '<a onclick="v2Go(\'#/jobs\');return false;">الوظائف</a>'
+      +   '<a onclick="v2Go(\'#/tracker\');return false;">تقديماتي</a>'
+      +   '<a onclick="v2Go(\'#/legal\');return false;">الخصوصية والشروط</a>'
       + '</div>';
   }
 
