@@ -3587,6 +3587,7 @@
     // ATS keyword SUGGESTIONS — clearly labelled, never presented as claimed skills.
     if (kw.length) sections.push({ id: 'ats_keywords', title: 'كلمات مفتاحية مقترحة للـ ATS (أضف ما ينطبق عليك)',
       html: '<p style="color:#64748b">' + kw.map(escapeHtml).join(' · ') + '</p>', plain: 'كلمات مفتاحية مقترحة (أضف ما ينطبق عليك): ' + kw.join(' · ') });
+    _pushLangs(sections, facts);
     return { name: 'ATS-Optimized', sections: sections };
   }
 
@@ -3612,7 +3613,13 @@
       plain: 'أضف خبرتك وأبرز إنجازاتك بالأرقام (مثال: زدت المبيعات ٢٠٪).' });
     if (skills.length) sections.push({ id: 'skills', title: 'المهارات', html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>', plain: skills.join(' · ') });
     if (edu) sections.push({ id: 'education', title: 'التعليم', html: edu.html, plain: edu.plain });
+    _pushLangs(sections, facts);
     return { name: 'Achievement-Focused', sections: sections };
+  }
+  // Append a languages section from the user's REAL extracted languages.
+  function _pushLangs(sections, facts){
+    var langs = (facts && facts.languages) || [];
+    if (langs.length) sections.push({ id: 'languages', title: 'اللغات', html: '<p>' + langs.map(escapeHtml).join(' · ') + '</p>', plain: langs.join(' · ') });
   }
 
   function tplExecutiveBrief(diagnosis, facts, draft){
@@ -3647,6 +3654,7 @@
     var execSk = _userSkills(facts);
     if (execSk.length) sections.push({ id: 'skills', title: 'أدوات وكفاءات', html: '<p>' + execSk.map(escapeHtml).join(' · ') + '</p>', plain: execSk.join(' · ') });
     if (edu) sections.push({ id: 'education', title: 'التعليم', html: edu.html, plain: edu.plain });
+    _pushLangs(sections, facts);
     return { name: 'Executive Brief', sections: sections };
   }
 
@@ -3669,6 +3677,7 @@
     if (edu) sections.push({ id: 'education', title: 'التعليم', html: edu.html, plain: edu.plain });
     sections.push({ id: 'skills', title: 'مهارات', html: '<p>' + skillsHtml + '</p>', plain: skillsHtml });
     sections.push({ id: 'availability', title: 'التوفر', html: '<p>جاهز للبدء فوراً، وللعمل بنظام الورديات.</p>', plain: 'جاهز للبدء فوراً، وللعمل بنظام الورديات.' });
+    _pushLangs(sections, facts);
     return { name: 'One-Pager Basic', sections: sections };
   }
 
