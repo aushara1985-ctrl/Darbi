@@ -77,8 +77,16 @@ Then both: 9. real location-relevant jobs → 10. select job → 11. tailored ap
 - Follow-up fix (commit adbc69c): _pushLangs renders the user's real languages in all
   templates (was missing in senior templates = data loss).
 - Re-verified on production myself: gradYear=null for no-edu persona, languages=[Ar,En],
-  education line = "التسويق" (no year), 0 brackets, real companies/skills. Final
-  independent re-verification: pending.
+  education line = "التسويق" (no year), 0 brackets, real companies/skills.
+- 2nd verifier FAILED on browser-CACHE false-negative (senior template languages), but
+  raised 2 real quality bugs: (a) education line DUPLICATED because major regex captured
+  the whole "بكالوريوس محاسبة — جامعة ... · 2023" line (exclusion class missed em-dash
+  U+2014, middot, digits); (b) languages shown transliterated ("Arabic").
+- Fix (commit 5af01f8): major regex stops at —·/digits + strips trailing university words
+  → major="محاسبة", education="محاسبة · جامعة الملك فهد · 2023" (no dup). Language labels
+  now Arabic (العربية/الإنجليزية). Tests 6/6 + 25/25 + 191/191.
+- Cache-bust lesson: CDP browser tabs cache v2.html — always append ?v=<unique> when
+  verifying a fresh deploy, else you test stale code. Final verifier: pending (cache-busted).
 - Do not repeat: never use JS `\b` around Arabic letters (it never fires — bit us 3×: city,
   section headers, language names); never render `_ph()` brackets in the final CV; never
   scrape gradYear/dates from outside their own section.
