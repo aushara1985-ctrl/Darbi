@@ -2466,11 +2466,16 @@
     }
     var retM = t.match(/retention[^\d]{0,30}(\d{1,2})\s*%|increasing\s+(?:client|customer)\s+retention\s+by\s+(\d{1,2})/i);
     if (retM) out.retentionPct = parseInt(retM[1] || retM[2], 10);
-    var majorAr = t.match(/(?:بكالوريوس|ماجستير|دبلوم|دكتوراه)[\s:،,-]+([^\n،,.\-–|]{3,60})/);
-    if (majorAr && majorAr[1]) out.major = majorAr[1].trim().slice(0, 60);
+    // Major capture stops at em-dash — / middot · / digits / university words,
+    // so "بكالوريوس محاسبة — جامعة الملك فهد · 2023" yields "محاسبة", not the
+    // whole line (which duplicated the university+year in education).
+    var MAJOR_STOP = /[^\n،,.\-–—·|0-9]{2,40}/;
+    function _cleanMajor(s){ return (s || '').replace(/\s+(جامعة|كلية|معهد|university|college).*$/i, '').trim().slice(0, 40); }
+    var majorAr = t.match(/(?:بكالوريوس|ماجستير|دبلوم|دكتوراه)[\s:،,-]+([^\n،,.\-–—·|0-9]{2,40})/);
+    if (majorAr && majorAr[1]) out.major = _cleanMajor(majorAr[1]);
     if (!out.major){
-      var majorAr2 = t.match(/(?:تخصص|قسم)[\s:،,-]+([^\n،,.\-–|]{3,60})/);
-      if (majorAr2 && majorAr2[1]) out.major = majorAr2[1].trim().slice(0, 60);
+      var majorAr2 = t.match(/(?:تخصص|قسم)[\s:،,-]+([^\n،,.\-–—·|0-9]{2,40})/);
+      if (majorAr2 && majorAr2[1]) out.major = _cleanMajor(majorAr2[1]);
     }
     if (!out.major){
       var majorEn = t.match(/\b(?:bachelor(?:'s)?|master(?:'s)?|b\.?\s?sc\.?|m\.?\s?sc\.?|b\.?\s?a\.?|degree|major)\b[^a-zA-Z]{0,8}(?:of|in)?\s+([A-Z][A-Za-z &]{2,50})/);
@@ -2516,13 +2521,14 @@
     if (yrsCandidates.length) out.yearsExp = Math.max.apply(null, yrsCandidates.filter(function(n){ return n > 0 && n < 60; }));
     // Arabic alternates use NO \b — JS \b never fires around Arabic letters
     // (so "العربية"/"الإنجليزية" were silently dropped). Latin keeps \b.
+    // Display in Arabic (the CV is Arabic) — العربية, not "Arabic".
     var langDict = [
-      { re: /\barabic\b|عربي|العربية/i,  v: 'Arabic'  },
-      { re: /\benglish\b|انجليزي|إنجليزي|الإنجليزية|الانجليزية/i, v: 'English' },
-      { re: /\bfrench\b|فرنسي|الفرنسية/i, v: 'French'  },
-      { re: /\bgerman\b|deutsch|الماني|ألماني|الألمانية/i, v: 'German' },
-      { re: /\bspanish\b|اسباني|إسباني|الإسبانية/i, v: 'Spanish' },
-      { re: /\burdu\b|اردو|أردو|الأردية/i, v: 'Urdu' },
+      { re: /\barabic\b|عربي|العربية/i,  v: 'العربية'  },
+      { re: /\benglish\b|انجليزي|إنجليزي|الإنجليزية|الانجليزية/i, v: 'الإنجليزية' },
+      { re: /\bfrench\b|فرنسي|الفرنسية/i, v: 'الفرنسية'  },
+      { re: /\bgerman\b|deutsch|الماني|ألماني|الألمانية/i, v: 'الألمانية' },
+      { re: /\bspanish\b|اسباني|إسباني|الإسبانية/i, v: 'الإسبانية' },
+      { re: /\burdu\b|اردو|أردو|الأردية/i, v: 'الأردية' },
     ];
     langDict.forEach(function(d){ if (d.re.test(t)) out.languages.push(d.v); });
     var toolDict = ['Excel','Word','PowerPoint','Outlook','Microsoft 365','Google Workspace','Salesforce','HubSpot','Zoho','SAP','QuickBooks','Tableau','Power BI','Canva','Figma','Photoshop','Illustrator','Adobe XD','Python','SQL','JavaScript','React','Node','Zendesk','Freshdesk','Intercom','Jira','Slack','AutoCAD','Revit'];
