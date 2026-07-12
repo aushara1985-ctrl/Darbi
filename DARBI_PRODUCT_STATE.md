@@ -67,10 +67,21 @@ Then both: 9. real location-relevant jobs → 10. select job → 11. tailored ap
   gender-neutral objective.
 - Test run: inline JS OK; 25/25 no-brackets+real-data (accountant/senior-CS/fresh-mktg);
   191/191 family sweep; 7/7 No-CV round-trip.
-- Result: PASSED locally + PROD browser proof (0 brackets, real companies, no invented skills).
-  Commit 03dea1c live. Screenshot captured. Independent verifier: pending.
-- Do not repeat: never use JS `\b` around Arabic letters (it never fires); never render `_ph()`
-  brackets in the final CV — omit or collect via chip.
+- Result: brackets/real-data PASSED + PROD browser proof. Commit 03dea1c.
+- INDEPENDENT VERIFIER (senior marketing persona, no edu year) FOUND A REAL DEFECT:
+  education showed "التسويق · 2019" — a graduation year fabricated by borrowing a job
+  date. Also languages silently dropped. FAIL on "zero invented dates".
+- Follow-up fix (commit 14a91ba): gradYear now extracted ONLY from lines with an
+  education signal (بكالوريوس/جامعة/degree/graduat/…) — never from job dates. Fixed the
+  same Arabic-\b bug in language detection (العربية/الإنجليزية were dropped).
+- Follow-up fix (commit adbc69c): _pushLangs renders the user's real languages in all
+  templates (was missing in senior templates = data loss).
+- Re-verified on production myself: gradYear=null for no-edu persona, languages=[Ar,En],
+  education line = "التسويق" (no year), 0 brackets, real companies/skills. Final
+  independent re-verification: pending.
+- Do not repeat: never use JS `\b` around Arabic letters (it never fires — bit us 3×: city,
+  section headers, language names); never render `_ph()` brackets in the final CV; never
+  scrape gradYear/dates from outside their own section.
 
 ## Protected Decisions
 
