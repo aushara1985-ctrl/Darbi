@@ -2547,6 +2547,57 @@
       if (/\bsupervisor|manager|head of|director|lead\b/i.test(t)) hits++;
       return hits >= 1;
     })();
+
+    // ── University (real, for education section — no invented name) ─────────
+    var uniM = t.match(/(?:جامعة|كلية|معهد)\s+[^\n،,·|]{2,40}/) || t.match(/\b(?:University|College|Institute)\s+of\s+[A-Za-z ]{2,40}/i) || t.match(/[A-Za-z ]{2,40}\s+(?:University|College|Institute)\b/);
+    if (uniM) out.university = uniM[0].trim().slice(0, 50);
+
+    // ── Real skills line (what the USER wrote, not family defaults) ─────────
+    // Capture the content after a "skills/المهارات/الأدوات" label so free-text
+    // skills like "إعداد ميزانيات" survive (toolDict only catches known tools).
+    var skillsLine = t.match(/(?:المهارات(?:\s*والأدوات)?|skills|الكفاءات|core competencies)\s*[:：]?\s*([^\n]{3,200})/i);
+    out.skillsRaw = [];
+    if (skillsLine && skillsLine[1]) {
+      out.skillsRaw = skillsLine[1].split(/[·،,|]+/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length >= 2 && s.length <= 40; }).slice(0, 12);
+    }
+
+    // ── Real work experience + projects (verbatim, never invented) ─────────
+    // Parse the "الخبرة/experience" and "مشاريع/projects" blocks into entries.
+    // We keep header lines VERBATIM (the user's own words) + their bullets, so
+    // no employer/date/achievement is ever fabricated. A line is a "header" if
+    // it carries a date/year or a role—company separator; bullet lines start
+    // with a bullet glyph. A bare "خبرة N سنوات" line is skipped.
+    (function(){
+      out.experience = [];
+      out.projectLines = [];
+      var lines = t.split(/\r?\n/).map(function(l){ return l.trim(); });
+      // NOTE: no trailing \b — JS \b is a Latin word boundary and never fires
+      // after an Arabic letter (e.g. "الخبرة:"), so we use an explicit lookahead.
+      var SECTION = /^(الخبرة|الخبرات|الخبرة العملية|experience|work experience|employment|مشاريع|المشاريع|projects|التدريب|internship)(?=[\s:：،.]|$)/i;
+      var STOP = /^(التعليم|education|المهارات|skills|اللغات|languages|الشهادات|certifications|الدورات|courses|أدوات|tools|الهدف|objective|summary|الملخص)(?=[\s:：،.]|$)/i;
+      var BULLET = /^[•●▪◦*\-–]\s*/;
+      var DATEISH = /\b(19|20)\d{2}\b|present|current|حالي|الآن|صيف|شتاء|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|يناير|فبراير|مارس|ابريل|مايو|يونيو|يوليو|اغسطس|سبتمبر|اكتوبر|نوفمبر|ديسمبر/i;
+      var SEP = /\s[—–\-]\s|،\s|,\s|\bat\b|\sفي\s/;
+      var i = 0, mode = null, curEntry = null;
+      function pushEntry(){ if (curEntry && (curEntry.header || curEntry.bullets.length)) { (mode === 'projects' ? out.projectLines : null); if (mode === 'projects') { if (curEntry.header) out.projectLines.push(curEntry.header); curEntry.bullets.forEach(function(b){ out.projectLines.push(b); }); } else { out.experience.push(curEntry); } } curEntry = null; }
+      for (i = 0; i < lines.length; i++) {
+        var ln = lines[i];
+        if (!ln) continue;
+        if (SECTION.test(ln)) { pushEntry(); mode = /مشاريع|المشاريع|projects|التدريب|internship/i.test(ln) ? 'projects' : 'exp'; continue; }
+        if (mode && STOP.test(ln)) { pushEntry(); mode = null; continue; }
+        if (!mode) continue;
+        if (/^(خبرة|experience)\s*\d{1,2}\s*(سنوات|سنه|سنين|years?)/i.test(ln)) continue; // bare years line
+        if (BULLET.test(ln)) { if (!curEntry) curEntry = { header: '', bullets: [] }; curEntry.bullets.push(ln.replace(BULLET, '').trim()); continue; }
+        // Non-bullet line: a new header if it looks like a job/project header.
+        if (DATEISH.test(ln) || SEP.test(ln) || mode === 'projects') { pushEntry(); curEntry = { header: ln, bullets: [] }; }
+        else if (curEntry) { curEntry.bullets.push(ln); } // continuation
+        else { curEntry = { header: ln, bullets: [] }; }
+      }
+      pushEntry();
+      out.experience = out.experience.slice(0, 5);
+      out.projectLines = out.projectLines.slice(0, 6);
+    })();
+
     return out;
   }
 
@@ -3401,6 +3452,50 @@
     famSkills.forEach(function(s){ if (merged.indexOf(s) === -1 && merged.length < 10) merged.push(s); });
     return merged;
   }
+  // ── Real-data renderers (done-for-you CV). NEVER emit [brackets], never
+  // invent employers/dates/achievements/skills. Missing data is collected by
+  // the cv-output chips, not shown as placeholders in the final CV. ─────────
+  // The user's OWN skills only (extracted tools + free-text skills line).
+  function _userSkills(facts){
+    var out = [];
+    (facts && facts.tools || []).forEach(function(s){ if (out.indexOf(s) === -1) out.push(s); });
+    (facts && facts.skillsRaw || []).forEach(function(s){ if (out.indexOf(s) === -1) out.push(s); });
+    return out;
+  }
+  // Family keywords OFFERED as ATS suggestions — labelled, never claimed.
+  function _atsKeywords(diagnosis){
+    var fam = _famKey(diagnosis);
+    return (V2_FAMILY_SKILLS[fam] || []).slice(0, 10);
+  }
+  // Real experience: verbatim headers + bullets. null if none extracted.
+  function _realExp(facts){
+    var exp = (facts && facts.experience) || [];
+    if (!exp.length) return null;
+    var html = exp.map(function(e){
+      return (e.header ? '<p><strong>' + escapeHtml(e.header) + '</strong></p>' : '')
+        + (e.bullets && e.bullets.length ? '<ul>' + e.bullets.map(function(x){ return '<li>' + escapeHtml(x) + '</li>'; }).join('') + '</ul>' : '');
+    }).join('');
+    var plain = exp.map(function(e){
+      return (e.header || '') + (e.bullets && e.bullets.length ? '\n' + e.bullets.map(function(x){ return '• ' + x; }).join('\n') : '');
+    }).join('\n\n');
+    return { html: html, plain: plain };
+  }
+  function _realProj(facts){
+    var pl = (facts && facts.projectLines) || [];
+    if (!pl.length) return null;
+    return { html: '<ul>' + pl.map(function(x){ return '<li>' + escapeHtml(x) + '</li>'; }).join('') + '</ul>',
+             plain: pl.map(function(x){ return '• ' + x; }).join('\n') };
+  }
+  // Education from real facts only — omit unknown fields, no brackets.
+  function _realEdu(facts){
+    var parts = [];
+    if (facts && facts.major)      parts.push('<strong>' + escapeHtml(facts.major) + '</strong>');
+    if (facts && facts.university) parts.push(escapeHtml(facts.university));
+    if (facts && facts.gradYear)   parts.push(String(facts.gradYear));
+    if (!parts.length) return null;
+    return { html: '<p>' + parts.join(' · ') + '</p>',
+             plain: [facts.major, facts.university, facts.gradYear].filter(Boolean).join(' · ') };
+  }
 
   // ── Common header — uses CV-extracted facts when available, falls back
   // to placeholders only for fields we couldn't extract. Stops the "اغبى
@@ -3411,19 +3506,22 @@
   function _hdrFieldPlain(value, placeholderLabel){
     return value ? value : _phPlain(placeholderLabel);
   }
+  // Header omits fields we don't have — no [brackets] in the final CV. The
+  // cv-output chips collect anything missing before the user copies.
   function _hdrHtml(diagnosis){
-    var dream = (diagnosis && diagnosis.dreamRole) || _phPlain('المسمى المستهدف');
+    var dream = (diagnosis && diagnosis.dreamRole) || '';
     var f = (diagnosis && diagnosis.cvFacts) || {};
-    return ''
-      + '<p><strong>' + _hdrField(f.name, 'الاسم الكامل') + '</strong><br>'
-      + escapeHtml(dream) + ' &nbsp;·&nbsp; ' + _hdrField(f.location, 'المدينة') + '<br>'
-      + _hdrField(f.phone, 'رقم الجوال') + ' &nbsp;·&nbsp; ' + _hdrField(f.email, 'البريد الإلكتروني') + ' &nbsp;·&nbsp; ' + _hdrField(f.linkedin, 'LinkedIn') + '</p>';
+    var name  = f.name ? escapeHtml(f.name) : 'اسمك';
+    var line2 = [dream, f.location].filter(Boolean).map(escapeHtml).join(' &nbsp;·&nbsp; ');
+    var line3 = [f.phone, f.email, f.linkedin].filter(Boolean).map(escapeHtml).join(' &nbsp;·&nbsp; ');
+    return '<p><strong>' + name + '</strong>' + (line2 ? '<br>' + line2 : '') + (line3 ? '<br>' + line3 : '') + '</p>';
   }
   function _hdrPlain(diagnosis){
-    var dream = (diagnosis && diagnosis.dreamRole) || _phPlain('المسمى المستهدف');
+    var dream = (diagnosis && diagnosis.dreamRole) || '';
     var f = (diagnosis && diagnosis.cvFacts) || {};
-    return _hdrFieldPlain(f.name, 'الاسم الكامل') + '\n' + dream + ' · ' + _hdrFieldPlain(f.location, 'المدينة') + '\n' +
-      _hdrFieldPlain(f.phone, 'رقم الجوال') + ' · ' + _hdrFieldPlain(f.email, 'البريد الإلكتروني') + ' · ' + _hdrFieldPlain(f.linkedin, 'LinkedIn');
+    return [ (f.name || 'اسمك'),
+             [dream, f.location].filter(Boolean).join(' · '),
+             [f.phone, f.email, f.linkedin].filter(Boolean).join(' · ') ].filter(Boolean).join('\n');
   }
 
   // ──────────────────────────────────────────────────────────────────────
@@ -3431,122 +3529,80 @@
   // ──────────────────────────────────────────────────────────────────────
 
   function tplFreshGraduate(diagnosis, facts, draft){
-    var dream = (diagnosis && diagnosis.dreamRole) || '[المسمى]';
-    var major = facts.major || _phPlain('التخصص');
-    var grad  = facts.gradYear || _phPlain('سنة التخرج');
-    var langs = (facts.languages && facts.languages.length) ? facts.languages : ['Arabic','English'];
-    var tools = (facts.tools && facts.tools.length) ? facts.tools : null;
-    var famKey = _famKey(diagnosis);
-    var skills = _famSkills(diagnosis, facts);
+    var dream = (diagnosis && diagnosis.dreamRole) || 'الدور المستهدف';
+    var major = facts.major || '';
+    var langs = (facts.languages && facts.languages.length) ? facts.languages : [];
+    var skills = _userSkills(facts);
+    var edu = _realEdu(facts);
+    var exp = _realExp(facts);
+    var proj = _realProj(facts);
+    var objMajor = major ? ('خلفية في ' + major + (facts.gradYear ? ' (' + facts.gradYear + ')' : '')) : 'بداية مسيرة مهنية';
 
-    return {
-      name: 'Fresh Graduate',
-      sections: [
-        { id: 'header', title: 'الترويسة',
-          html: _hdrHtml(diagnosis),
-          plain: _hdrPlain(diagnosis) },
-        { id: 'objective', title: 'الهدف المهني',
-          html: '<p>خريج/خريجة ' + escapeHtml(major) + (facts.gradYear ? ' (' + facts.gradYear + ')' : '') +
-            ' أبحث عن دور <strong>' + escapeHtml(dream) + '</strong> أبدأ فيه مسيرتي المهنية. حماس عالي للتعلم السريع والمساهمة من اليوم الأول.</p>',
-          plain: 'خريج/خريجة ' + major + (facts.gradYear ? ' (' + facts.gradYear + ')' : '') +
-            ' أبحث عن دور ' + dream + ' أبدأ فيه مسيرتي المهنية. حماس عالي للتعلم السريع والمساهمة من اليوم الأول.' },
-        { id: 'education', title: 'التعليم',
-          html: '<p><strong>' + _ph('اسم الجامعة') + '</strong> · ' + escapeHtml(major) + ' · ' + escapeHtml(String(grad)) + '<br>' +
-            _ph('المعدل التراكمي إن أحببت إضافته') + '</p>',
-          plain: _phPlain('اسم الجامعة') + ' · ' + major + ' · ' + grad + '\n' + _phPlain('المعدل التراكمي إن أحببت إضافته') },
-        { id: 'projects', title: 'مشاريع / تدريب',
-          html: _list([
-            'مشروع/تدريب ' + _ph('عنوان المشروع') + ' — ' + _ph('وصف موجز للنتيجة'),
-            'مشروع/تدريب ' + _ph('عنوان المشروع') + ' — ' + _ph('وصف موجز للنتيجة'),
-            (facts.projectsEvidence ? 'مشاريع جامعية إضافية متعلقة بـ ' + escapeHtml((DREAM_ROLE_LIBRARY[famKey]||{}).familyAr || dream) : 'تطوع/نشاط طلابي ذو علاقة بالمجال — ' + _ph('وصف موجز')),
-          ], function(x){ return '<li>' + x + '</li>'; }),
-          plain: _listPlain([
-            'مشروع/تدريب ' + _phPlain('عنوان المشروع') + ' — ' + _phPlain('وصف موجز للنتيجة'),
-            'مشروع/تدريب ' + _phPlain('عنوان المشروع') + ' — ' + _phPlain('وصف موجز للنتيجة'),
-            (facts.projectsEvidence ? 'مشاريع جامعية إضافية متعلقة بالمجال' : 'تطوع/نشاط طلابي ذو علاقة بالمجال — ' + _phPlain('وصف موجز')),
-          ]) },
-        { id: 'skills', title: 'مهارات',
-          html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>',
-          plain: skills.join(' · ') },
-        { id: 'languages', title: 'اللغات',
-          html: '<p>' + langs.map(escapeHtml).join(' · ') + '</p>',
-          plain: langs.join(' · ') },
-        (tools ? { id: 'tools', title: 'أدوات',
-          html: '<p>' + tools.map(escapeHtml).join(' · ') + '</p>',
-          plain: tools.join(' · ') } : null),
-      ].filter(Boolean),
-    };
+    var sections = [
+      { id: 'header', title: 'الترويسة', html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
+      { id: 'objective', title: 'الهدف المهني',
+        html: '<p>' + escapeHtml(objMajor) + ' أبحث عن دور <strong>' + escapeHtml(dream) + '</strong> أبدأ فيه مسيرتي المهنية. لديّ استعداد للتعلم السريع والمساهمة من اليوم الأول.</p>',
+        plain: objMajor + ' أبحث عن دور ' + dream + ' أبدأ فيه مسيرتي المهنية. لديّ استعداد للتعلم السريع والمساهمة من اليوم الأول.' },
+    ];
+    if (edu)  sections.push({ id: 'education', title: 'التعليم', html: edu.html, plain: edu.plain });
+    if (exp)  sections.push({ id: 'experience', title: 'الخبرة / التدريب', html: exp.html, plain: exp.plain });
+    if (proj) sections.push({ id: 'projects', title: 'مشاريع', html: proj.html, plain: proj.plain });
+    if (skills.length) sections.push({ id: 'skills', title: 'المهارات', html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>', plain: skills.join(' · ') });
+    if (langs.length)  sections.push({ id: 'languages', title: 'اللغات', html: '<p>' + langs.map(escapeHtml).join(' · ') + '</p>', plain: langs.join(' · ') });
+    return { name: 'Fresh Graduate', sections: sections };
   }
 
   function tplAtsOptimized(diagnosis, facts, draft){
-    var dream = (diagnosis && diagnosis.dreamRole) || '[المسمى]';
+    var dream = (diagnosis && diagnosis.dreamRole) || 'الدور المستهدف';
     var fam = _famKey(diagnosis);
     var famAr = (DREAM_ROLE_LIBRARY[fam] || {}).familyAr || 'المجال';
     var yrs = facts.yearsExp;
-    var skills = _famSkills(diagnosis, facts);
-    var bullets = _famBullets(diagnosis, facts);
+    var skills = _userSkills(facts);
+    var kw = _atsKeywords(diagnosis);
+    var exp = _realExp(facts);
+    var edu = _realEdu(facts);
     var summaryLine1 = (yrs ? yrs + ' سنوات خبرة في ' : 'خبرة في ') + famAr;
-    var summaryLine2 = facts.latestTitle ? ('كآخر دور: ' + facts.latestTitle) : 'أبحث عن دور ' + dream;
-    var summaryLine3 = 'أركز على نتائج قابلة للقياس وتحسين العمليات.';
-    return {
-      name: 'ATS-Optimized',
-      sections: [
-        { id: 'header', title: 'الترويسة',
-          html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
-        { id: 'summary', title: 'الملخص المهني',
-          html: '<p>' + escapeHtml(summaryLine1) + '. ' + escapeHtml(summaryLine2) + '. ' + escapeHtml(summaryLine3) + '</p>',
-          plain: summaryLine1 + '. ' + summaryLine2 + '. ' + summaryLine3 },
-        { id: 'skills', title: 'مهارات / كلمات مفتاحية',
-          html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>',
-          plain: skills.join(' · ') },
-        { id: 'experience', title: 'الخبرة',
-          html: '<p><strong>' + _ph('المسمى الوظيفي') + '</strong> — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى') + '</p>' +
-            _list(bullets, function(b){ return '<li>' + escapeHtml(b) + '</li>'; }),
-          plain: _phPlain('المسمى الوظيفي') + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى') + '\n' + _listPlain(bullets) },
-        { id: 'education', title: 'التعليم',
-          html: '<p>' + (facts.major ? '<strong>' + escapeHtml(facts.major) + '</strong> · ' : '<strong>' + _ph('التخصص') + '</strong> · ') +
-            (facts.gradYear ? facts.gradYear + ' · ' : '') + _ph('اسم الجامعة') + '</p>',
-          plain: (facts.major || _phPlain('التخصص')) + ' · ' + (facts.gradYear || '') + ' · ' + _phPlain('اسم الجامعة') },
-      ],
-    };
+    var summaryLine2 = facts.latestTitle ? ('آخر دور: ' + facts.latestTitle) : 'أبحث عن دور ' + dream;
+    var summaryLine3 = 'أركز على نتائج قابلة للقياس.';
+
+    var sections = [
+      { id: 'header', title: 'الترويسة', html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
+      { id: 'summary', title: 'الملخص المهني',
+        html: '<p>' + escapeHtml(summaryLine1) + '. ' + escapeHtml(summaryLine2) + '. ' + escapeHtml(summaryLine3) + '</p>',
+        plain: summaryLine1 + '. ' + summaryLine2 + '. ' + summaryLine3 },
+    ];
+    if (skills.length) sections.push({ id: 'skills', title: 'المهارات', html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>', plain: skills.join(' · ') });
+    if (exp) sections.push({ id: 'experience', title: 'الخبرة', html: exp.html, plain: exp.plain });
+    if (edu) sections.push({ id: 'education', title: 'التعليم', html: edu.html, plain: edu.plain });
+    // ATS keyword SUGGESTIONS — clearly labelled, never presented as claimed skills.
+    if (kw.length) sections.push({ id: 'ats_keywords', title: 'كلمات مفتاحية مقترحة للـ ATS (أضف ما ينطبق عليك)',
+      html: '<p style="color:#64748b">' + kw.map(escapeHtml).join(' · ') + '</p>', plain: 'كلمات مفتاحية مقترحة (أضف ما ينطبق عليك): ' + kw.join(' · ') });
+    return { name: 'ATS-Optimized', sections: sections };
   }
 
   function tplAchievementFocused(diagnosis, facts, draft){
-    var dream = (diagnosis && diagnosis.dreamRole) || '[المسمى]';
+    var dream = (diagnosis && diagnosis.dreamRole) || 'الدور المستهدف';
     var yrs = facts.yearsExp;
-    var skills = _famSkills(diagnosis, facts);
-    var bullets = _famBullets(diagnosis, facts);
+    var skills = _userSkills(facts);
+    var exp = _realExp(facts);
+    var edu = _realEdu(facts);
     var headline = (yrs ? yrs + ' سنوات في ' : '') + (facts.latestTitle ? facts.latestTitle : dream);
-    return {
-      name: 'Achievement-Focused',
-      sections: [
-        { id: 'header', title: 'الترويسة',
-          html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
-        { id: 'headline', title: 'العنوان',
-          html: '<p><strong>' + escapeHtml(headline) + '</strong> — أبحث عن دور ' + escapeHtml(dream) + '</p>',
-          plain: headline + ' — أبحث عن دور ' + dream },
-        { id: 'top_results', title: 'أعلى ٤ نتائج',
-          html: _list([
-            'نتيجة ' + _ph('الرقم') + ' — ' + (bullets[0] || _phPlain('وصف الإنجاز')),
-            'نتيجة ' + _ph('الرقم') + ' — ' + (bullets[1] || _phPlain('وصف الإنجاز')),
-            'نتيجة ' + _ph('الرقم') + ' — ' + (bullets[2] || _phPlain('وصف الإنجاز')),
-            'نتيجة ' + _ph('الرقم') + ' — ' + (bullets[3] || _phPlain('وصف الإنجاز')),
-          ], function(x){ return '<li>' + x + '</li>'; }),
-          plain: _listPlain([
-            _phPlain('الرقم') + ' — ' + (bullets[0] || _phPlain('وصف الإنجاز')),
-            _phPlain('الرقم') + ' — ' + (bullets[1] || _phPlain('وصف الإنجاز')),
-            _phPlain('الرقم') + ' — ' + (bullets[2] || _phPlain('وصف الإنجاز')),
-            _phPlain('الرقم') + ' — ' + (bullets[3] || _phPlain('وصف الإنجاز')),
-          ]) },
-        { id: 'experience', title: 'الخبرة',
-          html: '<p><strong>' + (facts.latestTitle || _ph('المسمى الوظيفي')) + '</strong> — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى') + '</p>' +
-            _list(bullets, function(b){ return '<li>' + escapeHtml(b) + '</li>'; }),
-          plain: (facts.latestTitle || _phPlain('المسمى الوظيفي')) + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى') + '\n' + _listPlain(bullets) },
-        { id: 'skills', title: 'مهارات',
-          html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>',
-          plain: skills.join(' · ') },
-      ],
-    };
+
+    var sections = [
+      { id: 'header', title: 'الترويسة', html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
+      { id: 'headline', title: 'العنوان',
+        html: '<p><strong>' + escapeHtml(headline) + '</strong> — أبحث عن دور ' + escapeHtml(dream) + '</p>',
+        plain: headline + ' — أبحث عن دور ' + dream },
+    ];
+    // Real experience (with the user's own achievement bullets). No invented
+    // "نتيجة [الرقم]" rows — the honesty line tells the user to add numbers.
+    if (exp) sections.push({ id: 'experience', title: 'الخبرة والإنجازات', html: exp.html, plain: exp.plain });
+    else sections.push({ id: 'experience', title: 'الخبرة والإنجازات',
+      html: '<p style="color:#64748b">أضف خبرتك وأبرز إنجازاتك بالأرقام (مثال: زدت المبيعات ٢٠٪).</p>',
+      plain: 'أضف خبرتك وأبرز إنجازاتك بالأرقام (مثال: زدت المبيعات ٢٠٪).' });
+    if (skills.length) sections.push({ id: 'skills', title: 'المهارات', html: '<p>' + skills.map(escapeHtml).join(' · ') + '</p>', plain: skills.join(' · ') });
+    if (edu) sections.push({ id: 'education', title: 'التعليم', html: edu.html, plain: edu.plain });
+    return { name: 'Achievement-Focused', sections: sections };
   }
 
   function tplExecutiveBrief(diagnosis, facts, draft){
@@ -3558,77 +3614,52 @@
     var arrText = facts.arrAmount ? (facts.arrAmount + 'M+ SAR ARR') : null;
     var summary = (yrs ? yrs + ' سنوات في ' : '') + 'القيادة التنفيذية' +
       (arrText ? ' — إدارة محفظة ' + arrText : '') + '. أركز على نتائج قابلة للقياس: نمو ARR، احتفاظ، توسع، وأداء فريق.';
-    var hasArr = !!arrText;
-    return {
-      name: 'Executive Brief',
-      sections: [
-        { id: 'header', title: 'الترويسة',
-          html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
-        { id: 'exec_summary', title: 'موجز تنفيذي',
-          html: '<p>' + escapeHtml(summary) + ' أبحث عن دور <strong>' + escapeHtml(dream) + '</strong>.</p>',
-          plain: summary + ' أبحث عن دور ' + dream + '.' },
-        { id: 'scope', title: 'النطاق',
-          html: '<p>' +
-            '<strong>الفريق:</strong> ' + (hasArr ? _ph('عدد التقارير المباشرة') : _ph('حجم الفريق')) + ' · ' +
-            '<strong>الميزانية/الإيرادات:</strong> ' + (arrText ? escapeHtml(arrText) : _ph('ARR / الميزانية')) + ' · ' +
-            '<strong>المنطقة:</strong> ' + _ph('السعودية / الخليج / MENA') +
-            '</p>',
-          plain: 'الفريق: ' + (hasArr ? _phPlain('عدد التقارير المباشرة') : _phPlain('حجم الفريق')) +
-            ' · الميزانية/الإيرادات: ' + (arrText || _phPlain('ARR / الميزانية')) +
-            ' · المنطقة: ' + _phPlain('السعودية / الخليج / MENA') },
-        { id: 'top_results', title: 'أعلى ٣ نتائج تنفيذية',
-          html: _list([
-            'حسّنت ' + _ph('المؤشر مثل NRR/GRR') + ' من ' + _ph('قبل %') + ' إلى ' + _ph('بعد %'),
-            'قُدت ' + _ph('المبادرة الاستراتيجية') + ' حققت ' + _ph('النتيجة بالأرقام'),
-            'بنيت ' + _ph('الفريق / النظام / الـ playbook') + ' أدى إلى ' + _ph('النتيجة'),
-          ], function(x){ return '<li>' + x + '</li>'; }),
-          plain: _listPlain([
-            'حسّنت ' + _phPlain('المؤشر مثل NRR/GRR') + ' من ' + _phPlain('قبل %') + ' إلى ' + _phPlain('بعد %'),
-            'قُدت ' + _phPlain('المبادرة الاستراتيجية') + ' حققت ' + _phPlain('النتيجة بالأرقام'),
-            'بنيت ' + _phPlain('الفريق / النظام / الـ playbook') + ' أدى إلى ' + _phPlain('النتيجة'),
-          ]) },
-        { id: 'career_timeline', title: 'خط مسيرة',
-          html: _list([
-            (facts.latestTitle || _phPlain('آخر دور')) + ' — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى'),
-            _phPlain('دور سابق') + ' — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى'),
-            _phPlain('بداية المسار') + ' — ' + _ph('اسم الشركة') + ' · ' + _ph('من-إلى'),
-          ], function(x){ return '<li>' + x + '</li>'; }),
-          plain: _listPlain([
-            (facts.latestTitle || _phPlain('آخر دور')) + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى'),
-            _phPlain('دور سابق') + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى'),
-            _phPlain('بداية المسار') + ' — ' + _phPlain('اسم الشركة') + ' · ' + _phPlain('من-إلى'),
-          ]) },
-      ],
-    };
+    var exp = _realExp(facts);
+    var edu = _realEdu(facts);
+    // Scope shows only real, known figures — omit unknown (no brackets).
+    var scopeParts = [];
+    if (arrText) scopeParts.push('<strong>الميزانية/الإيرادات:</strong> ' + escapeHtml(arrText));
+    if (facts.retentionPct) scopeParts.push('<strong>الاحتفاظ:</strong> ' + facts.retentionPct + '٪');
+    var scopePlain = [ (arrText ? 'الميزانية/الإيرادات: ' + arrText : ''), (facts.retentionPct ? 'الاحتفاظ: ' + facts.retentionPct + '٪' : '') ].filter(Boolean).join(' · ');
+
+    var sections = [
+      { id: 'header', title: 'الترويسة', html: _hdrHtml(diagnosis), plain: _hdrPlain(diagnosis) },
+      { id: 'exec_summary', title: 'موجز تنفيذي',
+        html: '<p>' + escapeHtml(summary) + ' أبحث عن دور <strong>' + escapeHtml(dream) + '</strong>.</p>',
+        plain: summary + ' أبحث عن دور ' + dream + '.' },
+    ];
+    if (scopeParts.length) sections.push({ id: 'scope', title: 'النطاق', html: '<p>' + scopeParts.join(' · ') + '</p>', plain: scopePlain });
+    // Real experience/timeline from the user's CV — never invented roles.
+    if (exp) sections.push({ id: 'experience', title: 'الخبرة القيادية', html: exp.html, plain: exp.plain });
+    else sections.push({ id: 'experience', title: 'الخبرة القيادية',
+      html: '<p style="color:#64748b">أضف أدوارك القيادية بالترتيب مع أبرز نتيجة لكل دور (ARR، احتفاظ، حجم فريق).</p>',
+      plain: 'أضف أدوارك القيادية بالترتيب مع أبرز نتيجة لكل دور (ARR، احتفاظ، حجم فريق).' });
+    var execSk = _userSkills(facts);
+    if (execSk.length) sections.push({ id: 'skills', title: 'أدوات وكفاءات', html: '<p>' + execSk.map(escapeHtml).join(' · ') + '</p>', plain: execSk.join(' · ') });
+    if (edu) sections.push({ id: 'education', title: 'التعليم', html: edu.html, plain: edu.plain });
+    return { name: 'Executive Brief', sections: sections };
   }
 
   function tplOnePagerBasic(diagnosis, facts, draft){
-    var dream = (diagnosis && diagnosis.dreamRole) || _phPlain('الوظيفة المرغوبة');
-    return {
-      name: 'One-Pager Basic',
-      sections: [
-        { id: 'header', title: 'معلومات شخصية',
-          // Auto-fill from cvFacts (name/city/phone/email), same as _hdrHtml.
-          // Age stays a placeholder — we never ask for or invent it.
-          html: '<p><strong>' + _hdrField(facts.name, 'الاسم الكامل') + '</strong><br>' +
-            _ph('العمر') + ' · ' + _hdrField(facts.location, 'المدينة') + '<br>' +
-            _hdrField(facts.phone, 'رقم الجوال') + ' · ' + _hdrField(facts.email, 'البريد الإلكتروني') + '</p>',
-          plain: _hdrFieldPlain(facts.name, 'الاسم الكامل') + '\n' + _phPlain('العمر') + ' · ' + _hdrFieldPlain(facts.location, 'المدينة') + '\n' +
-            _hdrFieldPlain(facts.phone, 'رقم الجوال') + ' · ' + _hdrFieldPlain(facts.email, 'البريد الإلكتروني') },
-        { id: 'objective', title: 'هدفي',
-          html: '<p>أبحث عن وظيفة <strong>' + escapeHtml(dream) + '</strong>. مستعد للالتزام بالدوام وتعلم سريع.</p>',
-          plain: 'أبحث عن وظيفة ' + dream + '. مستعد للالتزام بالدوام وتعلم سريع.' },
-        { id: 'education', title: 'التعليم',
-          html: '<p>' + (facts.major ? '<strong>' + escapeHtml(facts.major) + '</strong> · ' : _ph('المرحلة الدراسية') + ' · ') + _ph('اسم المدرسة/الجامعة') + (facts.gradYear ? ' · ' + facts.gradYear : ' · ' + _ph('السنة')) + '</p>',
-          plain: (facts.major || _phPlain('المرحلة الدراسية')) + ' · ' + _phPlain('اسم المدرسة/الجامعة') + ' · ' + (facts.gradYear || _phPlain('السنة')) },
-        { id: 'skills', title: 'مهارات حياتية',
-          html: '<p>تواصل جيد · العمل ضمن فريق · الالتزام بالوقت · اللباقة مع العملاء · العربية والإنجليزية الأساسية</p>',
-          plain: 'تواصل جيد · العمل ضمن فريق · الالتزام بالوقت · اللباقة مع العملاء · العربية والإنجليزية الأساسية' },
-        { id: 'availability', title: 'التوفر',
-          html: '<p>متاح/متاحة للبدء من ' + _ph('التاريخ') + '. مستعد/مستعدة للورديات.</p>',
-          plain: 'متاح/متاحة للبدء من ' + _phPlain('التاريخ') + '. مستعد/مستعدة للورديات.' },
-      ],
-    };
+    var dream = (diagnosis && diagnosis.dreamRole) || 'الوظيفة المرغوبة';
+    var edu = _realEdu(facts);
+    var userSk = _userSkills(facts);
+    var skillsHtml = userSk.length ? userSk.map(escapeHtml).join(' · ')
+      : 'تواصل جيد · العمل ضمن فريق · الالتزام بالوقت · اللباقة مع العملاء';
+    // Contact line: only present fields, no brackets.
+    var contact = [facts.location, facts.phone, facts.email].filter(Boolean).map(escapeHtml).join(' · ');
+    var sections = [
+      { id: 'header', title: 'معلومات شخصية',
+        html: '<p><strong>' + (facts.name ? escapeHtml(facts.name) : 'اسمك') + '</strong>' + (contact ? '<br>' + contact : '') + '</p>',
+        plain: (facts.name || 'اسمك') + (contact ? '\n' + [facts.location, facts.phone, facts.email].filter(Boolean).join(' · ') : '') },
+      { id: 'objective', title: 'هدفي',
+        html: '<p>أبحث عن وظيفة <strong>' + escapeHtml(dream) + '</strong>. لديّ استعداد للالتزام بالدوام والتعلم السريع.</p>',
+        plain: 'أبحث عن وظيفة ' + dream + '. لديّ استعداد للالتزام بالدوام والتعلم السريع.' },
+    ];
+    if (edu) sections.push({ id: 'education', title: 'التعليم', html: edu.html, plain: edu.plain });
+    sections.push({ id: 'skills', title: 'مهارات', html: '<p>' + skillsHtml + '</p>', plain: skillsHtml });
+    sections.push({ id: 'availability', title: 'التوفر', html: '<p>جاهز للبدء فوراً، وللعمل بنظام الورديات.</p>', plain: 'جاهز للبدء فوراً، وللعمل بنظام الورديات.' });
+    return { name: 'One-Pager Basic', sections: sections };
   }
 
   // ── Build a template by id. Reads Diagnosis + V2Draft + cvFacts. ──────
