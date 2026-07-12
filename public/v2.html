@@ -2476,11 +2476,19 @@
       var majorEn = t.match(/\b(?:bachelor(?:'s)?|master(?:'s)?|b\.?\s?sc\.?|m\.?\s?sc\.?|b\.?\s?a\.?|degree|major)\b[^a-zA-Z]{0,8}(?:of|in)?\s+([A-Z][A-Za-z &]{2,50})/);
       if (majorEn && majorEn[1]) out.major = majorEn[1].trim().slice(0, 60);
     }
+    // gradYear — ONLY from a line that carries an education signal. Never
+    // borrow a year from the experience/job dates (that invents a graduation
+    // year the user never gave — caught by adversarial verify).
     var thisYear = new Date().getFullYear();
-    var yearMatches = (t.match(/\b(19[9]\d|20[0-3]\d)\b/g) || [])
-      .map(function(y){ return parseInt(y, 10); })
-      .filter(function(y){ return y >= 1990 && y <= thisYear + 1; });
-    if (yearMatches.length) out.gradYear = Math.max.apply(null, yearMatches);
+    var EDU_SIGNAL = /بكالوريوس|ماجستير|دبلوم|دكتوراه|تخرّج|تخرج|جامعة|كلية|معهد|ثانوي|bachelor|master|diploma|degree|university|college|graduat|b\.?sc|m\.?sc|b\.?a\b/i;
+    var eduYears = [];
+    t.split(/\r?\n/).forEach(function(line){
+      if (!EDU_SIGNAL.test(line)) return;
+      (line.match(/(19[9]\d|20[0-3]\d)/g) || []).forEach(function(y){
+        var n = parseInt(y, 10); if (n >= 1990 && n <= thisYear + 1) eduYears.push(n);
+      });
+    });
+    if (eduYears.length) out.gradYear = Math.max.apply(null, eduYears);
     var expIdx = t.search(/(?:experience|work experience|الخبرة العملية|الخبرات|خبرات|الخبرة)/i);
     if (expIdx !== -1){
       var after = t.slice(expIdx, expIdx + 600).split(/\n+/);
@@ -2506,13 +2514,15 @@
     var yrsCandidates = [];
     yrsPatterns.forEach(function(re){ var m = tn.match(re) || t.match(re); if (m && m[1]) yrsCandidates.push(parseInt(m[1], 10)); });
     if (yrsCandidates.length) out.yearsExp = Math.max.apply(null, yrsCandidates.filter(function(n){ return n > 0 && n < 60; }));
+    // Arabic alternates use NO \b — JS \b never fires around Arabic letters
+    // (so "العربية"/"الإنجليزية" were silently dropped). Latin keeps \b.
     var langDict = [
-      { re: /\b(arabic|عربي)\b/i,  v: 'Arabic'  },
-      { re: /\b(english|انجليزي|إنجليزي|انجليزيه)\b/i, v: 'English' },
-      { re: /\b(french|فرنسي)\b/i, v: 'French'  },
-      { re: /\b(german|deutsch|الماني|ألماني)\b/i, v: 'German' },
-      { re: /\b(spanish|اسباني|إسباني)\b/i, v: 'Spanish' },
-      { re: /\b(urdu|اردو|أردو)\b/i, v: 'Urdu' },
+      { re: /\barabic\b|عربي|العربية/i,  v: 'Arabic'  },
+      { re: /\benglish\b|انجليزي|إنجليزي|الإنجليزية|الانجليزية/i, v: 'English' },
+      { re: /\bfrench\b|فرنسي|الفرنسية/i, v: 'French'  },
+      { re: /\bgerman\b|deutsch|الماني|ألماني|الألمانية/i, v: 'German' },
+      { re: /\bspanish\b|اسباني|إسباني|الإسبانية/i, v: 'Spanish' },
+      { re: /\burdu\b|اردو|أردو|الأردية/i, v: 'Urdu' },
     ];
     langDict.forEach(function(d){ if (d.re.test(t)) out.languages.push(d.v); });
     var toolDict = ['Excel','Word','PowerPoint','Outlook','Microsoft 365','Google Workspace','Salesforce','HubSpot','Zoho','SAP','QuickBooks','Tableau','Power BI','Canva','Figma','Photoshop','Illustrator','Adobe XD','Python','SQL','JavaScript','React','Node','Zendesk','Freshdesk','Intercom','Jira','Slack','AutoCAD','Revit'];
