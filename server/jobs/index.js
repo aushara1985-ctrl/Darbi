@@ -86,8 +86,17 @@ async function searchJobs(input) {
   // 4. Rank.
   const { top, hidden } = rankJobs(merged, profile, { limit: input.limit || 10 });
 
-  // 5. If nothing came back live, return fallback so the UI is honest.
-  if (!merged.length) {
+  // 4b. Relevance floor — drop weak matches so we never show, e.g., an
+  // Engineering Manager to someone whose dream is كاشير. A curated ATS pool
+  // won't have jobs for every family; when it doesn't, an honest manual-search
+  // fallback beats irrelevant cards. Threshold is deliberately low (keeps
+  // reasonable cross-role matches) but filters out clear noise.
+  const RELEVANCE_FLOOR = 50;
+  const relevant = (top || []).filter(j => (j.match && typeof j.match.score === 'number' ? j.match.score : 0) >= RELEVANCE_FLOOR);
+
+  // 5. If nothing came back live (or nothing cleared the relevance floor),
+  // return fallback so the UI is honest.
+  if (!merged.length || !relevant.length) {
     return {
       success: true,
       mode: 'fallback',
@@ -103,8 +112,8 @@ async function searchJobs(input) {
   return {
     success: true,
     mode: 'live',
-    jobs: top,
-    hiddenCount: hidden,
+    jobs: relevant,
+    hiddenCount: hidden + (top.length - relevant.length),
     searchProfile: profile,
     sourcesUsed: [].concat(provRes.used || [], atsRes.sourcesUsed || []),
     providersAvailable: providersAvail,

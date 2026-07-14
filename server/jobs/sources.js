@@ -12,12 +12,25 @@
 const fs = require('fs');
 const path = require('path');
 
-// Static seed — keep EMPTY in production until tokens are verified.
-// Commented examples (do NOT uncomment without verifying the board responds):
-//   { company: 'Example Co', ats: 'greenhouse', boardToken: 'examplecompany',
-//     careersUrl: 'https://boards.greenhouse.io/examplecompany',
-//     region: 'Global', industry: 'SaaS', priority: 1 }
-const STATIC_SOURCES = [];
+// Static seed — VERIFIED public MENA-region boards (checked to return live
+// jobs, 2026-07). Each token was confirmed against its public ATS endpoint;
+// none invented. Free (no API key). Re-verify with:
+//   curl https://boards-api.greenhouse.io/v1/boards/<token>/jobs
+//   curl https://api.ashbyhq.com/posting-api/job-board/<token>
+const STATIC_SOURCES = [
+  // Tamara — Saudi/UAE BNPL fintech. Real Riyadh/Jeddah/Dubai roles.
+  { company: 'Tamara', ats: 'greenhouse', boardToken: 'tamara',
+    careersUrl: 'https://tamara.co/careers', region: 'Saudi Arabia / UAE',
+    industry: 'Fintech', priority: 1 },
+  // Rain — MENA (Bahrain) crypto/fintech.
+  { company: 'Rain', ats: 'ashby', boardToken: 'rain',
+    careersUrl: 'https://www.rain.com/careers', region: 'MENA',
+    industry: 'Fintech', priority: 2 },
+  // Thndr — Egypt/MENA investing & trading fintech.
+  { company: 'Thndr', ats: 'ashby', boardToken: 'thndr',
+    careersUrl: 'https://thndr.app/careers', region: 'MENA / Egypt',
+    industry: 'Fintech', priority: 3 },
+];
 
 function _fromEnv() {
   const raw = process.env.DARBI_ATS_SOURCES_JSON;
