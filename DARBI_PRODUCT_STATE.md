@@ -32,7 +32,7 @@ Then both: 9. real location-relevant jobs → 10. select job → 11. tailored ap
 | 7A | Diagnose | passed | senior override + family flip verified | — | 2026-07-09 |
 | 8A | Auto-generate CV | **passed** | PROD browser: 0 visible brackets, 0 copy brackets, real companies (الرواد/الخليج) + real bullets, no invented skills | minor: gradYear may pick a work-date year | 2026-07-11 |
 | 5B/6B | No-CV guided → CV | passed | 191/191 family + 7/7 No-CV round-trip; real exp parsed | — | 2026-07-11 |
-| 9 | Real location jobs | **failed (external)** | live curl: mode=fallback, jobs=0, jsearch 403 not subscribed | needs RapidAPI key (USER) | 2026-07-11 |
+| 9 | Real location jobs | **passed** | PROD curl: mode=live, real Tamara/Rain/Thndr jobs (Riyadh). Free public ATS boards — no API key. Relevance floor → honest fallback for uncovered families (كاشير) | ATS pool = MENA fintech/tech mostly; simple/local jobs still use fallback | 2026-07-15 |
 | 10 | Select job | partial | works when jobs exist | blocked by step 9 | 2026-07-09 |
 | 11 | Apply package | passed | v2BuildApplyPackage (cover+ats+bullets+checklist) | — | 2026-07-09 |
 | 12 | Open + apply | passed | external link | — | 2026-07-09 |
