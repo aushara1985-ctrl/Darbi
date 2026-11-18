@@ -383,6 +383,9 @@ app.post('/api/darbi/resolve-intent', async (req, res) => {
   res.json({ success: true, intent });
 });
 
+// Interview/assessment preparation program (/api/assess/*). authMiddleware, db, rateLimit, getIP are defined above.
+require('./assessments/routes')(app, { authMiddleware, db, rateLimit, getIP });
+
 // ─── JOBS SEARCH (career-family-agnostic, hybrid ATS + aggregator) ───────────
 // Registration is delegated to ./jobs to keep this file lean. Two routes:
 //   GET  /api/jobs/sources   → public ATS sources + provider availability
@@ -631,6 +634,7 @@ app.post('/api/payment/portal', authMiddleware, async (req, res) => {
   } catch (e) { res.status(500).json({ error: 'portal_failed' }); }
 });
 
+const billingPlans = require('./billing/plans');
 app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   if (!process.env.STRIPE_SECRET_KEY) return res.json({ received: true });
   const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -640,55 +644,8 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (e) { return res.status(400).json({ error: e.message }); }
 
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
-    const userId = session.metadata?.userId;
-    if (userId) {
-      await db.query(
-        `UPDATE users SET access_status = 'paid', paid_at = COALESCE(paid_at, NOW()) WHERE id = $1`,
-        [userId]
-      ).catch((e) => console.error('[webhook] update user paid failed:', e.message));
-      await db.query(
-        `INSERT INTO access_audit (user_id, source, status_to, stripe_session_id, note)
-         VALUES ($1, 'stripe_webhook', 'paid', $2, $3)`,
-        [userId, session.id, 'plan:' + (session.metadata?.plan || 'unknown')]
-      ).catch(() => {});
-    }
-  }
-
-  // Monthly plan cancelled / ended / unpaid -> remove paid access.
-  // (A Founder lifetime buyer is never downgraded by a subscription event.)
-  if (event.type === 'customer.subscription.deleted' || event.type === 'customer.subscription.updated') {
-    const sub = event.data.object;
-    const endedStates = ['canceled', 'unpaid', 'incomplete_expired'];
-    const shouldRevoke = event.type === 'customer.subscription.deleted' || endedStates.includes(sub.status);
-    if (shouldRevoke) {
-      try {
-        let userId = sub.metadata?.userId || null;
-        if (!userId && sub.customer) {
-          // Older subscriptions: find the account by the Stripe customer's email.
-          const cust = await stripe.customers.retrieve(sub.customer);
-          if (cust && cust.email) {
-            const u = await db.query('SELECT id FROM users WHERE lower(email) = lower($1)', [cust.email]);
-            userId = u.rows[0] && u.rows[0].id;
-          }
-        }
-        if (userId) {
-          const life = await db.query(
-            `SELECT 1 FROM access_audit WHERE user_id = $1 AND note = 'plan:lifetime' LIMIT 1`, [userId]
-          ).catch(() => ({ rows: [] }));
-          if (!life.rows.length) {
-            await db.query(`UPDATE users SET access_status = 'free' WHERE id = $1 AND access_status = 'paid'`, [userId]);
-            await db.query(
-              `INSERT INTO access_audit (user_id, source, status_to, stripe_session_id, note)
-               VALUES ($1, 'stripe_webhook', 'free', NULL, $2)`,
-              [userId, 'subscription_' + (event.type === 'customer.subscription.deleted' ? 'deleted' : sub.status)]
-            ).catch(() => {});
-          }
-        }
-      } catch (e) { console.error('[webhook] subscription revoke failed:', e.message); }
-    }
-  }
+  // All plan bookkeeping (grant plan, revoke on cancel, lifetime never revoked) lives in ./billing/plans.js and is unit-tested.
+  await billingPlans.handleEvent(db, event, { stripe });
   res.json({ received: true });
 });
 
@@ -712,15 +669,7 @@ app.post('/api/darbi/payment/success', authMiddleware, async (req, res) => {
       return res.status(403).json({ success: false, error: 'session does not belong to user' });
     }
 
-    await db.query(
-      `UPDATE users SET access_status = 'paid', paid_at = COALESCE(paid_at, NOW()) WHERE id = $1`,
-      [req.user.id]
-    );
-    await db.query(
-      `INSERT INTO access_audit (user_id, source, status_to, stripe_session_id, note)
-       VALUES ($1, 'stripe_session_verify', 'paid', $2, $3)`,
-      [req.user.id, stripeSessionId, 'plan:' + ((session.metadata && session.metadata.plan) || 'unknown')]
-    ).catch(() => {});
+    await billingPlans.grantPlan(db, req.user.id, billingPlans.resolvePlan(session), { sessionId: stripeSessionId, source: 'stripe_session_verify' });
     res.json({ success: true });
   } catch (e) {
     console.error('[payment/success] verify error:', e.message);

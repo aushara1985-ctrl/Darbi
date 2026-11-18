@@ -50,114 +50,74 @@
     input,textarea,select{font-family:inherit;font-size:inherit}
 
     /* ═══════════════════════════════════════════════════════════════════
-       PERSISTENT SHELL — top bar + drawer + main
+       PERSISTENT SHELL — ONE header for landing + app (UX pass 2026-11-18)
+       wordmark · section links · account actions · labelled menu sheet · bottom tabs
     ════════════════════════════════════════════════════════════════════ */
+    :root{--ink:#0b1020;--mut:#5b6478;--ind:#4f46e5;--ind2:#4338ca;--ind-bg:#eef2ff;--line:#e6e8f2;--ok:#16a34a;--bad:#dc2626;--v2-top-h:60px;--v2-bottom-h:0px}
     .v2-shell{min-height:100vh;display:flex;flex-direction:column}
-
-    .v2-top{
-      position:sticky;top:0;z-index:30;
-      background:#fff;
-      border-bottom:1px solid #ececf4;
-      box-shadow:0 1px 0 rgba(15,23,42,0.02);
-    }
-    .v2-top-row1{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      max-width:880px;margin:0 auto;padding:11px 18px;
-    }
-    .v2-logo{
-      display:flex;align-items:center;gap:8px;
-      font-weight:900;font-size:15px;color:#0a0a0a;letter-spacing:-.3px;
-    }
-    .v2-logo-mark{
-      width:28px;height:28px;border-radius:8px;
-      background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;
-      display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;
-    }
-
+    .v2-top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid #ececf4}
+    .v2-top-row1{display:flex;align-items:center;gap:14px;max-width:1120px;margin:0 auto;padding:0 20px;min-height:60px}
+    .v2-logo{display:flex;align-items:center;min-height:44px;flex:none}
     /* one identity: a single Arabic wordmark (Ali 2026-11-18) */
-    .v2-wordmark{font-size:24px;font-weight:900;letter-spacing:-.5px;color:#0b0b14;line-height:1;position:relative;padding-left:12px}
-    .v2-wordmark i{position:absolute;left:0;bottom:4px;width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed)}
-    .v2-lp-nav,.v2-lp-actions{display:none;align-items:center;gap:22px}
-    .v2-lp-nav a{font-size:14px;font-weight:700;color:#475569}
-    .v2-lp-nav a:hover{color:#4338ca}
-    .v2-lp-actions{gap:14px}
-    .v2-lp-login{font-size:14px;font-weight:700;color:#0b0b14}
-    .v2-lp-cta{font-size:14px;font-weight:800;color:#fff;background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:9px 16px;border-radius:999px;box-shadow:0 6px 18px rgba(79,70,229,.25)}
-    body.on-landing .v2-stepper,body.on-landing .v2-top-actions,body.on-landing .v2-top-row2{display:none!important}
-    body.on-landing .v2-lp-actions{display:flex}
-    body.on-landing .v2-top-row1{max-width:1120px;padding:14px 20px}
-    body.on-landing .v2-top{background:rgba(255,255,255,.85);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px)}
-    @media (min-width:860px){body.on-landing .v2-lp-nav{display:flex}}
-    @media (max-width:420px){.v2-lp-login{display:none}}
-    .v2-stepper{display:flex;align-items:center;gap:4px;flex:1;justify-content:center;max-width:280px}
-    .v2-step{
-      width:28px;height:4px;border-radius:99px;background:#e2e8f0;flex:1;max-width:36px;
-      transition:background .2s;
+    .v2-wordmark{font-size:26px;font-weight:900;letter-spacing:0;color:#0b0b14;line-height:1;position:relative;padding-left:12px}
+    .v2-wordmark i{position:absolute;left:0;bottom:4px;width:8px;height:8px;border-radius:50%;background:var(--ind)}
+    .v2-nav{display:none;align-items:center;gap:2px;flex:1;margin-inline-start:10px}
+    .v2-nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 13px;border-radius:10px;font-size:15px;font-weight:700;color:#475569;cursor:pointer}
+    .v2-nav a:hover{color:var(--ind2);background:#f5f6ff}
+    .v2-nav a.is-active{color:var(--ind2);background:var(--ind-bg)}
+    .v2-actions{display:flex;align-items:center;gap:4px;margin-inline-start:auto}
+    .v2-act-link{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:10px;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer}
+    .v2-act-link:hover{background:#f5f6ff;color:var(--ind2)}
+    .v2-act-link.is-active{color:var(--ind2);background:var(--ind-bg)}
+    .v2-hd-cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;background:var(--ind);color:#fff;font-size:15px;font-weight:800;cursor:pointer;white-space:nowrap}
+    .v2-hd-cta:hover{background:var(--ind2)}
+    .v2-menu-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:12px;border:1.5px solid #d9def0;background:#fff;color:var(--ink);font-size:15px;font-weight:700}
+    .v2-menu-btn svg{width:18px;height:18px;flex:none}
+    .v2-menu-btn:hover{background:#f5f6ff}
+    .v2-hd-cta:focus-visible,.v2-menu-btn:focus-visible,.v2-act-link:focus-visible,.v2-nav a:focus-visible,.v2-tab:focus-visible,.v2-sheet a:focus-visible,.v2-sheet button:focus-visible,.v2-back:focus-visible{outline:3px solid #a5b4fc;outline-offset:2px}
+    @media (min-width:900px){
+      .v2-nav{display:flex}
+      .v2-menu-btn{display:none}
     }
-    .v2-step.is-done{background:#16a34a}
-    .v2-step.is-now{background:#4f46e5}
+    @media (max-width:899px){ .v2-hide-md{display:none!important} }
+    @media (max-width:399px){ .v2-top-row1{padding:0 10px;gap:4px} .v2-act-link{padding:0 8px} .v2-hd-cta{padding:0 13px} .v2-menu-btn{padding:0 11px} }
 
-    .v2-top-actions{display:flex;align-items:center;gap:6px}
-    .v2-icon-btn{
-      width:36px;height:36px;border-radius:9px;
-      display:flex;align-items:center;justify-content:center;
-      color:#475569;font-size:18px;
-      transition:background .15s;
-    }
-    .v2-icon-btn:hover{background:#f1f5f9}
-    .v2-avatar{
-      background:#eef2ff;color:#4338ca;font-weight:800;font-size:13px;
-    }
+    /* context row: back + page title + step (only inside the journey) */
+    .v2-top-row2{display:flex;align-items:center;gap:10px;max-width:680px;margin:0 auto;padding:4px 14px 6px;border-top:1px solid #f1f5f9}
+    .v2-back{background:transparent;color:var(--ind2);font-size:14.5px;font-weight:700;min-height:44px;padding:0 12px;border-radius:10px;transition:background .15s;white-space:nowrap}
+    .v2-back:hover{background:var(--ind-bg)}
+    .v2-title{font-size:16px;font-weight:800;color:var(--ink);flex:1;text-align:center;line-height:1.4}
+    .v2-stepno{min-width:64px;text-align:left;font-size:12.5px;font-weight:700;color:var(--mut);white-space:nowrap}
+    body.on-landing .v2-top-row2{display:none!important}
 
-    .v2-top-row2{
-      display:flex;align-items:center;gap:10px;
-      max-width:880px;margin:0 auto;padding:9px 18px 11px;
-      border-top:1px solid #f1f5f9;
-    }
-    .v2-back{
-      background:transparent;color:#4338ca;font-size:13px;font-weight:700;
-      padding:5px 10px;border-radius:7px;
-      transition:background .15s;
-    }
-    .v2-back:hover{background:#eef2ff}
-    .v2-title{font-size:14px;font-weight:800;color:#0a0a0a;flex:1;text-align:center}
-    .v2-action-slot{min-width:60px;text-align:left}
+    /* menu sheet (bottom sheet on phones, same links as the header) */
+    .v2-sheet-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+    .v2-sheet-overlay.is-open{opacity:1;pointer-events:auto}
+    .v2-sheet{position:fixed;right:0;left:0;bottom:0;z-index:70;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -12px 40px rgba(15,23,42,.18);transform:translateY(105%);visibility:hidden;transition:transform .25s,visibility .25s;max-height:88vh;overflow-y:auto;padding:0 0 calc(16px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+    .v2-sheet.is-open{transform:none;visibility:visible}
+    .v2-sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px 8px;position:sticky;top:0;background:#fff;z-index:1}
+    .v2-sheet-who{font-size:13px;color:var(--mut);font-weight:600;direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
+    .v2-sheet-close{min-height:44px;padding:0 14px;border-radius:10px;font-size:15px;font-weight:700;color:var(--ind2);background:var(--ind-bg)}
+    .v2-sheet-grp{padding:6px 12px}
+    .v2-sheet-grp h2{font-size:13px;font-weight:700;color:var(--mut);padding:8px 8px 4px;margin:0}
+    .v2-sheet a{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 14px;border-radius:12px;font-size:16.5px;font-weight:700;color:var(--ink);cursor:pointer}
+    .v2-sheet a::after{content:"‹";font-size:22px;color:#a5adc4;font-weight:400}
+    .v2-sheet a:hover{background:#f5f6ff}
+    .v2-sheet a.is-active{background:var(--ind-bg);color:var(--ind2)}
+    .v2-sheet-foot{padding:10px 18px 0;display:flex;flex-direction:column;gap:10px}
+    .v2-sheet-foot .v2-btn{width:100%;min-height:50px}
+    .v2-sheet-out{min-height:50px;border-radius:12px;border:1.5px solid #fecaca;color:var(--bad);font-weight:800;font-size:16px;background:#fff}
+    @media (min-width:900px){ .v2-sheet,.v2-sheet-overlay{display:none} }
 
-    /* ═══════════════════════════════════════════════════════════════════
-       DRAWER (slide-out nav from right in RTL)
-    ════════════════════════════════════════════════════════════════════ */
-    .v2-drawer-overlay{
-      position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:40;
-      opacity:0;pointer-events:none;transition:opacity .2s;
-    }
-    .v2-drawer-overlay.is-open{opacity:1;pointer-events:auto}
-    .v2-drawer{
-      position:fixed;top:0;right:0;bottom:0;width:260px;max-width:80vw;
-      background:#fff;z-index:50;
-      box-shadow:-4px 0 16px rgba(15,23,42,.1);
-      transform:translateX(100%);transition:transform .25s;
-      overflow-y:auto;
-    }
-    .v2-drawer.is-open{transform:translateX(0)}
-    .v2-drawer-head{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:15px 18px;border-bottom:1px solid #ececf4;
-    }
-    .v2-drawer-head h3{font-size:14px;font-weight:800;color:#0a0a0a}
-    .v2-drawer-close{
-      width:28px;height:28px;border-radius:7px;font-size:18px;color:#475569;
-      display:flex;align-items:center;justify-content:center;
-    }
-    .v2-drawer-close:hover{background:#f1f5f9}
-    .v2-drawer-list{display:flex;flex-direction:column;padding:8px 6px}
-    .v2-drawer-list a{
-      display:flex;align-items:center;gap:10px;
-      padding:11px 14px;border-radius:9px;
-      font-size:14px;font-weight:600;color:#0f172a;
-    }
-    .v2-drawer-list a:hover{background:#f8fafc}
-    .v2-drawer-list a.is-active{background:#eef2ff;color:#4338ca}
-    .v2-drawer-list .v2-drawer-logout{color:#dc2626;margin-top:14px;border-top:1px solid #ececf4;padding-top:14px;border-radius:0}
+    /* bottom tab bar: phones/tablets, app screens only */
+    .v2-tabbar{display:none;position:fixed;right:0;left:0;bottom:0;z-index:45;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid #e3e6f2;padding:4px 6px calc(4px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);gap:2px}
+    body.has-tabbar .v2-tabbar{display:grid}
+    body.has-tabbar{--v2-bottom-h:64px}
+    body.has-tabbar .v2-main{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+    .v2-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;border-radius:12px;font-size:12.5px;font-weight:700;color:#64748b;cursor:pointer;background:none;font-family:inherit}
+    .v2-tab svg{width:22px;height:22px}
+    .v2-tab.is-active{color:var(--ind2);background:var(--ind-bg)}
+    @media (min-width:900px){ body.has-tabbar .v2-tabbar{display:none} body.has-tabbar{--v2-bottom-h:0px} body.has-tabbar .v2-main{padding-bottom:60px} }
 
     /* ═══════════════════════════════════════════════════════════════════
        MAIN CONTAINER
@@ -176,7 +136,7 @@
       padding:18px;margin-bottom:14px;
     }
     .v2-h1{
-      font-size:23px;font-weight:900;color:#0a0a0a;letter-spacing:-.5px;
+      font-size:23px;font-weight:800;color:#0a0a0a;letter-spacing:0;
       line-height:1.35;margin-bottom:6px;
     }
     .v2-h1 .v2-accent{color:#4f46e5}
@@ -216,12 +176,12 @@
     }
     .v2-hero-badge{
       display:inline-block;background:#fff;color:#4338ca;
-      font-size:11.5px;font-weight:800;letter-spacing:.4px;
+      font-size:12px;font-weight:800;letter-spacing:.4px;
       padding:5px 12px;border-radius:99px;border:1px solid #c7d2fe;
       margin-bottom:14px;
     }
     .v2-hero h1{
-      font-size:28px;font-weight:900;color:#0a0a0a;letter-spacing:-1px;
+      font-size:28px;font-weight:800;color:#0a0a0a;letter-spacing:0;
       line-height:1.25;margin-bottom:10px;
     }
     .v2-hero h1 .v2-accent{color:#4f46e5}
@@ -244,7 +204,7 @@
     }
     .v2-land-step-n{
       width:26px;height:26px;flex-shrink:0;border-radius:50%;
-      background:#eef2ff;color:#4338ca;font-weight:900;font-size:13px;
+      background:#eef2ff;color:#4338ca;font-weight:800;font-size:13px;
       display:flex;align-items:center;justify-content:center;
     }
     .v2-land-step b{display:block;font-size:14px;color:#0a0a0a;margin-bottom:3px}
@@ -255,11 +215,11 @@
       padding:12px 14px;font-size:13px;color:#334155;font-weight:600;
     }
     .v2-land-cta{
-      background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+      background:linear-gradient(135deg,#4f46e5 0%,#4338ca 100%);
       border-radius:16px;padding:24px 20px;text-align:center;
       margin:22px 0 16px;
     }
-    .v2-land-cta-h{font-size:18px;font-weight:900;color:#fff;margin-bottom:14px}
+    .v2-land-cta-h{font-size:18px;font-weight:800;color:#fff;margin-bottom:14px}
     .v2-land-cta .v2-btn-primary{background:#fff;color:#4338ca}
     .v2-land-cta .v2-btn-primary:hover{background:#f5f3ff}
     .v2-land-footer{
@@ -381,7 +341,7 @@
     .v2-cvbuild-field{margin-bottom:11px}
     .v2-cvbuild-field:last-child{margin-bottom:0}
     .v2-cvbuild-label{font-size:12.5px;font-weight:700;color:#475569;display:block;margin-bottom:5px}
-    .v2-cvbuild-label .opt{color:#94a3b8;font-weight:600;font-size:11.5px}
+    .v2-cvbuild-label .opt{color:#94a3b8;font-weight:600;font-size:12px}
     .v2-cvbuild-input, .v2-cvbuild-select{
       width:100%;padding:10px 12px;border:1.5px solid #ececf4;border-radius:9px;
       font-family:inherit;font-size:13.5px;color:#0a0a0a;background:#fff;
@@ -442,7 +402,7 @@
       flex:1;height:6px;background:#f1f5f9;border-radius:99px;overflow:hidden;
     }
     .v2-quiz-progress-fill{
-      height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);
+      height:100%;background:linear-gradient(90deg,#4f46e5,#4338ca);
       border-radius:99px;transition:width .25s;
     }
 
@@ -452,18 +412,18 @@
        DIAGNOSIS — #/diagnosis (the WOW)
     ════════════════════════════════════════════════════════════════════ */
     .v2-dx-hero{
-      background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+      background:linear-gradient(135deg,#4f46e5 0%,#4338ca 100%);
       border-radius:18px;padding:24px 22px;color:#fff;margin-bottom:16px;
       box-shadow:0 4px 20px rgba(79,70,229,.18);
     }
-    .v2-dx-hero-eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px}
-    .v2-dx-hero-role{font-size:24px;font-weight:900;letter-spacing:-.5px;line-height:1.3}
+    .v2-dx-hero-eyebrow{font-size:12px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px}
+    .v2-dx-hero-role{font-size:24px;font-weight:800;letter-spacing:0;line-height:1.3}
 
     .v2-dx-card{
       background:#fff;border:1px solid #ececf4;border-radius:14px;
       padding:18px;margin-bottom:13px;
     }
-    .v2-dx-card-h{font-size:11.5px;font-weight:800;color:#4338ca;letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px}
+    .v2-dx-card-h{font-size:12px;font-weight:800;color:#4338ca;letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px}
     .v2-dx-card-body{font-size:14.5px;color:#0a0a0a;line-height:1.75}
 
     .v2-dx-roles{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
@@ -482,14 +442,14 @@
       border:1px solid #f59e0b;border-radius:14px;
       padding:16px;margin-bottom:13px;
     }
-    .v2-dx-interpret-h{font-size:11.5px;font-weight:800;color:#78350f;letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px}
+    .v2-dx-interpret-h{font-size:12px;font-weight:800;color:#78350f;letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px}
     .v2-dx-interpret-body{font-size:14.5px;color:#1f2937;font-weight:700;line-height:1.7}
 
     .v2-dx-firstfix{
       background:#fef3c7;border:1.5px solid #fcd34d;border-radius:14px;
       padding:16px;margin-bottom:13px;
     }
-    .v2-dx-firstfix-eyebrow{font-size:11px;font-weight:800;color:#92400e;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+    .v2-dx-firstfix-eyebrow{font-size:12px;font-weight:800;color:#92400e;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
     .v2-dx-firstfix-body{font-size:14px;color:#78350f;line-height:1.7;font-weight:700}
 
     .v2-dx-roadmap{
@@ -497,7 +457,7 @@
       border:1px solid #c7d2fe;border-radius:14px;
       padding:18px;margin-bottom:13px;
     }
-    .v2-dx-roadmap-h{font-size:16px;font-weight:900;color:#0a0a0a;margin-bottom:4px}
+    .v2-dx-roadmap-h{font-size:16px;font-weight:800;color:#0a0a0a;margin-bottom:4px}
     .v2-dx-roadmap-sub{font-size:12.5px;color:#475569;line-height:1.7;margin-bottom:13px}
     .v2-dx-steps{display:flex;flex-direction:column;gap:8px}
     .v2-dx-step{
@@ -509,7 +469,7 @@
     .v2-dx-step.is-locked{opacity:.55}
     .v2-dx-step-num{
       flex-shrink:0;width:28px;height:28px;border-radius:50%;
-      background:#e0e7ff;color:#4338ca;font-weight:900;font-size:13px;
+      background:#e0e7ff;color:#4338ca;font-weight:800;font-size:13px;
       display:flex;align-items:center;justify-content:center;
     }
     .v2-dx-step.is-done .v2-dx-step-num{background:#dcfce7;color:#166534}
@@ -517,7 +477,7 @@
     .v2-dx-step.is-locked .v2-dx-step-num{background:#f1f5f9;color:#94a3b8}
     .v2-dx-step-body{flex:1;min-width:0}
     .v2-dx-step-title{font-size:13.5px;font-weight:800;color:#0a0a0a;margin-bottom:2px}
-    .v2-dx-step-tag{display:inline-block;font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:99px;margin-bottom:3px}
+    .v2-dx-step-tag{display:inline-block;font-size:12px;font-weight:800;padding:1px 7px;border-radius:99px;margin-bottom:3px}
     .v2-dx-step.is-done .v2-dx-step-tag{background:#dcfce7;color:#166534}
     .v2-dx-step.is-next .v2-dx-step-tag{background:#fef3c7;color:#92400e}
     .v2-dx-step.is-locked .v2-dx-step-tag{background:#f1f5f9;color:#64748b}
@@ -526,8 +486,8 @@
     .v2-dx-score{
       background:#fafafe;border:1px solid #ececf4;border-radius:10px;padding:10px 12px;
     }
-    .v2-dx-score-label{font-size:10.5px;color:#64748b;margin-bottom:4px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
-    .v2-dx-score-val{font-size:18px;font-weight:900;color:#0a0a0a;letter-spacing:-.3px}
+    .v2-dx-score-label{font-size:12px;color:#64748b;margin-bottom:4px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+    .v2-dx-score-val{font-size:18px;font-weight:800;color:#0a0a0a;letter-spacing:0}
 
     .v2-dx-loading{
       display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -563,7 +523,7 @@
     .v2-tpl-card.is-recommended{border-color:#16a34a;background:linear-gradient(135deg,#fff,#f0fdf4)}
     .v2-tpl-badge{
       position:absolute;top:12px;left:14px;
-      background:#16a34a;color:#fff;font-size:10.5px;font-weight:800;
+      background:#16a34a;color:#fff;font-size:12px;font-weight:800;
       padding:3px 9px;border-radius:99px;letter-spacing:.3px;
     }
     .v2-tpl-head{display:flex;align-items:center;gap:11px;margin-bottom:9px}
@@ -577,7 +537,7 @@
     .v2-tpl-desc{font-size:12.5px;color:#475569;line-height:1.6;margin-bottom:9px}
     .v2-tpl-tags{display:flex;flex-wrap:wrap;gap:5px}
     .v2-tpl-tag{
-      background:#f1f5f9;color:#475569;font-size:10.5px;font-weight:700;
+      background:#f1f5f9;color:#475569;font-size:12px;font-weight:700;
       padding:3px 8px;border-radius:99px;
     }
 
@@ -588,7 +548,7 @@
       display:flex;align-items:center;gap:8px;flex-wrap:wrap;
       background:#fff;border:1px solid #ececf4;border-radius:11px;
       padding:10px 13px;margin-bottom:12px;
-      position:sticky;top:103px;z-index:5;
+      position:sticky;top:var(--v2-top-h,103px);z-index:5;
       box-shadow:0 1px 4px rgba(15,23,42,.04);
     }
     .v2-cvb-toolbar-info{font-size:12px;color:#475569;font-weight:700;flex:1;min-width:120px}
@@ -618,7 +578,7 @@
     .v2-cvb-section{position:relative;margin-bottom:18px;padding-bottom:10px}
     .v2-cvb-section:last-child{margin-bottom:0;padding-bottom:0}
     .v2-cvb-section-h{
-      font-size:11.5px;font-weight:800;color:#4338ca;letter-spacing:.4px;
+      font-size:12px;font-weight:800;color:#4338ca;letter-spacing:.4px;
       text-transform:uppercase;margin-bottom:7px;border-bottom:1px solid #ececf4;padding-bottom:5px;
       display:flex;align-items:center;justify-content:space-between;gap:8px;
     }
@@ -671,7 +631,7 @@
       color:#fff;border-radius:14px;padding:18px 16px;margin-bottom:14px;
     }
     .v2-cvo-hero-eyebrow{font-size:12px;font-weight:800;letter-spacing:.5px;opacity:.95;margin-bottom:6px;text-transform:uppercase}
-    .v2-cvo-hero-h{font-size:22px;font-weight:900;line-height:1.3;margin-bottom:5px}
+    .v2-cvo-hero-h{font-size:22px;font-weight:800;line-height:1.3;margin-bottom:5px}
     .v2-cvo-hero-sub{font-size:13px;opacity:.92}
     .v2-cvo-hero-sub b{font-weight:800}
 
@@ -715,7 +675,7 @@
     .v2-cvo-section{margin-bottom:14px}
     .v2-cvo-section:last-child{margin-bottom:0}
     .v2-cvo-section-h{
-      font-size:11.5px;font-weight:800;color:#4338ca;letter-spacing:.4px;
+      font-size:12px;font-weight:800;color:#4338ca;letter-spacing:.4px;
       text-transform:uppercase;margin-bottom:7px;
       border-bottom:1px dashed #ececf4;padding-bottom:5px;
     }
@@ -748,11 +708,11 @@
     .v2-cvo-edit-link:hover{background:#eef2ff;border-color:#c7d2fe}
 
     .v2-cvo-cta{
-      background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+      background:linear-gradient(135deg,#4f46e5 0%,#4338ca 100%);
       color:#fff;border-radius:14px;padding:20px 18px;
     }
-    .v2-cvo-cta-eyebrow{font-size:11.5px;font-weight:800;opacity:.9;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
-    .v2-cvo-cta-h{font-size:18px;font-weight:900;line-height:1.4;margin-bottom:6px}
+    .v2-cvo-cta-eyebrow{font-size:12px;font-weight:800;opacity:.9;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+    .v2-cvo-cta-h{font-size:18px;font-weight:800;line-height:1.4;margin-bottom:6px}
     .v2-cvo-cta-sub{font-size:13px;opacity:.92;line-height:1.65;margin-bottom:14px}
     .v2-cvo-cta-btn{
       background:#fff;color:#4338ca;border:none;
@@ -779,7 +739,7 @@
     .v2-cvo-modal-actions .v2-btn{flex:1;padding:11px 16px}
 
     .v2-cvb-saved-status{
-      font-size:11.5px;color:#16a34a;font-weight:700;
+      font-size:12px;color:#16a34a;font-weight:700;
       margin-right:8px;display:inline-flex;align-items:center;gap:4px;
     }
 
@@ -812,7 +772,7 @@
     }
     .v2-jobs-meta b{color:#4338ca}
     .v2-jobs-mode-pill{
-      background:#dcfce7;color:#166534;font-size:11px;font-weight:800;
+      background:#dcfce7;color:#166534;font-size:12px;font-weight:800;
       padding:3px 9px;border-radius:99px;letter-spacing:.3px;
     }
     .v2-jobs-mode-pill.is-fallback{background:#fef3c7;color:#92400e}
@@ -838,7 +798,7 @@
     .v2-job-meta-tag{display:inline-flex;align-items:center;gap:4px}
     .v2-job-source{
       background:#eef2ff;color:#4338ca;padding:2px 8px;border-radius:99px;
-      font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;
+      font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;
     }
     .v2-job-why{font-size:12.5px;color:#0f172a;line-height:1.6;margin-bottom:6px}
     .v2-job-tip{
@@ -847,7 +807,7 @@
     }
     .v2-job-flags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
     .v2-job-flag{
-      font-size:11px;background:#fee2e2;color:#991b1b;
+      font-size:12px;background:#fee2e2;color:#991b1b;
       padding:2px 8px;border-radius:99px;font-weight:700;
     }
     .v2-job-ctas{display:flex;gap:6px;flex-wrap:wrap}
@@ -904,7 +864,7 @@
       border:1px solid #c7d2fe;border-radius:14px;
       padding:14px 16px;margin-bottom:14px;
     }
-    .v2-ap-job-title{font-size:15.5px;font-weight:900;color:#0a0a0a;margin-bottom:4px;line-height:1.4}
+    .v2-ap-job-title{font-size:15.5px;font-weight:800;color:#0a0a0a;margin-bottom:4px;line-height:1.4}
     .v2-ap-job-meta{font-size:12.5px;color:#475569;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .v2-ap-job-meta b{color:#4338ca}
 
@@ -927,14 +887,14 @@
     .v2-ap-step-h-l{display:flex;align-items:center;gap:9px;flex:1;min-width:0}
     .v2-ap-step-num{
       flex-shrink:0;width:26px;height:26px;border-radius:50%;
-      background:#4f46e5;color:#fff;font-weight:900;font-size:13px;
+      background:#4f46e5;color:#fff;font-weight:800;font-size:13px;
       display:flex;align-items:center;justify-content:center;
     }
     .v2-ap-step-title{font-size:14.5px;font-weight:800;color:#0a0a0a}
     .v2-ap-step-copy{
       background:#eef2ff;color:#4338ca;border:none;
       padding:6px 10px;border-radius:7px;cursor:pointer;
-      font-size:11.5px;font-weight:700;font-family:inherit;white-space:nowrap;
+      font-size:12px;font-weight:700;font-family:inherit;white-space:nowrap;
       transition:background .15s;
     }
     .v2-ap-step-copy:hover{background:#c7d2fe}
@@ -946,7 +906,7 @@
 
     .v2-ap-pillrow{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
     .v2-ap-pill{
-      background:#dcfce7;color:#166534;font-size:11.5px;font-weight:700;
+      background:#dcfce7;color:#166534;font-size:12px;font-weight:700;
       padding:3px 9px;border-radius:99px;
     }
     .v2-ap-pill.is-missing{background:#fee2e2;color:#991b1b}
@@ -966,7 +926,7 @@
     .v2-ap-check input{width:16px;height:16px;cursor:pointer;accent-color:#4f46e5}
 
     .v2-ap-actions{
-      position:sticky;bottom:0;z-index:5;
+      position:sticky;bottom:var(--v2-bottom-h,0px);z-index:5;
       background:#fff;border:1px solid #ececf4;border-radius:13px;
       padding:11px;margin-top:14px;
       display:flex;flex-direction:column;gap:7px;
@@ -982,7 +942,7 @@
       padding:24px 20px;text-align:center;margin-bottom:13px;
     }
     .v2-ap-success-emoji{font-size:36px;margin-bottom:8px}
-    .v2-ap-success-h{font-size:17px;font-weight:900;color:#0a0a0a;margin-bottom:5px}
+    .v2-ap-success-h{font-size:17px;font-weight:800;color:#0a0a0a;margin-bottom:5px}
     .v2-ap-success-sub{font-size:13px;color:#166534;line-height:1.7}
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -1002,7 +962,7 @@
       height:8px;background:#f1f5f9;border-radius:99px;overflow:hidden;
     }
     .v2-tk-weekly-bar-fill{
-      height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);
+      height:100%;background:linear-gradient(90deg,#4f46e5,#4338ca);
       border-radius:99px;transition:width .3s;
     }
     .v2-tk-weekly-bar-fill.is-met{background:linear-gradient(90deg,#16a34a,#10b981)}
@@ -1028,7 +988,7 @@
     .v2-tk-next.is-accepted .v2-tk-next-cta:hover{background:#15803d}
 
     .v2-tk-list-h{
-      font-size:11.5px;font-weight:800;color:#475569;letter-spacing:.4px;
+      font-size:12px;font-weight:800;color:#475569;letter-spacing:.4px;
       text-transform:uppercase;margin-bottom:9px;
     }
 
@@ -1039,7 +999,7 @@
     .v2-tk-row-1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px;flex-wrap:wrap}
     .v2-tk-role{font-size:14px;font-weight:800;color:#0a0a0a;line-height:1.4;flex:1;min-width:160px}
     .v2-tk-company{font-size:12px;color:#475569;margin-top:2px}
-    .v2-tk-meta{font-size:11.5px;color:#64748b;display:flex;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+    .v2-tk-meta{font-size:12px;color:#64748b;display:flex;gap:9px;flex-wrap:wrap;margin-bottom:8px}
     .v2-tk-meta b{color:#475569;font-weight:700}
 
     .v2-tk-status-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:8px}
@@ -1051,7 +1011,7 @@
     }
     .v2-tk-status-sel:focus{outline:none;border-color:#4f46e5}
     .v2-tk-status-pill{
-      font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:99px;
+      font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px;
       text-transform:uppercase;letter-spacing:.3px;
     }
     .v2-tk-status-pill.is-applied{background:#eef2ff;color:#4338ca}
@@ -1064,7 +1024,7 @@
     .v2-tk-row-action{
       background:#fff;border:1px solid #ececf4;color:#0a0a0a;
       padding:6px 10px;border-radius:8px;cursor:pointer;
-      font-size:11.5px;font-weight:700;font-family:inherit;white-space:nowrap;
+      font-size:12px;font-weight:700;font-family:inherit;white-space:nowrap;
       transition:background .15s;text-decoration:none;display:inline-block;
     }
     .v2-tk-row-action:hover{background:#f9fafb}
@@ -1089,12 +1049,12 @@
       padding:12px 14px;margin-bottom:13px;
     }
     .v2-iv-context-eyebrow{
-      font-size:11px;font-weight:800;color:#4338ca;letter-spacing:.4px;
+      font-size:12px;font-weight:800;color:#4338ca;letter-spacing:.4px;
       text-transform:uppercase;margin-bottom:4px;
     }
     .v2-iv-context-role{font-size:15px;font-weight:800;color:#0a0a0a;line-height:1.3}
     .v2-iv-context-co{font-size:12.5px;color:#475569;margin-top:2px}
-    .v2-iv-context-meta{font-size:11.5px;color:#64748b;margin-top:6px}
+    .v2-iv-context-meta{font-size:12px;color:#64748b;margin-top:6px}
 
     .v2-iv-progress{
       background:#fff;border:1px solid #ececf4;border-radius:11px;
@@ -1118,7 +1078,7 @@
       padding:16px 16px 14px;margin-bottom:11px;
     }
     .v2-iv-q-tag{
-      display:inline-block;font-size:10.5px;font-weight:800;
+      display:inline-block;font-size:12px;font-weight:800;
       letter-spacing:.4px;text-transform:uppercase;padding:3px 8px;
       border-radius:99px;background:#eef2ff;color:#4338ca;margin-bottom:8px;
     }
@@ -1131,7 +1091,7 @@
     }
     .v2-iv-q-why b{color:#4338ca;font-weight:800}
     .v2-iv-q-focus-h{
-      font-size:11.5px;font-weight:800;color:#475569;
+      font-size:12px;font-weight:800;color:#475569;
       letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px;
     }
     .v2-iv-q-focus{
@@ -1143,7 +1103,7 @@
     }
     .v2-iv-q-focus li::before{
       content:'•';position:absolute;right:auto;left:auto;
-      margin-right:-12px;color:#4f46e5;font-weight:900;
+      margin-right:-12px;color:#4f46e5;font-weight:800;
     }
     [dir="rtl"] .v2-iv-q-focus li{padding:5px 18px 5px 0}
     [dir="rtl"] .v2-iv-q-focus li::before{position:absolute;right:0;margin:0}
@@ -1169,7 +1129,7 @@
       color:#fff;border-radius:13px;padding:18px 16px;text-align:center;
       margin-bottom:11px;
     }
-    .v2-iv-finish-h{font-size:18px;font-weight:900;margin-bottom:5px}
+    .v2-iv-finish-h{font-size:18px;font-weight:800;margin-bottom:5px}
     .v2-iv-finish-sub{font-size:13px;opacity:.92;line-height:1.6;margin-bottom:12px}
     .v2-iv-finish-cta{
       background:#fff;color:#15803d;border:none;
@@ -1179,7 +1139,7 @@
     .v2-iv-finish-cta:hover{background:#f0fdf4}
 
     .v2-iv-list-h{
-      font-size:11.5px;font-weight:800;color:#475569;letter-spacing:.4px;
+      font-size:12px;font-weight:800;color:#475569;letter-spacing:.4px;
       text-transform:uppercase;margin:14px 0 9px;
     }
 
@@ -1187,14 +1147,14 @@
        DASHBOARD — Task 9
     ════════════════════════════════════════════════════════════════════ */
     .v2-db-hero{
-      background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+      background:linear-gradient(135deg,#4f46e5 0%,#4338ca 100%);
       color:#fff;border-radius:14px;padding:20px 18px;margin-bottom:13px;
     }
     .v2-db-hero-eyebrow{
-      font-size:11px;font-weight:800;letter-spacing:.5px;opacity:.85;
+      font-size:12px;font-weight:800;letter-spacing:.5px;opacity:.85;
       text-transform:uppercase;margin-bottom:6px;
     }
-    .v2-db-hero-h{font-size:22px;font-weight:900;line-height:1.3;margin-bottom:6px}
+    .v2-db-hero-h{font-size:22px;font-weight:800;line-height:1.3;margin-bottom:6px}
     .v2-db-hero-why{font-size:13.5px;opacity:.92;line-height:1.65;margin-bottom:14px}
     .v2-db-hero-cta{
       background:#fff;color:#4338ca;border:none;
@@ -1208,12 +1168,12 @@
       padding:14px 14px 12px;margin-bottom:11px;
     }
     .v2-db-section-h{
-      font-size:11.5px;font-weight:800;color:#475569;letter-spacing:.4px;
+      font-size:12px;font-weight:800;color:#475569;letter-spacing:.4px;
       text-transform:uppercase;margin-bottom:9px;
       display:flex;justify-content:space-between;align-items:center;
     }
     .v2-db-section-h .v2-db-section-link{
-      font-size:11.5px;font-weight:700;color:#4f46e5;cursor:pointer;
+      font-size:12px;font-weight:700;color:#4f46e5;cursor:pointer;
       background:none;border:none;font-family:inherit;min-height:36px;padding:0 8px;
     }
     .v2-db-section-h .v2-db-section-link:hover{text-decoration:underline}
@@ -1223,7 +1183,7 @@
     }
     .v2-db-dx-pill{
       background:#eef2ff;color:#4338ca;border-radius:99px;
-      padding:4px 10px;font-size:11.5px;font-weight:700;
+      padding:4px 10px;font-size:12px;font-weight:700;
     }
     .v2-db-dx-pill.is-senior{background:#fef3c7;color:#92400e}
     .v2-db-dx-pill.is-fresh{background:#dcfce7;color:#166534}
@@ -1231,9 +1191,9 @@
     .v2-db-dx-fam{font-size:12.5px;color:#475569;margin-bottom:9px}
 
     .v2-db-weekly-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-    .v2-db-weekly-n{font-size:24px;font-weight:900;color:#0a0a0a}
+    .v2-db-weekly-n{font-size:24px;font-weight:800;color:#0a0a0a}
     .v2-db-weekly-target{font-size:12px;color:#64748b;font-weight:700}
-    .v2-db-weekly-meta{font-size:11.5px;color:#64748b;margin-top:5px}
+    .v2-db-weekly-meta{font-size:12px;color:#64748b;margin-top:5px}
 
     .v2-db-roadmap{padding:0;margin:0;list-style:none}
     .v2-db-roadmap li{
@@ -1252,7 +1212,7 @@
     .v2-db-roadmap-label{flex:1;color:#0a0a0a;font-weight:600}
     .v2-db-roadmap li.is-done .v2-db-roadmap-label{color:#64748b;text-decoration:line-through;text-decoration-thickness:1.5px}
     .v2-db-roadmap-state{
-      font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;
+      font-size:12px;font-weight:800;padding:2px 8px;border-radius:99px;
       text-transform:uppercase;letter-spacing:.3px;
     }
     .v2-db-roadmap-state.is-done{background:#dcfce7;color:#166534}
@@ -1265,42 +1225,36 @@
     }
     .v2-db-activity li:last-child{border-bottom:none}
     .v2-db-activity-emoji{font-size:15px;flex-shrink:0}
-    .v2-db-activity-meta{font-size:11px;color:#64748b;margin-top:1px}
+    .v2-db-activity-meta{font-size:12px;color:#64748b;margin-top:1px}
     .v2-db-activity-text{flex:1}
 
     .v2-db-empty{
-      background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+      background:linear-gradient(135deg,#4f46e5 0%,#4338ca 100%);
       color:#fff;border-radius:14px;padding:28px 20px;text-align:center;
       margin-bottom:13px;
     }
     .v2-db-empty-emoji{font-size:38px;margin-bottom:8px}
-    .v2-db-empty-h{font-size:20px;font-weight:900;margin-bottom:7px;line-height:1.3}
+    .v2-db-empty-h{font-size:20px;font-weight:800;margin-bottom:7px;line-height:1.3}
     .v2-db-empty-sub{font-size:13.5px;opacity:.92;line-height:1.65;margin-bottom:14px}
 
     /* ═══════════════════════════════════════════════════════════════════
        RESPONSIVE
     ════════════════════════════════════════════════════════════════════ */
     @media (max-width: 520px) {
-      .v2-top-row1{padding:10px 14px}
-      .v2-stepper{display:none}
-      .v2-top-row2{padding:8px 14px 10px}
       .v2-main{padding:18px 14px 50px}
       .v2-hero{padding:26px 18px 22px}
       .v2-hero h1{font-size:24px}
       .v2-h1{font-size:21px}
     }
 
-    @media (min-width: 521px) and (max-width: 720px) {
-      .v2-stepper{max-width:200px}
-    }
 
     .is-on.v2-chip,.v2-chip.is-on{background:#4f46e5;color:#fff}
     .v2-link{color:#4338ca;font-weight:700;cursor:pointer;text-decoration:underline;display:inline-block;padding:9px 4px}
     .v2-plan{position:relative;margin-bottom:12px}
     .v2-plan.is-hot{border:2px solid #4f46e5}
-    .v2-plan-tag{position:absolute;top:-11px;right:14px;background:#4f46e5;color:#fff;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:99px}
+    .v2-plan-tag{position:absolute;top:-11px;right:14px;background:#4f46e5;color:#fff;font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px}
     .v2-plan-name{font-weight:800;font-size:16px}
-    .v2-plan-price{font-size:30px;font-weight:900;margin:2px 0}
+    .v2-plan-price{font-size:30px;font-weight:800;margin:2px 0}
     .v2-plan-price span{font-size:13px;color:#64748b;font-weight:700}
     .v2-plan-blurb{font-size:13px;color:#64748b;margin-bottom:8px}
     .v2-plan-feats{margin:0 0 12px;padding:0 18px;font-size:13.5px;line-height:1.9}
@@ -1311,7 +1265,7 @@
     .lp{--ink:#0b1020;--mut:#5b6478;--ind:#4f46e5;--ind2:#4338ca;--bg2:#eef2ff;--ok:#16a34a;--line:#e6e8f2;overflow-x:clip}
     .lp section{margin-bottom:56px}
     .lp-eyebrow{display:inline-block;font-size:12.5px;font-weight:800;color:var(--ind);background:#e0e7ff;border-radius:99px;padding:5px 12px;margin-bottom:12px}
-    .lp h2{font-size:24px;font-weight:900;line-height:1.35;letter-spacing:-.3px;color:var(--ink);margin-bottom:8px}
+    .lp h2{font-size:24px;font-weight:800;line-height:1.35;letter-spacing:0;color:var(--ink);margin-bottom:8px}
     .lp .lp-lead{font-size:14.5px;color:var(--mut);line-height:1.8;max-width:620px}
     .lp-head{margin-bottom:22px}
     .lp-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 26px;border-radius:14px;background:var(--ind);color:#fff;font-weight:800;font-size:16px;font-family:inherit;border:0;cursor:pointer;box-shadow:0 10px 24px -10px rgba(79,70,229,.7);transition:transform .15s,background .15s}
@@ -1323,43 +1277,43 @@
 
     /* hero */
     .lp-hero{display:grid;gap:26px;align-items:center;background:radial-gradient(120% 90% at 100% 0,#e0e7ff 0,#f5f3ff 45%,#fff 100%);border:1px solid var(--line);border-radius:22px;padding:28px 18px 26px;position:relative;overflow:hidden}
-    .lp-hero h1{font-size:31px;line-height:1.3;font-weight:900;letter-spacing:-.6px;color:var(--ink);margin-bottom:12px}
+    .lp-hero h1{font-size:31px;line-height:1.3;font-weight:800;letter-spacing:0;color:var(--ink);margin-bottom:12px}
     .lp-hero h1 em{font-style:normal;color:var(--ind);position:relative;white-space:nowrap}
     .lp-hero h1 em::after{content:"";position:absolute;right:0;left:0;bottom:-2px;height:7px;background:#c7d2fe;z-index:-1;border-radius:4px;transform-origin:right;animation:lpUnder 1s .4s both cubic-bezier(.2,.8,.2,1)}
     .lp-hero p{font-size:15.5px;color:#434b5f;line-height:1.85;margin-bottom:20px}
     .lp-cta-row{display:flex;flex-direction:column;gap:10px}
     .lp-meta{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:16px;font-size:12.5px;font-weight:700;color:#475569}
-    .lp-meta span::before{content:"✓";color:var(--ok);font-weight:900;margin-left:5px}
+    .lp-meta span::before{content:"✓";color:var(--ok);font-weight:800;margin-left:5px}
     .lp-blob{position:absolute;width:260px;height:260px;border-radius:50%;background:#a5b4fc;filter:blur(70px);opacity:.35;top:-60px;left:-60px;animation:lpFloat 9s ease-in-out infinite;pointer-events:none}
 
     /* phone mock */
     .lp-phone{width:236px;height:430px;margin:0 auto;background:#0b1020;border-radius:36px;padding:9px;box-shadow:0 30px 60px -20px rgba(49,46,129,.55);position:relative;animation:lpFloat 7s ease-in-out infinite}
     .lp-screen{position:relative;width:100%;height:100%;background:#fafafe;border-radius:28px;overflow:hidden;direction:rtl}
-    .lp-bar{display:flex;align-items:center;gap:6px;padding:12px 12px 8px;font-size:11px;font-weight:900;color:var(--ink)}
-    .lp-bar i{width:20px;height:20px;border-radius:6px;background:var(--ind);color:#fff;font-style:normal;display:grid;place-items:center;font-size:11px}
+    .lp-bar{display:flex;align-items:center;gap:6px;padding:12px 12px 8px;font-size:12px;font-weight:800;color:var(--ink)}
+    .lp-bar i{width:20px;height:20px;border-radius:6px;background:var(--ind);color:#fff;font-style:normal;display:grid;place-items:center;font-size:12px}
     .lp-pane{position:absolute;inset:40px 0 0;padding:6px 12px;opacity:0;animation:lpPane 12s infinite}
     .lp-pane:nth-child(3){animation-delay:4s}
     .lp-pane:nth-child(4){animation-delay:8s}
-    .lp-pane h4{font-size:12.5px;font-weight:900;margin-bottom:8px;color:var(--ink)}
+    .lp-pane h4{font-size:12.5px;font-weight:800;margin-bottom:8px;color:var(--ink)}
     .lp-gauge{width:120px;height:120px;margin:4px auto 8px;display:block}
     .lp-gauge .arc{stroke-dasharray:289;stroke-dashoffset:289;animation:lpArc 12s infinite}
-    .lp-chip{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin-bottom:6px;color:#334155}
+    .lp-chip{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin-bottom:6px;color:#334155}
     .lp-chip b{color:var(--ok)}
     .lp-chip.warn b{color:#d97706}
     .lp-cv{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;height:250px}
     .lp-cv s{display:block;height:7px;border-radius:4px;background:#e2e8f0;margin-bottom:7px;text-decoration:none;transform-origin:right;animation:lpLine 12s infinite}
     .lp-cv s.h{background:#c7d2fe;height:10px;width:55%}
     .lp-cv s:nth-child(2){animation-delay:.2s}.lp-cv s:nth-child(3){animation-delay:.35s}.lp-cv s:nth-child(4){animation-delay:.5s}.lp-cv s:nth-child(5){animation-delay:.65s}.lp-cv s:nth-child(6){animation-delay:.8s}.lp-cv s:nth-child(7){animation-delay:.95s}.lp-cv s:nth-child(8){animation-delay:1.1s}
-    .lp-job{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 10px;margin-bottom:7px;font-size:10.5px;color:#475569;display:flex;justify-content:space-between;align-items:center;gap:6px}
-    .lp-job b{display:block;font-size:11.5px;color:var(--ink)}
-    .lp-job u{text-decoration:none;font-weight:800;color:var(--ind);background:#e0e7ff;border-radius:8px;padding:3px 8px;font-size:10px}
-    .lp-tag{position:absolute;bottom:-14px;right:50%;transform:translateX(50%);font-size:11px;font-weight:700;color:#64748b;background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px 10px;white-space:nowrap}
-    .lp-float{position:absolute;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:11.5px;font-weight:800;box-shadow:0 12px 28px -12px rgba(15,23,42,.35);animation:lpFloat 6s ease-in-out infinite;display:none}
+    .lp-job{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 10px;margin-bottom:7px;font-size:12px;color:#475569;display:flex;justify-content:space-between;align-items:center;gap:6px}
+    .lp-job b{display:block;font-size:12px;color:var(--ink)}
+    .lp-job u{text-decoration:none;font-weight:800;color:var(--ind);background:#e0e7ff;border-radius:8px;padding:3px 8px;font-size:12px}
+    .lp-tag{position:absolute;bottom:-14px;right:50%;transform:translateX(50%);font-size:12px;font-weight:700;color:#64748b;background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px 10px;white-space:nowrap}
+    .lp-float{position:absolute;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:12px;font-weight:800;box-shadow:0 12px 28px -12px rgba(15,23,42,.35);animation:lpFloat 6s ease-in-out infinite;display:none}
 
     /* stats */
     .lp-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .lp-stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 12px;text-align:center}
-    .lp-stat b{display:block;font-size:34px;font-weight:900;color:var(--ind);line-height:1.1;font-variant-numeric:tabular-nums}
+    .lp-stat b{display:block;font-size:34px;font-weight:800;color:var(--ind);line-height:1.1;font-variant-numeric:tabular-nums}
     .lp-stat span{display:block;margin-top:6px;font-size:12.5px;color:var(--mut);font-weight:700;line-height:1.5}
 
     /* how it works */
@@ -1370,15 +1324,15 @@
     .lp-step{position:relative;display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;z-index:1}
     .lp-node{flex:none;width:54px;height:54px;border-radius:50%;background:#fff;border:3px solid #c7d2fe;display:grid;place-items:center;color:var(--ind);transition:.5s;transition-delay:var(--d,0s)}
     .lp-flow.in .lp-node{background:var(--ind);color:#fff;border-color:var(--ind);box-shadow:0 0 0 6px #e0e7ff}
-    .lp-step b{display:block;font-size:16px;font-weight:900;color:var(--ink);margin-bottom:3px}
+    .lp-step b{display:block;font-size:16px;font-weight:800;color:var(--ink);margin-bottom:3px}
     .lp-step span{font-size:13px;color:var(--mut);line-height:1.7}
-    .lp-step em{display:inline-block;margin-top:6px;font-style:normal;font-size:11.5px;font-weight:800;color:var(--ok);background:#dcfce7;border-radius:99px;padding:2px 10px}
+    .lp-step em{display:inline-block;margin-top:6px;font-style:normal;font-size:12px;font-weight:800;color:var(--ok);background:#dcfce7;border-radius:99px;padding:2px 10px}
     .lp-step em.paid{color:#92400e;background:#fef3c7}
 
     /* proof */
     .lp-proof{display:grid;gap:10px}
     .lp-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
-    .lp-card h3{font-size:16px;font-weight:900;margin-bottom:6px;color:var(--ink)}
+    .lp-card h3{font-size:16px;font-weight:800;margin-bottom:6px;color:var(--ink)}
     .lp-card p{font-size:13.5px;color:var(--mut);line-height:1.8}
     .lp-ats{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
     .lp-ats span{font-size:12px;font-weight:800;color:#3730a3;background:#eef2ff;border:1px solid #c7d2fe;border-radius:99px;padding:4px 12px;direction:ltr}
@@ -1395,13 +1349,13 @@
     .lp-plans{display:grid;gap:12px}
     .lp-plan{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:20px;position:relative}
     .lp-plan.hot{border-color:var(--ind);box-shadow:0 20px 40px -22px rgba(79,70,229,.6)}
-    .lp-plan .tag{position:absolute;top:-12px;right:18px;background:var(--ind);color:#fff;font-size:11.5px;font-weight:800;border-radius:99px;padding:3px 12px}
-    .lp-plan h3{font-size:17px;font-weight:900}
-    .lp-plan .pr{font-size:38px;font-weight:900;color:var(--ink);line-height:1.2;margin:6px 0 2px;direction:ltr;text-align:right}
+    .lp-plan .tag{position:absolute;top:-12px;right:18px;background:var(--ind);color:#fff;font-size:12px;font-weight:800;border-radius:99px;padding:3px 12px}
+    .lp-plan h3{font-size:17px;font-weight:800}
+    .lp-plan .pr{font-size:38px;font-weight:800;color:var(--ink);line-height:1.2;margin:6px 0 2px;direction:ltr;text-align:right}
     .lp-plan .pr small{font-size:13px;color:var(--mut);font-weight:700;margin-right:4px}
     .lp-plan ul{list-style:none;margin:12px 0 16px}
     .lp-plan li{font-size:13.5px;color:#334155;padding:5px 0;line-height:1.6}
-    .lp-plan li::before{content:"✓";color:var(--ok);font-weight:900;margin-left:8px}
+    .lp-plan li::before{content:"✓";color:var(--ok);font-weight:800;margin-left:8px}
     .lp-plan .lp-btn{width:100%}
     .lp-free{background:linear-gradient(135deg,#ecfdf5,#f0fdf4);border:1px solid #bbf7d0;border-radius:16px;padding:14px 16px;font-size:14px;font-weight:700;color:#166534;line-height:1.7;margin-bottom:14px}
 
@@ -1469,6 +1423,145 @@
       .lp-gauge .arc{stroke-dashoffset:95}
       .lp-cv s{transform:none}
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       جاهزية التوظيف (#/interview) — assessments UI, same tokens as the rest
+    ════════════════════════════════════════════════════════════════════ */
+    .as-wrap{display:block}
+    .as-h1{font-size:24px;font-weight:800;color:var(--ink);line-height:1.4;margin-bottom:6px}
+    .as-sub{font-size:15px;color:var(--mut);line-height:1.8;margin-bottom:16px}
+    .as-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+    .as-card h2{font-size:17px;font-weight:800;color:var(--ink);margin-bottom:4px;line-height:1.5}
+    .as-card p{font-size:14.5px;color:#475569;line-height:1.8}
+    .as-muted{font-size:13.5px;color:var(--mut);line-height:1.7}
+    .as-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:12px;background:var(--ind);color:#fff;font-size:15.5px;font-weight:800;cursor:pointer;border:0;font-family:inherit;transition:background .15s,transform .08s}
+    .as-btn:hover{background:var(--ind2)}
+    .as-btn:active{transform:scale(.98)}
+    .as-btn.block{width:100%}
+    .as-btn.ghost{background:#fff;color:var(--ind2);border:1.5px solid #c7d2fe}
+    .as-btn.ghost:hover{background:var(--ind-bg)}
+    .as-btn.danger{background:#fff;color:var(--bad);border:1.5px solid #fecaca}
+    .as-btn[disabled]{opacity:.5;cursor:not-allowed}
+    .as-btn:focus-visible,.as-opt:focus-visible,.as-seg button:focus-visible,.as-row:focus-visible,.as-chip:focus-visible,.as-pick:focus-visible{outline:3px solid #a5b4fc;outline-offset:2px}
+    .as-link{display:inline-flex;align-items:center;background:none;border:0;color:var(--ind2);font-weight:700;font-size:14.5px;min-height:44px;padding:0 6px;cursor:pointer;text-decoration:underline;text-underline-offset:4px;font-family:inherit}
+    .as-badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;border-radius:99px;padding:2px 10px;background:#fef3c7;color:#92400e;white-space:nowrap}
+    .as-badge.pro{background:#ede9fe;color:#5b21b6}
+    .as-badge.ok{background:#dcfce7;color:#166534}
+    .as-badge.free{background:#e0e7ff;color:#3730a3}
+    .as-err{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:12px;padding:12px 14px;font-size:14.5px;line-height:1.7;margin-bottom:14px}
+    .as-note{background:#fffbeb;border:1px solid #fde68a;color:#78350f;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.8;margin-bottom:14px}
+    .as-info{background:var(--ind-bg);border:1px solid #c7d2fe;color:#312e81;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.8;margin-bottom:14px}
+    .as-skel{background:linear-gradient(90deg,#eef0f8 25%,#f6f7fc 50%,#eef0f8 75%);background-size:200% 100%;animation:asSk 1.2s infinite;border-radius:14px;height:110px;margin-bottom:14px}
+    @keyframes asSk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    /* readiness */
+    .as-ready{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:center}
+    .as-ring{position:relative;width:132px;height:132px}
+    .as-ring svg{width:132px;height:132px;transform:rotate(-90deg)}
+    .as-ring .bg{stroke:#e0e7ff}
+    .as-ring .fg{stroke:var(--ind);transition:stroke-dasharray .8s}
+    .as-ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:34px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+    .as-ring b small{display:block;font-size:12px;font-weight:700;color:var(--mut);margin-top:-6px}
+    .as-band{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:4px}
+    .as-bars{display:grid;gap:10px;margin-top:14px}
+    .as-bar{display:grid;grid-template-columns:96px 1fr 40px;gap:10px;align-items:center;font-size:14px;font-weight:700;color:#334155}
+    .as-bar i{display:block;height:10px;border-radius:99px;background:#e8ebf6;overflow:hidden;position:relative}
+    .as-bar i s{display:block;height:100%;border-radius:99px;background:var(--ind)}
+    .as-bar i em{position:absolute;top:0;bottom:0;background:rgba(22,163,74,.28);border-inline:2px solid #16a34a}
+    .as-bar span{text-align:left;font-variant-numeric:tabular-nums;color:var(--mut)}
+    /* track picker */
+    .as-seg{display:flex;gap:6px;flex-wrap:wrap}
+    .as-seg button{min-height:44px;padding:0 16px;border-radius:99px;border:1.5px solid #d9def0;background:#fff;color:#334155;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit}
+    .as-seg button.on{background:var(--ind);border-color:var(--ind);color:#fff}
+    .as-seg button[disabled]{opacity:.55}
+    /* plan list */
+    .as-plan{list-style:none;display:grid;gap:8px}
+    .as-row{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;text-align:right;width:100%;font-family:inherit}
+    .as-row:hover{border-color:#c7d2fe;background:#fafaff}
+    .as-row .n{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#eef0f8;color:#475569;font-weight:800;font-size:14px}
+    .as-row.done .n{background:var(--ok);color:#fff}
+    .as-row.next{border-color:var(--ind);box-shadow:0 0 0 3px #e0e7ff}
+    .as-row.next .n{background:var(--ind);color:#fff}
+    .as-row .t{flex:1;min-width:0;font-size:15.5px;font-weight:700;color:var(--ink);line-height:1.5}
+    .as-row .t small{display:block;font-size:12.5px;font-weight:600;color:var(--mut)}
+    .as-row.locked .t{color:#64748b}
+    /* intro / lock */
+    .as-facts{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+    .as-fact{background:#f3f4fb;border-radius:10px;padding:6px 12px;font-size:13.5px;font-weight:700;color:#334155}
+    .as-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:0 4px}
+    .as-switch label{font-size:15px;font-weight:700;color:var(--ink);flex:1}
+    .as-switch input{width:22px;height:22px;accent-color:var(--ind)}
+    /* runner */
+    .as-run-top{position:sticky;top:var(--v2-top-h,60px);z-index:6;background:rgba(250,250,254,.96);backdrop-filter:blur(8px);padding:10px 0 8px;margin:0 0 10px}
+    .as-run-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;font-weight:700;color:#334155;margin-bottom:8px}
+    .as-prog{height:8px;border-radius:99px;background:#e0e7ff;overflow:hidden}
+    .as-prog s{display:block;height:100%;background:var(--ind);border-radius:99px;transition:width .25s}
+    .as-timer{font-variant-numeric:tabular-nums;font-weight:800;font-size:16px;color:var(--ind2);background:var(--ind-bg);border-radius:10px;padding:4px 12px;direction:ltr}
+    .as-timer.warn{background:#fef3c7;color:#92400e}
+    .as-timer.crit{background:#fee2e2;color:#991b1b}
+    .as-langsw{display:inline-flex;border:1.5px solid #d9def0;border-radius:99px;overflow:hidden;background:#fff}
+    .as-langsw button{min-height:44px;min-width:44px;padding:0 12px;font-size:13.5px;font-weight:800;color:#475569;font-family:inherit}
+    .as-langsw button.on{background:var(--ind);color:#fff}
+    .as-q{font-size:19px;font-weight:700;color:var(--ink);line-height:1.8;margin:6px 0 14px}
+    .as-q.en,.as-en{direction:ltr;text-align:left}
+    .as-passage{background:#f6f7fc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.9;color:#334155;margin-bottom:12px}
+    .as-opts{display:grid;gap:10px}
+    .as-opt{display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 14px;border:1.5px solid #d9def0;border-radius:14px;background:#fff;font-size:16px;font-weight:600;color:var(--ink);cursor:pointer;text-align:right;width:100%;font-family:inherit;line-height:1.6}
+    .as-opt:hover{border-color:#a5b4fc;background:#fafaff}
+    .as-opt .k{flex:none;width:30px;height:30px;border-radius:50%;background:#eef0f8;display:grid;place-items:center;font-size:13.5px;font-weight:800;color:#475569}
+    .as-opt.on{border-color:var(--ind);background:var(--ind-bg)}
+    .as-opt.on .k{background:var(--ind);color:#fff}
+    .as-likert{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+    .as-likert .as-opt{flex-direction:column;justify-content:center;text-align:center;min-height:76px;padding:8px 4px;font-size:13px;gap:6px}
+    .as-sjt-opt{border:1.5px solid #d9def0;border-radius:14px;padding:12px 14px;background:#fff}
+    .as-sjt-opt p{font-size:15.5px;line-height:1.8;color:var(--ink);margin-bottom:10px}
+    .as-sjt-opt .picks{display:flex;gap:8px;flex-wrap:wrap}
+    .as-pick{min-height:44px;padding:0 14px;border-radius:99px;border:1.5px solid #d9def0;background:#fff;font-size:14px;font-weight:700;color:#334155;cursor:pointer;font-family:inherit}
+    .as-pick.most.on{background:#16a34a;border-color:#16a34a;color:#fff}
+    .as-pick.least.on{background:#dc2626;border-color:#dc2626;color:#fff}
+    .as-sjt-opt.m{border-color:#16a34a;background:#f0fdf4}
+    .as-sjt-opt.l{border-color:#dc2626;background:#fef2f2}
+    .as-ta{width:100%;min-height:190px;border:1.5px solid #d9def0;border-radius:14px;padding:14px;font-size:16px;line-height:1.8;color:var(--ink);background:#fff;resize:vertical;font-family:inherit}
+    .as-ta:focus{outline:3px solid #c7d2fe;border-color:var(--ind)}
+    .as-chip{display:inline-flex;align-items:center;font-size:13px;font-weight:700;background:var(--ind-bg);color:var(--ind2);border-radius:99px;padding:3px 12px;margin-bottom:8px}
+    .as-star{margin:10px 0}
+    .as-star summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;font-size:14.5px;color:var(--ind2);list-style:none}
+    .as-star summary::-webkit-details-marker{display:none}
+    .as-star ul{list-style:none;display:grid;gap:6px;padding:4px 0 8px}
+    .as-star li{font-size:14px;line-height:1.7;color:#334155;background:#f6f7fc;border-radius:10px;padding:8px 12px}
+    .as-nav{display:flex;gap:10px;margin-top:18px}
+    .as-nav .as-btn{flex:1}
+    .as-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:8px;margin:10px 0}
+    .as-grid button{min-height:44px;border-radius:10px;border:1.5px solid #d9def0;background:#fff;font-weight:800;font-size:14px;color:#475569;font-family:inherit}
+    .as-grid button.a{background:var(--ind-bg);border-color:#a5b4fc;color:var(--ind2)}
+    .as-grid button.cur{outline:3px solid #a5b4fc}
+    .as-wc{font-size:13px;color:var(--mut);margin-top:6px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    /* report */
+    .as-score{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .as-score b{font-size:44px;font-weight:800;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
+    .as-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+    .as-stat{background:#f6f7fc;border-radius:12px;padding:10px;text-align:center}
+    .as-stat b{display:block;font-size:22px;font-weight:800;color:var(--ink)}
+    .as-stat span{font-size:12.5px;color:var(--mut);font-weight:700}
+    .as-rev{border-top:1px solid var(--line);padding:14px 0}
+    .as-rev:first-child{border-top:0}
+    .as-rev .ok{color:var(--ok);font-weight:800}
+    .as-rev .no{color:var(--bad);font-weight:800}
+    .as-expl{background:#f6f7fc;border-radius:12px;padding:10px 12px;font-size:14.5px;line-height:1.8;color:#334155;margin-top:8px}
+    .as-steps{list-style:none;display:grid;gap:8px}
+    .as-steps li{background:#f6f7fc;border-radius:12px;padding:10px 14px;font-size:14.5px;line-height:1.8;color:#334155}
+    .as-star-row{display:flex;gap:6px;margin:6px 0}
+    .as-star-row span{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-weight:800;font-size:14px;background:#eef0f8;color:#94a3b8;direction:ltr}
+    .as-star-row span.y{background:#dcfce7;color:#166534}
+    .as-locked-prev{border:1.5px dashed #c7d2fe;background:#fafaff;border-radius:16px;padding:16px;margin-bottom:14px}
+    @media (max-width:420px){
+      .as-ready{grid-template-columns:1fr;justify-items:center;text-align:center}
+      .as-bar{grid-template-columns:78px 1fr 38px;font-size:13px}
+      .as-likert .as-opt{font-size:12px;min-height:84px}
+      .as-h1{font-size:22px}
+    }
+    @media (min-width:900px){
+      .as-run-top{top:var(--v2-top-h,60px)}
+    }
   </style>
 </head>
 <body>
@@ -1477,61 +1570,31 @@
     <!-- ═══════════════════════════════════════════════════════════════════
          TOP BAR — sticky, always visible
     ═══════════════════════════════════════════════════════════════════ -->
-    <header class="v2-top">
+    <header class="v2-top" id="v2Top">
       <div class="v2-top-row1">
-        <a class="v2-logo" href="#/landing" onclick="v2Go('#/landing');return false;">
+        <a class="v2-logo" href="#/landing" onclick="v2Go('#/landing');return false;" aria-label="دربي — الصفحة الرئيسية">
           <span class="v2-wordmark">دربي<i></i></span>
         </a>
-        <nav class="v2-lp-nav" aria-label="روابط الصفحة">
-          <a href="#lpHow" onclick="document.querySelector('.lp-how,#lpHow')&&document.querySelector('.lp-how,#lpHow').scrollIntoView({behavior:'smooth'});return false;">كيف يشتغل</a>
-          <a href="#lpPricing" onclick="document.getElementById('lpPricing')&&document.getElementById('lpPricing').scrollIntoView({behavior:'smooth'});return false;">الأسعار</a>
-          <a href="#lpFaq" onclick="document.querySelector('.lp-faq')&&document.querySelector('.lp-faq').scrollIntoView({behavior:'smooth'});return false;">أسئلة</a>
-        </nav>
-        <div class="v2-lp-actions">
-          <a class="v2-lp-login" href="#/account" onclick="v2Go('#/account');return false;">دخول</a>
-          <a class="v2-lp-cta" href="#/track" onclick="v2Go('#/track');return false;">ابدأ مجاناً</a>
-        </div>
-        <div class="v2-stepper" id="v2Stepper" aria-label="مرحلتك في الرحلة">
-          <span class="v2-step" data-step="1"></span>
-          <span class="v2-step" data-step="2"></span>
-          <span class="v2-step" data-step="3"></span>
-          <span class="v2-step" data-step="4"></span>
-          <span class="v2-step" data-step="5"></span>
-        </div>
-        <div class="v2-top-actions">
-          <button class="v2-icon-btn" onclick="v2ToggleDrawer()" aria-label="القائمة">☰</button>
-          <button class="v2-icon-btn v2-avatar" onclick="v2Go('#/account')" aria-label="حسابي">د</button>
-        </div>
+        <nav class="v2-nav" id="v2Nav" aria-label="أقسام دربي"></nav>
+        <div class="v2-actions" id="v2Actions"></div>
+        <button class="v2-menu-btn" id="v2MenuBtn" onclick="v2ToggleSheet()" aria-haspopup="dialog" aria-expanded="false" aria-controls="v2Sheet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          <span>القائمة</span>
+        </button>
       </div>
       <div class="v2-top-row2" id="v2TopRow2">
         <button class="v2-back" id="v2Back" onclick="v2Back()" style="display:none">← رجوع</button>
-        <h1 class="v2-title" id="v2Title">—</h1>
-        <div class="v2-action-slot" id="v2ActionSlot"></div>
+        <p class="v2-title" id="v2Title">—</p>
+        <span class="v2-stepno" id="v2StepNo"></span>
       </div>
     </header>
 
-    <!-- ═══════════════════════════════════════════════════════════════════
-         DRAWER NAV — opened by ☰
-    ═══════════════════════════════════════════════════════════════════ -->
-    <div class="v2-drawer-overlay" id="v2DrawerOverlay" onclick="v2ToggleDrawer()"></div>
-    <nav class="v2-drawer" id="v2Drawer" aria-label="قائمة التنقل">
-      <div class="v2-drawer-head">
-        <h3>القائمة</h3>
-        <button class="v2-drawer-close" onclick="v2ToggleDrawer()" aria-label="إغلاق">×</button>
-      </div>
-      <div class="v2-drawer-list">
-        <a data-route="#/dashboard" onclick="v2Go('#/dashboard');return false;">🏠 لوحتي</a>
-        <a data-route="#/diagnosis" onclick="v2Go('#/diagnosis');return false;">🎯 التشخيص</a>
-        <a data-route="#/cv-output" onclick="v2Go('#/cv-output');return false;">📝 سيرتي</a>
-        <a data-route="#/jobs" onclick="v2Go('#/jobs');return false;">💼 الوظائف</a>
-        <a data-route="#/tracker" onclick="v2Go('#/tracker');return false;">📋 تقديماتي</a>
-        <a data-route="#/interview" onclick="v2Go('#/interview');return false;">🎤 تدريب المقابلة</a>
-        <a data-route="#/pricing" onclick="v2Go('#/pricing');return false;">💳 الخطط والأسعار</a>
-        <a data-route="#/account" onclick="v2Go('#/account');return false;">👤 حسابي</a>
-        <a data-route="#/legal" onclick="v2Go('#/legal');return false;">📞 الخصوصية والشروط</a>
-        <a class="v2-drawer-logout" onclick="v2Logout();return false;">🚪 تسجيل خروج</a>
-      </div>
-    </nav>
+    <!-- Menu sheet: same links as the header, filled by v2RenderNav() -->
+    <div class="v2-sheet-overlay" id="v2SheetOverlay" onclick="v2ToggleSheet(false)"></div>
+    <div class="v2-sheet" id="v2Sheet" role="dialog" aria-modal="true" aria-label="القائمة"></div>
+
+    <!-- Bottom tabs (phones/tablets, app screens) -->
+    <nav class="v2-tabbar" id="v2Tabbar" aria-label="التنقل السريع"></nav>
 
     <!-- ═══════════════════════════════════════════════════════════════════
          MAIN — router renders here
@@ -1833,8 +1896,8 @@
           why:'الباكدج جاهز. الخطوة العملية الآن: قدّم وسجّل التقديم.', cta:'افتح الوظيفة وقدّم' };
       }
       if (_hasReplyOrInterview() && !_interviewStarted()){
-        return { key:'interview_prep', title:'ابدأ تدريب المقابلة',
-          why:'وصلك رد أو مقابلة. نحول الوظيفة لجلسة تدريب على ٦ أسئلة قبل اللقاء.', cta:'ابدأ التدريب' };
+        return { key:'interview_prep', title:'ابدأ جاهزية التوظيف',
+          why:'وصلك رد أو مقابلة. جهّز نفسك قبل اللقاء: مقابلة تدريبية واختبارات جاهزية.', cta:'ابدأ التدريب' };
       }
       return { key:'follow_up', title:'تابع حالة تقديماتك',
         why:'سجل الردود والرفض والمقابلات عشان دربي يقرأ النمط ويعدّل خطتك.', cta:'افتح تقديماتي' };
@@ -1919,8 +1982,8 @@
 
   // ── Plans — Ali's prices (2026-11-18). Stripe is the only payment path.
   var V2_PLANS = [
-    { key: 'starter',  name: 'Starter',  price: '$9',   per: '/شهر',       blurb: 'للبداية الجادة', feats: ['تجهيز تقديم لكل وظيفة', 'تدريب مقابلة كامل ٦ أسئلة مع تقييم', 'متابعة تقديماتك'] },
-    { key: 'pro',      name: 'Pro',      price: '$19',  per: '/شهر',       blurb: 'تقديم وتدريب بلا حد', hot: true, feats: ['كل مميزات Starter', 'تجهيز تقديمات بلا حد', 'جلسات تدريب بلا حد'] },
+    { key: 'starter',  name: 'Starter',  price: '$9',   per: '/شهر',       blurb: 'للبداية الجادة', feats: ['تجهيز تقديم لكل وظيفة', 'كل اختبارات جاهزية التوظيف مع شرح (3 محاولات لكل اختبار)', 'متابعة تقديماتك'] },
+    { key: 'pro',      name: 'Pro',      price: '$19',  per: '/شهر',       blurb: 'تقديم وتدريب بلا حد', hot: true, feats: ['كل مميزات Starter', 'تجهيز تقديمات بلا حد', 'المقابلة النهائية التجريبية بتقرير كامل', 'مقابلة بالإنجليزي ومحاولات بلا حد'] },
     { key: 'lifetime', name: 'Founder',  price: '$199', per: ' · مرة وحدة', blurb: 'ادفع مرة وحدة وخلاص', feats: ['كل مميزات Pro للأبد', 'بدون اشتراك شهري', 'سعر المؤسسين'] },
   ];
 
@@ -1944,7 +2007,7 @@
     var nextQ = next ? ('?next=' + encodeURIComponent(next)) : '';
     app.innerHTML = ''
       + '<h2 class="v2-h1">' + (signup ? 'سوّ <span class="v2-accent">حسابك</span> — ثواني' : 'أهلاً <span class="v2-accent">برجعتك</span>') + '</h2>'
-      + '<p class="v2-sub">' + (signup ? 'الحساب يحفظ تقدمك ويفتح تجهيز التقديم وتدريب المقابلة. ما نطلب غير بريدك.' : 'ادخل ببريدك وكلمة المرور.') + '</p>'
+      + '<p class="v2-sub">' + (signup ? 'الحساب يحفظ تقدمك ونتائج اختبارات الجاهزية. ما نطلب غير بريدك.' : 'ادخل ببريدك وكلمة المرور.') + '</p>'
       + '<div class="v2-card">'
       +   '<label class="v2-input-label" for="v2AuthEmail">البريد الإلكتروني</label>'
       +   '<input type="email" id="v2AuthEmail" class="v2-input" dir="ltr" autocomplete="email" inputmode="email" placeholder="name@example.com" />'
@@ -1996,7 +2059,7 @@
       +   '<div class="v2-plan-price">' + p.price + '<span>' + p.per + '</span></div>'
       +   '<div class="v2-plan-blurb">' + p.blurb + '</div>'
       +   '<ul class="v2-plan-feats">' + p.feats.map(function(f){ return '<li>' + escapeHtml(f) + '</li>'; }).join('') + '</ul>'
-      +   '<button class="v2-btn ' + (p.hot ? 'v2-btn-primary' : 'v2-btn-secondary') + '" onclick="v2Checkout(\'' + p.key + '\')">' + (p.key === 'lifetime' ? 'ادفع $199 مرة وحدة' : 'اشترك — ' + p.price + ' شهرياً') + '</button>'
+      +   '<button class="v2-btn ' + (p.hot ? 'v2-btn-primary' : 'v2-btn-secondary') + '" onclick="v2Checkout(\'' + p.key + '\')">' + (p.key === 'lifetime' ? 'ادفع <bdi dir="ltr">$199</bdi> مرة وحدة' : 'اشترك — <bdi dir="ltr">' + p.price + '</bdi> شهرياً') + '</button>'
       + '</div>';
   }
   function renderPricing(app, route){
@@ -2008,7 +2071,7 @@
     }
     app.innerHTML = ''
       + '<h2 class="v2-h1">اختر <span class="v2-accent">خطتك</span></h2>'
-      + '<p class="v2-sub">' + (whyMsg || 'التشخيص والسيرة والوظائف مجانية. الخطة تفتح تجهيز التقديم بلا حد وتدريب المقابلة الكامل.') + '</p>'
+      + '<p class="v2-sub">' + (whyMsg || 'التشخيص والسيرة والوظائف مجانية. الخطة تفتح تجهيز التقديم وكل اختبارات جاهزية التوظيف.') + '</p>'
       + _v2PlanCard(V2_PLANS[1]) + _v2PlanCard(V2_PLANS[0]) + _v2PlanCard(V2_PLANS[2])
       + '<div id="v2PayMsg" class="v2-input-hint" style="text-align:center;margin-top:8px;min-height:18px" role="status"></div>'
       + '<div class="v2-input-hint" style="text-align:center">الدفع بالبطاقة عبر Stripe. ما نحفظ بيانات بطاقتك.</div>';
@@ -2209,7 +2272,7 @@
     '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderJobs' },
     '#/apply':        { title: 'جهّز تقديمك',           step: 4, back: '#/jobs',      render: 'renderApply' },
     '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/jobs',      render: 'renderTracker' },
-    '#/interview':    { title: 'تدريب المقابلة',         step: 5, back: '#/tracker',   render: 'renderInterview' },
+    '#/interview':    { title: 'جاهزية التوظيف',          step: 0, back: '#/dashboard', render: 'renderInterview' },
     '#/dashboard':    { title: 'لوحتي',                 step: 0, back: null,          render: 'renderDashboard' },
     '#/account':      { title: 'حسابي',                 step: 0, back: '#/dashboard', render: 'renderAccount' },
     '#/legal':        { title: 'الخصوصية والشروط',      step: 0, back: '#/dashboard', render: 'renderLegal' },
@@ -2282,86 +2345,149 @@
     if (!hash) hash = '#/landing';
     // Validate the bare path; if unknown, fall back to landing entirely.
     if (!V2_ROUTES[v2RouteKey(hash)]) hash = '#/landing';
+    var _idx = (window.history.state && window.history.state.idx) || 0;
     if (replace) {
-      window.history.replaceState({ route: hash }, '', hash);
+      window.history.replaceState({ route: hash, idx: _idx }, '', hash);
     } else {
-      window.history.pushState({ route: hash }, '', hash);
+      window.history.pushState({ route: hash, idx: _idx + 1 }, '', hash);
     }
     v2RenderRoute(hash);
   }
-  function v2Back(){
-    var current = location.hash || '#/landing';
-    var route = V2_ROUTES[current];
-    if (route && route.back) {
-      v2Go(route.back);
-    } else if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      v2Go('#/landing', true);
-    }
+  // One navigation system (UX pass 2026-11-18): header links + labelled menu sheet + bottom tabs share v2NavModel().
+  var V2_NO_TABBAR = { '#/landing':1, '#/signup':1, '#/login':1, '#/track':1, '#/dream':1, '#/location':1, '#/cv-upload':1, '#/cv-build':1, '#/quiz':1 };
+  var V2_TAB_OF = { '#/dashboard':'#/dashboard', '#/diagnosis':'#/dashboard', '#/cv-output':'#/dashboard', '#/cv-templates':'#/dashboard', '#/cv-builder':'#/dashboard',
+    '#/jobs':'#/jobs', '#/apply':'#/jobs', '#/tracker':'#/tracker', '#/interview':'#/interview', '#/account':'more', '#/pricing':'more', '#/legal':'more' };
+  var V2_TAB_ICONS = {
+    '#/dashboard': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+    '#/jobs': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg>',
+    '#/tracker': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
+    '#/interview': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+    'more': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>'
+  };
+  function v2CurrentBare(){ return v2RouteKey(location.hash || '#/landing'); }
+  function v2NavModel(){
+    var bare = v2CurrentBare();
+    var logged = V2User.isLoggedIn();
+    var hasDx = (typeof Diagnosis !== 'undefined') && Diagnosis.has();
+    var marketing = (bare === '#/landing') && !logged && !hasDx;
+    return { bare: bare, logged: logged, marketing: marketing };
   }
-  function v2ToggleDrawer(){
-    var d = document.getElementById('v2Drawer');
-    var o = document.getElementById('v2DrawerOverlay');
+  function v2LpScroll(sel){
+    if (v2CurrentBare() !== '#/landing') { v2Go('#/landing'); setTimeout(function(){ v2LpScroll(sel); }, 250); return; }
+    v2ToggleSheet(false);
+    var el = document.querySelector(sel);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function v2NavLink(label, hash, active, cls){
+    return '<a href="' + hash + '" class="' + (cls || '') + (active ? ' is-active' : '') + '"' + (active ? ' aria-current="page"' : '') + ' onclick="v2Go(\'' + hash + '\');return false;">' + label + '</a>';
+  }
+  function v2U0(){ var u = V2User.user(); return (u && u.email) || ''; }
+  function v2RenderNav(){
+    var m = v2NavModel(), bare = m.bare;
+    var nav = document.getElementById('v2Nav'), act = document.getElementById('v2Actions'), sheet = document.getElementById('v2Sheet'), tabs = document.getElementById('v2Tabbar');
+    if (!nav || !act || !sheet) return;
+    var mk = function(label, sel){ return '<a href="#" onclick="v2LpScroll(\'' + sel + '\');return false;">' + label + '</a>'; };
+    var navHtml, actHtml, sheetBody;
+    if (m.marketing) {
+      navHtml = mk('كيف يشتغل', '.lp-how,#lpHow') + mk('الأسعار', '#lpPricing') + mk('الأسئلة الشائعة', '.lp-faq');
+      actHtml = v2NavLink('دخول', '#/login', false, 'v2-act-link') + '<a href="#/track" class="v2-hd-cta" onclick="v2Go(\'#/track\');return false;">ابدأ مجاناً</a>';
+      sheetBody = '<div class="v2-sheet-grp"><h2>عن دربي</h2>' + mk('كيف يشتغل', '.lp-how,#lpHow') + mk('الأسعار', '#lpPricing') + mk('الأسئلة الشائعة', '.lp-faq') + v2NavLink('الخصوصية والشروط', '#/legal', false) + '</div>'
+        + '<div class="v2-sheet-foot"><a href="#/track" class="v2-btn v2-btn-primary" onclick="v2Go(\'#/track\');return false;">ابدأ التشخيص المجاني</a>'
+        + '<a href="#/login" class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/login\');return false;">عندي حساب — دخول</a></div>';
+    } else {
+      var items = [['لوحتي','#/dashboard'],['الوظائف','#/jobs'],['تقديماتي','#/tracker'],['المقابلة','#/interview'],['الأسعار','#/pricing']];
+      navHtml = items.map(function(i){ return v2NavLink(i[0], i[1], V2_TAB_OF[bare] === i[1] || bare === i[1]); }).join('');
+      actHtml = m.logged
+        ? v2NavLink('حسابي', '#/account', bare === '#/account', 'v2-act-link') + '<a href="#" class="v2-act-link v2-hide-md" onclick="v2Logout();return false;">خروج</a>'
+        : v2NavLink('دخول', '#/login', false, 'v2-act-link') + '<a href="#/track" class="v2-hd-cta v2-hide-md" onclick="v2Go(\'#/track\');return false;">ابدأ مجاناً</a>';
+      var jr = [['لوحتي','#/dashboard'],['تشخيصي','#/diagnosis'],['سيرتي','#/cv-output'],['الوظائف','#/jobs'],['تقديماتي','#/tracker'],['المقابلة (جاهزية التوظيف)','#/interview']];
+      var rest = [['الأسعار والخطط','#/pricing'],['حسابي','#/account'],['الخصوصية والشروط','#/legal']];
+      var lk = function(a){ return v2NavLink(a[0], a[1], bare === a[1]); };
+      sheetBody = '<div class="v2-sheet-grp"><h2>رحلتي</h2>' + jr.map(lk).join('') + '</div>'
+        + '<div class="v2-sheet-grp"><h2>الحساب</h2>' + rest.map(lk).join('') + '</div>'
+        + '<div class="v2-sheet-foot">' + (m.logged
+            ? '<button class="v2-sheet-out" onclick="v2Logout()">تسجيل خروج</button>'
+            : '<a href="#/login" class="v2-btn v2-btn-primary" onclick="v2Go(\'#/login\');return false;">تسجيل الدخول</a>') + '</div>';
+    }
+    nav.innerHTML = navHtml;
+    act.innerHTML = actHtml;
+    var who = (m.logged && v2U0()) ? '<span class="v2-sheet-who">' + escapeHtml(v2U0()) + '</span>' : '<span class="v2-sheet-who" style="direction:rtl">القائمة</span>';
+    sheet.innerHTML = '<div class="v2-sheet-head">' + who + '<button class="v2-sheet-close" onclick="v2ToggleSheet(false)">إغلاق</button></div>' + sheetBody;
+    // bottom tabs
+    document.body.classList.toggle('has-tabbar', !V2_NO_TABBAR[bare]);
+    if (tabs) {
+      var cur = V2_TAB_OF[bare] || '';
+      var tdef = [['لوحتي','#/dashboard'],['الوظائف','#/jobs'],['تقديماتي','#/tracker'],['المقابلة','#/interview']];
+      tabs.innerHTML = tdef.map(function(t){
+        return '<a href="' + t[1] + '" class="v2-tab' + (cur === t[1] ? ' is-active' : '') + '"' + (cur === t[1] ? ' aria-current="page"' : '') + ' onclick="v2Go(\'' + t[1] + '\');return false;">' + V2_TAB_ICONS[t[1]] + '<span>' + t[0] + '</span></a>';
+      }).join('') + '<button class="v2-tab' + (cur === 'more' ? ' is-active' : '') + '" onclick="v2ToggleSheet(true)" aria-haspopup="dialog">' + V2_TAB_ICONS.more + '<span>المزيد</span></button>';
+    }
+    var hdr = document.getElementById('v2Top');
+    if (hdr) document.documentElement.style.setProperty('--v2-top-h', hdr.offsetHeight + 'px');
+  }
+  var _v2SheetFocus = null;
+  function v2ToggleSheet(force){
+    var d = document.getElementById('v2Sheet'), o = document.getElementById('v2SheetOverlay'), b = document.getElementById('v2MenuBtn');
     if (!d || !o) return;
-    var open = !d.classList.contains('is-open');
+    var open = (typeof force === 'boolean') ? force : !d.classList.contains('is-open');
+    if (open === d.classList.contains('is-open')) return;
     d.classList.toggle('is-open', open);
     o.classList.toggle('is-open', open);
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
     document.body.style.overflow = open ? 'hidden' : '';
+    if (open) { _v2SheetFocus = document.activeElement; var c = d.querySelector('.v2-sheet-close'); if (c) c.focus(); }
+    else if (_v2SheetFocus && _v2SheetFocus.focus) { try { _v2SheetFocus.focus(); } catch(e){} _v2SheetFocus = null; }
+  }
+  function v2ToggleDrawer(){ v2ToggleSheet(); } // legacy name
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') v2ToggleSheet(false); });
+  function v2Back(){
+    var bare = v2CurrentBare();
+    var route = V2_ROUTES[bare];
+    var idx = (window.history.state && window.history.state.idx) || 0;
+    if (idx > 0) { window.history.back(); }                    // came from inside the app: return exactly where the user was
+    else if (route && route.back) { v2Go(route.back, true); }  // opened the link directly: go to the logical parent
+    else { v2Go('#/landing', true); }
   }
   function v2Logout(){
     V2User.clear();
-    v2ToggleDrawer();
+    v2ToggleSheet(false);
     v2Go('#/landing', true);
+    try { var t = document.createElement('div'); t.setAttribute('role','status'); t.textContent = 'تم تسجيل الخروج'; t.style.cssText = 'position:fixed;bottom:calc(24px + var(--v2-bottom-h,0px));left:50%;transform:translateX(-50%);background:#0b1020;color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;font-weight:700;z-index:9999'; document.body.appendChild(t); setTimeout(function(){ try{ document.body.removeChild(t); }catch(e){} }, 2200); } catch(e){}
   }
   function v2JourneyRoute(){
     var act = DarbiJourney.getNextAction();
     return V2_ROUTE_FOR_KEY[act.key] || '#/dashboard';
   }
 
-  // ── Shell render — updates the top bar to match the route ───────────────
+  // ── Shell render — updates the context row + shared navigation ───────────
   function v2RenderShell(routeInfo){
-    var titleEl   = document.getElementById('v2Title');
-    var backEl    = document.getElementById('v2Back');
-    var stepperEl = document.getElementById('v2Stepper');
-    var row2El    = document.getElementById('v2TopRow2');
-
+    var titleEl = document.getElementById('v2Title'), backEl = document.getElementById('v2Back'), stepEl = document.getElementById('v2StepNo'), row2El = document.getElementById('v2TopRow2');
     if (titleEl) titleEl.textContent = routeInfo.title || '';
     if (backEl)  backEl.style.display = routeInfo.back ? '' : 'none';
-    // Avatar: first letter of the signed-in email; a person icon for guests (was a fixed «د» for everyone).
-    var avEl = document.querySelector('.v2-avatar');
-    if (avEl) {
-      var _u = V2User.user();
-      avEl.textContent = (V2User.isLoggedIn() && _u && _u.email) ? _u.email.charAt(0).toUpperCase() : '👤';
-      avEl.setAttribute('aria-label', V2User.isLoggedIn() ? 'حسابي' : 'تسجيل الدخول');
-    }
-
-    // Step indicator: only show on journey routes (step 1-5). Hide on
-    // landing / dashboard / account / legal.
-    if (stepperEl) {
-      var showStep = routeInfo.step >= 1 && routeInfo.step <= 5;
-      stepperEl.style.display = showStep ? 'flex' : 'none';
-      if (showStep) {
-        var steps = stepperEl.querySelectorAll('.v2-step');
-        for (var i = 0; i < steps.length; i++) {
-          steps[i].classList.remove('is-done', 'is-now');
-          var n = i + 1;
-          if (n < routeInfo.step) steps[i].classList.add('is-done');
-          else if (n === routeInfo.step) steps[i].classList.add('is-now');
-        }
-      }
-    }
-    // Row 2 is only useful when there's a title or a back button. Hide on landing.
-    if (row2El) {
-      var hasContent = !!routeInfo.title || !!routeInfo.back;
-      row2El.style.display = hasContent ? '' : 'none';
-    }
-    // Highlight active drawer link.
-    var links = document.querySelectorAll('.v2-drawer-list a[data-route]');
-    for (var j = 0; j < links.length; j++) {
-      links[j].classList.toggle('is-active', links[j].getAttribute('data-route') === location.hash);
-    }
+    if (stepEl)  stepEl.textContent = (routeInfo.step >= 1 && routeInfo.step <= 5) ? ('الخطوة ' + routeInfo.step + ' من 5') : '';
+    if (row2El)  row2El.style.display = (routeInfo.title || routeInfo.back) ? '' : 'none';
+    document.title = (routeInfo.title ? routeInfo.title + ' — ' : '') + 'دربي';
+    v2RenderNav();
   }
+
+  // Digits: show Latin digits everywhere (prices are Latin; mixing with Arabic-Indic confused readers).
+  (function(){
+    var re = /[٠-٩]/g, tst = /[٠-٩]/;
+    function conv(s){ return s.replace(re, function(d){ return String(d.charCodeAt(0) - 0x0660); }); }
+    function fix(n){
+      if (n.nodeType === 3) { if (tst.test(n.nodeValue)) n.nodeValue = conv(n.nodeValue); return; }
+      if (n.nodeType !== 1) return;
+      var t = n.tagName; if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEXTAREA') return;
+      var ph = n.getAttribute && n.getAttribute('placeholder'); if (ph && tst.test(ph)) n.setAttribute('placeholder', conv(ph));
+      for (var c = n.firstChild; c; c = c.nextSibling) fix(c);
+    }
+    function start(){
+      fix(document.body);
+      new MutationObserver(function(ms){ ms.forEach(function(m){ if (m.type === 'characterData') fix(m.target); else m.addedNodes.forEach(fix); }); })
+        .observe(document.body, { childList: true, subtree: true, characterData: true });
+    }
+    if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+  })();
 
   // ── Route dispatcher ────────────────────────────────────────────────────
   function v2RenderRoute(hash){
@@ -2378,8 +2504,7 @@
     var app = document.getElementById('v2-app');
     if (!app) return;
     // Close drawer on navigation.
-    var drawer = document.getElementById('v2Drawer');
-    if (drawer && drawer.classList.contains('is-open')) v2ToggleDrawer();
+    v2ToggleSheet(false);
     // Scroll to top on every navigation.
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     // Landing gets a website header (logo, links, login, CTA) instead of the app bar.
@@ -2439,7 +2564,7 @@
         + cta('plan-' + p.key, p.hot ? '' : 'ghost') + 'ابدأ بالتشخيص المجاني ←</button></div>';
     }).join('');
     var faq = [
-      ['هل دربي مجاني؟', 'التشخيص وتجهيز السيرة ومشاهدة الوظائف مجانية وبدون بطاقة. الخطط المدفوعة تفتح تجهيز التقديم وتدريب المقابلة.'],
+      ['هل دربي مجاني؟', 'التشخيص وتجهيز السيرة ومشاهدة الوظائف مجانية وبدون بطاقة. أول اختبارات جاهزية التوظيف مجانية، والخطط المدفوعة تفتح الباقي وتجهيز التقديم.'],
       ['كم يأخذ التشخيص؟', 'حوالي دقيقة واحدة: تختار وضعك المهني، وتكتب الوظيفة اللي تبيها، وتضيف سيرتك لو عندك.'],
       ['من وين تجي الوظائف؟', 'من لوحات التوظيف العامة للشركات (Greenhouse وLever وAshby وغيرها) مباشرة من مصدرها، وليست إعلانات منسوخة.'],
       ['هل تضمنون لي وظيفة؟', 'لا. ما نعد بنتيجة ما نتحكم فيها. نعطيك تشخيصاً صريحاً وأدوات تقدم أقوى، والقرار عند صاحب العمل.'],
@@ -2468,7 +2593,7 @@
     + '<section class="lp-r"><div class="lp-stats">'
     +   '<div class="lp-stat"><b data-count="1">١</b><span>دقيقة للتشخيص</span></div>'
     +   '<div class="lp-stat"><b data-count="4">٤</b><span>مسارات للبداية: خريج، خبرة، قيادة، وظيفة بسيطة</span></div>'
-    +   '<div class="lp-stat"><b data-count="6">٦</b><span>أسئلة في جلسة تدريب المقابلة</span></div>'
+    +   '<div class="lp-stat"><b data-count="12">12</b><span>اختباراً وتدريباً في جاهزية التوظيف</span></div>'
     +   '<div class="lp-stat"><b>مباشر</b><span>وظائف من لوحات التوظيف العامة</span></div>'
     + '</div></section>'
 
@@ -2477,13 +2602,13 @@
     +   '<div class="lp-step lp-r"><div class="lp-node" style="--d:.2s">' + lpIcon('scan') + '</div><div><b>١. تشخيص</b><span>نقرأ وضعك وسيرتك ونقول لك وش يعطّلك بصراحة.</span><br><em>مجاني</em></div></div>'
     +   '<div class="lp-step lp-r" style="--d:.1s"><div class="lp-node" style="--d:.8s">' + lpIcon('doc') + '</div><div><b>٢. سيرة</b><span>سيرة جاهزة تناسب هدفك من بياناتك، بدون تعبئة.</span><br><em>مجاني</em></div></div>'
     +   '<div class="lp-step lp-r" style="--d:.2s"><div class="lp-node" style="--d:1.4s">' + lpIcon('brief') + '</div><div><b>٣. وظائف</b><span>وظائف حقيقية تناسبك، وتجهيز تقديم لكل وظيفة تختارها.</span><br><em>الوظائف مجانية · التجهيز بخطة</em></div></div>'
-    +   '<div class="lp-step lp-r" style="--d:.3s"><div class="lp-node" style="--d:2s">' + lpIcon('mic') + '</div><div><b>٤. مقابلة</b><span>جلسة تدريب ٦ أسئلة مع تقييم لكل إجابة وتقرير بالنهاية.</span><br><em class="paid">بخطة مدفوعة</em></div></div>'
+    +   '<div class="lp-step lp-r" style="--d:.3s"><div class="lp-node" style="--d:2s">' + lpIcon('mic') + '</div><div><b>٤. جاهزية التوظيف</b><span>اختبارات القدرات وأسلوب العمل ومقابلات تدريبية، مع شرح وتقرير جاهزية.</span><br><em>البداية مجانية</em></div></div>'
     + '</div></section>'
 
     + '<section><div class="lp-head lp-r"><span class="lp-eyebrow">ليش تثق فيه</span><h2>مبني على وظائف حقيقية</h2><p class="lp-lead">وظائف من لوحات التوظيف اللي تنشرها الشركات نفسها، وبداية مجانية بدون بطاقة.</p></div>'
     + '<div class="lp-proof">'
     +   '<div class="lp-card lp-r"><span class="lp-live">وظائف حية</span><h3>من المصدر مباشرة</h3><p>نسحب الوظائف من لوحات التوظيف العامة اللي تنشرها الشركات نفسها.</p><div class="lp-ats"><span>Greenhouse</span><span>Lever</span><span>Ashby</span><span>Workable</span><span>SmartRecruiters</span></div></div>'
-    +   '<div class="lp-card lp-r" style="--d:.1s"><h3>تبدأ مجاناً بالكامل</h3><p>التشخيص والسيرة والوظائف بدون بطاقة. تدفع فقط لو أردت تجهيز التقديم وتدريب المقابلة.</p></div>'
+    +   '<div class="lp-card lp-r" style="--d:.1s"><h3>تبدأ مجاناً بالكامل</h3><p>التشخيص والسيرة والوظائف بدون بطاقة. تدفع فقط لو أردت تجهيز التقديم وبقية اختبارات الجاهزية.</p></div>'
     +   '<div class="lp-card lp-r" style="--d:.2s"><h3>دفع آمن عبر Stripe</h3><p>Stripe هو طريق الدفع الوحيد، وما نحفظ بيانات بطاقتك عندنا.</p></div>'
     + '</div></section>'
 
@@ -2495,7 +2620,7 @@
     + '</div></section>'
 
     + '<section id="lpPricing"><div class="lp-head lp-r"><span class="lp-eyebrow">الأسعار</span><h2>ابدأ مجاناً، وترقّى لما تحتاج</h2></div>'
-    + '<div class="lp-free lp-r">التشخيص وتجهيز السيرة ومشاهدة الوظائف مجانية. الخطة تفتح تجهيز التقديم وتدريب المقابلة.</div>'
+    + '<div class="lp-free lp-r">التشخيص وتجهيز السيرة ومشاهدة الوظائف مجانية. الخطة تفتح تجهيز التقديم وبقية اختبارات الجاهزية.</div>'
     + '<div class="lp-plans">' + plans + '</div></section>'
 
     + '<section class="lp-faq"><div class="lp-head lp-r"><span class="lp-eyebrow">أسئلة شائعة</span><h2>قبل ما تبدأ</h2></div><div class="lp-r">' + faq + '</div></section>'
@@ -2546,7 +2671,7 @@
       +   '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/landing\')">رجوع للرئيسية</button>'
       + '</div>'
       + '<div class="v2-card" style="margin-top:14px;background:#fafafe">'
-      +   '<div style="font-size:11.5px;font-weight:800;color:#64748b;letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px">المسار في V2</div>'
+      +   '<div style="font-size:12px;font-weight:800;color:#64748b;letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px">المسار في V2</div>'
       +   '<div style="font-size:12.5px;color:#475569;line-height:1.8">'
       +     'Landing → Track → Dream → CV Upload → Quiz → <strong>Diagnosis</strong> → CV Templates → CV Builder → Jobs → Apply → Tracker → Interview → Dashboard'
       +   '</div>'
@@ -3829,7 +3954,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       { key:'job_matches',   title:'اختيار وظائف مناسبة',    done: st.jobsViewed },
       { key:'apply_package', title:'تجهيز التقديم',           done: st.applyPackageCreated },
       { key:'apply_now',     title:'متابعة التقديم',           done: st.applicationLogged },
-      { key:'interview_prep',title:'تدريب المقابلة',           done: st.interviewStarted },
+      { key:'interview_prep',title:'جاهزية التوظيف',           done: st.interviewStarted },
     ];
     var nextIdx = -1;
     for (var i = 0; i < STEPS.length; i++) { if (!STEPS[i].done) { nextIdx = i; break; } }
@@ -4709,7 +4834,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     // Tiny feedback — toast.
     var toast = document.createElement('div');
     toast.textContent = ok ? '✓ تم النسخ' : '⚠ ما قدرنا ننسخ — اضغط مطول واختر نسخ';
-    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0a0a0a;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;z-index:9999;font-family:inherit';
+    toast.style.cssText = 'position:fixed;bottom:calc(24px + var(--v2-bottom-h,0px));left:50%;transform:translateX(-50%);background:#0a0a0a;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;font-weight:700;z-index:9999;font-family:inherit';
     document.body.appendChild(toast);
     setTimeout(function(){ try{ document.body.removeChild(toast); }catch(e){} }, 1800);
   }
@@ -4761,8 +4886,8 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
         + '<div class="v2-cvb-honest">هذي صياغة مقترحة من التشخيص. <strong>راجعها قبل الإرسال.</strong> العناصر بين أقواس [...] تحتاج تعبئة من بياناتك الحقيقية. لا تخترع أرقام أو شركات أو شهادات.</div>'
         + '<div class="v2-cvb-preview" id="v2CvbPreview">' + sectionsHtml + '</div>'
         // "Done — what's next?" footer — fixes the "ما أعرف وش أسوي بعد" UX
-        + '<div class="v2-db-section" style="background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);color:#fff;border:none;margin-top:18px">'
-        +   '<div style="font-size:11px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px">⚡ بعد ما تخلّص هنا</div>'
+        + '<div class="v2-db-section" style="background:linear-gradient(135deg,#4f46e5 0%,#4338ca 100%);color:#fff;border:none;margin-top:18px">'
+        +   '<div style="font-size:12px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px">⚡ بعد ما تخلّص هنا</div>'
         +   '<div style="font-size:16px;font-weight:800;margin-bottom:5px;line-height:1.4">جاهز نوريك وظائف مناسبة لك؟</div>'
         +   '<div style="font-size:13px;opacity:.92;line-height:1.65;margin-bottom:12px">احفظ سيرتك من الزر فوق ↑ (تتحفظ في متصفحك). بعدها روح للوظائف نلقي لك أقرب فرص واقعية بناءً على تشخيصك.</div>'
         +   '<button class="v2-db-hero-cta" style="margin-left:8px" onclick="v2CvbSave();v2Go(\'#/jobs\')">احفظ + وريني الوظائف ←</button>'
@@ -5099,14 +5224,14 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
   function _v2JobsManualAddCta(){
     return ''
       + '<div class="v2-db-section" style="background:linear-gradient(135deg,#16a34a 0%,#15803d 100%);color:#fff;border:none;margin-top:14px">'
-      +   '<div style="font-size:11px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px">✓ لقيت وظيفة مناسبة؟</div>'
+      +   '<div style="font-size:12px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px">✓ لقيت وظيفة مناسبة؟</div>'
       +   '<div style="font-size:15.5px;font-weight:800;margin-bottom:5px;line-height:1.4">سجّلها في تقديماتك يدوياً</div>'
       +   '<div style="font-size:13px;opacity:.92;line-height:1.65;margin-bottom:12px">دربي يقرأ نمط ردودك من تقديماتك. اضغط هنا، ضف الشركة والدور، وكمّل الرحلة بعدها لتدريب المقابلة.</div>'
       +   '<button class="v2-db-hero-cta" style="background:#fff;color:#15803d" onclick="v2Go(\'#/tracker\')">افتح تقديماتي ←</button>'
       + '</div>'
       + '<div class="v2-db-section" style="margin-top:12px">'
       +   '<div style="font-weight:800;margin-bottom:4px">🎤 جاهز للمقابلة؟</div>'
-      +   '<div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:10px">تدرّب الحين على أسئلة مجالك وقيّم إجاباتك، قبل ما توصلك أول مقابلة.</div>'
+      +   '<div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:10px">ابدأ بجاهزية التوظيف: مقابلة تدريبية واختبارات، قبل ما توصلك أول مقابلة.</div>'
       +   '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/interview?j=practice\')">ابدأ تدريب المقابلة ←</button>'
       + '</div>';
   }
@@ -5674,7 +5799,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       return {
         cls: 'is-interview',
         h: '🎯 عندك مقابلة! جهّز نفسك',
-        body: 'نوصيك تجلس مع دربي في جلسة تدريب ٦ أسئلة قبل المقابلة. نغطي السؤال الأهم في دورك.',
+        body: 'نوصيك تتدرّب مع دربي قبل المقابلة: أسئلة مقابلة واختبارات القدرات اللي تستخدمها الشركات.',
         cta: 'جهّز للمقابلة ←', ctaRoute: '#/interview',
       };
     }
@@ -5777,7 +5902,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
         +   '<div class="v2-tk-empty-h">ما عندك تقديمات بعد</div>'
         +   '<div class="v2-tk-empty-sub">لما تجهّز تقديم لأي وظيفة وتسجّله، يبان هنا.<br>دربي يقرأ النمط من ردودك ويعدّل خطتك بناءً عليه.</div>'
         +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/jobs\')" style="margin-bottom:10px">اعرض الوظائف ←</button>'
-        +   '<div style="font-size:11px;color:#94a3b8;margin:8px 0">— أو —</div>'
+        +   '<div style="font-size:12px;color:#94a3b8;margin:8px 0">— أو —</div>'
         +   '<button class="v2-btn v2-btn-secondary" onclick="v2TrackerToggleManualForm()">➕ ضف تقديم يدوياً</button>'
         + '</div>'
         + _v2TrackerManualFormHtml();
@@ -5789,7 +5914,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     var metCls = weekly.thisWeek >= weekly.target ? ' is-met' : '';
     var weeklyHtml = ''
       + '<div class="v2-tk-weekly">'
-      +   '<div class="v2-tk-weekly-h"><span>📊 تقدمك هذا الأسبوع</span><span style="font-size:11.5px;color:#64748b">إجمالي: ' + weekly.total + '</span></div>'
+      +   '<div class="v2-tk-weekly-h"><span>📊 تقدمك هذا الأسبوع</span><span style="font-size:12px;color:#64748b">إجمالي: ' + weekly.total + '</span></div>'
       +   '<div class="v2-tk-weekly-meta">قدمت على <b>' + weekly.thisWeek + '</b> من هدف <b>' + weekly.target + '</b> تقديم</div>'
       +   '<div class="v2-tk-weekly-bar"><div class="v2-tk-weekly-bar-fill' + metCls + '" style="width:' + pct + '%"></div></div>'
       + '</div>';
@@ -5825,20 +5950,20 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       +   '<div style="font-size:14px;font-weight:800;color:#0a0a0a;margin-bottom:10px">➕ سجّل تقديم جديد</div>'
       +   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">'
       +     '<div>'
-      +       '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الشركة *</label>'
+      +       '<label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الشركة *</label>'
       +       '<input id="v2-tk-m-company" type="text" placeholder="مثلاً: اسم الشركة" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px" />'
       +     '</div>'
       +     '<div>'
-      +       '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الدور *</label>'
+      +       '<label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الدور *</label>'
       +       '<input id="v2-tk-m-role" type="text" placeholder="مثلاً: منسق مبيعات" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px" />'
       +     '</div>'
       +   '</div>'
       +   '<div style="margin-bottom:10px">'
-      +     '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">رابط الوظيفة (اختياري)</label>'
+      +     '<label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:4px">رابط الوظيفة (اختياري)</label>'
       +     '<input id="v2-tk-m-url" type="url" placeholder="https://..." style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px;direction:ltr" />'
       +   '</div>'
       +   '<div style="margin-bottom:12px">'
-      +     '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الحالة</label>'
+      +     '<label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الحالة</label>'
       +     '<select id="v2-tk-m-status" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px">'
       +       '<option value="applied">في الانتظار</option>'
       +       '<option value="reply">وصل رد</option>'
@@ -5998,7 +6123,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     var verdict = avg >= 65 ? 'جاهز بدرجة جيدة' : (avg >= 45 ? 'متوسط — يحتاج تمرين' : 'يحتاج شغل قبل المقابلة');
     return '<div class="v2-card">'
       + '<div style="font-weight:800;font-size:16px;margin-bottom:2px">تقرير الجلسة</div>'
-      + '<div style="font-size:26px;font-weight:900;margin:4px 0">' + avg + '<span style="font-size:14px;font-weight:700">/100</span></div>'
+      + '<div style="font-size:26px;font-weight:800;margin:4px 0">' + avg + '<span style="font-size:14px;font-weight:700">/100</span></div>'
       + '<div style="font-size:13.5px;margin-bottom:8px">' + verdict + ' · قيّمت ' + scores.length + ' من ' + questions.length + ' أسئلة</div>'
       + rows
       + '<div style="margin-top:10px;font-size:13.5px;line-height:1.8">'
@@ -6011,6 +6136,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
   }
   // Average of the user's REAL answer evaluations; before any training there is no number to show.
   function _v2IvReadinessText(){
+    try { var _ar = localStorage.getItem('darbi_assess_ready'); if (_ar) return _ar + '%'; } catch(e){}
     var all = _v2IvReadEvals(), sum = 0, n = 0;
     Object.keys(all).forEach(function(a){ Object.keys(all[a] || {}).forEach(function(q){ var r = all[a][q]; if (r && typeof r.score === 'number') { sum += r.score; n++; } }); });
     return n ? Math.round(sum / n) + '%' : 'لم تبدأ';
@@ -6321,7 +6447,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
   }
 
   // ── #/interview main renderer ─────────────────────────────────────────
-  function renderInterview(el, route){
+  function renderInterviewLegacy(el, route){ /* old 6-question session: replaced by the assessments section below; safe to delete */
     if (typeof Applications === 'undefined' || !Applications.list) {
       el.innerHTML = '<div class="v2-jobs-error"><span>⚠</span><div>تدريب المقابلة غير متوفر.</div></div>';
       return;
@@ -6363,7 +6489,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
         + '<div class="v2-tk-empty">'
         +   '<div class="v2-tk-empty-emoji">🎤</div>'
         +   '<div class="v2-tk-empty-h">ما عندك مقابلات حالياً</div>'
-        +   '<div class="v2-tk-empty-sub">تقدر تتدرّب الحين على أسئلة مجالك (٦ أسئلة مع تقييم إجاباتك). ولما يوصلك رد أو مقابلة على تقديم، تظهر لك جلسة مخصصة له هنا.</div>'
+        +   '<div class="v2-tk-empty-sub">تقدر تبدأ الحين بجاهزية التوظيف: مقابلات تدريبية، اختبارات القدرات، وأسلوب العمل. أول اختبار مجاني.</div>'
         +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/interview?j=' + V2_PRACTICE_ID + '\')">ابدأ تدريب المقابلة ←</button>'
         +   '<button class="v2-btn v2-btn-secondary" style="margin-top:8px" onclick="v2Go(\'#/tracker\')">افتح تقديماتك</button>'
         + '</div>';
@@ -6663,7 +6789,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     var _isFresh = (V2Draft.field('track') === 'junior_fresh');
     var practiceHtml = '<div class="v2-db-section" style="margin-top:12px">'
       + '<div style="font-weight:800;margin-bottom:4px">🎤 تدريب المقابلة' + (_isFresh ? ' — مهم لك كخريج جديد' : '') + '</div>'
-      + '<div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:10px">٦ أسئلة على مجالك، تكتب إجابتك ودربي يقيّمها. ما تحتاج تقديم أول.</div>'
+      + '<div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:10px">مقابلات تدريبية واختبارات جاهزية مع تقييم. ما تحتاج تقديم أول.</div>'
       + '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/interview?j=practice\')">' + (_isFresh ? 'ابدأ التدريب ←' : 'جرّب جلسة تدريب') + '</button></div>';
     el.innerHTML = heroHtml + (_isFresh ? practiceHtml : '') + dxHtml + weeklyHtml + roadmapHtml + (_isFresh ? '' : practiceHtml) + activityHtml;
   }
@@ -6692,5 +6818,531 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
   }
   </script>
 
+  <!-- ═══════════════════════════════════════════════════════════════════
+       #/interview — «جاهزية التوظيف» (assessments, /api/assess).
+       Screens: home (readiness + plan + catalog) · intro · run · report · progress.
+       Replaces the old 6-question guided session (renderInterviewLegacy, unreferenced).
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+  /* eslint-disable */
+  var AS = { cat: null, prog: null, run: null, timer: null, lang: 'ar', track: null, rep: null };
+  (function(){
+    try { AS.lang = localStorage.getItem('darbi_assess_lang') === 'en' ? 'en' : 'ar'; } catch(e){}
+    try { AS.track = localStorage.getItem('darbi_assess_track') || null; } catch(e){}
+  })();
+  var AS_TRACKS = ['fresh_grad', 'career_changer', 'experienced', 'simple_job'];
+  var AS_BAND = { early: 'بداية الطريق', building: 'قيد البناء', nearly: 'قريب من الجاهزية', ready: 'جاهز' };
+  var AS_LEVEL = { strong: 'قوي', solid: 'جيد', developing: 'يتطوّر', needs_practice: 'يحتاج تدريب' };
+  var AS_TIER = { starter: 'Starter', pro: 'Pro' };
+  var AS_COMP = { aptitude: 'القدرات', interview: 'المقابلة', sjt: 'الحكم الموقفي', workstyle: 'أسلوب العمل', english: 'الإنجليزي' };
+  var AS_SEC = { numerical: 'الرقمي', verbal: 'اللفظي', logical: 'المنطقي', english: 'الإنجليزي', sjt: 'الحكم الموقفي' };
+  var AS_TRAIT = { C: 'التنظيم والالتزام', S: 'الهدوء تحت الضغط', A: 'التعاون واللباقة', X: 'الحضور والمبادرة', O: 'الانفتاح والتعلّم' };
+  var AS_COMPET = { teamwork: 'العمل الجماعي', conflict: 'إدارة الخلاف', pressure: 'العمل تحت الضغط', initiative: 'المبادرة', failure: 'التعلّم من الأخطاء', adaptability: 'المرونة', integrity: 'النزاهة', leadership: 'القيادة', customer: 'خدمة العميل', learning: 'سرعة التعلّم', communication: 'التواصل', ownership: 'تحمّل المسؤولية' };
+  var AS_DESC = {
+    mixed: 'أسئلة قصيرة من كل نوع (قدرات، موقف، إنجليزي). نبني لك منها خطة مرتبة حسب نقاط ضعفك.',
+    likert: 'استبيان أسلوب العمل: ما فيه إجابة صح أو خطأ. الشركات تقارن إجاباتك بملف الدور، ونوضح لك كيف تُقرأ.',
+    mcq: 'أسئلة اختيار من متعدد مع شرح لكل سؤال بعد الانتهاء. النتيجة تدريبية وما تقارن بمعيار شركة معيّنة.',
+    sjt: 'مواقف عمل واقعية: اختر الأكثر فعالية والأقل فعالية. التقييم من معيار دربي التدريبي.',
+    interview: 'أسئلة مقابلة تجاوب عليها كتابة. نقيّم بنية إجابتك (الموقف، المهمة، الإجراء، النتيجة) مو صحة قصتك.'
+  };
+  function asLsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+  function asT(o, lang){ if (o == null) return ''; if (typeof o === 'string') return o; return o[lang || AS.lang] || o.ar || o.en || ''; }
+  function asE(s){ return escapeHtml(s == null ? '' : s); }
+  function asApi(path, opts){
+    return apiFetch('/api/assess' + path, opts).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(d){ return { status: r.status, ok: r.ok, d: d || {} }; });
+    }).catch(function(){ return { status: 0, ok: false, d: {} }; });
+  }
+  function asTrack(){
+    if (AS.track && AS_TRACKS.indexOf(AS.track) >= 0) return AS.track;
+    try { if (typeof V2Draft !== 'undefined' && V2Draft.field('track') === 'simple_job') return 'simple_job'; } catch(e){}
+    return 'fresh_grad';
+  }
+  function asFamily(){
+    try { var d = Diagnosis.get(); return (d && (d.family || (d.intent && d.intent.family))) || undefined; } catch(e){ return undefined; }
+  }
+  function asRoot(){ return document.getElementById('v2-app'); }
+  function asStopTimer(){ if (AS.timer) { clearInterval(AS.timer); AS.timer = null; } }
+  function asErr(msg, retry){
+    return '<div class="as-err" role="alert">' + asE(msg) + (retry ? '<div style="margin-top:8px"><button class="as-btn ghost" onclick="' + retry + '">جرّب مرة ثانية</button></div>' : '') + '</div>';
+  }
+  function asSkel(n){ var h = ''; for (var i = 0; i < (n || 3); i++) h += '<div class="as-skel"></div>'; return '<div aria-busy="true" aria-label="جاري التحميل">' + h + '</div>'; }
+  function asLoadCatalog(force){
+    if (AS.cat && !force) return Promise.resolve(AS.cat);
+    return asApi('/catalog').then(function(r){ if (r.ok && r.d.tests) { AS.cat = r.d; return r.d; } return null; });
+  }
+  function asTest(id){ var c = AS.cat; if (!c) return null; for (var i = 0; i < c.tests.length; i++) if (c.tests[i].id === id) return c.tests[i]; return null; }
+  function asNeedLogin(next){
+    if (V2User.isLoggedIn()) return false;
+    v2Go('#/signup?next=' + encodeURIComponent(next || '#/interview'));
+    return true;
+  }
+  function asTierBadge(t){ if (t.requiredTier === 'free') return '<span class="as-badge free">مجاني</span>'; return '<span class="as-badge' + (t.requiredTier === 'pro' ? ' pro' : '') + '">' + (t.unlocked ? '' : '🔒 ') + AS_TIER[t.requiredTier] + '</span>'; }
+
+  // ── entry ───────────────────────────────────────────────────────────────
+  function renderInterview(el, route){
+    asStopTimer();
+    var v = v2HashParam('v') || 'home';
+    if (v === 'intro') return asIntro(el, v2HashParam('t'));
+    if (v === 'run') return asRun(el, v2HashParam('sid'));
+    if (v === 'report') return asReport(el, v2HashParam('sid'));
+    if (v === 'progress') return asProgress(el);
+    return asHome(el);
+  }
+
+  // ── home ────────────────────────────────────────────────────────────────
+  function asRing(score, big){
+    var C = 326.7, d = score == null ? 0 : Math.max(0, Math.min(100, score)) / 100 * C;
+    return '<div class="as-ring" role="img" aria-label="' + (score == null ? 'لا توجد نتيجة بعد' : 'الجاهزية ' + score + ' من 100') + '"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52" fill="none" stroke-width="11"/><circle class="fg" cx="60" cy="60" r="52" fill="none" stroke-width="11" stroke-linecap="round" stroke-dasharray="' + d.toFixed(1) + ' ' + C + '"/></svg><b>' + (score == null ? '—' : '<span>' + score + '<small>من 100</small></span>') + '</b></div>';
+  }
+  function asHome(el){
+    el.innerHTML = '<div class="as-wrap"><h1 class="as-h1">جاهزية التوظيف</h1><p class="as-sub">تدرّب على اللي تسويه الشركات الكبيرة: استبيان أسلوب العمل، اختبارات القدرات، مواقف العمل، والمقابلة. كل النتائج تدريبية وصريحة.</p>' + asSkel(3) + '</div>';
+    var logged = V2User.isLoggedIn();
+    var track = asTrack();
+    Promise.all([asLoadCatalog(true), logged ? asApi('/progress?track=' + encodeURIComponent(track)) : Promise.resolve(null)]).then(function(res){
+      var cat = res[0], pr = res[1];
+      if (!document.getElementById('v2-app') || location.hash.indexOf('#/interview') !== 0 || (v2HashParam('v') || 'home') !== 'home') return;
+      var h = '<div class="as-wrap"><h1 class="as-h1">جاهزية التوظيف</h1><p class="as-sub">تدرّب على اللي تسويه الشركات الكبيرة: استبيان أسلوب العمل، اختبارات القدرات، مواقف العمل، والمقابلة. كل النتائج تدريبية وصريحة.</p>';
+      if (!cat) {
+        el.innerHTML = h + asErr('ما قدرنا نحمّل الاختبارات الحين. تأكد من الاتصال وحاول مرة ثانية.', 'asHome(asRoot())') + '</div>';
+        return;
+      }
+      if (logged && pr && pr.status === 401) { V2User.clear(); logged = false; pr = null; }
+      var prog = (pr && pr.ok) ? pr.d : null;
+      AS.prog = prog;
+      if (prog && prog.readiness && prog.attemptsDone) asLsSet('darbi_assess_ready', String(prog.readiness.score));
+      var tier = (prog && prog.tier) || cat.tier || 'free';
+      if (logged && !prog) h += asErr('ما قدرنا نجيب تقدمك. الاختبارات تحت تشتغل، لكن النتيجة ما تظهر الحين.', 'asHome(asRoot())');
+      if (!logged) h += '<div class="as-info"><b>أول اختبار مجاني.</b> سجّل دخولك عشان تنحفظ نتائجك وتشوف جاهزيتك تتحسن.<div style="margin-top:10px"><button class="as-btn" onclick="v2Go(\'#/signup?next=%23%2Finterview\')">سجّل مجاناً</button></div></div>';
+
+      // readiness
+      var rd = prog && prog.readiness, score = (rd && prog.attemptsDone) ? rd.score : null;
+      h += '<section class="as-card" aria-labelledby="asRdH"><div class="as-ready">' + asRing(score) + '<div><h2 class="as-band" id="asRdH">' + (score == null ? 'ما بدأت بعد' : asE(AS_BAND[rd.band] || '')) + '</h2>'
+        + '<p class="as-muted">' + (score == null ? 'سوّ أول اختبار وتظهر جاهزيتك هنا.' : (rd.provisional ? 'نتيجة مبدئية: تغطي ' + rd.coverage + '% من المطلوب. كمّل الاختبارات عشان تثبت.' : 'تغطي ' + rd.coverage + '% من المطلوب.') + ' ' + asE(asT(rd.note))) + '</p></div></div>';
+      if (rd && prog.attemptsDone) {
+        h += '<div class="as-bars">';
+        ['aptitude', 'interview', 'sjt', 'workstyle', 'english'].forEach(function(k){
+          var val = rd.components[k];
+          h += '<div class="as-bar"><label>' + AS_COMP[k] + '</label><i><s style="width:' + (val == null ? 0 : val) + '%"></s></i><span>' + (val == null ? '—' : val) + '</span></div>';
+        });
+        h += '</div><div style="margin-top:12px"><a class="as-link" href="#/interview?v=progress" onclick="v2Go(\'#/interview?v=progress\');return false;">شوف سجل نتائجي</a></div>';
+      }
+      h += '</section>';
+
+      // next step
+      var next = prog && prog.nextStep ? asTest(prog.nextStep) : (!logged ? asTest('diagnostic') : null);
+      if (next) {
+        h += '<section class="as-card" style="border-color:var(--ind)"><span class="as-chip">خطوتك الجاية</span><h2>' + asE(asT(next)) + '</h2><p class="as-muted">' + asE(AS_DESC[next.kind] || '') + ' (حوالي ' + next.minutes + ' دقيقة)</p><div style="margin-top:12px">' + asStartBtn(next) + '</div></section>';
+      } else if (prog && !prog.nextStep) {
+        h += '<div class="as-info">خلصت كل خطوات المسار. كرّر الاختبارات اللي نتيجتك فيها أقل من 60 وارفع جاهزيتك.</div>';
+      }
+
+      // track
+      h += '<section class="as-card"><h2>مسارك</h2><p class="as-muted" style="margin-bottom:10px">اختر الأقرب لوضعك، والخطة تتغير.</p><div class="as-seg" role="group" aria-label="اختر مسارك">';
+      AS_TRACKS.forEach(function(k){ var t = cat.tracks[k]; if (t) h += '<button class="' + (k === track ? 'on' : '') + '" aria-pressed="' + (k === track) + '" onclick="asSetTrack(\'' + k + '\')">' + asE(asT(t)) + '</button>'; });
+      var tr = cat.tracks[track];
+      h += '</div>' + (tr ? '<p class="as-muted" style="margin-top:10px">' + asE(asT(tr.intro)) + ' المدة المقترحة: ' + tr.weeks + (tr.weeks === 1 ? ' أسبوع' : ' أسابيع') + '.</p>' : '') + '</section>';
+
+      // plan
+      var path = (tr && tr.path) || [];
+      h += '<section aria-labelledby="asPlanH"><h2 class="as-h1" id="asPlanH" style="font-size:19px">خطتك خطوة بخطوة</h2><ul class="as-plan">';
+      var doneMap = {}, nextId = prog ? prog.nextStep : null;
+      if (prog) prog.plan.forEach(function(p){ doneMap[p.test] = p.done; });
+      path.forEach(function(id, i){
+        var t = asTest(id); if (!t) return;
+        var cls = doneMap[id] ? 'done' : (id === nextId ? 'next' : '');
+        if (!t.unlocked) cls += ' locked';
+        h += '<li><button class="as-row ' + cls + '" onclick="v2Go(\'#/interview?v=intro&t=' + id + '\')"><span class="n">' + (doneMap[id] ? '✓' : (i + 1)) + '</span><span class="t">' + asE(asT(t)) + '<small>' + t.minutes + ' دقيقة' + (doneMap[id] ? ' · تمّ' : '') + '</small></span>' + asTierBadge(t) + '</button></li>';
+      });
+      h += '</ul></section>';
+
+      // extras: tests not in this plan
+      var extras = cat.tests.filter(function(t){ return path.indexOf(t.id) < 0; });
+      if (extras.length) {
+        h += '<section style="margin-top:18px" aria-labelledby="asExH"><h2 class="as-h1" id="asExH" style="font-size:19px">اختبارات إضافية</h2><ul class="as-plan">';
+        extras.forEach(function(t){
+          h += '<li><button class="as-row' + (t.unlocked ? '' : ' locked') + '" onclick="v2Go(\'#/interview?v=intro&t=' + t.id + '\')"><span class="t">' + asE(asT(t)) + '<small>' + t.minutes + ' دقيقة' + (t.id === 'mock_final' ? ' · أقرب شي للمقابلة الحقيقية' : '') + '</small></span>' + asTierBadge(t) + '</button></li>';
+        });
+        h += '</ul></section>';
+      }
+      h += '<p class="as-muted" style="margin-top:18px">جاهزيتك تدريبية، مو توقع لقرار أي شركة. كل جهة تحدد معاييرها بنفسها.</p>';
+      el.innerHTML = h + '</div>';
+    });
+  }
+  function asStartBtn(t){
+    if (!t.unlocked) return '<button class="as-btn" onclick="v2Go(\'#/interview?v=intro&t=' + t.id + '\')">اعرف أكثر (' + AS_TIER[t.requiredTier] + ')</button>';
+    return '<button class="as-btn" onclick="v2Go(\'#/interview?v=intro&t=' + t.id + '\')">ابدأ الآن ←</button>';
+  }
+  function asSetTrack(k){ AS.track = k; asLsSet('darbi_assess_track', k); asHome(asRoot()); }
+
+  // ── intro (+ lock) ──────────────────────────────────────────────────────
+  function asIntro(el, id){
+    el.innerHTML = '<div class="as-wrap">' + asSkel(2) + '</div>';
+    asLoadCatalog().then(function(cat){
+      var t = cat && asTest(id);
+      if (!cat) { el.innerHTML = '<div class="as-wrap">' + asErr('ما قدرنا نحمّل الاختبار. حاول مرة ثانية.', 'asIntro(asRoot(),\'' + asE(id) + '\')') + '<button class="as-btn ghost" onclick="v2Go(\'#/interview\')">رجوع لجاهزية التوظيف</button></div>'; return; }
+      if (!t) { el.innerHTML = '<div class="as-wrap">' + asErr('ما لقينا هذا الاختبار.') + '<button class="as-btn ghost" onclick="v2Go(\'#/interview\')">رجوع لجاهزية التوظيف</button></div>'; return; }
+      var tier = cat.tier || 'free', isInt = t.kind === 'interview';
+      var h = '<div class="as-wrap"><h1 class="as-h1">' + asE(asT(t)) + '</h1><div class="as-facts"><span class="as-fact">حوالي ' + t.minutes + ' دقيقة</span>' + asTierBadge(t) + '</div>';
+      h += '<p class="as-sub">' + asE(AS_DESC[t.kind] || '') + '</p>';
+      if (t.kind === 'likert') h += '<div class="as-note">جاوب كما تتصرف فعلاً في يوم عادي، مو كما تتمنى. فيه أسئلة تكشف المبالغة وعدم الاتساق، والشركات تلاحظها. أول إجابة سريعة غالباً هي الأصدق.</div>';
+      if (t.id === 'mock_final') h += '<div class="as-info">مقابلة طويلة (15 إلى 20 سؤال) بتقرير كامل. جاوب كأنها مقابلة حقيقية وبوقتك.</div>';
+      if (!t.unlocked) {
+        h += '<div class="as-locked-prev"><span class="as-badge' + (t.requiredTier === 'pro' ? ' pro' : '') + '">' + AS_TIER[t.requiredTier] + '</span><h2 style="margin:8px 0 4px;font-size:17px">هذا الاختبار ضمن خطة ' + AS_TIER[t.requiredTier] + '</h2><p class="as-muted">' + (t.requiredTier === 'pro' ? 'المقابلة النهائية التجريبية بتقرير كامل، ومقابلة بالإنجليزي، وتدريب بلا حد.' : 'بقية الاختبارات مع شرح لكل سؤال، ووضع الوقت، ومحاولات أكثر.') + ' ما نعرض لك شي مخفي: نتيجتك المجانية تبقى لك.</p>'
+          + '<div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="as-btn" onclick="v2Go(\'#/pricing\')">شوف الخطط والأسعار</button><button class="as-btn ghost" onclick="v2Go(\'#/interview\')">رجوع</button></div></div></div>';
+        el.innerHTML = h; return;
+      }
+      var tl = (cat.tierLimits && cat.tierLimits[tier]) || {};
+      h += '<section class="as-card">';
+      h += '<div class="as-switch"><label for="asTimed">وضع الوقت (عدّاد تنازلي)' + (tl.timed ? '' : ' <span class="as-badge">Starter</span>') + '</label><input type="checkbox" id="asTimed"' + (tl.timed ? '' : ' disabled') + '></div>';
+      if (!tl.timed) h += '<p class="as-muted">وضع الوقت يفتح مع Starter. بدونه تجاوب بوقتك.</p>';
+      h += '<div style="margin-top:12px"><div class="as-muted" style="font-weight:700;margin-bottom:6px">لغة ' + (isInt ? 'المقابلة والتقييم' : 'الأسئلة') + '</div><div class="as-seg" role="group" aria-label="اللغة"><button id="asLangAr" class="' + (AS.lang === 'ar' ? 'on' : '') + '" onclick="asPickLang(\'ar\')">عربي</button><button id="asLangEn" class="' + (AS.lang === 'en' ? 'on' : '') + '"' + ((isInt && !tl.english_interview) ? ' onclick="asLockEn()"' : ' onclick="asPickLang(\'en\')"') + '>English' + ((isInt && !tl.english_interview) ? ' · Pro' : '') + '</button></div><p class="as-muted" id="asLangMsg" style="margin-top:6px"></p></div>';
+      h += '</section>';
+      h += '<div id="asStartMsg"></div><button class="as-btn block" id="asGo" onclick="asStart(\'' + asE(t.id) + '\')">ابدأ الاختبار</button>';
+      h += '<div style="text-align:center;margin-top:8px"><button class="as-link" onclick="v2Go(\'#/interview\')">رجوع للخطة</button></div></div>';
+      el.innerHTML = h;
+    });
+  }
+  function asPickLang(l){
+    AS.lang = l; asLsSet('darbi_assess_lang', l);
+    var a = document.getElementById('asLangAr'), e = document.getElementById('asLangEn');
+    if (a) a.className = l === 'ar' ? 'on' : ''; if (e) e.className = l === 'en' ? 'on' : '';
+  }
+  function asLockEn(){ var m = document.getElementById('asLangMsg'); if (m) m.innerHTML = 'مقابلة بالإنجليزي مع تقييم اللغة ضمن خطة Pro. <a class="as-link" href="#/pricing" onclick="v2Go(\'#/pricing\');return false;">شوف الخطط</a>'; }
+  function asStart(id){
+    if (asNeedLogin('#/interview?v=intro&t=' + id)) return;
+    var btn = document.getElementById('asGo'), msg = document.getElementById('asStartMsg');
+    if (btn) { btn.disabled = true; btn.textContent = 'نجهّز الأسئلة...'; }
+    var timedEl = document.getElementById('asTimed');
+    asApi('/start', { method: 'POST', body: { test: id, track: asTrack(), lang: AS.lang, family: asFamily(), timed: !!(timedEl && timedEl.checked) } }).then(function(r){
+      if (btn) { btn.disabled = false; btn.textContent = 'ابدأ الاختبار'; }
+      if (r.status === 401) { V2User.clear(); v2Go('#/login?next=' + encodeURIComponent('#/interview?v=intro&t=' + id)); return; }
+      var m = '';
+      if (r.status === 402) { var d = r.d; m = asErr(d.feature === 'timed_mode' ? 'وضع الوقت ضمن Starter.' : (d.feature === 'english_interview' ? 'المقابلة بالإنجليزي ضمن Pro.' : 'هذا الاختبار ضمن خطة ' + (AS_TIER[d.requiredTier] || 'مدفوعة') + '.')) + '<button class="as-btn block" style="margin-bottom:10px" onclick="v2Go(\'#/pricing\')">شوف الخطط والأسعار</button>'; }
+      else if (r.status === 429 && r.d.error === 'attempt_limit') m = asErr('وصلت حد المحاولات لهذا الاختبار خلال 30 يوم (' + r.d.limit + ' محاولات في خطتك). جرّب اختباراً ثانياً من خطتك، أو رقّ خطتك لمحاولات أكثر.');
+      else if (r.status === 429) m = asErr('طلبات كثيرة بوقت قصير. انتظر دقيقة وحاول.');
+      else if (!r.ok || !r.d.sessionId) m = asErr('ما قدرنا نبدأ الاختبار الحين. تأكد من الاتصال وحاول مرة ثانية.');
+      if (m) { if (msg) msg.innerHTML = m; return; }
+      AS.run = asMakeRun(r.d);
+      v2Go('#/interview?v=run&sid=' + encodeURIComponent(r.d.sessionId));
+    });
+  }
+
+  // ── runner ──────────────────────────────────────────────────────────────
+  function asMakeRun(d){
+    var off = d.serverTime ? (Date.parse(d.serverTime) - Date.now()) : 0;
+    var run = { sid: d.sessionId, test: d.test, kind: d.kind, title: d.title, lang: d.lang, items: d.items, answers: d.answers || {}, idx: 0, limit: d.timeLimitSec || 0,
+      start: d.startedAt ? Date.parse(d.startedAt) - off : Date.now(), off: off, resumed: !!d.resumed, secs: {}, qStart: Date.now(), review: false, viewLang: d.lang, failed: 0 };
+    // resume at the first unanswered item
+    for (var i = 0; i < run.items.length; i++) { if (run.answers[run.items[i].id] == null) { run.idx = i; break; } run.idx = i; }
+    try { sessionStorage.setItem('darbi_as_items_' + d.sessionId, JSON.stringify({ items: d.items, lang: d.lang, title: d.title, test: d.test })); } catch(e){}
+    return run;
+  }
+  function asRun(el, sid){
+    if (!sid) { v2Go('#/interview', true); return; }
+    if (asNeedLogin('#/interview?v=run&sid=' + sid)) return;
+    if (AS.run && AS.run.sid === sid) { asRunPaint(el); return; }
+    el.innerHTML = '<div class="as-wrap">' + asSkel(2) + '</div>';
+    asApi('/session/' + encodeURIComponent(sid)).then(function(r){
+      if (r.status === 409) { v2Go('#/interview?v=report&sid=' + sid, true); return; }
+      if (r.status === 401) { V2User.clear(); v2Go('#/login?next=' + encodeURIComponent('#/interview?v=run&sid=' + sid)); return; }
+      if (!r.ok || !r.d.items) { el.innerHTML = '<div class="as-wrap">' + asErr(r.status === 404 ? 'ما لقينا هذه الجلسة. ابدأ اختباراً جديداً من الخطة.' : 'ما قدرنا نفتح الاختبار. حاول مرة ثانية.', r.status === 404 ? '' : 'asRun(asRoot(),\'' + asE(sid) + '\')') + '<button class="as-btn ghost" onclick="v2Go(\'#/interview\')">رجوع لجاهزية التوظيف</button></div>'; return; }
+      AS.run = asMakeRun(r.d);
+      asRunPaint(asRoot());
+    });
+  }
+  function asAnswered(run, it){ var a = run.answers[it.id]; if (a == null) return false; if (it.type === 'sjt') return typeof a === 'object' && a.most != null && a.least != null; if (it.type === 'interview') { var t = typeof a === 'string' ? a : a.text; return !!(t && t.trim()); } return true; }
+  function asCountAnswered(run){ var n = 0; run.items.forEach(function(it){ if (asAnswered(run, it)) n++; }); return n; }
+  function asRemaining(run){ if (!run.limit) return null; return Math.round(run.limit - ((Date.now() + run.off) - run.start) / 1000); }
+  function asFmt(s){ s = Math.max(0, s); var m = Math.floor(s / 60), x = s % 60; return (m < 10 ? '0' : '') + m + ':' + (x < 10 ? '0' : '') + x; }
+  function asRunPaint(el){
+    var run = AS.run; if (!run) return;
+    asStopTimer();
+    var it = run.items[run.idx], n = run.items.length, answered = asCountAnswered(run);
+    var lang = run.viewLang, isInt = run.kind === 'interview';
+    var h = '<div class="as-wrap" id="asRunRoot"><div class="as-run-top"><div class="as-run-meta"><span>' + (run.review ? 'مراجعة قبل الإرسال' : 'سؤال ' + (run.idx + 1) + ' من ' + n) + '</span>';
+    if (run.limit) h += '<span class="as-timer" id="asTimer" role="timer" aria-label="الوقت المتبقي">' + asFmt(asRemaining(run)) + '</span>';
+    if (!isInt && run.kind !== 'interview') h += '<span class="as-langsw" role="group" aria-label="لغة السؤال"><button class="' + (lang === 'ar' ? 'on' : '') + '" onclick="asViewLang(\'ar\')">ع</button><button class="' + (lang === 'en' ? 'on' : '') + '" onclick="asViewLang(\'en\')">EN</button></span>';
+    h += '</div><div class="as-prog" role="progressbar" aria-valuemin="0" aria-valuemax="' + n + '" aria-valuenow="' + answered + '" aria-label="الأسئلة المجاب عليها"><s style="width:' + Math.round(answered / n * 100) + '%"></s></div><div class="as-muted" style="margin-top:4px">أجبت على ' + answered + ' من ' + n + '</div></div>';
+    if (run.resumed && run.idx === 0 && !run.review && answered > 0) h += '<div class="as-info">كملنا من حيث وقفت. إجاباتك السابقة محفوظة.</div>';
+    h += '<div id="asRunMsg" aria-live="polite"></div>';
+    h += run.review ? asReviewHtml(run) : asItemHtml(run, it);
+    h += '</div>';
+    el.innerHTML = h;
+    if (run.limit) {
+      AS.timer = setInterval(function(){
+        var t = document.getElementById('asTimer');
+        if (!t || !document.getElementById('asRunRoot')) { asStopTimer(); return; }
+        var rem = asRemaining(run);
+        t.textContent = asFmt(rem);
+        t.className = 'as-timer' + (rem <= run.limit * 0.1 ? ' crit' : (rem <= run.limit * 0.25 ? ' warn' : ''));
+        if (rem <= 0) { asStopTimer(); asSubmit(true); }
+      }, 1000);
+    }
+    if (it && it.type === 'interview' && !run.review) { var ta = document.getElementById('asTa'); if (ta) ta.addEventListener('input', asWc); asWc(); }
+  }
+  function asViewLang(l){ if (!AS.run) return; AS.run.viewLang = l; asRunPaint(asRoot()); }
+  function asItemHtml(run, it){
+    var lang = run.viewLang, dirCls = lang === 'en' ? ' en' : '', a = run.answers[it.id], n = run.items.length, h = '';
+    if (it.type === 'likert') {
+      var labels = it.scale && it.scale.labels ? it.scale.labels[lang] : [];
+      h += '<p class="as-q' + dirCls + '">' + asE(asT(it, lang)) + '</p><div class="as-likert" role="radiogroup" aria-label="درجة الموافقة">';
+      for (var k = 1; k <= 5; k++) h += '<button class="as-opt' + (a === k ? ' on' : '') + '" role="radio" aria-checked="' + (a === k) + '" onclick="asAnswer(' + k + ')"><span class="k">' + k + '</span><span>' + asE(labels[k - 1] || k) + '</span></button>';
+      h += '</div><p class="as-muted" style="margin-top:8px">اضغط 1 إلى 5 من لوحة المفاتيح لو كنت على الكمبيوتر.</p>';
+    } else if (it.type === 'mcq') {
+      if (it.passage) h += '<div class="as-passage' + dirCls + '">' + asE(asT(it.passage, lang)) + '</div>';
+      h += '<p class="as-q' + dirCls + '">' + asE(asT(it, lang)) + '</p><div class="as-opts" role="radiogroup">';
+      var opts = it.opts ? (it.opts[lang] || it.opts.ar || it.opts.en) : [];
+      var letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+      opts.forEach(function(o, i){ h += '<button class="as-opt' + dirCls + (a === i ? ' on' : '') + '" role="radio" aria-checked="' + (a === i) + '" onclick="asAnswer(' + i + ')"><span class="k">' + letters[i] + '</span><span>' + asE(o) + '</span></button>'; });
+      h += '</div>';
+    } else if (it.type === 'sjt') {
+      h += '<p class="as-q' + dirCls + '">' + asE(asT(it, lang)) + '</p><p class="as-muted" style="margin-bottom:10px">اختر استجابة واحدة هي الأكثر فعالية، وواحدة غيرها هي الأقل فعالية.</p><div class="as-opts">';
+      var cur = (a && typeof a === 'object') ? a : {};
+      it.opts.forEach(function(o, i){
+        h += '<div class="as-sjt-opt' + (cur.most === i ? ' m' : '') + (cur.least === i ? ' l' : '') + '"><p class="' + dirCls.trim() + '">' + asE(asT(o, lang)) + '</p><div class="picks"><button class="as-pick most' + (cur.most === i ? ' on' : '') + '" aria-pressed="' + (cur.most === i) + '" onclick="asSjt(\'most\',' + i + ')">الأكثر فعالية</button><button class="as-pick least' + (cur.least === i ? ' on' : '') + '" aria-pressed="' + (cur.least === i) + '" onclick="asSjt(\'least\',' + i + ')">الأقل فعالية</button></div></div>';
+      });
+      h += '</div>';
+    } else if (it.type === 'interview') {
+      var txt = a == null ? '' : (typeof a === 'string' ? a : a.text);
+      var isEn = run.lang === 'en';
+      if (it.competency) h += '<span class="as-chip">' + asE(AS_COMPET[it.competency.id] || asT(it.competency, run.lang)) + '</span>';
+      h += '<p class="as-q' + (isEn ? ' en' : '') + '">' + asE(asT(it, run.lang)) + '</p>';
+      if (it.tip) h += '<p class="as-muted" style="margin-bottom:8px">💡 ' + asE(asT(it.tip, run.lang)) + '</p>';
+      if (it.star) { var st = it.star[run.lang] || it.star.ar; h += '<details class="as-star"><summary>طريقة STAR تساعدك ترتب الإجابة</summary><ul>' + ['S', 'T', 'A', 'R'].map(function(x){ return '<li class="' + (isEn ? 'as-en' : '') + '">' + asE(st[x]) + '</li>'; }).join('') + '</ul></details>'; }
+      h += '<label for="asTa" class="as-muted" style="display:block;margin-bottom:6px;font-weight:700">إجابتك' + (isEn ? ' (بالإنجليزي)' : '') + '</label><textarea id="asTa" class="as-ta' + (isEn ? ' en' : '') + '" dir="' + (isEn ? 'ltr' : 'rtl') + '" placeholder="' + (isEn ? 'Type your answer as if you were speaking to the interviewer...' : 'اكتب إجابتك كأنك تكلّم المحاور...') + '" onblur="asSaveText()">' + asE(txt) + '</textarea><div class="as-wc"><span id="asWc"></span><span>الوقت المناسب للإجابة: 60 إلى 120 ثانية (60 إلى 180 كلمة)</span></div>';
+    }
+    h += '<div class="as-nav">';
+    if (run.idx > 0) h += '<button class="as-btn ghost" onclick="asMove(-1)">السابق</button>';
+    h += run.idx < n - 1 ? '<button class="as-btn" onclick="asMove(1)">' + (asAnswered(run, it) ? 'التالي ←' : 'تخطّي ←') + '</button>' : '<button class="as-btn" onclick="asMove(1)">مراجعة وإنهاء</button>';
+    h += '</div><div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px"><button class="as-link" onclick="asReview()">قائمة الأسئلة</button><button class="as-link" onclick="asLeave()">خروج وأكمل لاحقاً</button></div>';
+    return h;
+  }
+  function asReviewHtml(run){
+    var n = run.items.length, blank = n - asCountAnswered(run), h = '<h2 class="as-h1" style="font-size:19px">راجع أسئلتك</h2><p class="as-muted">اضغط على رقم للرجوع له. الأزرق تمّت الإجابة عليه.</p><div class="as-grid">';
+    run.items.forEach(function(it, i){ h += '<button class="' + (asAnswered(run, it) ? 'a' : '') + (i === run.idx ? ' cur' : '') + '" aria-label="سؤال ' + (i + 1) + (asAnswered(run, it) ? ' مجاب' : ' بلا إجابة') + '" onclick="asGoto(' + i + ')">' + (i + 1) + '</button>'; });
+    h += '</div>';
+    if (blank > 0) h += '<div class="as-note">عندك ' + blank + (blank === 1 ? ' سؤال' : ' أسئلة') + ' بلا إجابة. في الاختبارات الحقيقية التخمين أفضل من ترك السؤال فارغاً.</div>';
+    h += '<button class="as-btn block" id="asSubmit" onclick="asSubmit(false)">أرسل وشوف نتيجتي</button><div class="as-nav" style="margin-top:10px"><button class="as-btn ghost" onclick="asGoto(' + run.idx + ')">كمّل الأسئلة</button></div>';
+    return h;
+  }
+  function asNote(msg){ var m = document.getElementById('asRunMsg'); if (m) m.innerHTML = msg ? '<div class="as-note" role="status">' + asE(msg) + '</div>' : ''; }
+  function asPost(id, value){
+    var run = AS.run; if (!run) return;
+    asApi('/session/' + encodeURIComponent(run.sid) + '/answer', { method: 'POST', body: { id: id, value: value } }).then(function(r){
+      if (r.status === 409) { v2Go('#/interview?v=report&sid=' + run.sid, true); return; }
+      if (!r.ok) { run.failed++; asNote('ما انحفظت آخر إجابة على الخادم، لكنها عندك هنا وترسل مع النتيجة.'); } else if (run.failed) { run.failed = 0; asNote(''); }
+    });
+  }
+  function asAnswer(v){
+    var run = AS.run, it = run.items[run.idx]; run.answers[it.id] = v; asPost(it.id, v);
+    var wasLast = run.idx === run.items.length - 1;
+    asRunPaint(asRoot());
+    if (!wasLast) setTimeout(function(){ if (AS.run === run && run.items[run.idx] === it && !run.review) asMove(1); }, 260);
+  }
+  function asSjt(which, i){
+    var run = AS.run, it = run.items[run.idx], cur = (run.answers[it.id] && typeof run.answers[it.id] === 'object') ? run.answers[it.id] : {};
+    var o = { most: cur.most, least: cur.least }; o[which] = i;
+    var other = which === 'most' ? 'least' : 'most'; if (o[other] === i) o[other] = undefined;
+    run.answers[it.id] = o;
+    if (o.most != null && o.least != null) asPost(it.id, { most: o.most, least: o.least });
+    asRunPaint(asRoot());
+  }
+  function asWc(){ var ta = document.getElementById('asTa'), w = document.getElementById('asWc'); if (!ta || !w) return; var n = (ta.value.trim().match(/\S+/g) || []).length; w.textContent = n + ' كلمة'; }
+  function asSaveText(){
+    var run = AS.run; if (!run) return; var it = run.items[run.idx], ta = document.getElementById('asTa'); if (!ta || !it || it.type !== 'interview') return;
+    var t = ta.value; var secs = Math.round((Date.now() - run.qStart) / 1000) + (run.secs[it.id] || 0);
+    if (!t.trim()) return;
+    var val = { text: t, seconds: Math.min(secs, 900) }; run.answers[it.id] = val; asPost(it.id, val);
+  }
+  function asTrackSecs(){ var run = AS.run; if (!run) return; var it = run.items[run.idx]; if (it) run.secs[it.id] = (run.secs[it.id] || 0) + Math.round((Date.now() - run.qStart) / 1000); run.qStart = Date.now(); }
+  function asMove(d){
+    var run = AS.run; asSaveText(); asTrackSecs();
+    var ni = run.idx + d;
+    if (ni >= run.items.length) { run.review = true; asRunPaint(asRoot()); window.scrollTo(0, 0); return; }
+    if (ni < 0) return;
+    run.idx = ni; run.review = false; asRunPaint(asRoot()); window.scrollTo(0, 0);
+  }
+  function asGoto(i){ var run = AS.run; asSaveText(); asTrackSecs(); run.idx = i; run.review = false; asRunPaint(asRoot()); window.scrollTo(0, 0); }
+  function asReview(){ var run = AS.run; asSaveText(); asTrackSecs(); run.review = true; asRunPaint(asRoot()); window.scrollTo(0, 0); }
+  function asLeave(){ asSaveText(); asStopTimer(); v2Go('#/interview'); }
+  function asSubmit(auto){
+    var run = AS.run; if (!run) return; if (!auto) asSaveText();
+    asStopTimer();
+    var btn = document.getElementById('asSubmit'); if (btn) { btn.disabled = true; btn.textContent = 'نحسب نتيجتك...'; }
+    var body = { answers: {} };
+    run.items.forEach(function(it){ var a = run.answers[it.id]; if (a == null) return; if (it.type === 'interview') { var t = typeof a === 'string' ? a : a.text; if (t && t.trim()) body.answers[it.id] = { text: t, seconds: (typeof a === 'object' && a.seconds) || run.secs[it.id] || undefined }; } else if (it.type === 'sjt') { if (a.most != null && a.least != null) body.answers[it.id] = a; } else body.answers[it.id] = a; });
+    asApi('/session/' + encodeURIComponent(run.sid) + '/submit', { method: 'POST', body: body }).then(function(r){
+      if (r.status === 401) { V2User.clear(); v2Go('#/login?next=' + encodeURIComponent('#/interview?v=run&sid=' + run.sid)); return; }
+      if (!r.ok || !r.d.report) { if (btn) { btn.disabled = false; btn.textContent = 'أرسل وشوف نتيجتي'; } asNote('ما قدرنا نرسل الحين. إجاباتك محفوظة، جرّب مرة ثانية.'); if (!btn) { run.review = true; asRunPaint(asRoot()); } return; }
+      try { sessionStorage.setItem('darbi_as_rep_' + run.sid, JSON.stringify({ report: r.d.report, readiness: r.d.readiness || null })); } catch(e){}
+      if (run.kind === 'interview' && typeof DarbiJourney !== 'undefined' && DarbiJourney.markInterviewLogged) { try { DarbiJourney.markInterviewLogged(); } catch(e){} }
+      AS.rep = { sid: run.sid, report: r.d.report, readiness: r.d.readiness || null };
+      AS.run = null;
+      v2Go('#/interview?v=report&sid=' + run.sid, true);
+    });
+  }
+  document.addEventListener('keydown', function(e){
+    if (!AS.run || !document.getElementById('asRunRoot') || AS.run.review) return;
+    var tg = (e.target && e.target.tagName) || ''; if (tg === 'TEXTAREA' || tg === 'INPUT') return;
+    var it = AS.run.items[AS.run.idx]; if (!it) return;
+    var k = parseInt(e.key, 10);
+    if (it.type === 'likert' && k >= 1 && k <= 5) asAnswer(k);
+    else if (it.type === 'mcq' && k >= 1 && k <= 5) { var opts = it.opts[AS.run.viewLang] || it.opts.ar; if (k <= opts.length) asAnswer(k - 1); }
+  });
+
+  // ── report ──────────────────────────────────────────────────────────────
+  function asItemsFor(sid){ try { var j = JSON.parse(sessionStorage.getItem('darbi_as_items_' + sid) || 'null'); return j; } catch(e){ return null; } }
+  function asReport(el, sid){
+    if (!sid) { v2Go('#/interview', true); return; }
+    if (asNeedLogin('#/interview?v=report&sid=' + sid)) return;
+    var cached = AS.rep && AS.rep.sid === sid ? AS.rep : null;
+    if (!cached) { try { var j = JSON.parse(sessionStorage.getItem('darbi_as_rep_' + sid) || 'null'); if (j) cached = { sid: sid, report: j.report, readiness: j.readiness }; } catch(e){} }
+    if (cached) { asReportPaint(el, sid, cached.report, cached.readiness); return; }
+    el.innerHTML = '<div class="as-wrap">' + asSkel(3) + '</div>';
+    asApi('/session/' + encodeURIComponent(sid) + '/report').then(function(r){
+      if (r.status === 401) { V2User.clear(); v2Go('#/login?next=' + encodeURIComponent('#/interview?v=report&sid=' + sid)); return; }
+      if (r.status === 409) { v2Go('#/interview?v=run&sid=' + sid, true); return; }
+      if (!r.ok || !r.d.report) { el.innerHTML = '<div class="as-wrap">' + asErr(r.status === 404 ? 'ما لقينا هذا التقرير.' : 'ما قدرنا نفتح التقرير. حاول مرة ثانية.', r.status === 404 ? '' : 'asReport(asRoot(),\'' + asE(sid) + '\')') + '<button class="as-btn ghost" onclick="v2Go(\'#/interview\')">رجوع لجاهزية التوظيف</button></div>'; return; }
+      asReportPaint(asRoot(), sid, r.d.report, null);
+    });
+  }
+  function asBar(label, val, target){
+    return '<div class="as-bar"' + (label ? '' : ' style="grid-template-columns:1fr 40px"') + '>' + (label ? '<label>' + asE(label) + '</label>' : '') + '<i><s style="width:' + Math.max(0, Math.min(100, val)) + '%"></s>' + (target ? '<em style="right:' + target[0] + '%;width:' + (target[1] - target[0]) + '%"></em>' : '') + '</i><span>' + val + '</span></div>';
+  }
+  function asReportPaint(el, sid, rep, readiness){
+    var res = rep.result || {}, L = rep.lang || 'ar', meta = asItemsFor(sid), items = {}; if (meta && meta.items) meta.items.forEach(function(it){ items[it.id] = it; });
+    var title = asT(rep.title, 'ar');
+    var h = '<div class="as-wrap"><h1 class="as-h1">نتيجتك: ' + asE(title) + '</h1>';
+    var pct = res.pct;
+    if (res.kind === 'likert' && !res.valid) {
+      h += '<div class="as-note">ما كملت 90% من البنود، فما تظهر لك نتيجة. أعد الاختبار وجاوب على كل البنود.</div>';
+    } else {
+      h += '<section class="as-card"><div class="as-score">' + (pct != null ? '<b>' + pct + '<small style="font-size:16px;color:var(--mut)">%</small></b>' : '') + '<div>' + (res.level ? '<span class="as-badge ok" style="font-size:14px">' + asE(AS_LEVEL[res.level] || res.level) + '</span>' : '') + (res.kind === 'likert' ? '<div class="as-band">' + (res.reliable ? 'نمط إجاباتك واضح' : 'ظهرت علامات في نمط إجاباتك') + '</div><p class="as-muted">نسبة توافق أبعادك مع نطاق الدور المستهدف</p>' : '') + (res.kind === 'diagnostic' ? '<p class="as-muted">نتيجة تقريبية من أسئلة قليلة.</p>' : '') + '</div></div>';
+      if (res.kind === 'mcq') h += '<div class="as-stats"><div class="as-stat"><b>' + res.correct + '</b><span>صحيحة</span></div><div class="as-stat"><b>' + res.wrong + '</b><span>خاطئة</span></div><div class="as-stat"><b>' + res.unanswered + '</b><span>بلا إجابة</span></div></div>';
+      h += '</section>';
+    }
+    if (rep.timing && rep.timing.overtime) h += '<div class="as-note">تجاوزت الوقت المحدد. تدرّب بوضع الوقت وحدد حداً أقصى لكل سؤال.</div>';
+    if (res.kind === 'likert' && res.valid) h += asLikertReport(res, rep);
+    if (res.kind === 'diagnostic') h += asDiagReport(res);
+    if (res.kind === 'sjt') h += asSjtReport(res, rep, items, L);
+    if (res.kind === 'mcq') h += asMcqReport(res, rep, items, L);
+    if (res.kind === 'interview') h += asIvReport(res, rep, readiness);
+    if (readiness && readiness.score != null && res.kind !== 'interview') h += '<section class="as-card"><h2>جاهزيتك الحين: ' + readiness.score + ' من 100 <span class="as-badge ok">' + asE(AS_BAND[readiness.band] || '') + '</span></h2><p class="as-muted">' + (readiness.provisional ? 'نتيجة مبدئية، تغطي ' + readiness.coverage + '% من المطلوب.' : '') + '</p></section>';
+    if (rep.nextSteps && rep.nextSteps.length) { h += '<section class="as-card"><h2>وش تسوي بعدها</h2><ul class="as-steps">' + rep.nextSteps.map(function(s){ return '<li>' + asE(asT(s, 'ar')) + '</li>'; }).join('') + '</ul></section>'; }
+    h += '<p class="as-muted" style="margin-bottom:14px">' + asE(asT(rep.honestyNote, 'ar')) + '</p>';
+    h += '<div id="asRepNext"></div><div class="as-nav" style="flex-direction:column"><button class="as-btn" onclick="v2Go(\'#/interview\')">رجوع لخطتي</button><button class="as-btn ghost" onclick="v2Go(\'#/interview?v=intro&t=' + asE(rep.test) + '\')">أعد هذا الاختبار</button></div></div>';
+    el.innerHTML = h;
+    asReportNext(rep);
+  }
+  function asReportNext(rep){
+    var track = asTrack();
+    Promise.all([asLoadCatalog(), asApi('/progress?track=' + encodeURIComponent(track))]).then(function(rs){
+      var cat = rs[0], pr = rs[1], box = document.getElementById('asRepNext'); if (!box || !cat || !pr.ok) return;
+      var nxt = pr.d.nextStep ? asTest(pr.d.nextStep) : null; if (!nxt) return;
+      if (nxt.unlocked) box.innerHTML = '<section class="as-card" style="border-color:var(--ind)"><span class="as-chip">الخطوة الجاية</span><h2>' + asE(asT(nxt)) + '</h2><p class="as-muted">' + nxt.minutes + ' دقيقة</p><div style="margin-top:10px"><button class="as-btn" onclick="v2Go(\'#/interview?v=intro&t=' + nxt.id + '\')">كمّل ←</button></div></section>';
+      else box.innerHTML = '<section class="as-locked-prev"><span class="as-badge' + (nxt.requiredTier === 'pro' ? ' pro' : '') + '">🔒 ' + AS_TIER[nxt.requiredTier] + '</span><h2 style="margin:8px 0 4px;font-size:17px">الخطوة الجاية: ' + asE(asT(nxt)) + '</h2><p class="as-muted">تفتح مع خطة ' + AS_TIER[nxt.requiredTier] + '. نتيجتك الحالية تبقى لك، وتقدر تكرر الاختبارات المجانية.</p><div style="margin-top:10px"><button class="as-btn" onclick="v2Go(\'#/pricing\')">شوف الخطط</button></div></section>';
+    });
+  }
+  function asLikertReport(res, rep){
+    var h = '';
+    if (res.flags && res.flags.length) {
+      var fl = { impression_management: 'مبالغة في الصورة المثالية', straight_lining: 'إجابات متشابهة تقريباً لكل البنود', inconsistent: 'عدم اتساق بين بنود متقاربة' };
+      h += '<div class="as-note"><b>الشركات تلاحظ نمط الإجابات:</b> ' + res.flags.map(function(f){ return asE(fl[f] || f); }).join('، ') + '. أعد الاختبار بصدق أكبر.</div>';
+    }
+    h += '<section class="as-card"><h2>أبعادك الخمسة</h2><p class="as-muted" style="margin-bottom:6px">الشريط الأخضر هو النطاق المعتاد للدور المستهدف. الأعلى مو دايماً الأفضل.</p>';
+    Object.keys(res.traits).forEach(function(t){
+      var x = res.traits[t], fit = x.fit === 'in_range' ? '<span class="as-badge ok">ضمن النطاق</span>' : (x.fit === 'above' ? '<span class="as-badge">أعلى من المعتاد</span>' : '<span class="as-badge">أقل من المعتاد</span>');
+      h += '<div class="as-rev"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px"><b>' + asE(AS_TRAIT[t] || t) + '</b>' + fit + '</div>' + asBar('', x.score, x.target) + '<p class="as-muted" style="margin-top:6px">' + asE(asT(x.employerRead, 'ar')) + '</p>' + (x.fit !== 'in_range' ? '<p class="as-muted" style="margin-top:4px"><b>جهّز مثالاً واقعياً</b> يوضح كيف تتصرف في هذا الجانب.</p>' : '') + '</div>';
+    });
+    h += '</section>';
+    return h;
+  }
+  function asDiagReport(res){
+    var h = '<section class="as-card"><h2>مستواك في كل جانب</h2><div class="as-bars">';
+    Object.keys(res.sections || {}).forEach(function(k){ h += asBar(AS_SEC[k] || k, res.sections[k].pct); });
+    h += '</div></section>';
+    if (res.weakest && res.weakest.length) h += '<div class="as-info"><b>ابدأ بهذين:</b> ' + res.weakest.map(function(k){ return asE(AS_SEC[k] || k); }).join(' ثم ') + '. رتّبنا خطتك على هذا الأساس.</div>';
+    return h;
+  }
+  function asXtext(x, L){ if (!x) return ''; return asE(asT(x, L)); }
+  function asMcqReport(res, rep, items, L){
+    var h = '<section class="as-card"><h2>راجع كل سؤال</h2>';
+    var ex = rep.explanations || {};
+    (res.detail || []).forEach(function(d, i){
+      var it = items[d.id], opts = it && it.opts ? (it.opts[L] || it.opts.ar) : null;
+      h += '<div class="as-rev"><div><b>سؤال ' + (i + 1) + '</b> · ' + (d.ok ? '<span class="ok">صحيحة</span>' : '<span class="no">' + (d.given == null ? 'بلا إجابة' : 'خاطئة') + '</span>') + '</div>';
+      if (it) h += '<p class="' + (L === 'en' ? 'as-en ' : '') + 'as-muted" style="margin:6px 0;color:var(--ink);font-weight:600">' + asE(asT(it, L)) + '</p>';
+      if (opts) h += '<p class="as-muted ' + (L === 'en' ? 'as-en' : '') + '">إجابتك: <b>' + (d.given == null ? '—' : asE(opts[d.given])) + '</b>' + (d.ok ? '' : ' · الصحيحة: <b>' + asE(opts[d.correct]) + '</b>') + '</p>';
+      if (ex[d.id]) h += '<div class="as-expl ' + (L === 'en' ? 'as-en' : '') + '">' + asXtext(ex[d.id], L) + '</div>';
+      h += '</div>';
+    });
+    return h + '</section>';
+  }
+  function asSjtReport(res, rep, items, L){
+    var h = '<section class="as-card"><h2>الكفاءات</h2><div class="as-bars">';
+    Object.keys(res.byCompetency || {}).forEach(function(c){ h += asBar(AS_COMPET[c] || c, res.byCompetency[c]); });
+    h += '</div></section><section class="as-card"><h2>راجع كل موقف</h2>';
+    var ex = rep.explanations || {};
+    (res.detail || []).forEach(function(d, i){
+      var it = items[d.id], o = it && it.opts;
+      h += '<div class="as-rev"><b>موقف ' + (i + 1) + '</b> · ' + (d.answered ? 'درجتك ' + Math.round(d.score * 100) + '%' : '<span class="no">بلا إجابة</span>');
+      if (it) h += '<p class="' + (L === 'en' ? 'as-en ' : '') + 'as-muted" style="margin:6px 0;color:var(--ink);font-weight:600">' + asE(asT(it, L)) + '</p>';
+      if (o && d.answered) h += '<p class="as-muted ' + (L === 'en' ? 'as-en' : '') + '">اخترت الأكثر فعالية: <b>' + asE(asT(o[d.most], L)) + '</b><br>واخترت الأقل فعالية: <b>' + asE(asT(o[d.least], L)) + '</b></p>';
+      if (o) h += '<p class="as-muted ' + (L === 'en' ? 'as-en' : '') + '" style="margin-top:6px">الأفضل عندنا: <b>' + asE(asT(o[d.bestIdx], L)) + '</b></p>';
+      if (ex[d.id]) h += '<div class="as-expl ' + (L === 'en' ? 'as-en' : '') + '">' + asXtext(ex[d.id], L) + '</div>';
+      h += '</div>';
+    });
+    return h + '</section>';
+  }
+  function asIvReport(res, rep, readiness){
+    var s = res.summary || {}, L = res.lang || 'ar', h = '';
+    if (readiness && rep.test === 'mock_final') h += '<section class="as-card" style="border-color:var(--ind)"><h2>جاهزيتك للتوظيف: ' + readiness.score + ' من 100 <span class="as-badge ok">' + asE(AS_BAND[readiness.band] || '') + '</span></h2><p class="as-muted">' + asE(asT(readiness.note, 'ar')) + '</p></section>';
+    h += '<section class="as-card"><div class="as-stats"><div class="as-stat"><b>' + Math.round(s.avg || 0) + '</b><span>متوسط التقييم</span></div><div class="as-stat"><b>' + Math.round(s.answeredPct || 0) + '%</b><span>أسئلة أجبتها</span></div><div class="as-stat"><b>' + (s.count || 0) + '</b><span>أسئلة</span></div></div>';
+    if ((s.strongest && s.strongest.length) || (s.weakest && s.weakest.length)) {
+      h += '<p class="as-muted" style="margin-top:12px">' + (s.strongest && s.strongest[0] ? 'الأقوى: <b>' + asE(AS_COMPET[s.strongest[0].c] || s.strongest[0].c) + '</b>. ' : '') + (s.weakest && s.weakest[0] ? 'الأضعف: <b>' + asE(AS_COMPET[s.weakest[0].c] || s.weakest[0].c) + '</b>.' : '') + '</p>';
+    }
+    h += '</section>';
+    if (s.topTips && s.topTips.length) h += '<section class="as-card"><h2>أهم ثلاث نصائح تتكرر</h2><ul class="as-steps">' + s.topTips.map(function(t){ return '<li>' + asE(asT(t, 'ar')) + '</li>'; }).join('') + '</ul></section>';
+    h += '<section class="as-card"><h2>كل سؤال بتقييمه</h2>';
+    (res.items || []).forEach(function(r, i){
+      var x = r.res || {}, st = x.star || {};
+      h += '<div class="as-rev"><div style="display:flex;justify-content:space-between;gap:8px"><b>سؤال ' + (i + 1) + (r.c ? ' · ' + asE(AS_COMPET[r.c] || '') : '') + '</b><span class="as-badge ' + ((x.score || 0) >= 60 ? 'ok' : '') + '">' + Math.round(x.score || 0) + ' / 100</span></div>';
+      h += '<p class="as-muted ' + (L === 'en' ? 'as-en' : '') + '" style="margin:6px 0;color:var(--ink);font-weight:600">' + asE(asT(r.question, L)) + '</p>';
+      if (x.tooShort) h += '<p class="as-muted">' + (x.words ? 'الإجابة قصيرة جداً.' : 'ما كتبت إجابة لهذا السؤال.') + '</p>';
+      else {
+        if (r.kind === 'behavioural' || r.kind === 'situational') h += '<div class="as-star-row" aria-label="تغطية STAR" dir="ltr">' + ['S', 'T', 'A', 'R'].map(function(k){ return '<span class="' + (st[k] ? 'y' : '') + '" title="' + k + '">' + k + '</span>'; }).join('') + '</div>';
+        if (x.paceWpm) h += '<p class="as-muted">سرعة الكلام التقريبية: ' + Math.round(x.paceWpm) + ' كلمة بالدقيقة.</p>';
+        if (x.wrongLanguage) h += '<p class="as-muted" style="color:var(--bad)">لغة الإجابة ما تطابق لغة الجلسة.</p>';
+      }
+      if (x.tips && x.tips.length) h += '<ul class="as-steps" style="margin-top:8px">' + x.tips.map(function(t){ return '<li>' + asE(asT(t, 'ar')) + '</li>'; }).join('') + '</ul>';
+      h += '</div>';
+    });
+    return h + '</section>';
+  }
+
+  // ── progress ────────────────────────────────────────────────────────────
+  function asProgress(el){
+    if (asNeedLogin('#/interview?v=progress')) return;
+    el.innerHTML = '<div class="as-wrap"><h1 class="as-h1">سجل نتائجي</h1>' + asSkel(2) + '</div>';
+    Promise.all([asLoadCatalog(), asApi('/progress?track=' + encodeURIComponent(asTrack()))]).then(function(rs){
+      var pr = rs[1];
+      if (pr.status === 401) { V2User.clear(); v2Go('#/login?next=%23%2Finterview%3Fv%3Dprogress'); return; }
+      if (!pr.ok) { el.innerHTML = '<div class="as-wrap"><h1 class="as-h1">سجل نتائجي</h1>' + asErr('ما قدرنا نجيب سجلك. حاول مرة ثانية.', 'asProgress(asRoot())') + '<button class="as-btn ghost" onclick="v2Go(\'#/interview\')">رجوع</button></div>'; return; }
+      var d = pr.d, h = '<div class="as-wrap"><h1 class="as-h1">سجل نتائجي</h1>';
+      if (!d.history.length) h += '<div class="as-card"><h2>ما فيه نتائج بعد</h2><p class="as-muted">سوّ أول اختبار وتظهر نتائجك هنا.</p><div style="margin-top:12px"><button class="as-btn" onclick="v2Go(\'#/interview\')">ابدأ من الخطة</button></div></div>';
+      else {
+        h += '<section class="as-card"><h2>آخر النتائج</h2>';
+        (d.tier === 'free' ? d.history.slice(0, 3) : d.history).forEach(function(x){
+          var t = asTest(x.test), dt = x.submittedAt ? new Date(x.submittedAt) : null;
+          h += '<button class="as-row" style="margin-top:8px" onclick="v2Go(\'#/interview?v=report&sid=' + asE(x.sessionId) + '\')"><span class="t">' + asE(t ? asT(t, 'ar') : x.test) + '<small>' + (dt ? dt.toISOString().slice(0, 10) : '') + (x.lang === 'en' ? ' · English' : '') + '</small></span><span class="as-badge ' + ((x.pct || 0) >= 60 ? 'ok' : '') + '">' + (x.pct == null ? '—' : Math.round(x.pct) + '%') + '</span></button>';
+        });
+        h += '</section>';
+        h += '<p class="as-muted">أيام تدرّبت فيها: ' + d.activeDays.length + '. المجاني يعرض آخر 3 نتائج، والخطط المدفوعة تحفظ السجل كامل.</p>';
+      }
+      el.innerHTML = h + '<div style="margin-top:14px"><button class="as-btn ghost" onclick="v2Go(\'#/interview\')">رجوع للخطة</button></div></div>';
+    });
+  }
+  </script>
 </body>
 </html>
