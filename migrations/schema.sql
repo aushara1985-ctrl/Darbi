@@ -17,6 +17,9 @@ CREATE TABLE IF NOT EXISTS users (
   created_at       TIMESTAMP DEFAULT NOW()
 );
 
+-- Purchased plan: starter | pro | lifetime (set by the Stripe webhook / session verify; NULL when free).
+ALTER TABLE users ADD COLUMN IF NOT EXISTS plan TEXT;
+
 CREATE TABLE IF NOT EXISTS analyses (
   id               SERIAL PRIMARY KEY,
   user_id          INTEGER REFERENCES users(id),

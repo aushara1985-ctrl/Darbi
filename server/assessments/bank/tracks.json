@@ -1,0 +1,48 @@
+{
+  "tracks": {
+    "fresh_grad": {
+      "en": "Fresh graduate", "ar": "خريج جديد",
+      "intro": { "en": "For students and graduates facing long employer assessments: personality inventories, aptitude tests, situational judgement and recorded or panel interviews.", "ar": "للطلاب والخريجين الذين سيواجهون تقييمات طويلة: استبيانات الشخصية، اختبارات القدرات، الحكم الموقفي، ومقابلات مسجّلة أو لجنة." },
+      "path": ["diagnostic", "workstyle45", "sjt_set_1", "numerical", "verbal", "logical", "english", "sjt_set_2", "interview_competency", "interview_role", "mock_final"],
+      "weeks": 4
+    },
+    "career_changer": {
+      "en": "Career changer", "ar": "متحوّل مهنياً",
+      "intro": { "en": "For people moving into a new field. Focus on telling the transfer story and on behavioural interviews.", "ar": "لمن ينتقل إلى مجال جديد. التركيز على سرد قصة نقل المهارات والمقابلات السلوكية." },
+      "path": ["diagnostic", "workstyle45", "sjt_set_1", "interview_competency", "interview_role", "logical", "verbal", "sjt_set_2", "mock_final"],
+      "weeks": 3
+    },
+    "experienced": {
+      "en": "Experienced professional", "ar": "ذو خبرة",
+      "intro": { "en": "For people with 3+ years. Fewer aptitude drills, more leadership, impact and negotiation interviews.", "ar": "لمن لديه 3 سنوات فأكثر. تمارين قدرات أقل ومقابلات أكثر في القيادة والأثر والتفاوض." },
+      "path": ["diagnostic", "sjt_set_1", "sjt_set_2", "interview_competency", "interview_role", "workstyle45", "mock_final"],
+      "weeks": 2
+    },
+    "simple_job": {
+      "en": "Simple job (entry-level / service)", "ar": "وظيفة بسيطة (مبتدئ / خدمات)",
+      "intro": { "en": "For service, retail, hospitality and entry-level jobs. Short, practical practice: basic numbers, basic English, common situations and a short interview.", "ar": "لوظائف الخدمات والتجزئة والضيافة والمبتدئين. تدريب قصير وعملي: أرقام بسيطة، إنجليزي أساسي، مواقف شائعة، ومقابلة قصيرة." },
+      "path": ["diagnostic", "sjt_set_1", "english", "interview_competency", "mock_final"],
+      "weeks": 1
+    }
+  },
+  "tests": {
+    "diagnostic":          { "kind": "mixed", "en": "Diagnostic mini-test", "ar": "اختبار تشخيصي مصغّر", "minutes": 15, "tier": "free" },
+    "workstyle45":         { "kind": "likert", "en": "Work-style inventory (45 items)", "ar": "استبيان أسلوب العمل (45 بنداً)", "minutes": 20, "tier": "starter" },
+    "sjt_set_1":           { "kind": "sjt", "en": "Situational judgement set 1", "ar": "الحكم الموقفي: المجموعة 1", "minutes": 10, "tier": "free" },
+    "sjt_set_2":           { "kind": "sjt", "en": "Situational judgement set 2", "ar": "الحكم الموقفي: المجموعة 2", "minutes": 10, "tier": "starter" },
+    "numerical":           { "kind": "mcq", "en": "Numerical reasoning (12)", "ar": "الاستدلال الرقمي (12)", "minutes": 18, "tier": "starter" },
+    "verbal":              { "kind": "mcq", "en": "Verbal reasoning (10)", "ar": "الاستدلال اللفظي (10)", "minutes": 12, "tier": "starter" },
+    "logical":             { "kind": "mcq", "en": "Logical / inductive reasoning (12)", "ar": "الاستدلال المنطقي والاستقرائي (12)", "minutes": 15, "tier": "starter" },
+    "english":             { "kind": "mcq", "en": "English proficiency (12)", "ar": "مستوى اللغة الإنجليزية (12)", "minutes": 10, "tier": "starter" },
+    "interview_quick":     { "kind": "interview", "en": "Quick interview (6 questions)", "ar": "مقابلة سريعة (6 أسئلة)", "minutes": 15, "tier": "free" },
+    "interview_competency":{ "kind": "interview", "en": "Competency interview (10 STAR questions)", "ar": "مقابلة الكفاءات (10 أسئلة STAR)", "minutes": 30, "tier": "starter" },
+    "interview_role":      { "kind": "interview", "en": "Role-specific interview (by career family)", "ar": "مقابلة خاصة بالدور (حسب العائلة المهنية)", "minutes": 25, "tier": "starter" },
+    "mock_final":          { "kind": "interview", "en": "Mock final interview (15-20 questions) with report", "ar": "مقابلة نهائية تجريبية (15-20 سؤالاً) مع تقرير", "minutes": 45, "tier": "pro" }
+  },
+  "tiers": {
+    "free":    { "attemptsPer30d": 2, "english_interview": false, "timed": false },
+    "starter": { "attemptsPer30d": 3, "english_interview": false, "timed": true },
+    "pro":     { "attemptsPer30d": 999, "english_interview": true, "timed": true }
+  },
+  "readinessWeights": { "aptitude": 25, "workstyle": 15, "sjt": 20, "interview": 30, "english": 10 }
+}

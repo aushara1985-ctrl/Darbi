@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "id": "workstyle45",
+    "version": 1,
+    "scale": { "min": 1, "max": 5, "labels": { "en": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"], "ar": ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"] } },
+    "note": { "en": "Original Darbi items written for practice. Not a clinical or licensed instrument and not the questionnaire of any vendor.", "ar": "بنود أصلية من درْبي للتدريب فقط. ليست أداة سريرية أو مرخّصة، وليست استبيان أي مزوّد." }
+  },
+  "traits": {
+    "C": { "en": "Organisation and reliability", "ar": "التنظيم والالتزام" },
+    "S": { "en": "Composure under pressure", "ar": "الهدوء تحت الضغط" },
+    "A": { "en": "Cooperation and tact", "ar": "التعاون واللباقة" },
+    "X": { "en": "Social energy and initiative", "ar": "الحضور الاجتماعي والمبادرة" },
+    "O": { "en": "Openness to change and learning", "ar": "الانفتاح على التغيير والتعلّم" }
+  },
+  "items": [
+    { "id": "ws01", "t": "C", "r": 0, "en": "I plan my tasks before I start them.", "ar": "أخطّط لمهامي قبل أن أبدأ بها." },
+    { "id": "ws02", "t": "S", "r": 0, "en": "I stay calm when several things go wrong at once.", "ar": "أحافظ على هدوئي حين تتعثر عدة أمور في وقت واحد." },
+    { "id": "ws03", "t": "A", "r": 0, "en": "I try to understand a colleague's view even when I disagree.", "ar": "أحاول فهم وجهة نظر زميلي حتى لو اختلفت معه." },
+    { "id": "ws04", "t": "X", "r": 0, "en": "I enjoy meeting new people at work.", "ar": "أستمتع بالتعرّف على أشخاص جدد في العمل." },
+    { "id": "ws05", "t": "O", "r": 0, "en": "I enjoy learning new tools and methods.", "ar": "أستمتع بتعلّم أدوات وأساليب جديدة." },
+    { "id": "ws06", "t": "C", "r": 1, "en": "I sometimes leave small details for someone else to catch.", "ar": "أحياناً أترك التفاصيل الصغيرة ليلتقطها غيري." },
+    { "id": "ws07", "t": "S", "r": 1, "en": "A manager's criticism stays on my mind for days.", "ar": "ملاحظات المدير الحادة تظل تشغل بالي أياماً." },
+    { "id": "ws08", "t": "A", "r": 1, "en": "I find it hard to hide it when someone annoys me.", "ar": "يصعب عليّ إخفاء انزعاجي عندما يضايقني أحد." },
+    { "id": "ws09", "t": "X", "r": 1, "en": "I prefer to avoid speaking in meetings.", "ar": "أفضّل تجنّب الكلام في الاجتماعات." },
+    { "id": "ws10", "t": "O", "r": 1, "en": "I prefer to do things the way I have always done them.", "ar": "أفضّل أن أنجز الأمور بالطريقة التي اعتدت عليها." },
+    { "id": "ws11", "t": "C", "r": 0, "en": "I finish what I start, even when it becomes boring.", "ar": "أُكمل ما بدأته حتى لو صار مملاً." },
+    { "id": "ws12", "t": "S", "r": 0, "en": "I recover quickly after a setback.", "ar": "أتجاوز الانتكاسات بسرعة." },
+    { "id": "ws13", "t": "A", "r": 0, "en": "I am happy to help teammates even when it is not my job.", "ar": "يسعدني مساعدة زملائي حتى لو لم يكن ذلك من مهامي." },
+    { "id": "ws14", "t": "X", "r": 0, "en": "I speak up when I have an idea.", "ar": "أتكلّم عندما تكون لديّ فكرة." },
+    { "id": "ws15", "t": "O", "r": 0, "en": "I often suggest better ways to do a task.", "ar": "كثيراً ما أقترح طرقاً أفضل لإنجاز المهام." },
+    { "id": "ws16", "t": "C", "r": 1, "en": "I tend to put tasks off until the last minute.", "ar": "أميل إلى تأجيل المهام إلى آخر لحظة." },
+    { "id": "ws17", "t": "S", "r": 1, "en": "I worry a lot about making mistakes at work.", "ar": "أقلق كثيراً من ارتكاب أخطاء في العمل." },
+    { "id": "ws18", "t": "A", "r": 1, "en": "I would rather win an argument than keep the peace.", "ar": "أفضّل أن أفوز في النقاش على أن أحافظ على الود." },
+    { "id": "ws19", "t": "X", "r": 1, "en": "I feel drained after a day with lots of interaction.", "ar": "أشعر بالإرهاق بعد يوم مليء بالتفاعل مع الناس." },
+    { "id": "ws20", "t": "O", "r": 1, "en": "I feel uneasy when my role or tasks change.", "ar": "أشعر بعدم الارتياح عندما يتغيّر دوري أو مهامي." },
+    { "id": "ws21", "t": "C", "r": 0, "en": "I arrive on time for meetings and deadlines.", "ar": "ألتزم بمواعيد الاجتماعات والتسليم." },
+    { "id": "ws22", "t": "S", "r": 0, "en": "I can think clearly under a tight deadline.", "ar": "أستطيع التفكير بوضوح تحت ضغط موعد تسليم قريب." },
+    { "id": "ws23", "t": "A", "r": 0, "en": "I give others credit for their contribution.", "ar": "أنسب الفضل لأصحابه عندما يساهم الآخرون." },
+    { "id": "ws24", "t": "X", "r": 0, "en": "I find it easy to start a conversation with a stranger.", "ar": "يسهل عليّ بدء حديث مع شخص لا أعرفه." },
+    { "id": "ws25", "t": "O", "r": 0, "en": "I like to understand why things work the way they do.", "ar": "أحب أن أفهم لماذا تعمل الأشياء بالطريقة التي تعمل بها." },
+    { "id": "ws26", "t": "C", "r": 1, "en": "My files and workspace are often messy.", "ar": "ملفاتي ومكان عملي غالباً غير مرتّبين." },
+    { "id": "ws27", "t": "S", "r": 1, "en": "Small problems often make me tense or irritated.", "ar": "المشاكل الصغيرة كثيراً ما تجعلني متوتراً أو منزعجاً." },
+    { "id": "ws28", "t": "A", "r": 1, "en": "I rarely trust others to do things properly.", "ar": "قلّما أثق بأن غيري سينجز العمل كما ينبغي." },
+    { "id": "ws29", "t": "X", "r": 1, "en": "I would rather work alone than in a group.", "ar": "أفضّل العمل وحدي على العمل ضمن مجموعة." },
+    { "id": "ws30", "t": "O", "r": 1, "en": "I avoid tasks I have never done before.", "ar": "أتجنب المهام التي لم أجرّبها من قبل." },
+    { "id": "ws31", "t": "C", "r": 0, "en": "I double-check my work before I submit it.", "ar": "أراجع عملي مرة أخرى قبل تسليمه." },
+    { "id": "ws32", "t": "S", "r": 0, "en": "I handle unexpected changes without much stress.", "ar": "أتعامل مع التغييرات المفاجئة دون توتر كبير." },
+    { "id": "ws33", "t": "A", "r": 0, "en": "I stay polite with difficult customers or colleagues.", "ar": "أبقى مهذباً مع العملاء أو الزملاء الصعبين." },
+    { "id": "ws34", "t": "X", "r": 0, "en": "I like taking the lead in group tasks.", "ar": "أحب أخذ زمام القيادة في المهام الجماعية." },
+    { "id": "ws35", "t": "O", "r": 0, "en": "I am curious about other industries and cultures.", "ar": "عندي فضول تجاه قطاعات وثقافات أخرى." },
+    { "id": "ws36", "t": "C", "r": 1, "en": "I get bored with rules and procedures and tend to skip steps.", "ar": "أشعر بالملل من القواعد والإجراءات وأميل إلى تخطّي بعض الخطوات." },
+    { "id": "ws37", "t": "S", "r": 1, "en": "I often doubt whether my work is good enough.", "ar": "كثيراً ما أشك في أن عملي بالمستوى الكافي." },
+    { "id": "ws38", "t": "A", "r": 1, "en": "I am blunt with colleagues, even when it hurts.", "ar": "أقول رأيي لزملائي بحدّة حتى لو جرح ذلك مشاعرهم." },
+    { "id": "ws39", "t": "X", "r": 1, "en": "In group discussions I keep my opinions to myself.", "ar": "في النقاشات الجماعية أحتفظ برأيي لنفسي." },
+    { "id": "ws40", "t": "O", "r": 1, "en": "I find abstract ideas a waste of time.", "ar": "أرى أن الأفكار المجرّدة مضيعة للوقت." },
+    { "id": "ws41", "t": "D", "r": 0, "en": "I have never been late for anything in my life.", "ar": "لم أتأخر عن أي شيء في حياتي قط." },
+    { "id": "ws42", "t": "D", "r": 0, "en": "I have never felt annoyed with a colleague.", "ar": "لم أشعر بالانزعاج من زميل قط." },
+    { "id": "ws43", "t": "D", "r": 0, "en": "I have never made a mistake at work.", "ar": "لم أرتكب خطأً في العمل قط." },
+    { "id": "ws44", "t": "D", "r": 0, "en": "I always enjoy every task I am given.", "ar": "أستمتع دائماً بكل مهمة تُسند إليّ." },
+    { "id": "ws45", "t": "D", "r": 0, "en": "I always remember the name of everyone I meet.", "ar": "أتذكر دائماً اسم كل شخص أقابله." }
+  ],
+  "bands": {
+    "low": { "max": 35 },
+    "mid": { "max": 65 },
+    "high": { "max": 100 }
+  },
+  "reading": {
+    "C": {
+      "low": { "en": "Employers may read this as someone who needs reminders and structure. In roles with deadlines, compliance or finance this is a concern.", "ar": "قد يقرأها صاحب العمل على أنك تحتاج إلى متابعة وتنظيم. في الأدوار ذات المواعيد أو الامتثال أو المالية يُعدّ هذا مصدر قلق." },
+      "mid": { "en": "A balanced picture: reliable on most things, with room to be more systematic.", "ar": "صورة متوازنة: يمكن الاعتماد عليك في أغلب الأمور مع مجال لمزيد من الانتظام." },
+      "high": { "en": "Read as dependable and thorough. Very high scores in fast-changing roles can read as rigid or slow, so be ready to show you can move quickly.", "ar": "يُنظر إليك كشخص موثوق ودقيق. الدرجات المرتفعة جداً في الأدوار سريعة التغيّر قد تُقرأ كجمود أو بطء، فكن مستعداً لإظهار أنك تتحرك بسرعة." }
+    },
+    "S": {
+      "low": { "en": "May be read as someone who struggles with pressure and criticism. Customer-facing and high-stakes roles weigh this heavily.", "ar": "قد تُقرأ كصعوبة في التعامل مع الضغط والانتقاد. الأدوار التي تتعامل مع العملاء أو ذات المخاطر العالية تعطي هذا وزناً كبيراً." },
+      "mid": { "en": "Normal range: you feel pressure but manage it.", "ar": "نطاق طبيعي: تشعر بالضغط لكنك تديره." },
+      "high": { "en": "Read as steady under pressure. Extremely high can read as unconcerned about risk, so show that you still take problems seriously.", "ar": "يُنظر إليك كشخص ثابت تحت الضغط. الدرجة المرتفعة جداً قد تُقرأ كقلة اكتراث بالمخاطر، فأظهر أنك تأخذ المشاكل بجدية." }
+    },
+    "A": {
+      "low": { "en": "May be read as blunt or competitive. Fine in some analytical roles, risky in team and service roles.", "ar": "قد تُقرأ كحدّة أو تنافسية. مقبولة في بعض الأدوار التحليلية، ومخاطرة في أدوار العمل الجماعي والخدمة." },
+      "mid": { "en": "Balanced between cooperating and speaking your mind.", "ar": "توازن بين التعاون وقول رأيك." },
+      "high": { "en": "Read as a good team member. Very high can read as someone who avoids disagreement, so show you can push back politely.", "ar": "يُنظر إليك كعضو فريق جيد. المرتفعة جداً قد تُقرأ كتجنّب للخلاف، فأظهر أنك تعترض بلباقة عند اللزوم." }
+    },
+    "X": {
+      "low": { "en": "Read as reserved and independent. Fine for focused work; for sales, service and leadership you will need examples showing you can engage.", "ar": "يُنظر إليك كشخص هادئ ومستقل. مناسبة للعمل المركّز؛ أما للمبيعات والخدمة والقيادة فستحتاج أمثلة تُظهر قدرتك على التفاعل." },
+      "mid": { "en": "Comfortable both with people and on your own.", "ar": "مرتاح مع الناس ووحدك على السواء." },
+      "high": { "en": "Read as outgoing and proactive. Make sure you also show you can listen and work quietly when needed.", "ar": "يُنظر إليك كشخص اجتماعي ومبادر. تأكد من إظهار أنك تُنصت وتعمل بهدوء عند الحاجة." }
+    },
+    "O": {
+      "low": { "en": "Read as someone who prefers proven methods. A concern in roles that change fast, such as tech and startups.", "ar": "تُقرأ كمن يفضّل الأساليب المجرّبة. مصدر قلق في الأدوار سريعة التغيّر كالتقنية والشركات الناشئة." },
+      "mid": { "en": "Open to new things while valuing what works.", "ar": "منفتح على الجديد مع تقدير ما ينجح." },
+      "high": { "en": "Read as adaptable and curious. Show you can also follow the process when a role needs consistency.", "ar": "يُنظر إليك كشخص مرن وفضولي. أظهر أنك تلتزم بالإجراء حين يتطلب الدور الثبات." }
+    }
+  },
+  "roleProfiles": {
+    "client_facing": { "families": ["customer_success", "customer_service", "sales", "hospitality", "retail", "marketing"], "target": { "C": [45, 85], "S": [55, 95], "A": [55, 95], "X": [50, 95], "O": [35, 85] } },
+    "analytical": { "families": ["finance", "accounting", "data", "it_cyber", "software"], "target": { "C": [60, 95], "S": [45, 90], "A": [35, 85], "X": [20, 75], "O": [45, 95] } },
+    "operations_detail": { "families": ["operations", "admin_office", "logistics", "healthcare_admin", "hr", "education"], "target": { "C": [60, 95], "S": [50, 95], "A": [50, 95], "X": [30, 85], "O": [30, 80] } },
+    "creative_product": { "families": ["design", "product"], "target": { "C": [40, 85], "S": [45, 90], "A": [45, 90], "X": [40, 90], "O": [60, 100] } },
+    "general": { "families": ["general_entry", "unknown"], "target": { "C": [50, 90], "S": [45, 90], "A": [50, 90], "X": [30, 85], "O": [35, 85] } }
+  },
+  "honestyNotes": {
+    "en": [
+      "There are no right answers. Employers compare you with a role profile, and a profile that is too perfect is a warning sign, not a strength.",
+      "Answer as you really behave on a normal day, not as you wish to be. The tests contain consistency checks and a few impossible-virtue items.",
+      "Do not over-think each item: your first quick answer is usually the most honest one."
+    ],
+    "ar": [
+      "لا توجد إجابات صحيحة. صاحب العمل يقارنك بملف الدور، والملف المثالي أكثر من اللازم علامة تحذير وليس ميزة.",
+      "أجب كما تتصرف فعلاً في يوم عادي وليس كما تتمنى أن تكون. الاختبارات تحتوي على فحوص اتساق وبعض بنود الفضائل المستحيلة.",
+      "لا تطل التفكير في كل بند: إجابتك السريعة الأولى هي عادة الأصدق."
+    ]
+  }
+}

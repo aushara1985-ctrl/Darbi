@@ -1,0 +1,153 @@
+{
+  "meta": { "version": 1 },
+  "star": {
+    "en": { "S": "Situation: where and when, in one sentence.", "T": "Task: what you were responsible for.", "A": "Action: what YOU did, step by step (use 'I', not only 'we').", "R": "Result: what changed, with a number if you can, and what you learned." },
+    "ar": { "S": "الموقف: أين ومتى، في جملة واحدة.", "T": "المهمة: ما الذي كنت مسؤولاً عنه.", "A": "الإجراء: ما الذي فعلته أنت خطوة بخطوة (قل 'أنا' وليس 'نحن' فقط).", "R": "النتيجة: ما الذي تغيّر، بالأرقام إن أمكن، وماذا تعلّمت." }
+  },
+  "openers": [
+    { "id": "op01", "en": "Tell me about yourself.", "ar": "حدّثني عن نفسك.", "tip": { "en": "Two minutes: present, past, future. Finish with why this role.", "ar": "دقيقتان تقريباً: حاضرك ثم ماضيك ثم طموحك. اختم بسبب اهتمامك بهذا الدور." } },
+    { "id": "op02", "en": "Why do you want to work for our company?", "ar": "لماذا تريد العمل في شركتنا؟", "tip": { "en": "Name one specific thing about the company and connect it to your skills.", "ar": "اذكر أمراً محدداً عن الشركة واربطه بمهاراتك." } },
+    { "id": "op03", "en": "What are your biggest strengths?", "ar": "ما أبرز نقاط قوتك؟", "tip": { "en": "Pick two, each with a short proof from your experience.", "ar": "اختر نقطتين وادعم كل واحدة بدليل قصير من تجربتك." } },
+    { "id": "op04", "en": "What is a weakness you are working on?", "ar": "ما نقطة ضعف تعمل على تطويرها؟", "tip": { "en": "A real, non-critical weakness plus what you are doing about it.", "ar": "ضعف حقيقي غير جوهري مع ما تفعله لمعالجته." } },
+    { "id": "op05", "en": "Where do you see yourself in five years?", "ar": "أين ترى نفسك بعد خمس سنوات؟", "tip": { "en": "Show growth inside this field and a realistic path, not a promise to leave.", "ar": "أظهر نمواً داخل هذا المجال ومساراً واقعياً، وليس نية للمغادرة." } },
+    { "id": "op06", "en": "What are your salary expectations?", "ar": "ما توقعاتك للراتب؟", "tip": { "en": "Give a researched range and show flexibility; ask about the full package.", "ar": "اذكر نطاقاً مبنياً على بحث وأظهر مرونة، واسأل عن الحزمة الكاملة." } }
+  ],
+  "competencies": {
+    "teamwork": { "en": "Teamwork", "ar": "العمل الجماعي" },
+    "conflict": { "en": "Handling conflict", "ar": "إدارة الخلاف" },
+    "pressure": { "en": "Working under pressure", "ar": "العمل تحت الضغط" },
+    "initiative": { "en": "Initiative", "ar": "المبادرة" },
+    "failure": { "en": "Learning from mistakes", "ar": "التعلّم من الأخطاء" },
+    "adaptability": { "en": "Adaptability", "ar": "المرونة" },
+    "integrity": { "en": "Integrity", "ar": "النزاهة" },
+    "leadership": { "en": "Leadership", "ar": "القيادة" },
+    "customer": { "en": "Customer focus", "ar": "خدمة العميل" },
+    "learning": { "en": "Learning quickly", "ar": "سرعة التعلّم" },
+    "communication": { "en": "Communication", "ar": "التواصل" },
+    "ownership": { "en": "Ownership and reliability", "ar": "تحمّل المسؤولية والالتزام" }
+  },
+  "competency": [
+    { "id": "cp01", "c": "teamwork", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Tell me about a time you worked in a team to achieve a goal. What was your role?", "ar": "حدّثني عن مرة عملت فيها ضمن فريق لتحقيق هدف. ما دورك؟" },
+    { "id": "cp02", "c": "teamwork", "lv": ["fresh_grad", "junior"], "en": "Describe a group project at university or in a course. What did you personally contribute?", "ar": "صف مشروعاً جماعياً في الجامعة أو دورة. ما الذي أسهمت به أنت شخصياً؟" },
+    { "id": "cp03", "c": "conflict", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Tell me about a disagreement with a colleague. How did you resolve it?", "ar": "حدّثني عن خلاف مع زميل. كيف حللته؟" },
+    { "id": "cp04", "c": "conflict", "lv": ["mid", "senior"], "en": "Describe a time you had to push back on a senior person's decision.", "ar": "صف موقفاً اعترضت فيه على قرار صادر عن شخص أعلى منك." },
+    { "id": "cp05", "c": "pressure", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Give an example of a time you had several deadlines at once. How did you handle it?", "ar": "أعطني مثالاً على وقت تراكمت عليك فيه عدة مواعيد تسليم. كيف تعاملت؟" },
+    { "id": "cp06", "c": "pressure", "lv": ["mid", "senior"], "en": "Tell me about the most stressful period of your career. What did you do to keep performing?", "ar": "حدّثني عن أصعب فترة ضغط في مسيرتك. ماذا فعلت لتحافظ على الأداء؟" },
+    { "id": "cp07", "c": "initiative", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Tell me about something you started or improved without being asked.", "ar": "حدّثني عن شيء بدأته أو حسّنته دون أن يُطلب منك." },
+    { "id": "cp08", "c": "failure", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Tell me about a mistake you made. What did you do and what did you learn?", "ar": "حدّثني عن خطأ ارتكبته. ماذا فعلت وماذا تعلّمت؟" },
+    { "id": "cp09", "c": "failure", "lv": ["mid", "senior"], "en": "Describe a project that did not go as planned. What would you do differently?", "ar": "صف مشروعاً لم يسر كما خُطّط. ماذا كنت ستفعل بشكل مختلف؟" },
+    { "id": "cp10", "c": "adaptability", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Tell me about a time something changed suddenly at work or study. How did you adapt?", "ar": "حدّثني عن وقت تغيّر فيه شيء فجأة في العمل أو الدراسة. كيف تكيّفت؟" },
+    { "id": "cp11", "c": "integrity", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Describe a time you did the right thing when it would have been easier not to.", "ar": "صف موقفاً فعلت فيه الصواب رغم أن تجاهله كان أسهل." },
+    { "id": "cp12", "c": "leadership", "lv": ["fresh_grad", "junior"], "en": "Tell me about a time you led others, even informally, for example a student club or a small project.", "ar": "حدّثني عن وقت قدت فيه آخرين ولو بشكل غير رسمي، مثل نادٍ طلابي أو مشروع صغير." },
+    { "id": "cp13", "c": "leadership", "lv": ["mid", "senior"], "en": "Describe how you motivated a team member who was underperforming.", "ar": "صف كيف حفّزت عضو فريق كان أداؤه ضعيفاً." },
+    { "id": "cp14", "c": "customer", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Tell me about a time you went beyond what was expected to help a customer or client.", "ar": "حدّثني عن وقت بذلت فيه أكثر من المتوقع لمساعدة عميل." },
+    { "id": "cp15", "c": "customer", "lv": ["junior", "mid", "senior"], "en": "Describe a difficult customer and how you handled them.", "ar": "صف عميلاً صعباً وكيف تعاملت معه." },
+    { "id": "cp16", "c": "learning", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Tell me about something difficult you taught yourself quickly.", "ar": "حدّثني عن شيء صعب تعلّمته بنفسك بسرعة." },
+    { "id": "cp17", "c": "communication", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Describe a time you had to explain something complicated to someone who did not understand it.", "ar": "صف وقتاً شرحت فيه أمراً معقداً لشخص لم يفهمه." },
+    { "id": "cp18", "c": "ownership", "lv": ["fresh_grad", "junior", "mid", "senior"], "en": "Tell me about a time you were responsible for something important. How did you make sure it was delivered?", "ar": "حدّثني عن وقت كنت مسؤولاً فيه عن أمر مهم. كيف تأكدت من تسليمه؟" },
+    { "id": "cp19", "c": "initiative", "lv": ["mid", "senior"], "en": "Describe a process you improved. How did you measure the result?", "ar": "صف عملية حسّنتها. كيف قست النتيجة؟" },
+    { "id": "cp20", "c": "adaptability", "lv": ["career_changer"], "en": "You are changing fields. Tell me about a time you had to learn a completely new area and perform in it.", "ar": "أنت تغيّر مجالك. حدّثني عن وقت تعلّمت فيه مجالاً جديداً كلياً وأدّيت فيه جيداً." },
+    { "id": "cp21", "c": "communication", "lv": ["career_changer"], "en": "Which skills from your previous career transfer to this role? Give a specific example.", "ar": "ما المهارات من مسيرتك السابقة التي تنتقل إلى هذا الدور؟ أعطني مثالاً محدداً." },
+    { "id": "cp22", "c": "ownership", "lv": ["simple_job"], "en": "Tell me about a time you were reliable at work or in your family, even when it was hard.", "ar": "حدّثني عن وقت كنت فيه موثوقاً في العمل أو الأسرة رغم الصعوبة." },
+    { "id": "cp23", "c": "customer", "lv": ["simple_job"], "en": "How would you deal with a customer who is upset and waiting a long time?", "ar": "كيف تتعامل مع عميل منزعج وينتظر طويلاً؟" },
+    { "id": "cp24", "c": "teamwork", "lv": ["simple_job"], "en": "Tell me about a time you helped a coworker finish their work.", "ar": "حدّثني عن وقت ساعدت فيه زميلاً لينهي عمله." }
+  ],
+  "situational": [
+    { "id": "si01", "en": "Imagine your manager asks you to do something you think is wrong. What would you do?", "ar": "تخيّل أن مديرك طلب منك أمراً تظنه خاطئاً. ماذا تفعل؟" },
+    { "id": "si02", "en": "If you start this job and discover you do not know how to do an important task, what is your first step?", "ar": "لو التحقت بهذه الوظيفة واكتشفت أنك لا تعرف كيف تنجز مهمة أساسية، فما أول ما تفعله؟" },
+    { "id": "si03", "en": "How would you handle receiving work from two managers with different priorities?", "ar": "كيف تتعامل مع تلقي عمل من مديرين بأولويات مختلفة؟" }
+  ],
+  "closers": [
+    { "id": "cl01", "en": "Do you have any questions for us?", "ar": "هل لديك أسئلة لنا؟", "tip": { "en": "Ask two real questions about the role, the team, or how success is measured in the first 90 days.", "ar": "اسأل سؤالين حقيقيين عن الدور أو الفريق أو كيف يُقاس النجاح في أول 90 يوماً." } },
+    { "id": "cl02", "en": "Why should we choose you over other candidates?", "ar": "لماذا نختارك أنت وليس مرشحين آخرين؟", "tip": { "en": "Three points: skill match, proof, and attitude. Do not criticise others.", "ar": "ثلاث نقاط: ملاءمة المهارات، الدليل، والموقف. لا تنتقد الآخرين." } },
+    { "id": "cl03", "en": "When could you start?", "ar": "متى تستطيع البدء؟", "tip": { "en": "Give a clear date or notice period.", "ar": "اذكر تاريخاً واضحاً أو فترة الإشعار." } }
+  ],
+  "roles": {
+    "customer_success": { "kw": ["retention", "onboarding", "churn", "renewal", "health score", "customer", "adoption", "nps", "عميل", "تجديد", "تفعيل", "رضا", "احتفاظ"], "q": [
+      { "id": "rl-cs1", "en": "A customer says they will cancel because they are not getting value. What do you do?", "ar": "عميل يقول إنه سيلغي اشتراكه لأنه لا يرى قيمة. ماذا تفعل؟" },
+      { "id": "rl-cs2", "en": "How do you decide which accounts need your attention first?", "ar": "كيف تقرر أي الحسابات تحتاج انتباهك أولاً؟" },
+      { "id": "rl-cs3", "en": "How would you run the first 30 days of onboarding a new customer?", "ar": "كيف تدير أول 30 يوماً من تهيئة عميل جديد؟" } ] },
+    "customer_service": { "kw": ["ticket", "resolution", "first call", "empathy", "escalat", "satisfaction", "queue", "تذكرة", "حل", "تصعيد", "تعاطف", "رضا"], "q": [
+      { "id": "rl-sv1", "en": "A customer is angry and asks for something outside policy. How do you respond?", "ar": "عميل غاضب يطلب شيئاً خارج السياسة. كيف ترد؟" },
+      { "id": "rl-sv2", "en": "How do you stay patient after a day of difficult calls?", "ar": "كيف تحافظ على صبرك بعد يوم من المكالمات الصعبة؟" },
+      { "id": "rl-sv3", "en": "When do you escalate an issue and when do you solve it yourself?", "ar": "متى تصعّد مشكلة ومتى تحلها بنفسك؟" } ] },
+    "sales": { "kw": ["pipeline", "target", "quota", "closing", "lead", "objection", "negotiat", "prospect", "مبيعات", "هدف", "عميل محتمل", "إغلاق", "تفاوض"], "q": [
+      { "id": "rl-sa1", "en": "Describe how you would approach a new potential customer who has never heard of us.", "ar": "صف كيف تتواصل مع عميل محتمل جديد لم يسمع بنا من قبل." },
+      { "id": "rl-sa2", "en": "A prospect says your price is too high. What do you say?", "ar": "عميل محتمل يقول إن سعرك مرتفع. ماذا تقول؟" },
+      { "id": "rl-sa3", "en": "Tell me about a target you hit or missed and what you did next.", "ar": "حدّثني عن هدف حققته أو أخفقت فيه وماذا فعلت بعدها." } ] },
+    "marketing": { "kw": ["campaign", "audience", "conversion", "roi", "content", "brand", "analytics", "engagement", "حملة", "جمهور", "محتوى", "علامة", "تحويل"], "q": [
+      { "id": "rl-mk1", "en": "How would you plan a small campaign with a limited budget?", "ar": "كيف تخطط لحملة صغيرة بميزانية محدودة؟" },
+      { "id": "rl-mk2", "en": "How do you know whether a campaign worked?", "ar": "كيف تعرف أن حملة نجحت؟" },
+      { "id": "rl-mk3", "en": "Show me how you would adapt one message for two different audiences.", "ar": "كيف تكيّف رسالة واحدة لجمهورين مختلفين؟" } ] },
+    "hr": { "kw": ["recruit", "onboarding", "policy", "employee", "confidential", "labor law", "interview", "تعيين", "موظف", "سرية", "نظام العمل", "مقابلة"], "q": [
+      { "id": "rl-hr1", "en": "An employee tells you something confidential about a manager. What do you do?", "ar": "موظف يخبرك بأمر سري عن مدير. ماذا تفعل؟" },
+      { "id": "rl-hr2", "en": "How would you screen 200 applications for one role?", "ar": "كيف تفرز 200 طلب لوظيفة واحدة؟" },
+      { "id": "rl-hr3", "en": "How do you stay fair when you personally like one candidate?", "ar": "كيف تبقى عادلاً عندما يعجبك مرشح معين شخصياً؟" } ] },
+    "finance": { "kw": ["budget", "forecast", "variance", "model", "cash flow", "report", "excel", "ميزانية", "توقع", "تدفق نقدي", "تقرير", "انحراف"], "q": [
+      { "id": "rl-fi1", "en": "Explain a budget variance to a manager who is not a finance person.", "ar": "اشرح انحرافاً في الميزانية لمدير ليس من المالية." },
+      { "id": "rl-fi2", "en": "How do you check that a financial model is correct?", "ar": "كيف تتأكد من صحة نموذج مالي؟" },
+      { "id": "rl-fi3", "en": "What would you do if the numbers from two systems do not match?", "ar": "ماذا تفعل إذا لم تتطابق أرقام نظامين؟" } ] },
+    "accounting": { "kw": ["reconcil", "ledger", "invoice", "vat", "audit", "payable", "receivable", "ifrs", "تسوية", "فاتورة", "ضريبة", "مراجعة", "دفاتر", "زكاة"], "q": [
+      { "id": "rl-ac1", "en": "How do you handle month-end close when you are short of time?", "ar": "كيف تتعامل مع إقفال نهاية الشهر عندما يضيق الوقت؟" },
+      { "id": "rl-ac2", "en": "You find an error in an old entry. What are your steps?", "ar": "وجدت خطأً في قيد قديم. ما خطواتك؟" },
+      { "id": "rl-ac3", "en": "What do you know about VAT and Zakat requirements in Saudi Arabia?", "ar": "ماذا تعرف عن متطلبات ضريبة القيمة المضافة والزكاة في السعودية؟" } ] },
+    "operations": { "kw": ["process", "efficiency", "kpi", "sla", "improvement", "workflow", "cost", "عملية", "كفاءة", "مؤشر", "تحسين", "تكلفة"], "q": [
+      { "id": "rl-op1", "en": "How would you find and fix a slow step in a process?", "ar": "كيف تحدد الخطوة البطيئة في عملية ما وتعالجها؟" },
+      { "id": "rl-op2", "en": "Which numbers would you track every day to know operations are healthy?", "ar": "ما الأرقام التي تتابعها يومياً لتعرف أن التشغيل سليم؟" },
+      { "id": "rl-op3", "en": "A supplier is late and a customer is waiting. What do you do?", "ar": "مورّد تأخر وعميل ينتظر. ماذا تفعل؟" } ] },
+    "admin_office": { "kw": ["schedule", "calendar", "document", "confidential", "coordinate", "filing", "travel", "جدول", "مستندات", "سرية", "تنسيق", "أرشفة"], "q": [
+      { "id": "rl-ad1", "en": "How do you organise your day when many people ask you for things at once?", "ar": "كيف تنظم يومك عندما يطلب منك كثيرون أموراً في وقت واحد؟" },
+      { "id": "rl-ad2", "en": "How do you handle confidential documents?", "ar": "كيف تتعامل مع المستندات السرية؟" },
+      { "id": "rl-ad3", "en": "Your manager's calendar has a conflict. What do you do?", "ar": "تعارض في جدول مديرك. ماذا تفعل؟" } ] },
+    "it_cyber": { "kw": ["incident", "network", "security", "patch", "access", "ticket", "backup", "firewall", "حادث", "شبكة", "أمن", "صلاحيات", "نسخ احتياطي"], "q": [
+      { "id": "rl-it1", "en": "A user reports that they clicked a suspicious link. What are your first steps?", "ar": "مستخدم أبلغ أنه ضغط على رابط مشبوه. ما خطواتك الأولى؟" },
+      { "id": "rl-it2", "en": "How do you explain a technical problem to a non-technical person?", "ar": "كيف تشرح مشكلة تقنية لشخص غير تقني؟" },
+      { "id": "rl-it3", "en": "Tell me how you would prioritise ten open tickets.", "ar": "كيف ترتب أولوية عشر تذاكر مفتوحة؟" } ] },
+    "software": { "kw": ["code", "test", "api", "bug", "review", "deploy", "git", "database", "كود", "اختبار", "خطأ", "مراجعة", "نشر"], "q": [
+      { "id": "rl-sw1", "en": "Describe a bug that was hard to find and how you found it.", "ar": "صف خطأً برمجياً كان صعب الاكتشاف وكيف وجدته." },
+      { "id": "rl-sw2", "en": "How do you make sure your code works before you share it?", "ar": "كيف تتأكد أن كودك يعمل قبل مشاركته؟" },
+      { "id": "rl-sw3", "en": "How do you react when a reviewer disagrees with your solution?", "ar": "كيف تتعامل مع مراجع يعترض على حلك؟" } ] },
+    "data": { "kw": ["data", "sql", "dashboard", "insight", "clean", "metric", "analysis", "visual", "بيانات", "تحليل", "لوحة", "مؤشر", "تنظيف"], "q": [
+      { "id": "rl-da1", "en": "Walk me through an analysis you did: question, data, method, and what changed because of it.", "ar": "اشرح لي تحليلاً أجريته: السؤال، البيانات، الطريقة، وما الذي تغيّر بسببه." },
+      { "id": "rl-da2", "en": "What do you do when the data you receive is messy or incomplete?", "ar": "ماذا تفعل عندما تكون البيانات المستلمة غير نظيفة أو ناقصة؟" },
+      { "id": "rl-da3", "en": "How do you present a finding that goes against what the manager expected?", "ar": "كيف تعرض نتيجة تخالف توقع المدير؟" } ] },
+    "product": { "kw": ["user", "roadmap", "priorit", "metric", "stakeholder", "feature", "mvp", "research", "مستخدم", "خارطة", "أولويات", "ميزة", "أصحاب المصلحة"], "q": [
+      { "id": "rl-pr1", "en": "How do you decide what to build first when everything seems important?", "ar": "كيف تقرر ما تبنيه أولاً عندما يبدو كل شيء مهماً؟" },
+      { "id": "rl-pr2", "en": "Tell me about a time you used user feedback to change a decision.", "ar": "حدّثني عن وقت غيّرت فيه قراراً بناءً على ملاحظات المستخدمين." },
+      { "id": "rl-pr3", "en": "How do you say no to a stakeholder's request?", "ar": "كيف ترفض طلباً من صاحب مصلحة؟" } ] },
+    "design": { "kw": ["user", "wireframe", "prototype", "feedback", "portfolio", "brand", "accessib", "layout", "مستخدم", "نموذج", "ملاحظات", "هوية", "تصميم"], "q": [
+      { "id": "rl-de1", "en": "Pick one project in your portfolio and walk me through your process.", "ar": "اختر مشروعاً من أعمالك واشرح لي عمليتك فيه." },
+      { "id": "rl-de2", "en": "How do you respond when a client dislikes your design?", "ar": "كيف تتصرف حين لا يعجب العميل تصميمك؟" },
+      { "id": "rl-de3", "en": "How do you design for both Arabic (right-to-left) and English users?", "ar": "كيف تصمم لمستخدمين عرب (من اليمين) وإنجليز؟" } ] },
+    "hospitality": { "kw": ["guest", "service", "shift", "standard", "complaint", "team", "clean", "ضيف", "خدمة", "وردية", "شكوى", "نظافة"], "q": [
+      { "id": "rl-ho1", "en": "A guest complains about their room or table. What do you do?", "ar": "ضيف اشتكى من غرفته أو طاولته. ماذا تفعل؟" },
+      { "id": "rl-ho2", "en": "How do you work well during a very busy shift?", "ar": "كيف تعمل جيداً في وردية مزدحمة جداً؟" },
+      { "id": "rl-ho3", "en": "Why do you want to work in hospitality?", "ar": "لماذا تريد العمل في الضيافة؟" } ] },
+    "retail": { "kw": ["customer", "stock", "display", "sales", "cash", "target", "return", "عميل", "مخزون", "عرض", "مبيعات", "صندوق"], "q": [
+      { "id": "rl-re1", "en": "A customer cannot decide what to buy. How do you help?", "ar": "عميل لا يستطيع أن يقرر ماذا يشتري. كيف تساعده؟" },
+      { "id": "rl-re2", "en": "What would you do if the till is short at the end of your shift?", "ar": "ماذا تفعل لو وجدت عجزاً في الصندوق نهاية ورديتك؟" },
+      { "id": "rl-re3", "en": "How do you stay motivated to reach a daily sales target?", "ar": "كيف تحافظ على حماسك لبلوغ هدف المبيعات اليومي؟" } ] },
+    "logistics": { "kw": ["inventory", "shipment", "warehouse", "delivery", "safety", "route", "tracking", "مخزون", "شحنة", "مستودع", "توصيل", "سلامة"], "q": [
+      { "id": "rl-lo1", "en": "A shipment is delayed. Who do you tell and what do you do?", "ar": "شحنة تأخرت. من تبلغ وماذا تفعل؟" },
+      { "id": "rl-lo2", "en": "How do you keep stock records accurate?", "ar": "كيف تحافظ على دقة سجلات المخزون؟" },
+      { "id": "rl-lo3", "en": "What safety rules matter most in a warehouse, and why?", "ar": "ما أهم قواعد السلامة في المستودع ولماذا؟" } ] },
+    "healthcare_admin": { "kw": ["patient", "appointment", "confidential", "record", "clinic", "insurance", "مريض", "موعد", "سرية", "سجل", "عيادة", "تأمين"], "q": [
+      { "id": "rl-hc1", "en": "A patient is upset about a long wait. What do you say and do?", "ar": "مريض منزعج من الانتظار الطويل. ماذا تقول وماذا تفعل؟" },
+      { "id": "rl-hc2", "en": "Why is patient confidentiality important and how do you protect it?", "ar": "لماذا تعدّ سرية بيانات المريض مهمة وكيف تحميها؟" },
+      { "id": "rl-hc3", "en": "How do you handle two urgent requests from clinical staff at once?", "ar": "كيف تتعامل مع طلبين عاجلين من الطاقم الطبي في آن واحد؟" } ] },
+    "education": { "kw": ["student", "lesson", "learning", "assessment", "class", "engage", "curriculum", "طالب", "درس", "تعلم", "تقييم", "منهج"], "q": [
+      { "id": "rl-ed1", "en": "How do you teach a student who is falling behind?", "ar": "كيف تعلّم طالباً يتأخر عن زملائه؟" },
+      { "id": "rl-ed2", "en": "How do you keep a class engaged?", "ar": "كيف تحافظ على تفاعل الصف؟" },
+      { "id": "rl-ed3", "en": "How do you measure whether students have learned?", "ar": "كيف تقيس أن الطلاب تعلموا فعلاً؟" } ] },
+    "general_entry": { "kw": ["reliable", "learn", "team", "customer", "punctual", "responsib", "willing", "التزام", "تعلم", "فريق", "مسؤولية", "جاهز"], "q": [
+      { "id": "rl-ge1", "en": "Why do you want this job and what can you offer from day one?", "ar": "لماذا تريد هذه الوظيفة وماذا تقدم من اليوم الأول؟" },
+      { "id": "rl-ge2", "en": "How would you handle a task you have never done before?", "ar": "كيف تتعامل مع مهمة لم تقم بها من قبل؟" },
+      { "id": "rl-ge3", "en": "What does being reliable mean to you at work?", "ar": "ماذا يعني لك الالتزام في العمل؟" } ] }
+  },
+  "mockBlueprint": {
+    "fresh_grad": { "total": 18, "openers": 3, "competency": 7, "role": 4, "situational": 2, "closers": 2 },
+    "career_changer": { "total": 18, "openers": 3, "competency": 7, "role": 4, "situational": 2, "closers": 2 },
+    "experienced": { "total": 20, "openers": 2, "competency": 9, "role": 5, "situational": 2, "closers": 2 },
+    "simple_job": { "total": 15, "openers": 3, "competency": 6, "role": 3, "situational": 1, "closers": 2 }
+  }
+}

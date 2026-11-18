@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "version": 1,
+    "instruction": { "en": "For each situation choose the MOST effective and the LEAST effective response. Ratings: 4 = most effective, 1 = least effective, set by a Darbi practice rubric (not an employer's key).", "ar": "في كل موقف اختر الاستجابة الأكثر فعالية والأقل فعالية. التقييم: 4 = الأكثر فعالية و1 = الأقل، وفق معيار تدريبي من درْبي وليس مفتاح جهة توظيف." },
+    "sets": { "sjt_set_1": ["sjt01", "sjt02", "sjt03", "sjt04", "sjt05"], "sjt_set_2": ["sjt06", "sjt07", "sjt08", "sjt09", "sjt10"] }
+  },
+  "items": [
+    {
+      "id": "sjt01", "c": "teamwork",
+      "en": "In a group project, one teammate keeps missing their part and the deadline is in three days.",
+      "ar": "في مشروع جماعي، زميل يتأخر باستمرار في جزئه والتسليم بعد ثلاثة أيام.",
+      "opts": [
+        { "en": "Talk to the teammate privately, ask what is blocking them, and offer specific help or a smaller piece.", "ar": "أتحدث مع الزميل على انفراد، أسأله عن العائق، وأعرض مساعدة محددة أو جزءاً أصغر.", "r": 4 },
+        { "en": "Do their part yourself quietly so the project is not late.", "ar": "أنجز جزءه بنفسي بصمت حتى لا يتأخر المشروع.", "r": 2 },
+        { "en": "Tell the manager immediately without speaking to the teammate first.", "ar": "أبلغ المدير فوراً دون أن أكلّم الزميل أولاً.", "r": 1 },
+        { "en": "Remind the whole group in the chat that the deadline is close and ask everyone to update their progress.", "ar": "أذكّر المجموعة كلها في المحادثة بقرب الموعد وأطلب من الجميع تحديث تقدمهم.", "r": 3 }
+      ],
+      "x": { "en": "Best: a private, supportive conversation first. Doing it silently hides the problem and builds resentment. Going straight to the manager skips the easy fix.", "ar": "الأفضل: حديث خاص وداعم أولاً. إنجاز الجزء بصمت يخفي المشكلة ويولّد الاستياء، والذهاب للمدير مباشرة يتجاوز الحل الأسهل." }
+    },
+    {
+      "id": "sjt02", "c": "customer",
+      "en": "A customer is shouting at you because an order arrived late. It was not your mistake.",
+      "ar": "عميل يصرخ عليك لأن طلبه تأخر. ولم يكن الخطأ خطأك.",
+      "opts": [
+        { "en": "Listen without interrupting, apologise for the delay, and tell them exactly what you will do and by when.", "ar": "أستمع دون مقاطعة، أعتذر عن التأخير، وأخبره بالضبط ما سأفعله ومتى.", "r": 4 },
+        { "en": "Explain calmly that the delay was caused by another department.", "ar": "أشرح بهدوء أن التأخير سببه قسم آخر.", "r": 2 },
+        { "en": "Tell the customer to calm down or you cannot help.", "ar": "أطلب من العميل أن يهدأ وإلا لن أستطيع مساعدته.", "r": 1 },
+        { "en": "Transfer the call to your supervisor straight away.", "ar": "أحوّل المكالمة إلى مشرفي فوراً.", "r": 2 }
+      ],
+      "x": { "en": "Own the problem, not the blame. Escalate only after you tried to help. Blaming another department leaves the customer with nothing.", "ar": "تحمّل المسؤولية في الحل لا في اللوم. صعّد فقط بعد أن تحاول المساعدة. لوم قسم آخر لا يعطي العميل شيئاً." }
+    },
+    {
+      "id": "sjt03", "c": "priorities",
+      "en": "Your manager and a senior colleague each give you an urgent task due today. You can only finish one.",
+      "ar": "مديرك وزميل أقدم كلٌّ منهما أعطاك مهمة عاجلة لتسليمها اليوم. لا تستطيع إنهاء إلا واحدة.",
+      "opts": [
+        { "en": "Tell both what you have been asked, and ask them or your manager to agree the order.", "ar": "أُبلغ الاثنين بما طُلب مني، وأطلب منهما أو من المدير الاتفاق على الأولوية.", "r": 4 },
+        { "en": "Do your manager's task and say nothing to the colleague.", "ar": "أنفذ مهمة المدير ولا أقول شيئاً للزميل.", "r": 2 },
+        { "en": "Start both and hand in two unfinished pieces.", "ar": "أبدأ الاثنتين وأسلّم عملين غير مكتملين.", "r": 1 },
+        { "en": "Do the easier task first so at least one is complete.", "ar": "أنجز المهمة الأسهل أولاً ليكتمل واحد على الأقل.", "r": 2 }
+      ],
+      "x": { "en": "Surface the conflict early and let the person with authority decide. Silence or two half-finished tasks both damage trust.", "ar": "اكشف التعارض مبكراً ودع صاحب الصلاحية يقرر. الصمت أو عملان ناقصان يضرّان بالثقة." }
+    },
+    {
+      "id": "sjt04", "c": "integrity",
+      "en": "After sending a report to a client you notice a figure in it was wrong. Nobody has noticed.",
+      "ar": "بعد إرسال تقرير إلى عميل لاحظت أن أحد الأرقام فيه خاطئ. لم ينتبه أحد.",
+      "opts": [
+        { "en": "Tell your manager immediately, send a corrected version, and explain what you will check next time.", "ar": "أبلغ مديري فوراً، وأرسل نسخة مصححة، وأوضح ما سأراجعه مستقبلاً.", "r": 4 },
+        { "en": "Quietly send a corrected version without mentioning the error.", "ar": "أرسل نسخة مصححة بهدوء دون الإشارة إلى الخطأ.", "r": 2 },
+        { "en": "Wait to see if the client notices before doing anything.", "ar": "أنتظر لأرى هل سيلاحظ العميل قبل أن أفعل شيئاً.", "r": 1 },
+        { "en": "Fix it in your own copy and plan to be more careful next time.", "ar": "أصحح نسختي فقط وأقرر أن أكون أدق مستقبلاً.", "r": 1 }
+      ],
+      "x": { "en": "Early, honest disclosure with a fix is what employers value. Hoping nobody notices is the worst option.", "ar": "الإفصاح المبكر الصادق مع الحل هو ما تقدّره الشركات. انتظار أن لا يلاحظ أحد هو أسوأ خيار." }
+    },
+    {
+      "id": "sjt05", "c": "initiative",
+      "en": "Your instructions for a new task are unclear and your manager is travelling until tomorrow.",
+      "ar": "تعليمات مهمة جديدة غير واضحة ومديرك مسافر حتى الغد.",
+      "opts": [
+        { "en": "Write down what you understand, ask a colleague who did it before, start the clear parts, and confirm the rest by message.", "ar": "أدوّن ما فهمته، أسأل زميلاً أنجزها سابقاً، أبدأ بالأجزاء الواضحة، وأتأكد من الباقي برسالة.", "r": 4 },
+        { "en": "Wait until your manager returns and do nothing.", "ar": "أنتظر عودة المدير ولا أفعل شيئاً.", "r": 1 },
+        { "en": "Guess the most likely meaning and complete the whole task.", "ar": "أخمّن المعنى الأرجح وأنجز المهمة كاملة.", "r": 2 },
+        { "en": "Ask three different colleagues and follow whichever advice is most popular.", "ar": "أسأل ثلاثة زملاء وأتبع الرأي الأكثر شيوعاً.", "r": 2 }
+      ],
+      "x": { "en": "Use available resources, make progress where it is safe, and confirm assumptions in writing.", "ar": "استخدم الموارد المتاحة، وتقدّم حيث يكون ذلك آمناً، وأكّد افتراضاتك كتابياً." }
+    },
+    {
+      "id": "sjt06", "c": "integrity",
+      "en": "A supplier offers you an expensive gift after your team awards them a contract.",
+      "ar": "مورّد يعرض عليك هدية غالية بعد أن رست عليه ترسية فريقك.",
+      "opts": [
+        { "en": "Politely decline, explain the company policy, and tell your manager about the offer.", "ar": "أعتذر بلباقة، أشرح سياسة الشركة، وأُبلغ مديري بالعرض.", "r": 4 },
+        { "en": "Accept it but do not tell anyone since the contract is already signed.", "ar": "أقبلها ولا أخبر أحداً لأن العقد وُقّع.", "r": 1 },
+        { "en": "Accept it and share it with the whole team.", "ar": "أقبلها وأوزعها على الفريق كله.", "r": 2 },
+        { "en": "Decline but say nothing to anyone else.", "ar": "أعتذر دون أن أخبر أحداً.", "r": 3 }
+      ],
+      "x": { "en": "Decline and report so the company is protected and you are covered. Declining silently is acceptable but not the strongest.", "ar": "الاعتذار مع الإبلاغ يحمي الشركة ويحميك. الاعتذار الصامت مقبول لكنه ليس الأقوى." }
+    },
+    {
+      "id": "sjt07", "c": "pressure",
+      "en": "You have too much work for the week and you will miss a deadline unless something changes.",
+      "ar": "لديك عمل أكثر من اللازم هذا الأسبوع وستفوّت موعداً ما لم يتغير شيء.",
+      "opts": [
+        { "en": "Tell your manager early, show your list of tasks, and ask which can move or be shared.", "ar": "أخبر مديري مبكراً، وأعرض قائمة مهامي، وأسأل أيها يمكن تأجيله أو مشاركته.", "r": 4 },
+        { "en": "Work late every night without saying anything.", "ar": "أعمل متأخراً كل ليلة دون أن أخبر أحداً.", "r": 2 },
+        { "en": "Rush everything and accept lower quality.", "ar": "أستعجل في كل شيء وأقبل بجودة أقل.", "r": 1 },
+        { "en": "Choose which tasks to drop yourself and tell the manager at the deadline.", "ar": "أختار بنفسي ما أتخلى عنه وأخبر المدير عند الموعد.", "r": 1 }
+      ],
+      "x": { "en": "Early, specific communication gives the manager options. Silent overwork or surprise failures do not.", "ar": "التواصل المبكر المحدد يمنح المدير خيارات. الإرهاق الصامت أو المفاجآت لا يفعل ذلك." }
+    },
+    {
+      "id": "sjt08", "c": "conflict",
+      "en": "A colleague presents your idea in a meeting as if it were theirs.",
+      "ar": "زميل يعرض فكرتك في اجتماع كأنها فكرته.",
+      "opts": [
+        { "en": "Speak to them privately afterwards, describe what happened factually, and agree how credit will be shared next time.", "ar": "أتحدث معه على انفراد بعد الاجتماع، أصف ما حدث بموضوعية، ونتفق على كيفية نسب الفضل مستقبلاً.", "r": 4 },
+        { "en": "Correct them in the meeting in front of everyone.", "ar": "أصحّحه في الاجتماع أمام الجميع.", "r": 2 },
+        { "en": "Say nothing and avoid sharing ideas with that colleague again.", "ar": "لا أقول شيئاً وأتجنب مشاركة أفكاري معه.", "r": 1 },
+        { "en": "Send your manager an email documenting your original idea.", "ar": "أرسل لمديري بريداً يوثّق أن الفكرة فكرتي أصلاً.", "r": 2 }
+      ],
+      "x": { "en": "Address it directly and respectfully with the person first. Public confrontation or going around them escalates it.", "ar": "عالجها مباشرة وباحترام مع الشخص أولاً. المواجهة العلنية أو تجاوزه يصعّد الموقف." }
+    },
+    {
+      "id": "sjt09", "c": "learning",
+      "en": "Your team adopts a new software tool and you find it difficult.",
+      "ar": "فريقك اعتمد برنامجاً جديداً وتجده صعباً.",
+      "opts": [
+        { "en": "Set aside time each day to practise, use the help guides, and ask a colleague two or three specific questions.", "ar": "أخصص وقتاً يومياً للتدرب، وأستخدم أدلة المساعدة، وأسأل زميلاً أسئلة محددة.", "r": 4 },
+        { "en": "Keep using the old method until forced to change.", "ar": "أستمر بالطريقة القديمة حتى أُجبر على التغيير.", "r": 1 },
+        { "en": "Tell your manager the tool is a bad choice.", "ar": "أخبر مديري أن الأداة اختيار سيئ.", "r": 1 },
+        { "en": "Ask a colleague to do your tasks in the tool for you.", "ar": "أطلب من زميل أن ينفذ مهامي في الأداة بدلاً مني.", "r": 2 }
+      ],
+      "x": { "en": "Active, specific learning shows adaptability. Resistance and delegation do not.", "ar": "التعلّم النشط المحدد يُظهر المرونة. المقاومة أو التفويض لا يُظهرانها." }
+    },
+    {
+      "id": "sjt10", "c": "feedback",
+      "en": "Your manager gives you sharp criticism about your work in front of the team.",
+      "ar": "مديرك ينتقد عملك بحدّة أمام الفريق.",
+      "opts": [
+        { "en": "Stay calm, note the points, and later ask your manager for a private chat to understand what to improve.", "ar": "أبقى هادئاً، أدوّن النقاط، ثم أطلب لاحقاً حديثاً خاصاً لفهم ما أحسّنه.", "r": 4 },
+        { "en": "Defend yourself immediately in front of everyone.", "ar": "أدافع عن نفسي فوراً أمام الجميع.", "r": 1 },
+        { "en": "Say nothing and feel upset for the rest of the week.", "ar": "لا أقول شيئاً وأبقى منزعجاً بقية الأسبوع.", "r": 2 },
+        { "en": "Complain about the manager to your colleagues afterwards.", "ar": "أشتكي من المدير لزملائي بعد ذلك.", "r": 1 }
+      ],
+      "x": { "en": "Separate the delivery from the content. Take what is useful and clarify privately.", "ar": "افصل أسلوب التوصيل عن المضمون. خذ ما يفيد واستوضح على انفراد." }
+    }
+  ]
+}
