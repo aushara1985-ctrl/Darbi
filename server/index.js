@@ -44,8 +44,13 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// The Stripe webhook must receive the RAW body (signature check). Skip the JSON/urlencoded
+// parsers for that one path — otherwise req.body is already an object and every event is rejected.
+const _jsonParser = express.json({ limit: '10mb' });
+const _urlParser = express.urlencoded({ extended: true, limit: '10mb' });
+const _isStripeWebhook = (req) => req.originalUrl === '/api/payment/webhook' || req.originalUrl.startsWith('/api/payment/webhook?');
+app.use((req, res, next) => (_isStripeWebhook(req) ? next() : _jsonParser(req, res, next)));
+app.use((req, res, next) => (_isStripeWebhook(req) ? next() : _urlParser(req, res, next)));
 
 // ─── Serve frontend ────────────────────────────────────────────────────────────
 // V2 is the product. Root "/" serves V2; V1 is archived at "/v1".
@@ -61,7 +66,10 @@ app.use(express.static(path.join(__dirname, '../public'), { index: false }));
 
 // ─── DB (PostgreSQL) ──────────────────────────────────────────────────────────
 const { Pool } = require('pg');
-const db = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+// SSL only for remote databases (Railway). A local/test Postgres on 127.0.0.1 does not speak SSL.
+const _dbUrl = process.env.DATABASE_URL || '';
+const _dbLocal = /@(localhost|127\.0\.0\.1|\[::1\])[:\/]/.test(_dbUrl);
+const db = new Pool({ connectionString: process.env.DATABASE_URL, ssl: _dbLocal ? false : { rejectUnauthorized: false } });
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const bcrypt = require('bcryptjs');
@@ -182,7 +190,7 @@ app.get('/api/darbi/me', authMiddleware, async (req, res) => {
 // surfaces "unknown" instead of inventing roles.
 const INTENT_FAMILIES = [
   'marketing', 'hr', 'accounting', 'sales',
-  'customer_service', 'it_cyber', 'design',
+  'customer_service', 'it_cyber', 'design', 'data',
   'admin_office', 'simple_job', 'unknown',
 ];
 
@@ -196,6 +204,7 @@ const FAMILY_CONCEPTS = {
   sales:            ['مبيعات','sales','بيع','مندوب','telesales','account executive'],
   customer_service: ['خدمه','عملاء','customer service','customer support','customer care','call center','كول سنتر','عنايه','دعم','client services','تواصل'],
   it_cyber:         ['it','تقنيه','cybersecurity','امن سيبراني','helpdesk','soc','شبكات','networking','it support'],
+  data:             ['data analyst','data analytics','data scientist','data engineer','business intelligence','power bi','تحليل بيانات','محلل بيانات','علم البيانات','عالم بيانات','مهندس بيانات','ذكاء الاعمال'],
   design:           ['design','تصميم','graphic','ui','ux','مصمم','figma','adobe','بصري'],
   admin_office:     ['اداري','admin','office','coordinator','منسق','executive assistant','سكرتير','data entry','مكتبي','تنسيق'],
   simple_job:       ['كاشير','cashier','باريستا','barista','ماكدونالد','starbucks','retail','تجزئه','فرع','مطعم','استقبال','مقهى','وظيفه بسيطه'],
@@ -280,6 +289,7 @@ async function openaiIntent(dreamRole, cvText, quizAnswers) {
 - customer_service (خدمة عملاء/دعم/كول سنتر/عناية بالعملاء)
 - it_cyber (تقنية/أمن سيبراني)
 - design (تصميم)
+- data (تحليل بيانات/علم بيانات/ذكاء أعمال BI)
 - admin_office (إداري/منسق/سكرتير)
 - simple_job (كاشير/باريستا/استقبال/تجزئة/مقهى — وظائف لا تحتاج تخصص)
 - unknown (الهدف غير واضح أو لا يطابق أي عائلة)
@@ -485,11 +495,12 @@ app.post('/api/darbi/training/start', authMiddleware, async (req, res) => {
 });
 
 app.post('/api/darbi/training/answer', authMiddleware, async (req, res) => {
-  const { sessionId, questionText, answerText, targetSkill } = req.body;
+  const { sessionId, questionText, answerText, targetSkill, qid, company, role, simple } = req.body;
+  const evalCtx = { qid: typeof qid === 'string' ? qid.slice(0, 30) : '', company: typeof company === 'string' ? company.slice(0, 80) : '', role: typeof role === 'string' ? role.slice(0, 80) : '', simple: simple === true };
   if (!answerText) return res.status(400).json({ error: 'Missing answer' });
 
   if (!process.env.OPENAI_API_KEY) {
-    return res.json({ success: true, evaluation: localEvaluate(answerText) });
+    return res.json({ success: true, evaluation: localEvaluate(answerText, evalCtx), local: true });
   }
 
   try {
@@ -533,7 +544,7 @@ app.post('/api/darbi/training/answer', authMiddleware, async (req, res) => {
     res.json({ success: true, evaluation });
   } catch (e) {
     console.error('[training/answer] AI error:', safeAiErrorSummary(e));
-    res.json({ success: true, evaluation: localEvaluate(answerText) });
+    res.json({ success: true, evaluation: localEvaluate(answerText, evalCtx), local: true });
   }
 });
 
@@ -552,34 +563,72 @@ app.post('/api/darbi/training/finalize', authMiddleware, async (req, res) => {
   } catch (e) { res.json({ success: true }); }
 });
 
-// ─── PAYMENT (Stripe) ─────────────────────────────────────────────────────────
+// ─── PAYMENT (Stripe — the ONLY payment path) ────────────────────────────────
+// Ali's prices (2026-11-18): starter $9/month, pro $19/month, lifetime (Founder) $199 one-time.
+// If Ali creates Stripe Prices he sets STRIPE_PRICE_STARTER_MONTHLY / STRIPE_PRICE_PRO_MONTHLY /
+// STRIPE_PRICE_FOUNDER_LIFETIME (price_...). Otherwise the amounts below are sent inline.
+const PLANS = {
+  starter:  { name: 'Darbi Starter — Monthly',    amount: 900,   recurring: true,  env: 'STRIPE_PRICE_STARTER_MONTHLY' },
+  pro:      { name: 'Darbi Pro — Monthly',        amount: 1900,  recurring: true,  env: 'STRIPE_PRICE_PRO_MONTHLY' },
+  lifetime: { name: 'Darbi Founder — Lifetime',   amount: 19900, recurring: false, env: 'STRIPE_PRICE_FOUNDER_LIFETIME' },
+};
+app.get('/api/payment/config', (req, res) => {
+  res.json({
+    enabled: !!process.env.STRIPE_SECRET_KEY,
+    plans: Object.keys(PLANS).map((k) => ({ key: k, usd: PLANS[k].amount / 100, recurring: PLANS[k].recurring })),
+  });
+});
 app.post('/api/payment/checkout', authMiddleware, async (req, res) => {
   if (!process.env.STRIPE_SECRET_KEY) {
     return res.status(503).json({ error: 'Stripe not configured' });
   }
   const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-  const { plan = 'lifetime' } = req.body;
+  const planKey = PLANS[req.body && req.body.plan] ? req.body.plan : 'lifetime';
+  const P = PLANS[planKey];
+  const baseUrl = process.env.APP_URL || 'http://localhost:3000';
 
   try {
+    const line = process.env[P.env]
+      ? { price: process.env[P.env], quantity: 1 }
+      : {
+          price_data: {
+            currency: 'usd',
+            product_data: { name: P.name },
+            unit_amount: P.amount,
+            recurring: P.recurring ? { interval: 'month' } : undefined,
+          },
+          quantity: 1,
+        };
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [{
-        price_data: {
-          currency: 'usd',
-          product_data: { name: plan === 'lifetime' ? 'Darbi Premium — Lifetime' : 'Darbi Premium — Monthly' },
-          unit_amount: plan === 'lifetime' ? 19900 : 4900,
-          recurring: plan === 'monthly' ? { interval: 'month' } : undefined,
-        },
-        quantity: 1,
-      }],
-      mode: plan === 'monthly' ? 'subscription' : 'payment',
-      success_url: `${process.env.APP_URL || 'http://localhost:3000'}/?payment_success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.APP_URL || 'http://localhost:3000'}/?payment_cancelled=true`,
+      line_items: [line],
+      mode: P.recurring ? 'subscription' : 'payment',
+      success_url: `${baseUrl}/?payment_success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/#/pricing`,
       customer_email: req.user.email,
-      metadata: { userId: req.user.id, plan },
+      metadata: { userId: req.user.id, plan: planKey },
+      // Monthly plans: carry the user id on the subscription itself so the
+      // subscription.deleted / updated webhooks can find the account again.
+      ...(P.recurring ? { subscription_data: { metadata: { userId: String(req.user.id), plan: planKey } } } : {}),
     });
     res.json({ url: session.url });
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: 'تعذّر بدء الدفع، حاول لاحقاً' }); }
+});
+
+// Opens Stripe's customer portal so a subscriber can cancel or change the monthly plan themselves.
+// (Needs the portal to be switched on once in the Stripe dashboard: Settings > Billing > Customer portal.)
+app.post('/api/payment/portal', authMiddleware, async (req, res) => {
+  if (!process.env.STRIPE_SECRET_KEY) return res.status(503).json({ error: 'Stripe not configured' });
+  try {
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const list = await stripe.customers.list({ email: req.user.email, limit: 1 });
+    if (!list.data.length) return res.status(404).json({ error: 'no_customer' });
+    const portal = await stripe.billingPortal.sessions.create({
+      customer: list.data[0].id,
+      return_url: (process.env.APP_URL || 'http://localhost:3000') + '/#/account',
+    });
+    res.json({ url: portal.url });
+  } catch (e) { res.status(500).json({ error: 'portal_failed' }); }
 });
 
 app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -601,9 +650,43 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
       ).catch((e) => console.error('[webhook] update user paid failed:', e.message));
       await db.query(
         `INSERT INTO access_audit (user_id, source, status_to, stripe_session_id, note)
-         VALUES ($1, 'stripe_webhook', 'paid', $2, NULL)`,
-        [userId, session.id]
+         VALUES ($1, 'stripe_webhook', 'paid', $2, $3)`,
+        [userId, session.id, 'plan:' + (session.metadata?.plan || 'unknown')]
       ).catch(() => {});
+    }
+  }
+
+  // Monthly plan cancelled / ended / unpaid -> remove paid access.
+  // (A Founder lifetime buyer is never downgraded by a subscription event.)
+  if (event.type === 'customer.subscription.deleted' || event.type === 'customer.subscription.updated') {
+    const sub = event.data.object;
+    const endedStates = ['canceled', 'unpaid', 'incomplete_expired'];
+    const shouldRevoke = event.type === 'customer.subscription.deleted' || endedStates.includes(sub.status);
+    if (shouldRevoke) {
+      try {
+        let userId = sub.metadata?.userId || null;
+        if (!userId && sub.customer) {
+          // Older subscriptions: find the account by the Stripe customer's email.
+          const cust = await stripe.customers.retrieve(sub.customer);
+          if (cust && cust.email) {
+            const u = await db.query('SELECT id FROM users WHERE lower(email) = lower($1)', [cust.email]);
+            userId = u.rows[0] && u.rows[0].id;
+          }
+        }
+        if (userId) {
+          const life = await db.query(
+            `SELECT 1 FROM access_audit WHERE user_id = $1 AND note = 'plan:lifetime' LIMIT 1`, [userId]
+          ).catch(() => ({ rows: [] }));
+          if (!life.rows.length) {
+            await db.query(`UPDATE users SET access_status = 'free' WHERE id = $1 AND access_status = 'paid'`, [userId]);
+            await db.query(
+              `INSERT INTO access_audit (user_id, source, status_to, stripe_session_id, note)
+               VALUES ($1, 'stripe_webhook', 'free', NULL, $2)`,
+              [userId, 'subscription_' + (event.type === 'customer.subscription.deleted' ? 'deleted' : sub.status)]
+            ).catch(() => {});
+          }
+        }
+      } catch (e) { console.error('[webhook] subscription revoke failed:', e.message); }
     }
   }
   res.json({ received: true });
@@ -635,8 +718,8 @@ app.post('/api/darbi/payment/success', authMiddleware, async (req, res) => {
     );
     await db.query(
       `INSERT INTO access_audit (user_id, source, status_to, stripe_session_id, note)
-       VALUES ($1, 'stripe_session_verify', 'paid', $2, NULL)`,
-      [req.user.id, stripeSessionId]
+       VALUES ($1, 'stripe_session_verify', 'paid', $2, $3)`,
+      [req.user.id, stripeSessionId, 'plan:' + ((session.metadata && session.metadata.plan) || 'unknown')]
     ).catch(() => {});
     res.json({ success: true });
   } catch (e) {
@@ -849,20 +932,74 @@ function buildCareerPath(job, seniorityLevel) {
   return [{role:'CS Specialist',readinessNeeded:35,daysFromNow:0,isCurrent:seniorityLevel==='junior',isTarget:false},{role:'CS Manager',readinessNeeded:50,daysFromNow:14,isCurrent:seniorityLevel==='mid',isTarget:false},{role:job,readinessNeeded:65,daysFromNow:30,isCurrent:false,isTarget:true}];
 }
 
-function localEvaluate(answer) {
-  const words=answer.trim().split(/\s+/).length;
-  const hasN=/\d+/.test(answer);
-  const hasResult=/نتيجة|حقق|وفّر|زاد|achieved|improved|reduced/i.test(answer);
-  const hasStructure=/أولاً|ثانياً|then|first|second|star|situation|action|result/i.test(answer);
-  const score=Math.min(15+(words>50?20:words>25?10:0)+(hasN?20:0)+(hasResult?20:0)+(hasStructure?15:0),80);
+// Question-aware local scoring (used when no OpenAI key, or OpenAI fails). Honest and simple:
+// it checks the things that matter for THAT question (a motivation answer is not
+// penalised for having no numbers), never claims more than length/structure/specifics.
+function localEvaluate(answer, ctx) {
+  ctx = ctx || {};
+  const raw = String(answer || '').trim();
+  const norm = raw.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660));
+  const words = raw.split(/\s+/).filter(Boolean).length;
+  const hasN = /\d/.test(norm);
+  const hasResult = /نتيجة|نتائج|حقق|وفر|وفّر|زاد|زادت|ارتفع|ارتفعت|ارتفاع|خفض|قلل|حسّن|حسنت|رفع|نجحت|أنجزت|انجزت|achieved|improved|reduced|increased|grew|saved|saved|cut |boosted|won |closed|delivered|renewed|percent|revenue|growth|وصل|وصلت|شكرني|شكرتني|رضي|انحلت|حليت|تمت|رجع|اعتمد|اقتنع|وافق|قبل العميل|قبلوا/i.test(raw);
+  const hasStructure = /أولاً|ثانياً|أولا|ثانيا|ثم |بعدها|بعد ذلك|لذلك|فقمت|قمت ب|وكانت النتيجة|كانت النتيجة|then|first|second|situation|action|result|as a result|so that|the result|I started|I then|after that|فغيّرت|فغيرت|فاتصلت|فقلت|فسويت|فبدأت|وبعدين|بعدين|وبعدها/i.test(raw);
+  const ownAction = /(^|\s)[\u0621-\u064A]{3,}ت(\s|$|،|\.)|\b(أنا|قمت|عملت|سويت|قدت|صممت|نفذت|حللت|بنيت|طورت|رتبت|أقنعت|تواصلت|حليت|اتخذت|درست)\b|قمت|عملت|سويت|قدت|نفذت|حللت|بنيت|طورت|I |I\x27ve|my own/i.test(raw);
+  const qid = ctx.qid || 'generic';
+  const company = String(ctx.company || '').trim().toLowerCase();
+  let score = 15, strengths = [], weak = [], fix = '';
+  const add = (ok, pts, good, bad) => { if (ok) { score += pts; if (good) strengths.push(good); } else if (bad) weak.push(bad); };
+
+  if (qid === 'intro') {
+    add(words >= 30, 10, 'طول مناسب لتعريف بسيط', 'الإجابة قصيرة — أضف خلفيتك وإنجازاً واحداً');
+    if (words > 150) { score -= 8; weak.push('الإجابة طويلة — اختصرها لـ ٩٠ ثانية'); }
+    add(/خريج|خريجة|خبرة|سنوات|سنة|أعمل|عملت|تخصص|بكالوريوس|ماجستير|دبلوم|طالب|طالبة|تدريب|years|experience|graduate|degree|bachelor|master|student|intern|accountant|designer|engineer|manager|executive|analyst/i.test(raw), 15, 'ذكرت خلفيتك', 'ما ذكرت خلفيتك (تعليم أو خبرة)');
+    add(hasN || hasResult, 20, 'فيها رقم أو نتيجة', 'أضف رقماً أو نتيجة واحدة تفتخر فيها');
+    add(/أبحث|أطمح|أبغى|أبي|هدفي|أرغب|أتطلع|أحب|مهتم|مهتمة|شغفي|looking for|seeking|moving into|aiming|want to|interested|passionate|goal/i.test(raw), 15, 'ربطت كلامك بهدفك', 'اربط كلامك بالدور المتقدّم له');
+    fix = 'رتّبها هكذا: من أنا، إنجاز واحد برقم، ليش هذا الدور — في ٩٠ ثانية.';
+  } else if (qid === 'motivation') {
+    const mentionsCo = company && company.length > 2 && raw.toLowerCase().indexOf(company) !== -1;
+    add(mentionsCo || /منتج|منتجات|خدمات|سوق|قيم|سمعة|مشاريع|عملاء|رؤية|جربت|قرأت|تابعت|حضور|محتوى|product|market|values|culture|follow|like how|admire|growth|customers|brand/i.test(raw), 30, 'ذكرت شيئاً محدداً عن الجهة', 'ما ذكرت شيئاً محدداً عن الشركة (منتج، سوق، قيم)');
+    add(/أفيد|أضيف|أقدم|أسهم|أساهم|يفيد|تفيد|خبرتي|مهاراتي|أقدر|bring|contribute|add value|help|my skills|my experience/i.test(raw), 25, 'وضحت وش تقدّم للشركة', 'وضّح وش تقدّم أنت للشركة');
+    add(words >= 25, 10, null, 'الإجابة قصيرة — أضف سبباً ثانياً محدداً');
+    if (/راتب|مميزات|إجازات|اجازات|قريبة من البيت/.test(raw) && !/أفيد|أضيف|أقدم|أساهم/.test(raw)) { score -= 15; weak.push('تجنّب الراتب والمميزات كسبب أول'); }
+    fix = 'اذكر شيئاً محدداً عن الشركة قرأته أو جربته، ثم اربطه بمهارة عندك تفيدهم.';
+  } else if (qid === 'weakness') {
+    add(/صرت|أصبحت|حددت|أحدد|أسلّم|ألتزم|أراجع|أقسم|أحسن|أطور|تدربت|دورة|أنظم|بدأت|خطة|أتعلم|تعلمت|حاولت|أستخدم|أتابع|improve|learning|course|practice|started|plan|track|now i|weekly|daily/i.test(raw), 30, 'وضحت كيف تشتغل على الضعف', 'ما وضحت كيف تعالج هذا الضعف');
+    add(/مرة|موقف|مثلاً|مثال|لما|عندما|في مشروع|once|when |for example|for instance|project|last year/i.test(raw), 20, 'أعطيت موقفاً ملموساً', 'أضف موقفاً حقيقياً صار بسبب هذا الضعف');
+    add(words >= 20, 10, null, 'الإجابة قصيرة');
+    if (/مثالي|perfectionist|أهتم بالتفاصيل أكثر من اللازم|أشتغل كثير/.test(raw)) { score -= 20; weak.push('«أنا مثالي» جواب مكرر — اختر ضعفاً حقيقياً'); }
+    fix = 'اختر ضعفاً حقيقياً غير قاتل للدور، موقفاً واحداً، وخطوتين تسويهم لتحسينه.';
+  } else if (qid === 'candidate_asks') {
+    const topicGroups = [/دوام|مواعيد|ورديات/i, /حوافز|عمولة|تأمين|سكن/i, /مسؤول|مدير مباشر|مشرف/i,/فريق|تركيبة|team/i, /تحدي|تحدٍّ|challenge/i, /ثقافة|قرارات|culture/i, /نجاح|يقاس|مؤشرات|أهداف|success|measured/i, /تطور|تدريب|نمو|growth/i];
+    const topics = topicGroups.filter((re) => re.test(raw)).length;
+    const qs = Math.max(topics, (raw.match(/[؟?]/g) || []).length);
+    add(qs >= 2, 40, 'جهّزت أكثر من سؤال', 'جهّز على الأقل ٣ أسئلة للمحاور');
+    add(/فريق|تحدي|تحدٍّ|ثقافة|قرارات|أول ٩٠|نجاح|تطور|تدريب|team|challenge|culture|success|growth|90/i.test(raw), 25, 'أسئلتك عن الفريق والنجاح', 'اسأل عن الفريق، التحدي الأكبر، وكيف يُقاس النجاح');
+    if (!ctx.simple && /متى أبدأ|كم الراتب/.test(raw)) { score -= 15; weak.push('تجنّب سؤال الراتب والبداية كأول سؤال'); }
+    fix = 'اكتب ٣ أسئلة: عن الفريق، عن أكبر تحدٍّ في الدور، وعن كيف يُقاس النجاح في أول ٩٠ يوم.';
+  } else {
+    // star / family_behavioral / generic
+    add(words >= (ctx.simple ? 18 : 30), 15, 'تفاصيل كافية', 'الإجابة قصيرة — أضف سياقاً أكثر');
+    add(hasStructure, 15, 'فيها ترتيب (موقف ثم تصرف ثم نتيجة)', 'اتبع STAR: موقف → دورك → خطوات → نتيجة');
+    if (ctx.simple) { if (hasN) { score += 10; strengths.push('فيها رقم'); } } else add(hasN, 20, 'فيها أرقام', 'ما في أرقام قابلة للقياس');
+    add(hasResult, 15, 'ذكرت نتيجة', 'ما وضحت النتيجة بعد تصرفك');
+    add(ownAction, 10, 'وضحت دورك أنت', 'وضّح دورك أنت تحديداً (مو الفريق)');
+    fix = ctx.simple ? 'احكِ الموقف بالترتيب: وش صار، وش سويت أنت، وكيف انتهى.' : (hasN ? 'رتّب إجابتك: الموقف، ثم دورك، ثم النتيجة بالرقم.' : 'ابدأ بموقف حقيقي مريت به وأنهِ بنتيجة واحدة بأرقام.');
+  }
+  score = Math.max(10, Math.min(score, 85));
+  const verdict = score >= 65 ? 'إجابة قوية ✓' : score >= 45 ? 'إجابة متوسطة — تحتاج تطوير' : 'إجابة ضعيفة';
+  const whyFail = score >= 65 ? (weak.length ? 'إجابة جيدة. أقوى تحسين: ' + weak[0] : 'إجابة جيدة — جرّب تقولها بصوت عالٍ وبوقت محدد')
+    : score >= 45 ? 'محتوى معقول، لكن ' + (weak[0] || 'ينقصه تفصيل') + '.'
+    : 'الإجابة عامة وما تثبت شيئاً بعد: ' + (weak[0] || 'أضف مثالاً حقيقياً') + '.';
   return {
-    overallScore:score,
-    verdict:score>=65?'إجابة قوية ✓':score>=45?'إجابة متوسطة — تحتاج تطوير':'إجابة ضعيفة',
-    whyFail:score<40?'الإجابة عامة — تحتاج مثال حقيقي بسياق + دور + خطوات + رقم':score<60?'محتوى جيد لكن يفتقر لأرقام أو هيكل STAR':'إجابة جيدة — أضف رقماً واحداً محدداً',
-    weakPoints:[!hasN&&'ما في أرقام أو نتائج قابلة للقياس',words<30&&'الإجابة قصيرة — أضف سياقاً أكثر',!hasStructure&&'اتبع STAR: موقف → دور → خطوات → نتيجة'].filter(Boolean),
-    improvedAnswer:'في [الشركة]، واجهنا [مشكلة]. دوري كان [ما فعلت]. النتيجة: [X% تحسن أو Y ريال توفير].',
-    oneFix:'ابدأ بـ "في [المكان]" وأضف نتيجة واحدة بأرقام في النهاية',
-    readinessGain:score>=60?3:score>=40?2:1,
+    overallScore: score,
+    verdict,
+    whyFail,
+    strengths: strengths.slice(0, 3),
+    weakPoints: weak.slice(0, 3),
+    improvedAnswer: '',
+    oneFix: fix,
+    readinessGain: score >= 60 ? 3 : score >= 40 ? 2 : 1,
   };
 }
 
@@ -1212,7 +1349,8 @@ app.get('/v2', (req, res) => {
 
 // ══════ SPA catch-all (registered last on purpose) ══════════════════════════
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  // One product: unknown paths land on the V2 app (V1 stays reachable at /v1 only).
+  res.sendFile(path.join(__dirname, '../public/v2.html'));
 });
 
 // ══════ Schema bootstrap + listen ═══════════════════════════════════════════

@@ -4,6 +4,7 @@
 // Adzuna/etc for Y". Keep it pure (no I/O) so callers can unit-test it.
 
 const { FAMILIES, detectFamily, detectSeniorityBand } = require('./families');
+const { resolveLocation } = require('./geo');
 
 // Generic must-have / nice-to-have keyword extraction from CV facts.
 function _toolsAsKeywords(facts) {
@@ -36,6 +37,8 @@ function buildSearchProfile({
   hintFamily,
   hintSeniority,
 }) {
+  // Arabic-Indic digits -> ASCII so seniority/years regexes see them.
+  cvText = typeof cvText === 'string' ? cvText.replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 0x0660)) : cvText;
   const det = detectFamily({ dreamRole, cvText, hintFamily });
   const family = det.family;
   const fam = FAMILIES[family] || FAMILIES.unknown;
@@ -62,6 +65,9 @@ function buildSearchProfile({
   const niceToHaveKeywords = _toolsAsKeywords(cvFacts);
 
   const industry = _detectIndustry(dreamRole, cvText);
+  // Location: accept a string ("الرياض") or {city,country}. Resolve to canonical
+  // GCC city/country so Arabic input matches English job boards.
+  const geo = resolveLocation(location);
 
   return {
     dreamRole: dreamRole || '',
@@ -74,7 +80,8 @@ function buildSearchProfile({
     searchKeywords,
     mustHaveKeywords,
     niceToHaveKeywords,
-    location: (typeof location === 'string' && location.trim()) ? location.trim() : null,
+    location: geo ? geo.labelEn : null,
+    geo: geo || null,
     industry,
     detection: { family: det.family, confidence: det.confidence, source: det.source },
   };

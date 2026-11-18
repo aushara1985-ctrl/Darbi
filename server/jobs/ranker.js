@@ -19,6 +19,8 @@ const SENIORITY_RANK = {
   senior_leadership: 4,
 };
 
+const { jobLocationRelation } = require('./geo');
+
 function _norm(s) { return (s || '').toLowerCase(); }
 
 function _titleSeniority(title) {
@@ -91,13 +93,12 @@ function _industryFit(job, profile) {
 
 function _locationFit(job, profile) {
   if (!profile.location) return 5; // neutral — no preference
-  const loc = _norm(job.location);
-  if (!loc) return 3;
-  const want = _norm(profile.location);
-  if (loc.indexOf(want) !== -1 || want.indexOf(loc) !== -1) return 10;
-  // Remote earns half-credit when user has no remote pref.
-  if (/remote|work from home|انترنت|عن بعد/.test(loc)) return 6;
-  return 0;
+  const rel = jobLocationRelation(job.location, profile.geo);
+  if (rel === 'city') return 10;
+  if (rel === 'country') return 7;
+  if (rel === 'remote') return 6;
+  if (rel === 'unknown') return 3;
+  return 0; // another country
 }
 
 function _readinessFit(job, profile) {
@@ -131,14 +132,15 @@ function _penalty(job, profile) {
       flags.push({ key: 'above_level', ar: 'أعلى من مرحلتك الحالية' });
     }
   }
-  // Location penalty (non-blocking)
+  // Location penalty (non-blocking, except clearly-another-country which is heavier)
   if (profile.location && job.location) {
-    const want = _norm(profile.location);
-    const loc  = _norm(job.location);
-    if (!want.split(/[,\s]+/).some(token => token && loc.indexOf(token) !== -1)) {
-      // mild penalty when nothing overlaps — don't fully disqualify
-      pen += 3;
-      flags.push({ key: 'far_location', ar: 'المدينة قد لا تناسبك' });
+    const rel = jobLocationRelation(job.location, profile.geo);
+    if (rel === 'other') {
+      pen += 12;
+      flags.push({ key: 'other_country', ar: 'خارج بلدك أو مدينتك المختارة' });
+    } else if (rel === 'country' && profile.geo && profile.geo.cityEn) {
+      pen += 2;
+      flags.push({ key: 'far_location', ar: 'مدينة ثانية في نفس البلد' });
     }
   }
   // Cap to -30 per spec.
@@ -162,10 +164,10 @@ function _cvFixTip(job, profile, breakdown) {
     return 'أضف عنوان "' + (profile.targetTitles[0] || profile.dreamRole) + '" في ملخص سيرتك حتى تطابق هذا الإعلان.';
   }
   if (breakdown.skills < 6 && profile.targetTitles[0]) {
-    return 'أبرز الكلمات الأساسية لدور ' + profile.targetTitles[0] + ' في سيرتك.';
+    return 'اكتب في سيرتك الكلمات اللي يطلبها هذا الإعلان لدور ' + profile.targetTitles[0] + ' (الأدوات، المؤشرات، نوع العملاء) إذا كانت فعلاً من خبرتك.';
   }
   if (breakdown.seniority < 18) {
-    return 'أعد صياغة إنجازاتك بحيث تطابق مستوى الدور (' + profile.seniorityLevel + ').';
+    return 'أعد صياغة إنجازاتك بحيث تطابق مستوى الدور (' + ({ fresh_grad: 'خريج جديد', junior: 'مبتدئ', mid: 'متوسط الخبرة', senior: 'خبرة متقدمة', senior_leadership: 'قيادي' }[profile.seniorityLevel] || 'مستواك') + ').';
   }
   return 'سيرتك قريبة — حسّن سطر العنوان وقدّم نسخة مخصصة لهذا الدور.';
 }

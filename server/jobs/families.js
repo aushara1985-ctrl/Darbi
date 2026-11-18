@@ -45,7 +45,7 @@ const FAMILIES = {
     titles: {
       fresh_grad: ['Customer Service Representative', 'Customer Support Agent', 'Call Center Agent'],
       junior:     ['Customer Service Representative', 'Customer Support Agent', 'Customer Service Specialist'],
-      mid:        ['Senior Customer Service Representative', 'Customer Support Team Lead', 'Customer Service Supervisor'],
+      mid:        ['Customer Support Team Lead', 'Customer Service Supervisor', 'Senior Customer Service Representative'],
       senior:     ['Customer Service Manager', 'Call Center Manager', 'Customer Support Manager'],
       senior_leadership: ['Head of Customer Service', 'Director of Customer Service', 'VP Customer Service'],
     },
@@ -125,7 +125,7 @@ const FAMILIES = {
     titles: {
       fresh_grad: ['Junior Financial Analyst', 'Finance Associate', 'Finance Trainee'],
       junior:     ['Financial Analyst', 'Junior FP&A Analyst', 'Finance Associate'],
-      mid:        ['Senior Financial Analyst', 'FP&A Manager', 'Finance Manager', 'Treasury Analyst'],
+      mid:        ['Financial Analyst', 'FP&A Analyst', 'Treasury Analyst', 'Finance Manager'],
       senior:     ['Senior Finance Manager', 'FP&A Lead', 'Senior Treasury Manager', 'Controller'],
       senior_leadership: ['Head of Finance', 'Director of Finance', 'VP Finance', 'CFO', 'Finance Director'],
     },
@@ -145,7 +145,7 @@ const FAMILIES = {
     titles: {
       fresh_grad: ['Junior Accountant', 'Accounting Trainee', 'Accounts Assistant'],
       junior:     ['Junior Accountant', 'Accountant', 'Accounts Payable Specialist', 'Accounts Receivable Specialist'],
-      mid:        ['Senior Accountant', 'Accounting Supervisor', 'Tax Specialist', 'Audit Senior'],
+      mid:        ['Accountant', 'Tax Specialist', 'Accounting Supervisor', 'Senior Accountant'],
       senior:     ['Senior Accountant', 'Accounting Manager', 'Audit Manager', 'Tax Manager'],
       senior_leadership: ['Head of Accounting', 'Director of Accounting', 'Chief Accountant', 'Controller', 'Finance Controller'],
     },
@@ -244,7 +244,7 @@ const FAMILIES = {
     titles: {
       fresh_grad: ['Junior Data Analyst', 'Data Analyst Intern', 'Associate Data Analyst'],
       junior:     ['Data Analyst', 'BI Analyst (Junior)', 'Junior Data Engineer'],
-      mid:        ['Senior Data Analyst', 'Data Engineer', 'BI Analyst', 'Analytics Engineer'],
+      mid:        ['Data Analyst', 'BI Analyst', 'Data Engineer', 'Analytics Engineer'],
       senior:     ['Senior Data Engineer', 'Senior Data Scientist', 'Analytics Lead', 'Staff Data Scientist'],
       senior_leadership: ['Head of Data', 'Director of Data', 'VP Data', 'Chief Data Officer'],
     },
@@ -284,7 +284,7 @@ const FAMILIES = {
     titles: {
       fresh_grad: ['Junior Designer', 'Junior UI/UX Designer', 'Graphic Design Intern', 'Junior Visual Designer'],
       junior:     ['UI/UX Designer (Junior)', 'Graphic Designer', 'Visual Designer'],
-      mid:        ['Senior UI/UX Designer', 'Senior Graphic Designer', 'Product Designer'],
+      mid:        ['UI/UX Designer', 'Graphic Designer', 'Product Designer', 'Visual Designer'],
       senior:     ['Lead Product Designer', 'Senior Product Designer', 'Design Lead'],
       senior_leadership: ['Head of Design', 'Director of Design', 'VP Design', 'Chief Design Officer'],
     },
@@ -338,10 +338,10 @@ const FAMILIES = {
   logistics: {
     ar: 'الخدمات اللوجستية',
     en: 'Logistics',
-    hits: ['logistics', 'لوجستيات', 'warehouse', 'مستودع', 'supply chain', 'سلسلة الإمداد', 'shipping', 'الشحن', 'fleet', 'distribution', 'last mile', 'الميل الأخير'],
+    hits: ['logistics', 'لوجستيات', 'warehouse', 'مستودع', 'supply chain', 'سلسلة الإمداد', 'shipping', 'الشحن', 'fleet', 'distribution', 'last mile', 'الميل الأخير', 'سائق', 'driver', 'delivery driver', 'سائق توصيل', 'مندوب توصيل', 'courier', 'مستودعات', 'امين مستودع', 'أمين مستودع'],
     titles: {
-      fresh_grad: ['Logistics Coordinator (Junior)', 'Warehouse Associate', 'Junior Supply Chain Analyst'],
-      junior:     ['Logistics Coordinator', 'Warehouse Associate', 'Supply Chain Analyst'],
+      fresh_grad: ['سائق', 'Delivery Driver', 'Warehouse Associate', 'Logistics Coordinator (Junior)'],
+      junior:     ['سائق', 'Delivery Driver', 'Warehouse Associate', 'Logistics Coordinator'],
       mid:        ['Senior Logistics Coordinator', 'Warehouse Supervisor', 'Supply Chain Manager'],
       senior:     ['Logistics Manager', 'Senior Supply Chain Manager', 'Warehouse Manager'],
       senior_leadership: ['Head of Logistics', 'Director of Supply Chain', 'VP Operations (Logistics)'],

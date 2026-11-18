@@ -251,7 +251,7 @@
       display:flex;flex-wrap:wrap;gap:16px;justify-content:center;
       padding:18px 0 8px;border-top:1px solid #ececf4;margin-top:8px;
     }
-    .v2-land-footer a{font-size:12.5px;color:#64748b;font-weight:700;cursor:pointer}
+    .v2-land-footer a{font-size:13px;color:#64748b;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;padding:0 4px}
     .v2-land-footer a:hover{color:#4f46e5}
     @media (max-width:520px){
       .v2-land-steps,.v2-land-for{grid-template-columns:1fr}
@@ -609,7 +609,7 @@
     }
     .v2-cvb-section-edit{
       background:transparent;color:#4338ca;border:none;cursor:pointer;
-      font-size:11.5px;font-weight:700;padding:2px 6px;border-radius:6px;
+      font-size:12px;font-weight:700;padding:8px 10px;border-radius:6px;min-height:34px;
       font-family:inherit;
     }
     .v2-cvb-section-edit:hover{background:#eef2ff}
@@ -858,8 +858,8 @@
     .v2-jobs-fb-search-row{margin-bottom:7px;font-size:12.5px}
     .v2-jobs-fb-search-row b{color:#0a0a0a;display:block;margin-bottom:3px;font-weight:700}
     .v2-jobs-fb-link{
-      display:inline-block;font-size:11.5px;color:#4338ca;text-decoration:none;
-      background:#eef2ff;padding:3px 9px;border-radius:99px;margin-left:6px;
+      display:inline-block;font-size:12px;color:#4338ca;text-decoration:none;min-height:34px;
+      background:#eef2ff;padding:8px 13px;border-radius:99px;margin-left:6px;margin-bottom:4px;
       transition:background .15s;
     }
     .v2-jobs-fb-link:hover{background:#c7d2fe}
@@ -1199,7 +1199,7 @@
     }
     .v2-db-section-h .v2-db-section-link{
       font-size:11.5px;font-weight:700;color:#4f46e5;cursor:pointer;
-      background:none;border:none;font-family:inherit;
+      background:none;border:none;font-family:inherit;min-height:36px;padding:0 8px;
     }
     .v2-db-section-h .v2-db-section-link:hover{text-decoration:underline}
 
@@ -1278,6 +1278,18 @@
     @media (min-width: 521px) and (max-width: 720px) {
       .v2-stepper{max-width:200px}
     }
+
+    .is-on.v2-chip,.v2-chip.is-on{background:#4f46e5;color:#fff}
+    .v2-link{color:#4338ca;font-weight:700;cursor:pointer;text-decoration:underline;display:inline-block;padding:9px 4px}
+    .v2-plan{position:relative;margin-bottom:12px}
+    .v2-plan.is-hot{border:2px solid #4f46e5}
+    .v2-plan-tag{position:absolute;top:-11px;right:14px;background:#4f46e5;color:#fff;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:99px}
+    .v2-plan-name{font-weight:800;font-size:16px}
+    .v2-plan-price{font-size:30px;font-weight:900;margin:2px 0}
+    .v2-plan-price span{font-size:13px;color:#64748b;font-weight:700}
+    .v2-plan-blurb{font-size:13px;color:#64748b;margin-bottom:8px}
+    .v2-plan-feats{margin:0 0 12px;padding:0 18px;font-size:13.5px;line-height:1.9}
+    .v2-iv-answer{width:100%;min-height:96px;border:1px solid #cbd5e1;border-radius:12px;padding:10px;font:inherit;font-size:14px;box-sizing:border-box;margin-top:10px}
   </style>
 </head>
 <body>
@@ -1326,6 +1338,8 @@
         <a data-route="#/cv-output" onclick="v2Go('#/cv-output');return false;">📝 سيرتي</a>
         <a data-route="#/jobs" onclick="v2Go('#/jobs');return false;">💼 الوظائف</a>
         <a data-route="#/tracker" onclick="v2Go('#/tracker');return false;">📋 تقديماتي</a>
+        <a data-route="#/interview" onclick="v2Go('#/interview');return false;">🎤 تدريب المقابلة</a>
+        <a data-route="#/pricing" onclick="v2Go('#/pricing');return false;">💳 الخطط والأسعار</a>
         <a data-route="#/account" onclick="v2Go('#/account');return false;">👤 حسابي</a>
         <a data-route="#/legal" onclick="v2Go('#/legal');return false;">📞 الخصوصية والشروط</a>
         <a class="v2-drawer-logout" onclick="v2Logout();return false;">🚪 تسجيل خروج</a>
@@ -1675,6 +1689,316 @@
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════════
+       2026-11-18 — ONE JOURNEY: location screen, signup/login, pricing
+       paywall (Stripe only), account, legal, interview practice.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+  /* eslint-disable */
+
+  // ── V2User — account state. Token lives in localStorage.darbi_token (shared with V1).
+  var V2User = (function(){
+    var KEY = 'darbi_v2_user'; // cached {id,email,paid,access_status}; server is the truth (refresh())
+    function read(){ try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){ return null; } }
+    return {
+      token: function(){ try { return localStorage.getItem('darbi_token'); } catch(e){ return null; } },
+      user: function(){ return read(); },
+      isLoggedIn: function(){ return !!this.token(); },
+      isPaid: function(){ var u = read(); return !!(u && u.paid) || (typeof Access !== 'undefined' && Access.isAdmin && Access.isAdmin()); },
+      set: function(token, user){
+        try { localStorage.setItem('darbi_token', token); } catch(e){}
+        this.setUser(user);
+      },
+      setUser: function(user){
+        if (!user) return;
+        var u = { id: user.id, email: user.email, access_status: user.access_status, paid: user.paid === true || user.access_status === 'paid' };
+        try { localStorage.setItem(KEY, JSON.stringify(u)); } catch(e){}
+        currentUser = u;
+      },
+      clear: function(){
+        try { localStorage.removeItem('darbi_token'); localStorage.removeItem(KEY); } catch(e){}
+        currentUser = null;
+      },
+      refresh: function(){
+        var self = this;
+        if (!this.token()) return Promise.resolve(null);
+        return apiFetch('/api/darbi/me').then(function(r){
+          if (r.status === 401) { self.clear(); return null; }
+          return r.json();
+        }).then(function(d){ if (d && d.user) self.setUser(d.user); return d && d.user; }).catch(function(){ return null; });
+      }
+    };
+  })();
+  (function(){ var u = V2User.user(); if (u && V2User.token()) currentUser = u; })();
+
+  // ── Plans — Ali's prices (2026-11-18). Stripe is the only payment path.
+  var V2_PLANS = [
+    { key: 'starter',  name: 'Starter',  price: '$9',   per: '/شهر',       blurb: 'للبداية الجادة', feats: ['تجهيز تقديم لكل وظيفة', 'تدريب مقابلة كامل ٦ أسئلة مع تقييم', 'متابعة تقديماتك'] },
+    { key: 'pro',      name: 'Pro',      price: '$19',  per: '/شهر',       blurb: 'تقديم وتدريب بلا حد', hot: true, feats: ['كل مميزات Starter', 'تجهيز تقديمات بلا حد', 'جلسات تدريب بلا حد'] },
+    { key: 'lifetime', name: 'Founder',  price: '$199', per: ' · مرة وحدة', blurb: 'ادفع مرة وحدة وخلاص', feats: ['كل مميزات Pro للأبد', 'بدون اشتراك شهري', 'سعر المؤسسين'] },
+  ];
+
+  function _v2Next(){ var n = v2HashParam('next'); return (n && n.indexOf('#/') === 0) ? n : null; }
+  function v2RequireAuth(nextHash){
+    if (V2User.isLoggedIn()) return true;
+    v2Go('#/signup?next=' + encodeURIComponent(nextHash || '#/dashboard'));
+    return false;
+  }
+
+  // ── Auth screens (#/signup, #/login) ────────────────────────────────────
+  function renderAuth(app, route){
+    var signup = route.mode !== 'login';
+    var next = _v2Next();
+    if (V2User.isLoggedIn()) {
+      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">✅</div><h3>أنت مسجّل دخول</h3>'
+        + '<p>' + escapeHtml((V2User.user() && V2User.user().email) || '') + '</p>'
+        + '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'' + (next || '#/dashboard') + '\')">كمّل ←</button></div>';
+      return;
+    }
+    var nextQ = next ? ('?next=' + encodeURIComponent(next)) : '';
+    app.innerHTML = ''
+      + '<h2 class="v2-h1">' + (signup ? 'سوّ <span class="v2-accent">حسابك</span> — ثواني' : 'أهلاً <span class="v2-accent">برجعتك</span>') + '</h2>'
+      + '<p class="v2-sub">' + (signup ? 'الحساب يحفظ تقدمك ويفتح تجهيز التقديم وتدريب المقابلة. ما نطلب غير بريدك.' : 'ادخل ببريدك وكلمة المرور.') + '</p>'
+      + '<div class="v2-card">'
+      +   '<label class="v2-input-label" for="v2AuthEmail">البريد الإلكتروني</label>'
+      +   '<input type="email" id="v2AuthEmail" class="v2-input" dir="ltr" autocomplete="email" inputmode="email" placeholder="name@example.com" />'
+      +   '<label class="v2-input-label" for="v2AuthPass" style="margin-top:12px">كلمة المرور' + (signup ? ' (٨ خانات فأكثر)' : '') + '</label>'
+      +   '<input type="password" id="v2AuthPass" class="v2-input" dir="ltr" autocomplete="' + (signup ? 'new-password' : 'current-password') + '" onkeydown="if(event.key===\'Enter\')v2AuthSubmit(' + (signup ? 'true' : 'false') + ')" />'
+      +   '<div id="v2AuthErr" class="v2-input-hint" style="color:#b91c1c;min-height:18px" role="alert"></div>'
+      + '</div>'
+      + '<button type="button" class="v2-btn v2-btn-primary" id="v2AuthBtn" onclick="v2AuthSubmit(' + (signup ? 'true' : 'false') + ')">' + (signup ? 'سجّل وكمّل ←' : 'دخول ←') + '</button>'
+      + '<div style="text-align:center;margin-top:14px;font-size:13.5px">'
+      +   (signup
+          ? 'عندك حساب؟ <a class="v2-link" onclick="v2Go(\'#/login' + nextQ + '\');return false;" href="#/login">سجّل دخولك</a>'
+          : 'جديد؟ <a class="v2-link" onclick="v2Go(\'#/signup' + nextQ + '\');return false;" href="#/signup">سوّ حساب</a>')
+      + '</div>'
+      + '<div class="v2-input-hint" style="text-align:center;margin-top:10px">بالتسجيل توافق على <a class="v2-link" onclick="v2Go(\'#/legal\');return false;" href="#/legal">الشروط والخصوصية</a></div>';
+  }
+  async function v2AuthSubmit(signup){
+    var email = (document.getElementById('v2AuthEmail').value || '').trim();
+    var pass  = document.getElementById('v2AuthPass').value || '';
+    var err = document.getElementById('v2AuthErr');
+    var btn = document.getElementById('v2AuthBtn');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'اكتب بريد صحيح'; return; }
+    if (signup && pass.length < 8) { err.textContent = 'كلمة المرور ٨ خانات على الأقل'; return; }
+    if (!pass) { err.textContent = 'اكتب كلمة المرور'; return; }
+    err.textContent = ''; btn.disabled = true; var old = btn.textContent; btn.textContent = '...';
+    try {
+      var r = await fetch(signup ? '/api/auth/signup' : '/api/auth/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: pass })
+      });
+      var d = await r.json().catch(function(){ return {}; });
+      if (!r.ok || !d.token) {
+        err.textContent = (r.status === 409) ? 'هذا البريد مسجّل. جرّب تسجيل الدخول.' : (r.status === 401 ? 'البريد أو كلمة المرور غير صحيحة' : 'صار خطأ، حاول مرة ثانية');
+        btn.disabled = false; btn.textContent = old; return;
+      }
+      V2User.set(d.token, d.user);
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: signup ? 'signup' : 'login' });
+      v2Go(_v2Next() || '#/dashboard', true);
+    } catch(e) {
+      err.textContent = 'ما قدرنا نتصل. تأكد من النت وحاول.'; btn.disabled = false; btn.textContent = old;
+    }
+  }
+
+  // ── Pricing / paywall (#/pricing) — Stripe Checkout only ─────────────────
+  function _v2PlanCard(p){
+    return ''
+      + '<div class="v2-card v2-plan' + (p.hot ? ' is-hot' : '') + '">'
+      +   (p.hot ? '<span class="v2-plan-tag">الأكثر طلباً</span>' : '')
+      +   '<div class="v2-plan-name">' + p.name + '</div>'
+      +   '<div class="v2-plan-price">' + p.price + '<span>' + p.per + '</span></div>'
+      +   '<div class="v2-plan-blurb">' + p.blurb + '</div>'
+      +   '<ul class="v2-plan-feats">' + p.feats.map(function(f){ return '<li>' + escapeHtml(f) + '</li>'; }).join('') + '</ul>'
+      +   '<button class="v2-btn ' + (p.hot ? 'v2-btn-primary' : 'v2-btn-secondary') + '" onclick="v2Checkout(\'' + p.key + '\')">' + (p.key === 'lifetime' ? 'ادفع $199 مرة وحدة' : 'اشترك — ' + p.price + ' شهرياً') + '</button>'
+      + '</div>';
+  }
+  function renderPricing(app, route){
+    var why = v2HashParam('why');
+    var whyMsg = { apply: 'جهّزنا لك تقديمك الأول مجاناً. للتقديمات الباقية تحتاج خطة.', interview: 'جرّبت أول سؤالين من التدريب مجاناً. الأسئلة الباقية والتقييم الكامل في الخطط.' }[why] || '';
+    if (V2User.isPaid()) {
+      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">🎉</div><h3>خطتك مفعّلة</h3><p>كل المميزات مفتوحة لك.</p><button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/dashboard\')">لوحتي ←</button></div>';
+      return;
+    }
+    app.innerHTML = ''
+      + '<h2 class="v2-h1">اختر <span class="v2-accent">خطتك</span></h2>'
+      + '<p class="v2-sub">' + (whyMsg || 'التشخيص والسيرة والوظائف مجانية. الخطة تفتح تجهيز التقديم بلا حد وتدريب المقابلة الكامل.') + '</p>'
+      + _v2PlanCard(V2_PLANS[1]) + _v2PlanCard(V2_PLANS[0]) + _v2PlanCard(V2_PLANS[2])
+      + '<div id="v2PayMsg" class="v2-input-hint" style="text-align:center;margin-top:8px;min-height:18px" role="status"></div>'
+      + '<div class="v2-input-hint" style="text-align:center">الدفع بالبطاقة عبر Stripe. ما نحفظ بيانات بطاقتك.</div>';
+  }
+  async function v2Checkout(plan){
+    if (!V2User.isLoggedIn()) { v2Go('#/signup?next=' + encodeURIComponent('#/pricing')); return; }
+    var msg = document.getElementById('v2PayMsg');
+    if (msg) msg.textContent = 'نجهّز صفحة الدفع...';
+    try {
+      var r = await apiFetch('/api/payment/checkout', { method: 'POST', body: { plan: plan } });
+      var d = await r.json().catch(function(){ return {}; });
+      if (d.url) { window.location.href = d.url; return; }
+      if (msg) msg.textContent = (r.status === 503)
+        ? 'الدفع الإلكتروني يتفعّل قريباً. ما سحبنا منك شي.'
+        : 'ما قدرنا نبدأ الدفع. حاول بعد شوي.';
+    } catch(e) { if (msg) msg.textContent = 'ما قدرنا نتصل. حاول بعد شوي.'; }
+  }
+  // Returning from Stripe: confirm with the server (it checks with Stripe itself).
+  async function v2HandlePaymentReturn(){
+    var q = new URLSearchParams(location.search);
+    if (q.get('payment_success') !== 'true' || !q.get('session_id')) return;
+    var sid = q.get('session_id');
+    try { history.replaceState({}, '', location.pathname + '#/account'); } catch(e){}
+    try {
+      var r = await apiFetch('/api/darbi/payment/success', { method: 'POST', body: { stripeSessionId: sid } });
+      await V2User.refresh();
+      window.__v2PayResult = r.ok ? 'ok' : 'fail';
+    } catch(e) { window.__v2PayResult = 'fail'; }
+    v2Go('#/account', true);
+  }
+
+  // ── Gate helpers for apply + interview ─────────────────────────────────
+  function _v2FreeApplyUsed(){ try { return localStorage.getItem('darbi_v2_free_apply'); } catch(e){ return null; } }
+  function _v2GateCard(emoji, h, p, btnTxt, onclick){
+    return '<div class="v2-empty-state"><div class="v2-empty-emoji">' + emoji + '</div><h3>' + h + '</h3><p>' + p + '</p>'
+      + '<button class="v2-btn v2-btn-primary" onclick="' + onclick + '">' + btnTxt + '</button></div>';
+  }
+
+  // ── Account (#/account) ──────────────────────────────────────────────────
+  function renderAccount(app, route){
+    var u = V2User.user();
+    var banner = '';
+    if (window.__v2PayResult === 'ok') banner = '<div class="v2-card" style="background:#ecfdf5;border-color:#a7f3d0">تم الدفع وفُعّلت خطتك. شكراً لك.</div>';
+    else if (window.__v2PayResult === 'fail') banner = '<div class="v2-card" style="background:#fef2f2;border-color:#fecaca">ما قدرنا نأكد الدفع الحين. إذا انسحب المبلغ، يتفعّل حسابك خلال دقائق.</div>';
+    window.__v2PayResult = null;
+    if (!V2User.isLoggedIn()) {
+      app.innerHTML = banner + _v2GateCard('👤', 'ما سجّلت دخولك', 'سوّ حساب مجاني أو ادخل لحسابك.', 'سجّل ←', 'v2Go(\'#/signup?next=%23%2Faccount\')')
+        + '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/login?next=%23%2Faccount\')">عندي حساب</button>';
+      return;
+    }
+    var paid = V2User.isPaid();
+    app.innerHTML = banner
+      + '<div class="v2-card"><div class="v2-input-label">البريد</div><div dir="ltr" style="text-align:right;font-weight:700">' + escapeHtml((u && u.email) || '') + '</div>'
+      +   '<div class="v2-input-label" style="margin-top:14px">خطتك</div><div style="font-weight:700">' + (paid ? 'مدفوعة — كل المميزات مفتوحة' : 'مجانية — التشخيص والسيرة والوظائف + تقديم واحد + أول سؤالين تدريب') + '</div></div>'
+      + (paid ? '<button class="v2-btn v2-btn-secondary" onclick="v2ManageBilling()">إدارة الاشتراك أو إلغاؤه</button><div id="v2BillMsg" class="v2-input-hint" style="text-align:center;min-height:18px" role="status"></div>' : '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/pricing\')">شوف الخطط ←</button>')
+      + '<button class="v2-btn v2-btn-secondary" style="margin-top:10px" onclick="v2Logout()">تسجيل خروج</button>';
+  }
+
+  async function v2ManageBilling(){
+    var msg = document.getElementById('v2BillMsg');
+    if (msg) msg.textContent = 'نفتح صفحة إدارة الاشتراك...';
+    try {
+      var r = await apiFetch('/api/payment/portal', { method: 'POST', body: {} });
+      var d = await r.json().catch(function(){ return {}; });
+      if (d.url) { window.location.href = d.url; return; }
+      if (msg) msg.textContent = (r.status === 404)
+        ? 'ما لقينا اشتراك شهري على بريدك. لو دفعت Founder (مرة وحدة) فما عندك شي يتجدد.'
+        : (r.status === 503 ? 'إدارة الاشتراك تتفعّل مع الدفع الإلكتروني قريباً.' : 'ما قدرنا نفتح الصفحة الحين. حاول بعد شوي.');
+    } catch(e) { if (msg) msg.textContent = 'ما قدرنا نتصل. حاول بعد شوي.'; }
+  }
+
+  // ── Legal (#/legal) — plain, factual ────────────────────────────────────
+  function renderLegal(app, route){
+    app.innerHTML = ''
+      + '<div class="v2-card" style="line-height:1.9;font-size:14px">'
+      + '<h3 style="margin:0 0 8px">الخصوصية</h3>'
+      + '<p>نحفظ بريدك وكلمة مرور مشفّرة. نص سيرتك وتشخيصك يُحفظان على جهازك، ويُرسل نص السيرة أو إجابات التدريب لخدمة الذكاء الاصطناعي فقط لتحليلها. ما نبيع بياناتك. الدفع يتم عبر Stripe ولا نحفظ بيانات البطاقة.</p>'
+      + '<h3 style="margin:14px 0 8px">الشروط</h3>'
+      + '<p>دربي أداة مساعدة: ما نضمن وظيفة أو رد من شركة. الوظائف المعروضة من لوحات توظيف عامة ومرتبطة بصفحاتها الأصلية، وروابط البحث مقترحة لك. الاشتراك الشهري يتجدد حتى تلغيه، وتلغيه بنفسك من «حسابي ← إدارة الاشتراك» وتنسحب صلاحيتك عند انتهائه. الدفعة الواحدة (Founder) لمرة وحدة.</p>'
+      + '</div>'
+      + '<button class="v2-btn v2-btn-secondary" onclick="v2Back()">رجوع</button>';
+  }
+
+  // ── Location (#/location) — country + city (+ work mode). Used by job matching. ──
+  var V2_COUNTRIES = [
+    { code: 'SA', ar: 'السعودية', cities: ['الرياض','جدة','مكة المكرمة','المدينة المنورة','الدمام','الخبر','الظهران','الأحساء','الطائف','تبوك','أبها','بريدة','حائل','جازان','نجران','ينبع','الجبيل','القطيف'] },
+    { code: 'AE', ar: 'الإمارات', cities: ['دبي','أبوظبي','الشارقة','عجمان','رأس الخيمة'] },
+    { code: 'KW', ar: 'الكويت',   cities: ['مدينة الكويت'] },
+    { code: 'QA', ar: 'قطر',      cities: ['الدوحة'] },
+    { code: 'BH', ar: 'البحرين',  cities: ['المنامة'] },
+    { code: 'OM', ar: 'عُمان',    cities: ['مسقط'] },
+  ];
+  function _v2CountryByCode(c){ for (var i = 0; i < V2_COUNTRIES.length; i++) if (V2_COUNTRIES[i].code === c) return V2_COUNTRIES[i]; return null; }
+  function renderLocation(app, route){
+    var d = V2Draft.get();
+    var cc = d.country || 'SA';
+    var country = _v2CountryByCode(cc) || V2_COUNTRIES[0];
+    var countryChips = V2_COUNTRIES.map(function(c){
+      return '<span class="v2-chip' + (c.code === cc ? ' is-on' : '') + '" onclick="v2PickCountry(\'' + c.code + '\')">' + c.ar + '</span>';
+    }).join('');
+    var cityChips = country.cities.map(function(c){
+      return '<span class="v2-chip' + (d.city === c ? ' is-on' : '') + '" onclick="v2PickCity(\'' + c + '\')">' + c + '</span>';
+    }).join('');
+    var modes = [['onsite','حضوري'],['hybrid','هجين'],['remote','عن بعد']].map(function(m){
+      return '<span class="v2-chip' + ((d.workMode || 'onsite') === m[0] ? ' is-on' : '') + '" onclick="v2PickMode(\'' + m[0] + '\')">' + m[1] + '</span>';
+    }).join('');
+    app.innerHTML = ''
+      + '<h2 class="v2-h1">وين تبي <span class="v2-accent">تشتغل؟</span></h2>'
+      + '<p class="v2-sub">نختار لك وظائف في مدينتك أول. تقدر تغيّرها بعدين.</p>'
+      + '<div class="v2-card">'
+      +   '<div class="v2-input-label">الدولة</div><div class="v2-chip-row" style="margin-top:0">' + countryChips + '</div>'
+      +   '<div class="v2-input-label" style="margin-top:16px">المدينة</div><div class="v2-chip-row" style="margin-top:0">' + cityChips + '</div>'
+      +   '<input type="text" id="v2CityOther" class="v2-input" style="margin-top:10px" placeholder="مدينة ثانية؟ اكتبها" value="' + escapeHtml((d.city && country.cities.indexOf(d.city) === -1) ? d.city : '') + '" oninput="v2PickCityText(this.value)" />'
+      +   '<div class="v2-input-label" style="margin-top:16px">طبيعة العمل</div><div class="v2-chip-row" style="margin-top:0">' + modes + '</div>'
+      + '</div>'
+      + '<button type="button" class="v2-btn v2-btn-primary" id="v2LocContinue" onclick="v2GoFromLocation()"' + (d.city ? '' : ' disabled') + '>متابعة ←</button>'
+      + '<div style="text-align:center;margin-top:10px"><a class="v2-link" onclick="v2SkipLocation();return false;" href="#/cv-upload" style="font-size:13px;display:inline-block;padding:10px 14px">تخطّي — أي مكان</a></div>';
+  }
+  function _v2SaveLoc(patch){
+    var d = V2Draft.get();
+    var n = Object.assign({}, d, patch);
+    var country = _v2CountryByCode(n.country || 'SA');
+    n.location = [n.city, country ? country.ar : ''].filter(Boolean).join('، ').replace('، ', ' ، ').replace(' ، ', '، ');
+    V2Draft.set({ country: n.country, city: n.city, workMode: n.workMode, location: n.location });
+  }
+  function v2PickCountry(code){ _v2SaveLoc({ country: code, city: '' }); renderLocation(document.getElementById('v2-app')); }
+  function v2PickCity(city){ _v2SaveLoc({ city: city }); renderLocation(document.getElementById('v2-app')); }
+  function v2PickCityText(v){
+    _v2SaveLoc({ city: (v || '').trim() });
+    var b = document.getElementById('v2LocContinue'); if (b) b.disabled = !(v || '').trim() && !V2Draft.field('city');
+  }
+  function v2PickMode(m){ V2Draft.set({ workMode: m }); renderLocation(document.getElementById('v2-app')); }
+  function v2GoFromLocation(){ _v2JobsCacheClear(); v2Go('#/cv-upload'); }
+  function v2SkipLocation(){ V2Draft.set({ country: '', city: '', location: '' }); v2Go('#/cv-upload'); }
+
+  // ── Interview practice (no application needed) + answer evaluation ───────
+  var V2_PRACTICE_ID = 'practice';
+  function v2InterviewPracticeApp(){
+    var d = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : null;
+    return { id: V2_PRACTICE_ID, role: (d && d.dreamRole) || 'وظيفتك المستهدفة', company: 'تدريب عام', status: 'interview' };
+  }
+  async function v2InterviewEvaluate(appId, qIdx){
+    var ta = document.getElementById('v2IvAnswer');
+    var out = document.getElementById('v2IvEval');
+    var ans = ta ? ta.value.trim() : '';
+    if (ans.length < 15) { if (out) out.innerHTML = '<div class="v2-input-hint" style="color:#b91c1c">اكتب إجابتك (جملتين على الأقل) وبعدين قيّمها.</div>'; return; }
+    var application = appId === V2_PRACTICE_ID ? v2InterviewPracticeApp() : _v2InterviewLookupApp(appId);
+    var diagnosis = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : {};
+    var q = _v2InterviewQuestions(diagnosis, application)[qIdx];
+    if (out) out.innerHTML = '<div class="v2-input-hint">نقيّم إجابتك...</div>';
+    try {
+      var r = await apiFetch('/api/darbi/training/answer', { method: 'POST', body: { questionText: q && q.q, answerText: ans, targetSkill: q && q.tag, qid: q && q.id, company: application && application.company, role: application && application.role, simple: !!(diagnosis && diagnosis.branch === 'A') } });
+      if (r.status === 401) { V2User.clear(); v2Go('#/login?next=' + encodeURIComponent('#/interview?j=' + appId)); return; }
+      var d = await r.json();
+      var ev = d && d.evaluation;
+      if (!ev) throw new Error('no_eval');
+      var weak = (ev.weakPoints || []).map(function(w){ return '<li>' + escapeHtml(w) + '</li>'; }).join('');
+      var improved = (ev.improvedAnswer && ev.improvedAnswer.indexOf('[') === -1) ? '<div class="v2-iv-q-focus-h">نسخة أقوى:</div><div style="font-size:13.5px;line-height:1.8">' + escapeHtml(ev.improvedAnswer) + '</div>' : '';
+      var strong = (ev.strengths || []).map(function(w){ return '<li>' + escapeHtml(w) + '</li>'; }).join('');
+      _v2IvSaveEval(appId, q && q.id, { q: q && q.q, tag: q && q.tag, score: Math.round(ev.overallScore || 0), verdict: ev.verdict || '', weak: (ev.weakPoints || []).slice(0, 3), fix: ev.oneFix || '', local: !!d.local });
+      if (out) out.innerHTML = '<div class="v2-card" style="background:#f8fafc">'
+        + '<div style="font-weight:800;font-size:15px">' + escapeHtml(ev.verdict || '') + ' · ' + Math.round(ev.overallScore || 0) + '/100</div>'
+        + (strong ? '<div class="v2-iv-q-focus-h" style="margin-top:8px">نقاط قوة:</div><ul class="v2-iv-q-focus">' + strong + '</ul>' : '')
+        + (ev.whyFail ? '<div style="margin-top:6px;font-size:13.5px">' + escapeHtml(ev.whyFail) + '</div>' : '')
+        + (weak ? '<ul class="v2-iv-q-focus" style="margin-top:8px">' + weak + '</ul>' : '')
+        + (ev.oneFix ? '<div style="margin-top:6px;font-size:13.5px"><b>إصلاح واحد:</b> ' + escapeHtml(ev.oneFix) + '</div>' : '')
+        + improved
+        + (d.local ? '<div class="v2-input-hint" style="margin-top:8px">تقييم مبدئي سريع (طول، أرقام، هيكل). التقييم الذكي الكامل يتفعّل قريباً.</div>' : '')
+        + '</div>';
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'interview_answer_evaluated', payload: { id: appId, qIdx: qIdx, score: ev.overallScore } });
+    } catch(e) {
+      if (out) out.innerHTML = '<div class="v2-input-hint" style="color:#b91c1c">ما قدرنا نقيّم الحين. تقدر تكمّل للسؤال التالي.</div>';
+    }
+  }
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
        V2 ROUTER + SHELL
   ═══════════════════════════════════════════════════════════════════ -->
   <script>
@@ -1687,7 +2011,8 @@
     '#/landing':      { title: '',                    step: 0, back: null,           render: 'renderLanding' },
     '#/track':        { title: 'وضعك المهني',          step: 1, back: '#/landing',    render: 'renderTrack' },
     '#/dream':        { title: 'وش الوظيفة اللي تحلم فيها؟', step: 1, back: '#/track', render: 'renderDream' },
-    '#/cv-upload':    { title: 'ارفع سيرتك',           step: 1, back: '#/dream',      render: 'renderCvUpload' },
+    '#/location':     { title: 'وين تبي تشتغل؟',        step: 1, back: '#/dream',      render: 'renderLocation' },
+    '#/cv-upload':    { title: 'ارفع سيرتك',           step: 1, back: '#/location',   render: 'renderCvUpload' },
     '#/cv-build':     { title: 'دربي يبني سيرتك',      step: 1, back: '#/cv-upload',  render: 'renderCvBuild' },
     '#/quiz':         { title: 'أسئلة سريعة',          step: 1, back: '#/cv-upload',  render: 'renderQuiz' },
     '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderDiagnosis' },
@@ -1699,8 +2024,11 @@
     '#/tracker':      { title: 'تقديماتي',              step: 5, back: '#/jobs',      render: 'renderTracker' },
     '#/interview':    { title: 'تدريب المقابلة',         step: 5, back: '#/tracker',   render: 'renderInterview' },
     '#/dashboard':    { title: 'لوحتي',                 step: 0, back: null,          render: 'renderDashboard' },
-    '#/account':      { title: 'حسابي',                 step: 0, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.11' },
-    '#/legal':        { title: 'الخصوصية والشروط',      step: 0, back: '#/dashboard', render: 'renderPlaceholder', phase: 'Phase 0.12' },
+    '#/account':      { title: 'حسابي',                 step: 0, back: '#/dashboard', render: 'renderAccount' },
+    '#/legal':        { title: 'الخصوصية والشروط',      step: 0, back: '#/dashboard', render: 'renderLegal' },
+    '#/signup':       { title: 'حساب جديد',             step: 0, back: '#/landing',   render: 'renderAuth', mode: 'signup' },
+    '#/login':        { title: 'تسجيل الدخول',          step: 0, back: '#/landing',   render: 'renderAuth', mode: 'login' },
+    '#/pricing':      { title: 'الخطط والأسعار',        step: 0, back: '#/dashboard', render: 'renderPricing' },
   };
 
   // ── Map DarbiJourney.key → V2 route. Used when callers want to advance.
@@ -1795,7 +2123,7 @@
     document.body.style.overflow = open ? 'hidden' : '';
   }
   function v2Logout(){
-    try { localStorage.removeItem('darbi_token'); } catch(e){}
+    V2User.clear();
     v2ToggleDrawer();
     v2Go('#/landing', true);
   }
@@ -1813,6 +2141,13 @@
 
     if (titleEl) titleEl.textContent = routeInfo.title || '';
     if (backEl)  backEl.style.display = routeInfo.back ? '' : 'none';
+    // Avatar: first letter of the signed-in email; a person icon for guests (was a fixed «د» for everyone).
+    var avEl = document.querySelector('.v2-avatar');
+    if (avEl) {
+      var _u = V2User.user();
+      avEl.textContent = (V2User.isLoggedIn() && _u && _u.email) ? _u.email.charAt(0).toUpperCase() : '👤';
+      avEl.setAttribute('aria-label', V2User.isLoggedIn() ? 'حسابي' : 'تسجيل الدخول');
+    }
 
     // Step indicator: only show on journey routes (step 1-5). Hide on
     // landing / dashboard / account / legal.
@@ -1876,6 +2211,8 @@
     if (!V2_ROUTES[initial]) initial = '#/landing';
     window.history.replaceState({ route: initial }, '', initial);
     v2RenderRoute(initial);
+    v2HandlePaymentReturn();
+    V2User.refresh();
   });
   </script>
 
@@ -1896,10 +2233,11 @@
       +   '<h1>قدمت وما <span class="v2-accent">جاك رد؟</span></h1>'
       +   '<p>المشكلة مو فيك. المشكلة في الطريق. نشخّص وضعك، نجهّز سيرتك، ونرتّب تقديمك خطوة خطوة.</p>'
       +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(v2JourneyRoute())">ابدأ التشخيص ←</button>'
+      +   (V2User.isLoggedIn() ? '' : '<div style="margin-top:10px;font-size:13.5px">عندك حساب؟ <a class="v2-link" href="#/login" onclick="v2Go(\'#/login\');return false;">سجّل دخولك</a></div>')
       +   '<div class="v2-hero-meta">'
       +     '<span>⏱ دقيقة واحدة</span>'
       +     '<span>🎁 مجاني للبدء</span>'
-      +     '<span>🚫 بدون اشتراك</span>'
+      +     '<span>🔒 بدون بطاقة للبدء</span>'
       +   '</div>'
       + '</section>'
       // How it works — 4 real steps as cards
@@ -1918,6 +2256,14 @@
       +   '<div class="v2-land-for-item">📨 قدمت كثير وما جاك رد</div>'
       +   '<div class="v2-land-for-item">📝 ما عندك سيرة، أو سيرتك قديمة</div>'
       + '</div>'
+      // Pricing — same numbers as the paywall (V2_PLANS)
+      + '<div class="v2-land-h" id="v2LandPricing">الأسعار</div>'
+      + '<p class="v2-sub" style="text-align:center;margin:0 0 10px">التشخيص والسيرة والوظائف مجاناً. الخطة تفتح التقديم والتدريب بلا حد.</p>'
+      + '<div class="v2-land-steps">'
+      + V2_PLANS.map(function(p){
+          return '<div class="v2-land-step" style="cursor:pointer" onclick="v2Go(\'#/pricing\')"><div class="v2-land-step-n" style="width:auto;min-width:44px;padding:0 6px">' + p.price + '</div><div><b>' + p.name + (p.hot ? ' ★' : '') + '</b><span>' + p.per.replace(' · ','') + ' — ' + p.blurb + '</span></div></div>';
+        }).join('')
+      + '</div>'
       // Bottom CTA
       + '<div class="v2-land-cta">'
       +   '<div class="v2-land-cta-h">جاهز نبدأ؟</div>'
@@ -1928,6 +2274,7 @@
       +   '<a onclick="v2Go(\'#/dashboard\');return false;">لوحتي</a>'
       +   '<a onclick="v2Go(\'#/jobs\');return false;">الوظائف</a>'
       +   '<a onclick="v2Go(\'#/tracker\');return false;">تقديماتي</a>'
+      +   '<a onclick="v2Go(\'#/pricing\');return false;">الأسعار</a>'
       +   '<a onclick="v2Go(\'#/legal\');return false;">الخصوصية والشروط</a>'
       + '</div>';
   }
@@ -2024,7 +2371,7 @@
   function v2GoFromDream(){
     var v = V2Draft.field('dreamRole') || '';
     if (!v.trim()) return;
-    v2Go('#/cv-upload');
+    v2Go('#/location');
   }
 
   // ── #/cv-upload — paste / upload / start-from-template trifold.
@@ -2163,7 +2510,7 @@
       +     '<input type="text" class="v2-cvbuild-input" id="cvb_name" placeholder="مثل: علي العتيبي" value="' + escapeHtml(b.name || '') + '" /></div>'
       +   '<div class="v2-cvbuild-row">'
       +     '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">مدينتك *</label>'
-      +       '<input type="text" class="v2-cvbuild-input" id="cvb_city" placeholder="مثل: الرياض" value="' + escapeHtml(b.city || '') + '" /></div>'
+      +       '<input type="text" class="v2-cvbuild-input" id="cvb_city" placeholder="مثل: الرياض" value="' + escapeHtml(b.city || (V2Draft.field && V2Draft.field('city')) || '') + '" /></div>'
       +     '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">رقم الجوال <span class="opt">(اختياري)</span></label>'
       +       '<input type="text" class="v2-cvbuild-input" id="cvb_phone" placeholder="05xxxxxxxx" value="' + escapeHtml(b.phone || '') + '" /></div>'
       +   '</div>'
@@ -2199,8 +2546,8 @@
       +   '</div>'
       +   '<div id="cvb_exp_wrap" style="' + (_v2CvBuildState.hasExp ? '' : 'display:none') + '">'
       +     _v2CvBuildExpEntry(1, b.exp1 || {})
-      +     + _v2CvBuildExpEntry(2, b.exp2 || {})
-      +     + '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">إجمالي سنوات الخبرة <span class="opt">(اختياري)</span></label>'
+      +     _v2CvBuildExpEntry(2, b.exp2 || {})
+      +     '<div class="v2-cvbuild-field"><label class="v2-cvbuild-label">إجمالي سنوات الخبرة <span class="opt">(اختياري)</span></label>'
       +       '<input type="text" class="v2-cvbuild-input" id="cvb_yearsExp" placeholder="مثل: 3" value="' + escapeHtml(b.yearsExp || '') + '" style="max-width:120px" /></div>'
       +   '</div>'
       +   '<div id="cvb_noexp_hint" style="' + (_v2CvBuildState.hasExp ? 'display:none' : '') + ';font-size:12.5px;color:#64748b;line-height:1.6">تمام — دربي يبني سيرة خريج تركّز على تعليمك ومشاريعك ومهاراتك. تقدر تضيف تدريب أو مشروع تحت.</div>'
@@ -2478,7 +2825,8 @@
                 name: null, email: null, phone: null, location: null, linkedin: null,
                 arrAmount: null, retentionPct: null };
     if (!cvText || cvText.length < 30) return out;
-    var t = cvText;
+    // Arabic-Indic digits (١٠ سنوات) -> ASCII so years/ARR/dates are read like Latin digits.
+    var t = String(cvText).replace(/[٠-٩]/g, function(d){ return String(d.charCodeAt(0) - 0x0660); });
     var tn = _arNormalize(t);
 
     // ── Personal contact info (used to auto-fill CV builder header) ──────
@@ -2503,8 +2851,8 @@
     // names can't use \b (JS \b is a Latin \w/\W transition — Arabic letters
     // are \W, so \bجدة\b never matches). Match Arabic names as bare
     // alternates instead. Order: try English first, then Arabic.
-    var locEn = t.match(/\b(Riyadh|Jeddah|Dammam|Khobar|Mecca|Makkah|Medina|Madinah|Taif|Tabuk|Abha|Hail|Dhahran|Buraidah|Jubail|Yanbu)\b/i);
-    var locAr = t.match(/(الرياض|جدة|الدمام|الخبر|مكة|المدينة المنورة|المدينة|الطائف|تبوك|أبها|حائل|الظهران|بريدة|الجبيل|ينبع|القصيم)/);
+    var locEn = t.match(/\b(Riyadh|Jeddah|Dammam|Khobar|Mecca|Makkah|Medina|Madinah|Taif|Tabuk|Abha|Hail|Dhahran|Buraidah|Jubail|Yanbu|Dubai|Abu Dhabi|Sharjah|Ajman|Doha|Kuwait City|Manama|Muscat)\b/i);
+    var locAr = t.match(/(الرياض|جدة|الدمام|الخبر|مكة|المدينة المنورة|المدينة|الطائف|تبوك|أبها|حائل|الظهران|بريدة|الجبيل|ينبع|القصيم|دبي|أبوظبي|ابوظبي|الشارقة|عجمان|الدوحة|مدينة الكويت|المنامة|مسقط)/);
     if (locEn) out.location = locEn[0];
     else if (locAr) out.location = locAr[0];
     var liM = t.match(/(?:linkedin\.com\/in\/|linkedin:\s*)([A-Za-z0-9\-_.]{2,60})/i);
@@ -2529,12 +2877,12 @@
     // Major capture stops at em-dash — / middot · / digits / university words,
     // so "بكالوريوس محاسبة — جامعة الملك فهد · 2023" yields "محاسبة", not the
     // whole line (which duplicated the university+year in education).
-    var MAJOR_STOP = /[^\n،,.\-–—·|0-9]{2,40}/;
-    function _cleanMajor(s){ return (s || '').replace(/\s+(جامعة|كلية|معهد|university|college).*$/i, '').trim().slice(0, 40); }
-    var majorAr = t.match(/(?:بكالوريوس|ماجستير|دبلوم|دكتوراه)[\s:،,-]+([^\n،,.\-–—·|0-9]{2,40})/);
+    var MAJOR_STOP = /[^\n،,.\-–—·|0-9()（）\[\]]{2,40}/;
+    function _cleanMajor(s){ return (s || '').replace(/\s+(جامعة|كلية|معهد|university|college).*$/i, '').replace(/[\s(（\[:：\-–—]+$/, '').trim().slice(0, 40); }
+    var majorAr = t.match(/(?:بكالوريوس|ماجستير|دبلوم|دكتوراه)[\s:،,-]+([^\n،,.\-–—·|0-9()（）\[\]]{2,40})/);
     if (majorAr && majorAr[1]) out.major = _cleanMajor(majorAr[1]);
     if (!out.major){
-      var majorAr2 = t.match(/(?:تخصص|قسم)[\s:،,-]+([^\n،,.\-–—·|0-9]{2,40})/);
+      var majorAr2 = t.match(/(?:تخصص|قسم)[\s:،,-]+([^\n،,.\-–—·|0-9()（）\[\]]{2,40})/);
       if (majorAr2 && majorAr2[1]) out.major = _cleanMajor(majorAr2[1]);
     }
     if (!out.major){
@@ -2625,7 +2973,7 @@
     })();
 
     // ── University (real, for education section — no invented name) ─────────
-    var uniM = t.match(/(?:جامعة|كلية|معهد)\s+[^\n،,·|]{2,40}/) || t.match(/\b(?:University|College|Institute)\s+of\s+[A-Za-z ]{2,40}/i) || t.match(/[A-Za-z ]{2,40}\s+(?:University|College|Institute)\b/);
+    var uniM = t.match(/(?:جامعة|كلية|معهد)\s+[^\n،,·|]{2,40}/) || t.match(/\b(?:[A-Z][A-Za-z]+\s+){0,2}(?:University|College|Institute)(?:\s+of\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?)?/) || t.match(/[A-Za-z ]{2,40}\s+(?:University|College|Institute)\b/);
     if (uniM) out.university = uniM[0].trim().slice(0, 50);
 
     // ── Real skills line (what the USER wrote, not family defaults) ─────────
@@ -2649,7 +2997,7 @@
       var lines = t.split(/\r?\n/).map(function(l){ return l.trim(); });
       // NOTE: no trailing \b — JS \b is a Latin word boundary and never fires
       // after an Arabic letter (e.g. "الخبرة:"), so we use an explicit lookahead.
-      var SECTION = /^(الخبرة|الخبرات|الخبرة العملية|experience|work experience|employment|مشاريع|المشاريع|projects|التدريب|internship)(?=[\s:：،.]|$)/i;
+      var SECTION = /^(الخبرة|الخبرات|الخبرة العملية|الخبرة المهنية|الخبرات المهنية|سجل الخبرة|experience|work experience|professional experience|work history|career history|employment history|employment|مشاريع|المشاريع|projects|التدريب|internship)(?=[\s:：،.]|$)/i;
       var STOP = /^(التعليم|education|المهارات|skills|اللغات|languages|الشهادات|certifications|الدورات|courses|أدوات|tools|الهدف|objective|summary|الملخص)(?=[\s:：،.]|$)/i;
       var BULLET = /^[•●▪◦*\-–]\s*/;
       var DATEISH = /\b(19|20)\d{2}\b|present|current|حالي|الآن|صيف|شتاء|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|يناير|فبراير|مارس|ابريل|مايو|يونيو|يوليو|اغسطس|سبتمبر|اكتوبر|نوفمبر|ديسمبر/i;
@@ -2671,6 +3019,46 @@
       }
       pushEntry();
       out.experience = out.experience.slice(0, 5);
+      // Split each header into title / company / dates — only what the user wrote.
+      var MON = '(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\\.?\\s+';
+      var RANGE = new RegExp('(?:' + MON + ')?((?:19|20)\\d{2})\\s*(?:[-–—]|to|until|till|إلى|الى|حتى)\\s*(?:(?:' + MON + ')?((?:19|20)\\d{2})|present|current|now|الآن|حالي|حاليا|الحاضر|حتى الآن)', 'i');
+      var COMPANYISH = /\b(inc|ltd|llc|co\.?|company|corp|group|bank|holding|solutions|technologies|systems|telecom)\b|شركة|مؤسسة|بنك|مجموعة|مصرف|وزارة|هيئة|مستشفى|مطعم|فندق/i;
+      var yearNow = new Date().getFullYear(), spans = [], companies = [];
+      out.experience.forEach(function(e){
+        var h = e.header || '', m = h.match(RANGE);
+        if (m) {
+          e.dates = m[0].replace(/\s+/g, ' ').trim();
+          var y1 = parseInt(m[1], 10), y2 = m[2] ? parseInt(m[2], 10) : yearNow;
+          if (y2 >= y1 && y1 >= 1980 && y2 <= yearNow + 1) spans.push([y1, y2]);
+          h = h.replace(m[0], ' ');
+        } else {
+          var y = h.match(/\b(?:19|20)\d{2}\b/); if (y) { e.dates = y[0]; h = h.replace(y[0], ' '); }
+        }
+        h = h.replace(/[()\[\]（）]/g, ' ').replace(/\s*[|·•]\s*/g, ' | ').replace(/\s+/g, ' ').replace(/^[\s|,،:\-–—]+|[\s|,،:\-–—]+$/g, '');
+        var parts = h.split(/\s+[—–\-|]\s+|\s*\|\s*|\s+at\s+|\s+@\s+|\s+في\s+|،\s*|,\s+/i).map(function(p){ return p.trim(); }).filter(Boolean);
+        if (parts.length >= 2) {
+          var ci = 1;
+          for (var k = 0; k < parts.length; k++) if (COMPANYISH.test(parts[k])) { ci = k; break; }
+          e.company = parts[ci];
+          e.title = parts[ci === 0 ? 1 : 0];
+        } else if (parts.length === 1) { e.title = parts[0]; }
+        if (e.company && companies.indexOf(e.company) === -1) companies.push(e.company);
+      });
+      out.companies = companies.slice(0, 5);
+      var first = out.experience[0];
+      if (first) {
+        if (first.title) out.latestTitle = first.title.slice(0, 80);
+        if (first.company) out.latestCompany = first.company.slice(0, 60);
+        if (first.dates) out.latestDates = first.dates;
+      }
+      // Years of experience from the dates the user wrote (union of ranges), only when no explicit "N years".
+      if (!out.yearsExp && spans.length) {
+        spans.sort(function(a, b){ return a[0] - b[0]; });
+        var total = 0, cs = spans[0][0], ce = spans[0][1];
+        for (var q = 1; q < spans.length; q++) { if (spans[q][0] <= ce) ce = Math.max(ce, spans[q][1]); else { total += ce - cs; cs = spans[q][0]; ce = spans[q][1]; } }
+        total += ce - cs;
+        if (total > 0 && total < 50) out.yearsExp = total;
+      }
       out.projectLines = out.projectLines.slice(0, 6);
     })();
 
@@ -2679,6 +3067,11 @@
 
   // ── DREAM_ROLE_LIBRARY (verbatim from V1) ──────────────────────────────
   var DREAM_ROLE_LIBRARY = {
+    data: { familyAr:'تحليل البيانات', keywords:['data analyst','data analytics','data scientist','data engineer','business intelligence','bi analyst','bi developer','power bi','تحليل بيانات','تحليل البيانات','محلل بيانات','محلل البيانات','علم البيانات','عالم بيانات','مهندس بيانات','ذكاء الأعمال','ذكاء اعمال'],
+      nearestRoles:['Junior Data Analyst','Data Analyst','BI Analyst','Reporting Analyst'],
+      commonGaps:['ما في مشروع تحليل بيانات حقيقي تعرضه','ما تذكر SQL أو Excel المتقدم أو Power BI','الإنجازات بدون أرقام (وفّرت كم؟ حسّنت كم؟)','ما في Portfolio أو لوحة بيانات منشورة'],
+      bridgePlan:['حوّل تقرير أو ملف Excel عملت عليه إلى مشروع تحليل مكتوب: السؤال، البيانات، النتيجة','تعلّم SQL الأساسي (SELECT, JOIN, GROUP BY) وانشر 3 استعلامات تحلّ أسئلة حقيقية','ابنِ لوحة Power BI أو Tableau واحدة على بيانات عامة وضع الرابط في السيرة','اكتب في السيرة: «محاسب يحلل البيانات المالية بـ SQL وExcel» لو كنت منتقل من المحاسبة — خبرتك المالية ميزة'],
+      interviewPrep:'اشرح تحليل عملته من السؤال للنتيجة + كيف تتعامل مع بيانات ناقصة أو غير نظيفة', ctaB:'ابنِ طريقي لتحليل البيانات' },
     marketing: { familyAr:'تسويق', keywords:['تسويق','marketing','social media','digital marketing','seo','content','إعلانات','تسويق رقمي'],
       nearestRoles:['Marketing Assistant','Social Media Assistant','Content Coordinator','Sales/Marketing Assistant'],
       commonGaps:['ما عندك Portfolio يثبت تسويق','ما في حملات أو أمثلة فعلية','ما تذكر أدوات التسويق (Canva, Meta, Analytics)','الإنجازات بدون أرقام أو نتائج'],
@@ -2747,7 +3140,7 @@
   };
   var ARABIC_LABEL_TO_FAMILY = {
     'خدمة عملاء':'customer_service','مبيعات':'sales','تسويق':'marketing','موارد بشرية':'hr',
-    'محاسبة':'accounting','تقنية':'it_cyber','تصميم':'design','إدارة / تنسيق':'admin_office','وظيفة بسيطة الآن':'simple_job',
+    'محاسبة':'accounting','تقنية':'it_cyber','بيانات':'data','تحليل بيانات':'data','تصميم':'design','إدارة / تنسيق':'admin_office','وظيفة بسيطة الآن':'simple_job',
   };
 
   function detectDreamFamily(dreamText){
@@ -2762,7 +3155,7 @@
   function detectSimpleJobIntent(dreamText){
     if (!dreamText) return false;
     var t = String(dreamText).toLowerCase();
-    var kw = ['كاشير','cashier','باريستا','barista','ماكدونالد','starbucks','retail','تجزئة','فرع','مطعم','استقبال','reception','مقهى','وظيفة بسيطة','وظيفه بسيطه','بسيط'];
+    var kw = ['كاشير','cashier','باريستا','barista','ماكدونالد','starbucks','retail','تجزئة','فرع','مطعم','استقبال','reception','مقهى','وظيفة بسيطة','وظيفه بسيطه','بسيط','سائق','driver','توصيل','delivery','حارس أمن','security guard','نادل','waiter','أمين مستودع','بائع'];
     return kw.some(function(k){ return t.indexOf(k.toLowerCase()) !== -1; });
   }
   function inferStatusFromCV(cvText){
@@ -2864,6 +3257,9 @@
     var family = intent.family || 'unknown';
     var confidentFamily = (intent.confidence || 0) >= 60 && family !== 'unknown';
     var branch = determineBranch(answers, cvText);
+    // The person told us on the first screen that they want a simple job now — that wins over words in the CV.
+    var _trackSimple = (typeof V2Draft !== 'undefined' && V2Draft.field && V2Draft.field('track') === 'simple_job');
+    if (_trackSimple) { intent.isSimpleJob = true; }
     if (intent.isSimpleJob === true || family === 'simple_job') branch = 'A';
     var lib = confidentFamily ? (DREAM_ROLE_LIBRARY[family] || null) : null;
     var facts = extractCvFacts(cvText);
@@ -2936,7 +3332,7 @@
     }
 
     // nearestWinnableRoles
-    var nearestRoles;
+    var nearestRoles, _midFiltered;
     var openaiRoles = (Array.isArray(intent.nearestRoleLogic) && intent.nearestRoleLogic.length) ? intent.nearestRoleLogic : null;
     // Cross-family leak guard: OpenAI sometimes returns "Engineering Manager",
     // "Staff Engineer", "Chief Technology Officer" as senior-leadership picks
@@ -2960,13 +3356,31 @@
       if (!banRe || !roles) return roles;
       return roles.filter(function(r){ return !banRe.test(r); });
     }
-    if (branch === 'A') nearestRoles = ['كاشير','باريستا','موظف خدمة عملاء فرع','استقبال','مبيعات تجزئة'];
+    if (branch === 'A') {
+      // Simple/local jobs: start from what the person actually asked for (driver, cashier, ...).
+      var _dr = (dreamRole || '').trim();
+      var _isDriver = /سائق|driver|توصيل|delivery/i.test(_dr);
+      nearestRoles = _isDriver
+        ? ['سائق توصيل','سائق شركة','مندوب توصيل','أمين مستودع']
+        : ['كاشير','باريستا','موظف خدمة عملاء فرع','استقبال','مبيعات تجزئة'];
+      if (_dr && !_isDriver && nearestRoles.indexOf(_dr) === -1 && _dr.length <= 40) nearestRoles.unshift(_dr);
+      nearestRoles = nearestRoles.slice(0, 5);
+    }
     else if (lib && openaiRoles) nearestRoles = filterCrossFamily(openaiRoles, family).slice(0, 5);
     else if (lib) nearestRoles = lib.nearestRoles.slice(0, 4);
     else if (openaiRoles) nearestRoles = openaiRoles.slice(0, 5);
     else nearestRoles = ['خدمة عملاء','مبيعات','تسويق','موارد بشرية','محاسبة','تقنية','تصميم','إدارة / تنسيق','وظيفة بسيطة الآن'];
+    // 3+ years of experience: a mid-level person is not shown entry-level titles
+    // (Retail Associate / Telesales Agent). Keep the dream role itself first.
+    if (branch !== 'A' && lib && !seniorOverrideFires && facts && facts.yearsExp && facts.yearsExp >= 3) {
+      _midFiltered = false;
+      var _entryRe = /(retail|telesales|trainee|junior|assistant|agent|representative|intern|cashier|مبتدئ|متدرب|مساعد)/i;
+      var _kept = nearestRoles.filter(function(r){ return !_entryRe.test(r); });
+      if (dreamRole && /[A-Za-z]/.test(dreamRole) && _kept.indexOf(dreamRole) === -1) _kept.unshift(dreamRole);
+      if (_kept.length >= 2) { nearestRoles = _kept.slice(0, 5); _midFiltered = true; }
+    }
     // Fallback: if filtering left us with too few, top up from lib.nearestRoles.
-    if (lib && nearestRoles.length < 3) {
+    if (lib && nearestRoles.length < 3 && !_midFiltered) {
       lib.nearestRoles.forEach(function(r){ if (nearestRoles.indexOf(r) === -1) nearestRoles.push(r); });
       nearestRoles = nearestRoles.slice(0, 5);
     }
@@ -3013,12 +3427,13 @@
     // from CS Service. Without this, the override silently fails and a
     // 10y Manager-of-CSMs gets shown Call Center Agent roles. Fix below.
     var isLoudSeniorCV = seniorSignals >= 4;
-    var dreamIsLeadership = /\b(director|head of|vp\b|vice president|chief|lead\b|leader|principal)\b/i.test(dreamRole || '');
+    var dreamIsLeadership = /\b(director|head of|vp\b|vice president|chief|lead\b|leader|principal)\b/i.test(dreamRole || '')
+      || /(^|\s)(مدير|مديرة|مدير عام|رئيس|قائد|قائدة)(\s|$)/.test(dreamRole || '');
 
     var seniorOverrideFires = branch === 'C' && (isLoudSeniorCV || (isSeniorCV && dreamIsLeadership));
 
     if (seniorOverrideFires) {
-      var BANNED_FOR_SENIOR = /(\bcsm\b|customer success manager(?!.*senior|.*lead|.*enterprise)|specialist|coordinator|client support|call center|agent|junior|trainee|assistant|مبتدئ|متدرب|مساعد|ممثل خدمة|customer service representative|branch customer service|reception|front desk)/i;
+      var BANNED_FOR_SENIOR = /(\bcsm\b|customer success manager(?!.*senior|.*lead|.*enterprise)|specialist|coordinator|client support|call center|agent|junior|trainee|assistant|مبتدئ|متدرب|مساعد|ممثل خدمة|customer service representative|branch customer service|reception|front desk|representative|associate|telesales|cashier|كاشير)/i;
       // Filter twice: BANNED titles (junior/CS-rep) AND cross-family leaks
       // (e.g. Engineering Manager / Staff Engineer for a CS leader).
       var filtered = (nearestRoles || [])
@@ -3032,13 +3447,13 @@
       if (family === 'customer_success' || family === 'customer_service' || /customer success|cs\b|عملاء|cs leadership/i.test(dreamLc)) {
         seniorPool = ['Head of Customer Success','Senior Customer Success Manager (Enterprise)','Director of Customer Success — smaller SaaS','CS Operations Lead'];
       } else if (family === 'sales' || /sales|مبيعات|account/i.test(dreamLc)) {
-        seniorPool = ['Head of Sales — smaller SaaS','Senior Account Executive (Enterprise)','Sales Operations Lead','Director of Sales — smaller company'];
+        seniorPool = ['Head of Sales','Senior Account Executive (Enterprise)','Sales Operations Lead','Director of Sales'];
       } else if (family === 'marketing' || /marketing|تسويق|growth|brand/i.test(dreamLc)) {
-        seniorPool = ['Head of Marketing — smaller SaaS','Senior Marketing Manager','Growth Lead','Director of Marketing — smaller company'];
+        seniorPool = ['Head of Marketing','Senior Marketing Manager','Growth Lead','Director of Marketing'];
       } else if (family === 'software' || family === 'it_cyber' || /engineering|tech|cto|software/i.test(dreamLc)) {
-        seniorPool = ['Engineering Manager','Staff Engineer','Head of Engineering — smaller SaaS','Tech Lead'];
+        seniorPool = ['Engineering Manager','Staff Engineer','Head of Engineering','Tech Lead'];
       } else {
-        seniorPool = ['Senior ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, ''),'Head of ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, '') + ' — smaller company',(dreamRole || 'Director') + ' at a smaller SaaS','Operations Lead'];
+        seniorPool = ['Senior ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, ''),'Head of ' + (dreamRole || 'Role').replace(/^(director|head of|vp|chief)\s+(of\s+)?/i, ''),'Operations Lead'];
       }
       var seniorRoles = [];
       filtered.forEach(function(r){ if (seniorRoles.indexOf(r) === -1) seniorRoles.push(r); });
@@ -3048,8 +3463,12 @@
       var yrsCopy = (facts && facts.yearsExp) ? (facts.yearsExp + ' سنوات خبرة') : 'خبرة قيادية فعلية';
       var arrCopy = arrMatch ? (' + ARR ' + arrMatch[0]) : '';
       currentReality = 'عندك ' + yrsCopy + ' في القيادة' + arrCopy + ' — السيرة فيها الدليل، لكن مكتوبة كمهام تشغيلية، مو كقصة قائد تنفيذي.';
-      biggestGap = 'الفجوة ليست في خبرتك. الفجوة في التموضع (positioning) — السيرة تحتاج تعيد صياغة كل دور كقائد يملك ARR، retention، expansion، أداء فريق، وتقارير تنفيذية.';
-      firstFix = 'أعد كتابة الملخص المهني في ٣ أسطر فقط: ARR managed + retention% + team size. هذا أعلى-تأثير تعديل اليوم — أهم من تقديم على ١٠ وظائف.';
+var _isCsLeader = (family === 'customer_success' || family === 'customer_service');
+      var _metrics = _isCsLeader ? 'ARR الذي تديره + نسبة الاحتفاظ + حجم الفريق' : (family === 'sales' ? 'حجم المبيعات أو الصفقات + نسبة النمو + حجم الفريق' : 'أبرز نتيجة بالأرقام + نطاق مسؤوليتك + حجم الفريق');
+      biggestGap = _isCsLeader
+        ? 'الفجوة ليست في خبرتك. الفجوة في طريقة العرض — السيرة تحتاج تعيد صياغة كل دور كقائد يملك ARR، احتفاظ، توسّع، أداء فريق، وتقارير تنفيذية.'
+        : 'الفجوة ليست في خبرتك. الفجوة في طريقة العرض — السيرة تحتاج تعيد صياغة كل دور كقائد يملك نتائج بالأرقام، فريقاً، ونطاق مسؤولية واضحاً.';
+      firstFix = 'أعد كتابة الملخص المهني في ٣ أسطر فقط: ' + _metrics + '. هذا أعلى تأثير تعديل اليوم — أهم من تقديم على ١٠ وظائف.';
     }
 
     // interpretation
@@ -3239,9 +3658,10 @@
       +   '<div class="v2-dx-scores">'
       +     '<div class="v2-dx-score"><div class="v2-dx-score-label">قوة السيرة</div><div class="v2-dx-score-val">' + (sup.cvStrength || 0) + '%</div></div>'
       +     '<div class="v2-dx-score"><div class="v2-dx-score-label">مطابقة الحلم</div><div class="v2-dx-score-val">' + (sup.dreamMatch || 0) + '%</div></div>'
-      +     '<div class="v2-dx-score"><div class="v2-dx-score-label">جاهزية المقابلة</div><div class="v2-dx-score-val">' + (sup.interviewReadiness || 0) + '%</div></div>'
+      +     '<div class="v2-dx-score"><div class="v2-dx-score-label">جاهزية المقابلة</div><div class="v2-dx-score-val">' + _v2IvReadinessText() + '</div></div>'
       +     '<div class="v2-dx-score"><div class="v2-dx-score-label">وضوح الطريق</div><div class="v2-dx-score-val">' + (sup.pathClarity || 0) + '%</div></div>'
       +   '</div>'
+      +   '<div class="v2-input-hint" style="margin-top:8px">تقدير تقريبي من سيرتك وإجاباتك، مو حكم نهائي. جاهزية المقابلة تظهر بعد ما تتدرب وتقيّم إجاباتك.</div>'
       + '</div>';
   }
 
@@ -3256,6 +3676,20 @@
   // Achievement, and Executive templates. NO invented metrics — all numbers
   // appear as bracketed placeholders the user fills in from their real CV.
   var V2_FAMILY_BULLETS = {
+    data: {
+      senior: [
+        'بناء تقارير ولوحات بيانات تدعم قرارات الإدارة باستخدام SQL وPower BI',
+        'تنظيف ودمج بيانات من مصادر متعددة وضمان دقتها',
+        'تحويل أسئلة العمل إلى مؤشرات قابلة للقياس ومتابعتها شهرياً',
+        'تدريب أعضاء الفريق على استخدام اللوحات وفهم الأرقام',
+      ],
+      junior: [
+        'تحليل بيانات مشروع (جامعة/تدريب/عمل) باستخدام Excel وSQL',
+        'إنشاء لوحة بيانات بسيطة (Power BI أو Excel) وشرح نتائجها',
+        'تنظيف بيانات وإعداد تقارير دورية بمؤشرات واضحة',
+        'كتابة ملخص يشرح للقارئ غير التقني: السؤال، التحليل، التوصية',
+      ],
+    },
     marketing: {
       senior: [
         'قيادة استراتيجية تسويق متعددة القنوات تستهدف [الجمهور المستهدف]',
@@ -3430,6 +3864,7 @@
   // ── Family-specific skill pools (for ATS template skill row). Always merged
   // with cvFacts.tools so the user's real toolset shows up first.
   var V2_FAMILY_SKILLS = {
+    data:             ['SQL','Excel','Power BI','Tableau','Python','Data Cleaning','Dashboards','Statistics','Reporting'],
     marketing:        ['Digital Marketing','Content','SEO','Social Media','Google Ads','Meta Ads','Analytics','Canva','HubSpot'],
     hr:               ['Recruitment','Onboarding','Employee Relations','Performance Management','HRIS','Payroll','Labor Law'],
     accounting:       ['IFRS','VAT','Zakat','AP/AR','Reconciliation','Excel','SAP','QuickBooks','Audit'],
@@ -3638,7 +4073,7 @@
     var exp = _realExp(facts);
     var edu = _realEdu(facts);
     var summaryLine1 = (yrs ? yrs + ' سنوات خبرة في ' : 'خبرة في ') + famAr;
-    var summaryLine2 = facts.latestTitle ? ('آخر دور: ' + facts.latestTitle) : 'أبحث عن دور ' + dream;
+    var summaryLine2 = facts.latestTitle ? ('آخر دور: ' + facts.latestTitle + (facts.latestCompany ? ' في ' + facts.latestCompany : '') + (facts.latestDates ? ' (' + String(facts.latestDates).replace(/present|current|now/i, 'الآن') + ')' : '')) : 'أبحث عن دور ' + dream;
     var summaryLine3 = 'أركز على نتائج قابلة للقياس.';
 
     var sections = [
@@ -3792,7 +4227,7 @@
     }).join('');
     app.innerHTML = ''
       + '<h2 class="v2-h1">اختر قالب <span class="v2-accent">سيرتك</span></h2>'
-      + '<p class="v2-sub">٥ قوالب حقيقية، كلها مجانية، بدون "Premium" أو "قريباً". اخترنا لك الأنسب بناءً على تشخيصك.</p>'
+      + '<p class="v2-sub">٥ قوالب كلها مجانية. اخترنا لك الأنسب بناءً على تشخيصك، وتقدر تغيّره.</p>'
       + cardsHtml;
   }
 
@@ -4200,8 +4635,9 @@
     return {
       dreamRole: diagnosis.dreamRole || '',
       diagnosis: {
-        family: diagnosis.family || null,
-        intent: diagnosis.intent || null,
+        // Simple/local job: let the server read the job type from the words the person wrote, not a CV-derived office family.
+        family: diagnosis.branch === 'A' ? null : (diagnosis.family || null),
+        intent: diagnosis.branch === 'A' ? null : (diagnosis.intent || null),
         isSeniorOverride: !!diagnosis.isSeniorOverride,
       },
       cvFacts: diagnosis.cvFacts || null,
@@ -4272,7 +4708,7 @@
       +   '</div>'
       +   '<div class="v2-job-row2">'
       +     '<span class="v2-job-meta-tag">🏢 ' + escapeHtml(j.company || '—') + '</span>'
-      +     (j.location ? '<span class="v2-job-meta-tag">📍 ' + escapeHtml(j.location) + '</span>' : '')
+      +     (_v2CleanLoc(j.location) ? '<span class="v2-job-meta-tag">📍 ' + escapeHtml(_v2CleanLoc(j.location)) + '</span>' : '')
       +     (j.source ? '<span class="v2-job-source">' + escapeHtml(_v2SourceLabel(j.source)) + '</span>' : '')
       +   '</div>'
       +   (why ? '<div class="v2-job-why">✓ ' + why + '</div>' : '')
@@ -4302,14 +4738,22 @@
             '<b>' + escapeHtml(l.label) + '</b>' +
             (l.linkedin ? '<a class="v2-jobs-fb-link" target="_blank" rel="noopener" href="' + escapeHtml(l.linkedin) + '">LinkedIn</a>' : '') +
             (l.bayt     ? '<a class="v2-jobs-fb-link" target="_blank" rel="noopener" href="' + escapeHtml(l.bayt)     + '">Bayt</a>'     : '') +
+            (l.indeed   ? '<a class="v2-jobs-fb-link" target="_blank" rel="noopener" href="' + escapeHtml(l.indeed)   + '">Indeed</a>'   : '') +
             (l.google   ? '<a class="v2-jobs-fb-link" target="_blank" rel="noopener" href="' + escapeHtml(l.google)   + '">Google Jobs</a>'   : '') +
             '</div>';
         }).join('') + '</div>'
       : '';
+    var sites = (fb.localSites || []);
+    var sitesHtml = sites.length
+      ? '<div class="v2-jobs-fb-h">مواقع التوظيف الوطنية</div><div class="v2-jobs-fb-search">' + sites.map(function(s){
+          return '<div class="v2-jobs-fb-search-row"><b>' + escapeHtml(s.name) + '</b><a class="v2-jobs-fb-link" target="_blank" rel="noopener" href="' + escapeHtml(s.url) + '">افتح</a></div>';
+        }).join('') + '</div>'
+      : '';
+    var walkHtml = fb.walkInTip ? '<div class="v2-job-tip" style="margin-top:10px">🚶 ' + escapeHtml(fb.walkInTip) + '</div>' : '';
     return ''
       + '<div class="v2-jobs-fb">'
       +   '<strong style="color:#0a0a0a">' + escapeHtml(fb.message || 'البحث التلقائي غير مفعّل حالياً. هذه روابط بحث جاهزة حسب هدفك.') + '</strong>'
-      +   titlesHtml + linksHtml
+      +   titlesHtml + linksHtml + sitesHtml + walkHtml
       + '</div>';
   }
 
@@ -4319,7 +4763,7 @@
     var barHtml = ''
       + '<div class="v2-jobs-bar">'
       +   '<span class="v2-jobs-bar-label">المدينة:</span>'
-      +   '<input type="text" class="v2-jobs-bar-input" id="v2JobsLocation" placeholder="مثال: الرياض، Remote" value="' + escapeHtml(locationVal || '') + '" />'
+      +   '<input type="text" class="v2-jobs-bar-input" id="v2JobsLocation" placeholder="مثال: الرياض، عن بعد" value="' + escapeHtml(locationVal || '') + '" />'
       +   '<button class="v2-jobs-bar-refresh" onclick="v2JobsRefresh()">🔄 بحث جديد</button>'
       + '</div>';
 
@@ -4353,8 +4797,8 @@
       var visibleJobs = data.jobs.filter(function(j){ return !_v2IsDismissed(j.id); });
       var cardsHtml = visibleJobs.map(_v2JobsRenderCard).join('');
       var sourcesUsedHtml = (data.sourcesUsed && data.sourcesUsed.length)
-        ? '<span class="v2-jobs-mode-pill">live · ' + escapeHtml(data.sourcesUsed.map(function(s){ return s.provider || s.company; }).join(', ')) + '</span>'
-        : '<span class="v2-jobs-mode-pill">live</span>';
+        ? '<span class="v2-jobs-mode-pill">وظائف حيّة · ' + escapeHtml(data.sourcesUsed.map(function(s){ return s.provider || s.company; }).join(', ')) + '</span>'
+        : '<span class="v2-jobs-mode-pill">وظائف حيّة</span>';
       app.innerHTML = barHtml
         + '<div class="v2-jobs-meta">لقينا لك <b>' + visibleJobs.length + '</b> وظيفة مناسبة لـ <b>' + escapeHtml(dreamRole) + '</b> ' + sourcesUsedHtml + '</div>'
         + cardsHtml;
@@ -4403,6 +4847,11 @@
       +   '<div style="font-size:15.5px;font-weight:800;margin-bottom:5px;line-height:1.4">سجّلها في تقديماتك يدوياً</div>'
       +   '<div style="font-size:13px;opacity:.92;line-height:1.65;margin-bottom:12px">دربي يقرأ نمط ردودك من تقديماتك. اضغط هنا، ضف الشركة والدور، وكمّل الرحلة بعدها لتدريب المقابلة.</div>'
       +   '<button class="v2-db-hero-cta" style="background:#fff;color:#15803d" onclick="v2Go(\'#/tracker\')">افتح تقديماتي ←</button>'
+      + '</div>'
+      + '<div class="v2-db-section" style="margin-top:12px">'
+      +   '<div style="font-weight:800;margin-bottom:4px">🎤 جاهز للمقابلة؟</div>'
+      +   '<div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:10px">تدرّب الحين على أسئلة مجالك وقيّم إجاباتك، قبل ما توصلك أول مقابلة.</div>'
+      +   '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/interview?j=practice\')">ابدأ تدريب المقابلة ←</button>'
       + '</div>';
   }
 
@@ -4523,6 +4972,11 @@
     return null;
   }
 
+  // Job-board locations sometimes come back as ", , " — show nothing rather than an empty pin.
+  function _v2CleanLoc(l){
+    var t = String(l || '').replace(/[,،;|\s]+/g, ' ').trim();
+    return /[A-Za-z؀-ۿ]/.test(t) ? String(l).replace(/(\s*[,،]\s*)+/g, ', ').replace(/^,\s*|,\s*$/g, '').trim() : '';
+  }
   // ── English-title detection (for cover letter language) ───────────────
   function _v2IsEnglishTitle(t){
     var s = (t || '').trim();
@@ -4542,8 +4996,8 @@
       var sharedTools = facts.tools.slice(0, 3);
       bullets.push('أدواتك (' + sharedTools.join('، ') + ') مذكورة في سيرتك — أبرزها في التقديم.');
     }
-    if (band === 'senior' && facts.yearsExp) {
-      bullets.push(facts.yearsExp + ' سنوات خبرة في المجال = ميزة قوية لهذا الدور.');
+    if ((band === 'senior' || band === 'mid') && facts.yearsExp) {
+      bullets.push(facts.yearsExp + ' سنوات خبرة في المجال = ميزة لهذا الدور.');
     }
     if (band === 'junior' && (facts.projectsEvidence || facts.major)) {
       bullets.push('مشاريعك/تخصصك يمكن استخدامها كدليل عملي بدل سنوات الخبرة.');
@@ -4567,6 +5021,16 @@
     var bullets = (V2_FAMILY_BULLETS[family] && V2_FAMILY_BULLETS[family][band === 'senior' ? 'senior' : 'junior']) || V2_FAMILY_BULLETS.admin_office.junior;
     // Show 3-4 family-aware adjustment bullets.
     var picks = bullets.slice(0, 4);
+    var realPicks = false;
+    if (band === 'mid') {
+      // Someone with real experience: never suggest canned/invented bullets. Use THEIR OWN lines,
+      // numbers first, and tell them to reorder around this job.
+      var own = [];
+      (facts.experience || []).forEach(function(e){ (e.bullets || []).forEach(function(b){ if (b && own.indexOf(b) === -1) own.push(b); }); });
+      own.sort(function(a, b){ return (/\d/.test(b) ? 1 : 0) - (/\d/.test(a) ? 1 : 0); });
+      if (own.length) { picks = own.slice(0, 4); realPicks = true; }
+      else picks = ['حوّل كل مهمة كتبتها لنتيجة: وش سويت، وكم صار؟ (مثال: خفضت وقت X بنسبة Y%) — فقط لو صحيحة.', 'ضع الإنجاز الأقرب لوصف هذه الوظيفة أول سطر تحت الخبرة.'];
+    }
     // Keywords to add — merge cvFacts.tools + family skills, capped.
     var famSkills = V2_FAMILY_SKILLS[family] || [];
     var cvTools = (facts.tools || []);
@@ -4586,23 +5050,27 @@
     // Senior + ARR/NRR mention only if actually in CV.
     var arrMatch = (diagnosis.cvText || '').match(/(\d{1,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)/i);
     var seniorMetricLine = (band === 'senior' && arrMatch) ? ('أبرز ' + arrMatch[0] + ' في الملخص المهني (السطر الأول، قبل أي شي تاني).') : null;
-    return { picks: picks, present: present, missing: missing, seniorMetricLine: seniorMetricLine };
+    return { picks: picks, realPicks: realPicks, present: present, missing: missing, seniorMetricLine: seniorMetricLine };
   }
 
   // ── Cover letter — AR by default, EN if job title is purely Latin ─────
   function _v2APBuildCoverLetter(job, diagnosis, facts, band){
     var dreamRole = diagnosis.dreamRole || job.title || 'الدور المستهدف';
-    var company = job.company || '[الشركة]';
+    var company = job.company || 'شركتكم';
+    var fullName = facts.name ? String(facts.name).trim() : '';
+    var latestLine = facts.latestTitle ? (facts.latestTitle + (facts.latestCompany ? ' @ ' + facts.latestCompany : '')).replace(/[. ]+$/, '') : '';
+    var topResult = '';
+    (facts.experience || []).forEach(function(e){ (e.bullets || []).forEach(function(b){ if (!topResult && /\d/.test(b)) topResult = b; }); });
     var yrs = facts.yearsExp;
     var arrMatch = (diagnosis.cvText || '').match(/(\d{1,3})\s*(?:m|mm)\s*(?:sar|usd|aed|arr)/i);
     var titleEn = _v2IsEnglishTitle(job.title || '');
     if (titleEn) {
-      var nameEn = '[Your Name]';
+      var nameEn = fullName || 'Your name';
       var lines;
       if (band === 'senior') {
         lines = [
           'Dear Hiring Team,',
-          'I am applying for the ' + (job.title || '[role]') + ' position at ' + company + '.',
+          'I am applying for the ' + (job.title || 'open') + ' position at ' + company + '.',
           (yrs ? 'With ' + yrs + ' years of senior experience in ' + (DREAM_ROLE_LIBRARY[diagnosis.family]||{}).familyAr || (diagnosis.family||'the field')
                 : 'With significant senior experience in the field')
             + (arrMatch ? ' and direct ownership of ' + arrMatch[0] : '')
@@ -4613,23 +5081,23 @@
       } else {
         lines = [
           'Dear Hiring Team,',
-          'I am applying for the ' + (job.title || '[role]') + ' position at ' + company + '.',
+          'I am applying for the ' + (job.title || 'open') + ' position at ' + company + '.',
           (yrs && yrs >= 1
-            ? 'With ' + yrs + ' years of hands-on experience'
-            : 'As an early-career candidate with strong foundations, project experience, and a willingness to learn quickly')
-            + ', I am positioned to contribute on day one.',
+            ? 'I have ' + yrs + ' years of experience' + (latestLine ? ', most recently as ' + latestLine.replace(' @ ', ' at ') : '') + '.'
+            : 'I am at the start of my career, with a relevant academic background and project or training experience, and I learn quickly.'),
+          (topResult ? 'A result I am proud of: ' + topResult.replace(/[.]+$/, '') + '.' : ''),
           'I would be happy to discuss how my background maps to your needs.',
           'Best regards,', nameEn,
         ];
       }
-      return lines.join('\n');
+      return lines.filter(Boolean).join('\n');
     }
     // Arabic
-    var nameAr = '[الاسم الكامل]';
+    var nameAr = fullName || 'الاسم الكامل';
     if (band === 'senior') {
       return [
         'تحية طيبة،',
-        'أتقدم لشغل وظيفة ' + (job.title || '[المسمى]') + ' في ' + company + '.',
+        'أتقدم لشغل وظيفة ' + (job.title || 'المعلنة') + ' في ' + company + '.',
         (yrs ? 'لديّ ' + yrs + ' سنوات' : 'لديّ خبرة قيادية معتبرة') + ' في القيادة' +
           (arrMatch ? ' وملكية مباشرة لـ ' + arrMatch[0] : '') +
           '، مع مسؤولية مباشرة عن مؤشرات النمو والاحتفاظ والتوسع.',
@@ -4639,13 +5107,14 @@
     }
     return [
       'تحية طيبة،',
-      'أتقدم لشغل وظيفة ' + (job.title || '[المسمى]') + ' في ' + company + '.',
+      'أتقدم لشغل وظيفة ' + (job.title || 'المعلنة') + ' في ' + company + '.',
       (yrs && yrs >= 1
-        ? 'لديّ ' + yrs + ' سنوات خبرة عملية في المجال مع نتائج قابلة للقياس.'
+        ? 'لديّ ' + yrs + ' سنوات خبرة عملية' + (latestLine ? '، آخرها ' + latestLine.replace(' @ ', ' في ') : '') + '.'
         : 'أنا في بداية مساري المهني، مع أساس أكاديمي ومشاريع/تدريب مرتبط بالدور، واستعداد للتعلم السريع.'),
+      (topResult ? 'من نتائجي: ' + topResult.replace(/[.]+$/, '') + '.' : ''),
       'يسعدني الاجتماع لشرح كيف يمكنني المساهمة في فريقكم.',
       'مع خالص التقدير،', nameAr,
-    ].join('\n');
+    ].filter(Boolean).join('\n');
   }
 
   // ── Checklist + expected questions ────────────────────────────────────
@@ -4670,7 +5139,7 @@
         a: 'مثال محدد لمهارة تعلّمتها مؤخراً + كيف تعلّمتها.' });
     }
     questions.push({ q: 'فترة الإشعار + الراتب المتوقع؟',
-      a: 'فترة الإشعار: [أدخل المدة]. الراتب: [راجع متوسط السوق ثم أجب بنطاق مرن].' });
+      a: 'قل فترة إشعارك الفعلية بوضوح، وللراتب اذكر نطاقاً مرناً بعد ما تراجع متوسط السوق لدورك — لا تعطِ رقماً واحداً ثابتاً.' });
     return { checklist: checklist, questions: questions };
   }
 
@@ -4679,7 +5148,7 @@
     if (!job || !diagnosis) return null;
     var facts = diagnosis.cvFacts || extractCvFacts(diagnosis.cvText || '');
     var band = (diagnosis.isSeniorOverride || (facts.yearsExp && facts.yearsExp >= 8) || (diagnosis.intent && diagnosis.intent.inferredSeniority === 'senior_leadership')) ? 'senior'
-             : (facts.yearsExp && facts.yearsExp >= 5) ? 'senior'
+             : (facts.yearsExp && facts.yearsExp >= 2) ? 'mid'
              : 'junior';
     return {
       job: job,
@@ -4702,6 +5171,20 @@
       return;
     }
     var job = v2GetSelectedJob();
+    if (job) {
+      // Gate: account required; one free package, then a plan.
+      var _here = '#/apply' + (location.hash.indexOf('?') !== -1 ? location.hash.slice(location.hash.indexOf('?')) : '');
+      if (!V2User.isLoggedIn()) {
+        app.innerHTML = _v2GateCard('🔐', 'سوّ حسابك المجاني عشان نجهّز تقديمك', 'نحفظ لك الباكدج وتقديماتك ونتابعها. أول تقديم علينا.', 'سجّل وكمّل ←', 'v2Go(\'#/signup?next=' + encodeURIComponent(_here) + '\')');
+        return;
+      }
+      var _used = _v2FreeApplyUsed();
+      if (!V2User.isPaid() && _used && _used !== String(job.id || job.title)) {
+        app.innerHTML = _v2GateCard('💳', 'استخدمت تقديمك المجاني', 'للتقديمات الباقية اختر خطة. تبدأ من $9 في الشهر.', 'شوف الخطط ←', 'v2Go(\'#/pricing?why=apply\')');
+        return;
+      }
+      if (!V2User.isPaid() && !_used) { try { localStorage.setItem('darbi_v2_free_apply', String(job.id || job.title)); } catch(e){} }
+    }
     if (!job) {
       app.innerHTML = ''
         + '<div class="v2-empty-state">'
@@ -4749,6 +5232,7 @@
       ? '<div style="font-size:13px;color:#78350f;background:#fef3c7;border:1px solid #fcd34d;border-radius:9px;padding:9px 12px;margin-top:9px;font-weight:700">💡 ' + escapeHtml(pkg.cvAdjust.seniorMetricLine) + '</div>'
       : '';
     var step2Body = ''
+      + (pkg.cvAdjust.realPicks ? '<div class="v2-input-hint" style="margin-bottom:6px">من سيرتك نفسها — قدّم هذه الأسطر أول تحت الخبرة:</div>' : (pkg.band === 'junior' ? '<div class="v2-input-hint" style="margin-bottom:6px">أمثلة صياغة — عدّلها حسب اللي سويته فعلاً، وما تكتب شي ما صار:</div>' : ''))
       + '<ul>' + pkg.cvAdjust.picks.map(function(b){ return '<li>' + escapeHtml(b) + '</li>'; }).join('') + '</ul>'
       + presentHtml + missingHtml + seniorLine;
 
@@ -4770,7 +5254,7 @@
       +   '<div class="v2-ap-job-title">' + escapeHtml(job.title || '—') + '</div>'
       +   '<div class="v2-ap-job-meta">'
       +     '🏢 <b>' + escapeHtml(job.company || '—') + '</b>'
-      +     (job.location ? ' · 📍 ' + escapeHtml(job.location) : '')
+      +     (_v2CleanLoc(job.location) ? ' · 📍 ' + escapeHtml(_v2CleanLoc(job.location)) : '')
       +     (job.match && job.match.score ? ' · ' + Math.round(job.match.score) + '٪ تطابق' : '')
       +   '</div>'
       + '</div>'
@@ -4891,7 +5375,8 @@
         + '</div>'
         + '<div class="v2-card" style="text-align:center">'
         +   '<p style="font-size:14px;color:#0a0a0a;line-height:1.7;margin-bottom:12px"><strong>الخطوة التالية:</strong> تابع النتيجة. لما يجيك رد أو مقابلة، حدّث الحالة في تتبع التقديمات وراح نجهّز لك جلسة تدريب.</p>'
-        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/jobs\')">جهّز تقديم آخر ←</button>'
+        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/tracker\')">افتح تقديماتي ←</button>'
+        +   '<button class="v2-btn v2-btn-secondary" style="margin-top:8px" onclick="v2Go(\'#/jobs\')">جهّز تقديم آخر</button>'
         + '</div>';
     }
   }
@@ -5085,11 +5570,11 @@
       +   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">'
       +     '<div>'
       +       '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الشركة *</label>'
-      +       '<input id="v2-tk-m-company" type="text" placeholder="مثلاً: NEOM" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px" />'
+      +       '<input id="v2-tk-m-company" type="text" placeholder="مثلاً: اسم الشركة" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px" />'
       +     '</div>'
       +     '<div>'
       +       '<label style="font-size:11.5px;font-weight:700;color:#475569;display:block;margin-bottom:4px">الدور *</label>'
-      +       '<input id="v2-tk-m-role" type="text" placeholder="مثلاً: Head of CS" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px" />'
+      +       '<input id="v2-tk-m-role" type="text" placeholder="مثلاً: منسق مبيعات" style="width:100%;padding:9px 11px;border:1.5px solid #ececf4;border-radius:8px;font-family:inherit;font-size:13px" />'
       +     '</div>'
       +   '</div>'
       +   '<div style="margin-bottom:10px">'
@@ -5132,6 +5617,8 @@
       return;
     }
     Applications.add({ company: co.trim(), role: rl.trim(), url: url.trim(), status: st });
+    // A manually added application = the person prepared and sent it themselves, so the "prepare" step is done too.
+    if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markApplyPackageCreated && !(DarbiJourney.getState && DarbiJourney.getState().applyPackageCreated)) DarbiJourney.markApplyPackageCreated();
     if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markApplicationLogged) DarbiJourney.markApplicationLogged();
     var appEl = document.getElementById('v2-app');
     if (appEl) renderTracker(appEl, V2_ROUTES['#/tracker']);
@@ -5222,6 +5709,56 @@
     p[appId] = Object.assign({}, p[appId] || {}, { completedAt: new Date().toISOString() });
     _v2IvWriteProgress(p);
   }
+  // Per-answer evaluations (key: darbi_interview_evals → { <appId>: { <questionId>: {score,verdict,weak,fix,local} } }).
+  // Cleared with the session restart. Feeds the end-of-session report.
+  var _IV_EVALS_KEY = 'darbi_interview_evals';
+  function _v2IvReadEvals(){ try { return JSON.parse(localStorage.getItem(_IV_EVALS_KEY) || '{}'); } catch(e){ return {}; } }
+  function _v2IvSaveEval(appId, qid, rec){
+    if (!appId || !qid) return;
+    var all = _v2IvReadEvals();
+    all[appId] = all[appId] || {};
+    all[appId][qid] = rec;
+    try { localStorage.setItem(_IV_EVALS_KEY, JSON.stringify(all)); } catch(e){}
+  }
+  function _v2IvReportHtml(appId, questions){
+    var ev = (_v2IvReadEvals()[appId]) || {};
+    var rows = '', scores = [], weakCount = {}, anyLocal = false;
+    questions.forEach(function(q, i){
+      var r = ev[q.id];
+      if (r) { scores.push(r.score); anyLocal = anyLocal || r.local; (r.weak || []).forEach(function(w){ weakCount[w] = (weakCount[w] || 0) + 1; }); }
+      var cls = !r ? '' : (r.score >= 65 ? 'color:#15803d' : (r.score >= 45 ? 'color:#b45309' : 'color:#b91c1c'));
+      rows += '<div style="display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid #e5e7eb;font-size:13.5px">'
+        + '<span>' + (i + 1) + '. ' + escapeHtml(q.tag) + '</span>'
+        + '<b style="' + cls + '">' + (r ? r.score + '/100' : 'ما قيّمت') + '</b></div>';
+    });
+    if (!scores.length) {
+      return '<div class="v2-card"><div style="font-weight:800;margin-bottom:6px">تقرير الجلسة</div>'
+        + '<div style="font-size:13.5px;line-height:1.8">ما قيّمت أي إجابة في هالجلسة، فما عندنا شي نقيسه. أعد الجلسة واكتب إجابة لكل سؤال واضغط «قيّم إجابتي» عشان يطلع لك تقرير بنقاط القوة والضعف.</div></div>';
+    }
+    var avg = Math.round(scores.reduce(function(a, b){ return a + b; }, 0) / scores.length);
+    var worst = Object.keys(weakCount).sort(function(a, b){ return weakCount[b] - weakCount[a]; }).slice(0, 2);
+    var best = questions.filter(function(q){ return ev[q.id]; }).sort(function(a, b){ return ev[b.id].score - ev[a.id].score; })[0];
+    var lowest = questions.filter(function(q){ return ev[q.id]; }).sort(function(a, b){ return ev[a.id].score - ev[b.id].score; })[0];
+    var verdict = avg >= 65 ? 'جاهز بدرجة جيدة' : (avg >= 45 ? 'متوسط — يحتاج تمرين' : 'يحتاج شغل قبل المقابلة');
+    return '<div class="v2-card">'
+      + '<div style="font-weight:800;font-size:16px;margin-bottom:2px">تقرير الجلسة</div>'
+      + '<div style="font-size:26px;font-weight:900;margin:4px 0">' + avg + '<span style="font-size:14px;font-weight:700">/100</span></div>'
+      + '<div style="font-size:13.5px;margin-bottom:8px">' + verdict + ' · قيّمت ' + scores.length + ' من ' + questions.length + ' أسئلة</div>'
+      + rows
+      + '<div style="margin-top:10px;font-size:13.5px;line-height:1.8">'
+      +   (best && lowest && best.id !== lowest.id ? '<div><b>أقوى إجابة:</b> ' + escapeHtml(best.tag) + ' · <b>أضعفها:</b> ' + escapeHtml(lowest.tag) + '</div>' : '')
+      +   (worst.length ? '<div style="margin-top:4px"><b>' + (weakCount[worst[0]] >= 2 ? 'أكثر شي يتكرر:' : 'نقاط التحسين:') + '</b> ' + worst.map(escapeHtml).join(' — ') + '</div>' : '')
+      +   (lowest && ev[lowest.id].fix ? '<div style="margin-top:4px"><b>ابدأ بهذا:</b> ' + escapeHtml(ev[lowest.id].fix) + '</div>' : '')
+      + '</div>'
+      + (anyLocal ? '<div class="v2-input-hint" style="margin-top:10px">التقييم مبدئي سريع (طول، أرقام، هيكل، ومناسبة الإجابة للسؤال). مو بديل عن محاور حقيقي.</div>' : '')
+      + '</div>';
+  }
+  // Average of the user's REAL answer evaluations; before any training there is no number to show.
+  function _v2IvReadinessText(){
+    var all = _v2IvReadEvals(), sum = 0, n = 0;
+    Object.keys(all).forEach(function(a){ Object.keys(all[a] || {}).forEach(function(q){ var r = all[a][q]; if (r && typeof r.score === 'number') { sum += r.score; n++; } }); });
+    return n ? Math.round(sum / n) + '%' : 'لم تبدأ';
+  }
   function _v2IvIsCompleted(appId){
     var p = _v2IvReadProgress();
     return !!(p[appId] && p[appId].completedAt);
@@ -5231,6 +5768,15 @@
   // prompts in each career family. NO invented numbers, NO fake companies.
   // Falls back to admin_office prompt for unknown families.
   var V2_INTERVIEW_FAMILY_Q = {
+    data: {
+      q: 'احكِ لي عن تحليل عملته وغيّر قراراً أو كشف مشكلة — من السؤال إلى النتيجة.',
+      focus: [
+        'السؤال اللي كنت تجاوب عليه وليش مهم للعمل',
+        'مصدر البيانات وكيف تأكدت من جودتها (نظيفة؟ ناقصة؟)',
+        'الأداة والطريقة: SQL / Excel / Power BI — وليش اخترتها',
+        'النتيجة والتوصية، وكيف شرحتها لشخص غير تقني',
+      ],
+    },
     customer_success: {
       q: 'احكِ لي عن عميل كان قريب من الإلغاء — كيف تعاملت معه؟',
       focus: [
@@ -5427,11 +5973,13 @@
   // flow: opener → motivation → behavioral → self-awareness → family →
   // candidate-asks).
   function _v2InterviewQuestions(diagnosis, application){
-    var fam = (diagnosis && diagnosis.family) || 'general_entry';
+    var fam = (diagnosis && diagnosis.branch === 'A') ? 'simple_job' : ((diagnosis && diagnosis.family) || 'general_entry');
     if (!V2_INTERVIEW_FAMILY_Q[fam]) fam = 'general_entry';
     var famQ = V2_INTERVIEW_FAMILY_Q[fam];
     var role = (application && application.role)    || (diagnosis && diagnosis.dreamRole) || 'الدور';
     var company = (application && application.company) || '';
+    var _fy = diagnosis && diagnosis.cvFacts && diagnosis.cvFacts.yearsExp;
+    var isFresh = !!(diagnosis && ((diagnosis.intent && diagnosis.intent.inferredSeniority === 'fresh_grad') || (!_fy && diagnosis.branch === 'B')));
 
     return [
       {
@@ -5440,7 +5988,7 @@
         q: 'حدثني عن نفسك',
         why: 'أكثر سؤال متوقع وأقل سؤال يجاوب عليه الناس بطريقة جيدة. <b>القاعدة:</b> ٩٠ ثانية، ليس سيرة حياة.',
         focus: [
-          'جملتان عن دورك الحالي / آخر دور (مو من المدرسة)',
+          isFresh ? 'جملتان عن تخصصك وأبرز مشروع أو تدريب سويته' : 'جملتان عن دورك الحالي / آخر دور (مو من المدرسة)',
           'إنجاز واحد تفتخر فيه — رقم أو نتيجة قابلة للقياس',
           'مهارة محورية تربطها بالدور المتقدّم له',
           'سبب اهتمامك بهذا الدور تحديداً — لازم يكون له علاقة بـ ' + (company || role),
@@ -5524,10 +6072,18 @@
     }
     var jParam = v2HashParam('j');
     var diagnosis = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : {};
+    if (!V2User.isLoggedIn()) {
+      el.innerHTML = _v2GateCard('🎤', 'سوّ حسابك وابدأ التدريب', 'أول سؤالين مجاناً، مع تقييم لإجابتك.', 'سجّل وكمّل ←', 'v2Go(\'#/signup?next=' + encodeURIComponent('#/interview' + (jParam ? '?j=' + jParam : '')) + '\')');
+      return;
+    }
+    if (!diagnosis) {
+      el.innerHTML = _v2GateCard('📝', 'اكمل التشخيص أولاً', 'نفصّل الأسئلة على مجالك.', 'ابدأ التشخيص ←', 'v2Go(\'#/track\')');
+      return;
+    }
 
     // ── Path 1: specific application by ?j= ──
     if (jParam) {
-      var application = _v2InterviewLookupApp(jParam);
+      var application = (jParam === V2_PRACTICE_ID) ? v2InterviewPracticeApp() : _v2InterviewLookupApp(jParam);
       if (!application) {
         el.innerHTML = ''
           + '<div class="v2-tk-empty">'
@@ -5551,8 +6107,9 @@
         + '<div class="v2-tk-empty">'
         +   '<div class="v2-tk-empty-emoji">🎤</div>'
         +   '<div class="v2-tk-empty-h">ما عندك مقابلات حالياً</div>'
-        +   '<div class="v2-tk-empty-sub">لما تحدّث حالة أي تقديم إلى <b>"وصل رد"</b> أو <b>"مقابلة"</b>، يبدأ التدريب الموجّه هنا.<br>لا تقدّم بدون تدريب — كل دقيقة هنا تساوي ٢٠ دقيقة وقت المقابلة.</div>'
-        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/tracker\')">افتح تقديماتك ←</button>'
+        +   '<div class="v2-tk-empty-sub">تقدر تتدرّب الحين على أسئلة مجالك (٦ أسئلة مع تقييم إجاباتك). ولما يوصلك رد أو مقابلة على تقديم، تظهر لك جلسة مخصصة له هنا.</div>'
+        +   '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/interview?j=' + V2_PRACTICE_ID + '\')">ابدأ تدريب المقابلة ←</button>'
+        +   '<button class="v2-btn v2-btn-secondary" style="margin-top:8px" onclick="v2Go(\'#/tracker\')">افتح تقديماتك</button>'
         + '</div>';
       return;
     }
@@ -5583,6 +6140,7 @@
       +   '<div class="v2-iv-context-role">جلسة موجّهة — ٦ أسئلة</div>'
       +   '<div class="v2-iv-context-meta">اختر التقديم اللي بتتدرّب لمقابلته. كل جلسة مفصّلة على عائلة وظيفتك (' + escapeHtml((diagnosis && diagnosis.dreamRole) || 'دورك') + ').</div>'
       + '</div>'
+      + '<button class="v2-btn v2-btn-secondary" style="margin-bottom:10px" onclick="v2Go(\'#/interview?j=' + V2_PRACTICE_ID + '\')">تدريب عام على أسئلة مجالك</button>'
       + '<div class="v2-iv-list-h">تقديمات بحاجة لتدريب (' + interviewApps.length + ')</div>'
       + rowsHtml;
   }
@@ -5617,6 +6175,7 @@
 
     if (allDone) {
       el.innerHTML = ctxHtml + progressHtml
+        + _v2IvReportHtml(application.id, questions)
         + '<div class="v2-iv-finish-card">'
         +   '<div class="v2-iv-finish-h">✓ خلصت الجلسة</div>'
         +   '<div class="v2-iv-finish-sub">٦ أسئلة، بنية واضحة لكل واحد. الباقي عليك: كرّر الإجابات بصوت عالٍ ٣ مرات قبل المقابلة.</div>'
@@ -5626,6 +6185,10 @@
       return;
     }
 
+    if (!V2User.isPaid() && idx >= 2) {
+      el.innerHTML = ctxHtml + progressHtml + _v2GateCard('💳', 'خلصت الأسئلة المجانية', 'كمّل الأسئلة الباقية مع تقييم كامل لإجاباتك. الخطط تبدأ من $9 في الشهر.', 'شوف الخطط ←', 'v2Go(\'#/pricing?why=interview\')');
+      return;
+    }
     var q = questions[idx];
     var focusList = (q.focus || []).map(function(f){ return '<li>' + escapeHtml(f) + '</li>'; }).join('');
     var tagCls = q.family ? ' is-family' : '';
@@ -5640,6 +6203,9 @@
       +   '<div class="v2-iv-q-why">' + q.why + '</div>'
       +   '<div class="v2-iv-q-focus-h">ركّز على:</div>'
       +   '<ul class="v2-iv-q-focus">' + focusList + '</ul>'
+      +   '<textarea id="v2IvAnswer" class="v2-iv-answer" placeholder="اكتب إجابتك هنا كأنك قدام المحاور..."></textarea>'
+      +   '<button class="v2-iv-btn" style="margin-top:8px" onclick="v2InterviewEvaluate(\'' + escapeHtml(application.id) + '\',' + idx + ')">قيّم إجابتي</button>'
+      +   '<div id="v2IvEval" style="margin-top:8px"></div>'
       +   '<div class="v2-iv-q-actions">'
       +     '<button class="v2-iv-btn" onclick="v2InterviewPrev(\'' + escapeHtml(application.id) + '\')"' + prevDisabled + '>← السابق</button>'
       +     '<button class="v2-iv-btn is-success" onclick="v2InterviewMarkDone(\'' + escapeHtml(application.id) + '\')">' + (isLast ? 'تم — أنهِ الجلسة ✓' : 'تم — التالي ✓') + '</button>'
@@ -5650,7 +6216,7 @@
   // Action handlers
   function v2InterviewMarkDone(appId){
     var idx = _v2IvGetIdx(appId);
-    var application = _v2InterviewLookupApp(appId);
+    var application = appId === V2_PRACTICE_ID ? v2InterviewPracticeApp() : _v2InterviewLookupApp(appId);
     var diagnosis = (typeof Diagnosis !== 'undefined' && Diagnosis.get) ? Diagnosis.get() : {};
     var total = application ? _v2InterviewQuestions(diagnosis, application).length : 6;
     var next = idx + 1;
@@ -5678,6 +6244,8 @@
     var p = _v2IvReadProgress();
     delete p[appId];
     _v2IvWriteProgress(p);
+    var evs = _v2IvReadEvals(); delete evs[appId];
+    try { localStorage.setItem(_IV_EVALS_KEY, JSON.stringify(evs)); } catch(e){}
     var el = document.getElementById('v2-app');
     if (el) renderInterview(el, V2_ROUTES['#/interview']);
   }
@@ -5686,7 +6254,7 @@
     // Finish = navigate back to tracker. Journey + brain already fired at
     // the moment of completing the last question.
     if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'interview_session_closed', payload: { id: appId } });
-    v2Go('#/tracker');
+    v2Go(appId === V2_PRACTICE_ID ? '#/dashboard' : '#/tracker');
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -5711,7 +6279,6 @@
     jobs_searched:                { emoji:'💼', text:'بحثت عن وظائف' },
     apply_started:                { emoji:'📨', text:'بدأت تجهيز تقديم' },
     journey_apply_package_created:{ emoji:'📦', text:'جهّزت ملف تقديم' },
-    journey_application_logged:   { emoji:'✅', text:'سجّلت تقديم' },
     application_logged:           { emoji:'✅', text:'سجّلت تقديم' },
     reply_received:               { emoji:'📬', text:'وصلك رد' },
     interview_received:           { emoji:'🎤', text:'وصلتك مقابلة' },
@@ -5781,7 +6348,7 @@
         + '<div class="v2-db-section">'
         +   '<div class="v2-db-section-h"><span>🔎 تشخيصك</span><button class="v2-db-section-link" onclick="v2Go(\'#/diagnosis\')">افتح ←</button></div>'
         +   '<div class="v2-db-dx-role">' + escapeHtml(diagnosis.dreamRole || '—') + '</div>'
-        +   '<div class="v2-db-dx-fam">' + escapeHtml(_v2DbFamilyName(diagnosis.family)) + '</div>'
+        +   '<div class="v2-db-dx-fam">' + escapeHtml(diagnosis.branch === 'A' ? 'وظيفة بسيطة' : _v2DbFamilyName(diagnosis.family)) + '</div>'
         +   '<div class="v2-db-dx-row">'
         +     '<span class="v2-db-dx-pill' + seniorCls + '">' + escapeHtml(seniorLabel) + '</span>'
         +   '</div>'
@@ -5837,7 +6404,12 @@
       }
     }
 
-    el.innerHTML = heroHtml + dxHtml + weeklyHtml + roadmapHtml + activityHtml;
+    var _isFresh = (V2Draft.field('track') === 'junior_fresh');
+    var practiceHtml = '<div class="v2-db-section" style="margin-top:12px">'
+      + '<div style="font-weight:800;margin-bottom:4px">🎤 تدريب المقابلة' + (_isFresh ? ' — مهم لك كخريج جديد' : '') + '</div>'
+      + '<div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:10px">٦ أسئلة على مجالك، تكتب إجابتك ودربي يقيّمها. ما تحتاج تقديم أول.</div>'
+      + '<button class="v2-btn v2-btn-secondary" onclick="v2Go(\'#/interview?j=practice\')">' + (_isFresh ? 'ابدأ التدريب ←' : 'جرّب جلسة تدريب') + '</button></div>';
+    el.innerHTML = heroHtml + (_isFresh ? practiceHtml : '') + dxHtml + weeklyHtml + roadmapHtml + (_isFresh ? '' : practiceHtml) + activityHtml;
   }
 
   // Roadmap list — done/current/locked. "current" = the first not-done step.

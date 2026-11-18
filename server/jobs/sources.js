@@ -26,6 +26,10 @@ const STATIC_SOURCES = [
   { company: 'Rain', ats: 'ashby', boardToken: 'rain',
     careersUrl: 'https://www.rain.com/careers', region: 'MENA',
     industry: 'Fintech', priority: 2 },
+  // Careem — Dubai-based super-app. Verified 2026-11-18: public Greenhouse board, Dubai + Pakistan roles.
+  { company: 'Careem', ats: 'greenhouse', boardToken: 'careem',
+    careersUrl: 'https://careers.careem.com', region: 'UAE / MENA',
+    industry: 'Technology', priority: 4 },
   // Thndr — Egypt/MENA investing & trading fintech.
   { company: 'Thndr', ats: 'ashby', boardToken: 'thndr',
     careersUrl: 'https://thndr.app/careers', region: 'MENA / Egypt',
