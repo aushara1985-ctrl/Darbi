@@ -60,6 +60,11 @@ function buildSearchProfile({
     ...((dreamRole || '').split(/[\s,/]+/).filter(t => t.length >= 3).slice(0, 3)),
   ])).slice(0, 8);
 
+  // Kept apart for the ranker: a curated family keyword in a job title is a real
+  // match; a single word from the dream role ("Engineer", "Data") is only a hint.
+  const familyKeywords = (fam.searchKeywords || []).slice(0, 8);
+  const dreamKeywords = (dreamRole || '').split(/[\s,/]+/).filter(t => t.length >= 4).slice(0, 3);
+
   // Must / nice-to-have from CV facts (used by ranker only).
   const mustHaveKeywords = [];
   const niceToHaveKeywords = _toolsAsKeywords(cvFacts);
@@ -78,6 +83,8 @@ function buildSearchProfile({
     targetTitles,
     avoidTitles,
     searchKeywords,
+    familyKeywords,
+    dreamKeywords,
     mustHaveKeywords,
     niceToHaveKeywords,
     location: geo ? geo.labelEn : null,

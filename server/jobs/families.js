@@ -141,7 +141,7 @@ const FAMILIES = {
   accounting: {
     ar: 'المحاسبة',
     en: 'Accounting',
-    hits: ['accounting', 'محاسبة', 'محاسبه', 'محاسب', 'audit', 'تدقيق', 'bookkeep', 'payroll', 'الرواتب', 'tax', 'الضرائب', 'general ledger'],
+    hits: ['accounting', 'accountant', 'محاسبة', 'محاسبه', 'محاسب', 'audit', 'تدقيق', 'bookkeep', 'payroll', 'الرواتب', 'tax', 'الضرائب', 'general ledger'],
     titles: {
       fresh_grad: ['Junior Accountant', 'Accounting Trainee', 'Accounts Assistant'],
       junior:     ['Junior Accountant', 'Accountant', 'Accounts Payable Specialist', 'Accounts Receivable Specialist'],
@@ -407,6 +407,28 @@ const FAMILIES = {
       fresh_grad: ['vp', 'chief', 'head of', 'director', 'senior'],
     },
     searchKeywords: ['entry level', 'sales associate', 'cashier', 'receptionist'],
+  },
+
+  // ─── Engineering — civil, mechanical, electrical, architecture, site ────
+  engineering: {
+    ar: 'الهندسة والمشاريع',
+    en: 'Engineering',
+    hits: ['civil engineer', 'mechanical engineer', 'electrical engineer', 'structural engineer', 'site engineer', 'project engineer',
+      'quantity surveyor', 'construction', 'hvac', 'mep', 'مهندس مدني', 'مهندس ميكانيك', 'مهندس كهرب', 'مهندس معماري', 'مهندس موقع',
+      'مهندس مشاريع', 'هندسة مدنية', 'هندسة ميكانيكية', 'هندسة كهربائية', 'مساح كميات', 'مقاولات'],
+    titles: {
+      fresh_grad: ['Graduate Engineer', 'Junior Engineer', 'Site Engineer', 'Trainee Engineer'],
+      junior:     ['Site Engineer', 'Junior Engineer', 'Civil Engineer', 'Mechanical Engineer', 'Electrical Engineer'],
+      mid:        ['Civil Engineer', 'Mechanical Engineer', 'Electrical Engineer', 'Project Engineer', 'Quantity Surveyor'],
+      senior:     ['Senior Engineer', 'Senior Civil Engineer', 'Senior Project Engineer', 'Construction Manager', 'Resident Engineer'],
+      senior_leadership: ['Engineering Director', 'Project Director', 'Head of Engineering', 'Construction Director'],
+    },
+    avoid: {
+      fresh_grad:        ['director', 'head of', 'principal', 'senior', 'manager'],
+      junior:            ['director', 'head of', 'principal'],
+      senior_leadership: ['junior', 'trainee', 'graduate', 'intern'],
+    },
+    searchKeywords: ['civil engineer', 'mechanical engineer', 'electrical engineer', 'site engineer', 'project engineer', 'quantity surveyor', 'structural engineer'],
   },
 
   // ─── Unknown — last-resort family used when we can't classify ──────────

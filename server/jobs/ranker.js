@@ -46,6 +46,16 @@ function _wordIncludes(haystack, needle) {
   return _norm(haystack).indexOf(_norm(needle)) !== -1;
 }
 
+// Words that say a level or a shape of job, not a field.
+const GENERIC_WORDS = new Set(['senior', 'junior', 'manager', 'specialist', 'officer', 'associate', 'assistant', 'lead', 'head', 'director', 'executive', 'coordinator', 'موظف', 'مدير', 'اخصائي', 'أخصائي', 'مسؤول', 'مساعد']);
+
+// Whole-word / whole-phrase containment (so "data" does not match "database").
+function _hasWord(haystack, needle) {
+  const h = ' ' + String(haystack).replace(/[^\p{L}\p{N}&+#]+/gu, ' ') + ' ';
+  const n = ' ' + String(needle).replace(/[^\p{L}\p{N}&+#]+/gu, ' ').trim() + ' ';
+  return n.trim().length > 0 && h.indexOf(n) !== -1;
+}
+
 function _seniorityFit(jobTitle, profileLevel) {
   const j = _titleSeniority(jobTitle);
   const a = SENIORITY_RANK[j];
@@ -64,12 +74,20 @@ function _titleFit(jobTitle, profile) {
     if (_norm(tt) === t) return 25;
     if (t.indexOf(_norm(tt)) !== -1 || _norm(tt).indexOf(t) !== -1) return 22;
   }
-  // Family search keyword hit.
-  for (const kw of profile.searchKeywords || []) {
-    if (t.indexOf(_norm(kw)) !== -1) return 16;
+  // The person's own dream role, as written, inside the job title.
+  const dream = _norm(profile.dreamRole).trim();
+  if (dream.length >= 4 && t.indexOf(dream) !== -1) return 22;
+  // Curated family keyword in the title ("software engineer", "accountant").
+  const famKw = profile.familyKeywords || profile.searchKeywords || [];
+  for (const kw of famKw) {
+    const k = _norm(kw);
+    if (k.length >= 3 && _hasWord(t, k)) return 18;
   }
-  // Dream-role substring fallback.
-  if (profile.dreamRole && t.indexOf(_norm(profile.dreamRole)) !== -1) return 12;
+  // A single word of the dream role: a hint only, never enough on its own.
+  for (const kw of profile.dreamKeywords || []) {
+    const k = _norm(kw);
+    if (k.length >= 4 && !GENERIC_WORDS.has(k) && _hasWord(t, k)) return 10;
+  }
   return 0;
 }
 
@@ -197,9 +215,22 @@ function rankJobs(jobs, profile, opts) {
   // Filter out jobs that are clearly wrong: title fit 0 AND penalty heavy.
   const filtered = scored.filter(j => !(j.match.score < 25 && j.match.flags.some(f => f.key === 'avoid_title')));
   filtered.sort((a, b) => b.match.score - a.match.score);
-  const top = filtered.slice(0, limit);
+  // Only field-relevant jobs compete for the visible slots.
+  const top = filtered.filter(isRelevant).slice(0, limit);
   const hidden = scored.length - top.length;
   return { top, hidden, all: scored };
 }
 
-module.exports = { rankJobs, _titleSeniority, SENIORITY_RANK };
+// Is a scored job worth showing? Its title must really match the field (target
+// title, the dream role itself, or a family keyword) and the total must clear
+// a low floor. A curated pool will not hold every role; an honest "no match"
+// beats an irrelevant card.
+const RELEVANCE_FLOOR = 40;
+const TITLE_FLOOR = 16;
+function isRelevant(job) {
+  const m = job && job.match;
+  if (!m || typeof m.score !== 'number') return false;
+  return m.score >= RELEVANCE_FLOOR && m.breakdown && m.breakdown.title >= TITLE_FLOOR;
+}
+
+module.exports = { rankJobs, isRelevant, _titleSeniority, SENIORITY_RANK, RELEVANCE_FLOOR, TITLE_FLOOR };

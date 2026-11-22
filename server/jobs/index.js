@@ -7,11 +7,11 @@
 
 const { buildSearchProfile } = require('./searchProfile');
 const { fetchAllProviders, availability } = require('./providers');
-const { fetchAllSources }                  = require('./atsFetchers');
+const { fetchAllSources, countByCountry }  = require('./atsFetchers');
 const { listSources, hasActiveSources, ACTIVE_SOURCES } = require('./sources');
-const { rankJobs }                         = require('./ranker');
+const { rankJobs, isRelevant }             = require('./ranker');
 const { FAMILIES }                         = require('./families');
-const { jobLocationRelation }              = require('./geo');
+const { jobLocationRelation, COUNTRIES }   = require('./geo');
 
 // ─── Search the world ──────────────────────────────────────────────────────
 // Inputs (all optional except dreamRole):
@@ -74,13 +74,7 @@ async function searchJobs(input) {
 
   const allRaw = [].concat(provRes.jobs || [], atsRes.jobs || []);
   // Dedupe across both pipelines.
-  const seen = new Set();
-  const merged = [];
-  for (const j of allRaw) {
-    const k = j.id || (j.title + '@' + j.company + '@' + (j.url || ''));
-    if (seen.has(k)) continue;
-    seen.add(k); merged.push(j);
-  }
+  const merged = dedupeJobs(allRaw);
 
   errors.push(...(provRes.errors || []), ...(atsRes.errors || []));
 
@@ -101,11 +95,19 @@ async function searchJobs(input) {
   // won't have jobs for every family; when it doesn't, an honest manual-search
   // fallback beats irrelevant cards. Threshold is deliberately low (keeps
   // reasonable cross-role matches) but filters out clear noise.
-  const RELEVANCE_FLOOR = 50;
-  const relevant = (top || []).filter(j => (j.match && typeof j.match.score === 'number' ? j.match.score : 0) >= RELEVANCE_FLOOR);
+  const relevant = (top || []).filter(isRelevant);
 
   // 5. If nothing came back live (or nothing cleared the relevance floor),
   // return fallback so the UI is honest.
+  // Which sources actually produced the jobs we show (not every board we read).
+  const shownBy = {};
+  for (const j of relevant) {
+    const k = j.company || j.source;
+    shownBy[k] = (shownBy[k] || 0) + 1;
+  }
+  const sourcesShown = Object.keys(shownBy).map(k => ({ company: k, count: shownBy[k] }));
+  const poolStats = { read: merged.length, inArea: pool.length, sources: (atsRes.sourcesUsed || []).length + (provRes.used || []).length };
+
   if (!merged.length || !relevant.length) {
     const why = (droppedOther > 0 && !pool.length) ? 'none_in_area' : 'no_match';
     return {
@@ -113,9 +115,10 @@ async function searchJobs(input) {
       mode: 'fallback',
       jobs: [],
       searchProfile: profile,
-      sourcesUsed: [].concat(provRes.used || [], atsRes.sourcesUsed || []),
+      sourcesUsed: [],
+      poolStats,
       providersAvailable: providersAvail,
-      errors,
+      errors: _publicErrors(errors),
       fallback: _fallbackPayload(profile, why),
     };
   }
@@ -126,9 +129,49 @@ async function searchJobs(input) {
     jobs: relevant,
     hiddenCount: hidden + (top.length - relevant.length) + droppedOther,
     searchProfile: profile,
-    sourcesUsed: [].concat(provRes.used || [], atsRes.sourcesUsed || []),
+    sourcesUsed: sourcesShown,
+    poolStats,
     providersAvailable: providersAvail,
-    errors,
+    errors: _publicErrors(errors),
+  };
+}
+
+// Same job listed twice (same id, or same title + company + place on two
+// boards) is shown once.
+function _dk(s) { return String(s || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim(); }
+function dedupeJobs(jobs) {
+  const seenId = new Set();
+  const seenKey = new Set();
+  const out = [];
+  for (const j of (jobs || [])) {
+    if (!j || !j.title) continue;
+    const id = j.id || (j.title + '@' + j.company + '@' + (j.url || ''));
+    const key = _dk(j.title) + '|' + _dk(j.company) + '|' + _dk(j.location);
+    if (seenId.has(id) || seenKey.has(key)) continue;
+    seenId.add(id); seenKey.add(key);
+    out.push(j);
+  }
+  return out;
+}
+
+// Upstream error text can echo request details; the client only needs which source failed.
+function _publicErrors(errors) {
+  return (errors || []).map(e => ({
+    source: e.source, company: e.company || undefined,
+    error: String(e.error || '').split(':')[0].slice(0, 40),
+  }));
+}
+
+// Real open-job counts per country across the public boards (cached with the boards).
+async function jobCounts(opts) {
+  const res = await fetchAllSources(ACTIVE_SOURCES, opts);
+  const c = countByCountry(dedupeJobs(res.jobs));
+  return {
+    total: c.total,
+    byCountry: COUNTRIES.map(k => ({ code: k.code, ar: k.ar, en: k.en, jobs: c.byCountry[k.code] || 0 })),
+    elsewhere: c.other,
+    sourcesAnswering: (res.sourcesUsed || []).length,
+    sourcesConfigured: ACTIVE_SOURCES.length,
   };
 }
 
@@ -156,6 +199,9 @@ function _fallbackPayload(profile, why) {
   const cityAr = geo && geo.cityAr, cityEn = geo && geo.cityEn;
   const countryEn = (geo && geo.countryEn) || 'Saudi Arabia';
   const isSaudi = !geo || !geo.country || geo.country === 'SA';
+  const cc = (geo && geo.country) || 'SA';
+  const INDEED = { SA: 'sa', AE: 'ae', KW: 'kw', QA: 'qa', BH: 'bh', OM: 'om', EG: 'eg' };
+  const BAYT = { SA: 'saudi-arabia', AE: 'uae', KW: 'kuwait', QA: 'qatar', BH: 'bahrain', OM: 'oman', EG: 'egypt', JO: 'jordan', SY: 'syria' };
   const locEn = [cityEn, countryEn].filter(Boolean).join(', ');
   const locAr = [cityAr, geo && geo.countryAr].filter(Boolean).join(' ');
   const hasArabic = (t) => /[؀-ۿ]/.test(t);
@@ -165,10 +211,10 @@ function _fallbackPayload(profile, why) {
     const link = {
       label: t,
       linkedin: 'https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(t) + '&location=' + encodeURIComponent(loc),
-      bayt:     'https://www.bayt.com/en/jobs/?query=' + encodeURIComponent(t),
+      bayt:     'https://www.bayt.com/en/' + (BAYT[cc] || 'international') + '/jobs/?q=' + encodeURIComponent(t),
       google:   'https://www.google.com/search?q=' + encodeURIComponent(t + (hasArabic(t) ? ' وظائف ' : ' jobs ') + loc),
     };
-    if (isSaudi) link.indeed = 'https://sa.indeed.com/jobs?q=' + encodeURIComponent(t) + (cityEn ? '&l=' + encodeURIComponent(cityEn) : '');
+    if (INDEED[cc]) link.indeed = 'https://' + INDEED[cc] + '.indeed.com/jobs?q=' + encodeURIComponent(t) + (cityEn ? '&l=' + encodeURIComponent(cityEn) : '');
     return link;
   });
 
@@ -178,14 +224,16 @@ function _fallbackPayload(profile, why) {
     { name: 'طاقات', url: 'https://www.taqat.sa' },
   ] : [];
 
+  const head = 'ما لقينا وظيفة مطابقة الحين';
   const message = why === 'none_in_area'
-    ? 'ما لقينا وظائف حيّة في مصادرنا المفتوحة تناسب مدينتك ودورك الحين. هذي مسميات وروابط بحث تلقى فيها الوظائف الفعلية، وكل ما تضيف تقديم نتابعه لك.'
+    ? head + ' في بلدك ومدينتك ضمن صفحات وظائف الشركات اللي نقرأها. هذي مسميات وروابط بحث تلقى فيها الوظائف الفعلية، وكل تقديم تضيفه نتابعه معك.'
     : (isLocal
-      ? 'وظائف هذا المجال تنزل غالباً على مواقع التوظيف المحلية وفي الفروع نفسها، مو على لوحات الشركات التقنية اللي نقرأ منها. هذي مسميات وروابط بحث جاهزة لمدينتك.'
-      : 'ما لقينا وظائف حيّة تناسبك في مصادرنا المفتوحة الحين. هذي مسميات وروابط بحث جاهزة تلقى فيها الوظائف الفعلية.');
+      ? head + '. وظائف هذا المجال تنزل غالباً على مواقع التوظيف المحلية وفي الفروع نفسها. هذي مسميات وروابط بحث جاهزة لمدينتك.'
+      : head + ' ضمن صفحات وظائف الشركات اللي نقرأها. هذي مسميات وروابط بحث جاهزة تلقى فيها الوظائف الفعلية.');
 
   return {
     message,
+    headline: head,
     familyAr: fam.ar,
     familyEn: fam.en,
     seniorityLevel: profile.seniorityLevel,
@@ -216,6 +264,28 @@ function register(app, deps) {
       providersAvailable: availability(),
     });
   });
+
+  // Real open-job counts per country (public, cached with the boards).
+  app.get('/api/jobs/counts', async (req, res) => {
+    try {
+      res.json(Object.assign({ success: true }, await jobCounts()));
+    } catch (e) {
+      console.error('[jobs/counts] error:', e.message);
+      res.status(500).json({ success: false, error: 'jobs_counts_failed' });
+    }
+  });
+
+  // Read the boards once at boot and again before the 6h cache expires, so a
+  // person searching never waits on 40 upstream calls. Skipped under tests.
+  if (!process.env.NODE_TEST_CONTEXT && process.env.DARBI_JOBS_WARM !== '0') {
+    const warm = () => fetchAllSources(ACTIVE_SOURCES, { force: true })
+      .then(r => console.log('[jobs] boards read:', r.jobs.length, 'jobs from', r.sourcesUsed.length, 'sources,', r.errors.length, 'errors'))
+      .catch(e => console.warn('[jobs] warm failed:', e.message));
+    const t0 = setTimeout(warm, 3000);
+    const t1 = setInterval(warm, 5 * 60 * 60 * 1000);
+    if (t0.unref) t0.unref();
+    if (t1.unref) t1.unref();
+  }
 
   app.post('/api/jobs/search', async (req, res) => {
     try {
@@ -248,4 +318,4 @@ function register(app, deps) {
   });
 }
 
-module.exports = { searchJobs, register };
+module.exports = { searchJobs, register, dedupeJobs, jobCounts, _fallbackPayload };

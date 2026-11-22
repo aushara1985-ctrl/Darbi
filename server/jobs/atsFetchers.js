@@ -9,11 +9,16 @@
 //   lever:           https://api.lever.co/v0/postings/{token}?mode=json
 //   ashby:           https://api.ashbyhq.com/posting-api/job-board/{token}?includeCompensation=false
 //   workable:        https://apply.workable.com/api/v1/widget/accounts/{token}
-//   smartrecruiters: https://api.smartrecruiters.com/v1/companies/{token}/postings
+//   smartrecruiters: https://api.smartrecruiters.com/v1/companies/{token}/postings?country=sa
+//   recruitee:       https://{token}.recruitee.com/api/offers/
+//
+// A source with scope:'global' is a worldwide employer: only its jobs located in
+// the countries Darbi serves are kept (see geo.COUNTRIES).
 //
 // All fetchers respect a hard 8s timeout and strip raw description HTML.
 
 const cache = require('./cache');
+const { COUNTRIES, countryOf, countryNameFromCode } = require('./geo');
 
 const FETCH_TIMEOUT_MS = 8000;
 
@@ -44,7 +49,7 @@ async function _fetchJson(url, opts) {
   try {
     const res = await fetch(url, Object.assign({
       signal: controller ? controller.signal : undefined,
-      headers: { 'Accept': 'application/json', 'User-Agent': 'Darbi/1.0 (+darbi.ai)' },
+      headers: { 'Accept': 'application/json', 'User-Agent': 'Darbi/1.0 (+https://darbi-production.up.railway.app)' },
     }, opts || {}));
     if (!res.ok) {
       const body = await res.text().catch(() => '');
@@ -80,24 +85,36 @@ function _norm(job) {
   };
 }
 
+// Cache read that a background refresh can bypass (source._force).
+function _cached(key, source) {
+  return (source && source._force) ? null : cache.get(key);
+}
+
+// Worldwide employers: keep only jobs in a supported country.
+function _scope(jobs, source) {
+  if (!source || source.scope !== 'global') return jobs;
+  return jobs.filter(j => !!countryOf(j.location));
+}
+
 // ─── greenhouse ────────────────────────────────────────────────────────────
 async function greenhouse(source, errorsOut) {
   if (!source || !source.boardToken) return [];
   const cacheKey = 'ats:greenhouse:' + source.boardToken;
-  const cached = cache.get(cacheKey);
+  const cached = _cached(cacheKey, source);
   if (cached) return cached;
-  const url = 'https://boards-api.greenhouse.io/v1/boards/' + encodeURIComponent(source.boardToken) + '/jobs?content=true';
+  // Big worldwide boards: skip the description payload (several MB).
+  const url = 'https://boards-api.greenhouse.io/v1/boards/' + encodeURIComponent(source.boardToken) + '/jobs' + (source.scope === 'global' ? '' : '?content=true');
   try {
     const data = await _fetchJson(url);
     const jobs = Array.isArray(data.jobs) ? data.jobs : [];
-    const out = jobs.map(j => _norm({
+    const out = _scope(jobs.map(j => _norm({
       id:           j.id ? 'gh:' + j.id : 'gh:' + (j.absolute_url || j.title),
       title:        j.title,
       company:      source.company,
       location:     (j.location && j.location.name) || (Array.isArray(j.offices) && j.offices[0] && j.offices[0].name) || '',
       source:       'greenhouse',
       atsCompany:   source.boardToken,
-      url:          j.absolute_url || j.internal_job_id ? j.absolute_url : '',
+      url:          j.absolute_url || '',
       applyUrl:     j.absolute_url,
       postedAt:     j.updated_at || null,
       updatedAt:    j.updated_at || null,
@@ -105,7 +122,7 @@ async function greenhouse(source, errorsOut) {
       department:   Array.isArray(j.departments) && j.departments[0] ? j.departments[0].name : '',
       employmentType: '',
       workplaceType:  '',
-    }));
+    })), source);
     cache.set(cacheKey, out);
     return out;
   } catch (e) {
@@ -118,17 +135,18 @@ async function greenhouse(source, errorsOut) {
 async function lever(source, errorsOut) {
   if (!source || !source.boardToken) return [];
   const cacheKey = 'ats:lever:' + source.boardToken;
-  const cached = cache.get(cacheKey);
+  const cached = _cached(cacheKey, source);
   if (cached) return cached;
   const url = 'https://api.lever.co/v0/postings/' + encodeURIComponent(source.boardToken) + '?mode=json';
   try {
     const data = await _fetchJson(url);
     const jobs = Array.isArray(data) ? data : [];
-    const out = jobs.map(j => _norm({
+    const out = _scope(jobs.map(j => _norm({
       id:           j.id ? 'lv:' + j.id : 'lv:' + (j.hostedUrl || j.text),
       title:        j.text,
       company:      source.company,
-      location:     (j.categories && j.categories.location) || '',
+      location:     (j.categories && (Array.isArray(j.categories.allLocations) && j.categories.allLocations.length
+                      ? j.categories.allLocations.join(', ') : j.categories.location)) || '',
       source:       'lever',
       atsCompany:   source.boardToken,
       url:          j.hostedUrl || '',
@@ -139,7 +157,7 @@ async function lever(source, errorsOut) {
       department:   (j.categories && (j.categories.department || j.categories.team)) || '',
       employmentType: (j.categories && j.categories.commitment) || '',
       workplaceType:  (j.workplaceType || ''),
-    }));
+    })), source);
     cache.set(cacheKey, out);
     return out;
   } catch (e) {
@@ -152,29 +170,30 @@ async function lever(source, errorsOut) {
 async function ashby(source, errorsOut) {
   if (!source || !source.boardToken) return [];
   const cacheKey = 'ats:ashby:' + source.boardToken;
-  const cached = cache.get(cacheKey);
+  const cached = _cached(cacheKey, source);
   if (cached) return cached;
   // Ashby exposes a public posting-api endpoint per organisation.
   const url = 'https://api.ashbyhq.com/posting-api/job-board/' + encodeURIComponent(source.boardToken) + '?includeCompensation=false';
   try {
     const data = await _fetchJson(url);
     const jobs = Array.isArray(data.jobs) ? data.jobs : (Array.isArray(data) ? data : []);
-    const out = jobs.map(j => _norm({
+    const out = _scope(jobs.filter(j => j.isListed !== false).map(j => _norm({
       id:           j.id ? 'ab:' + j.id : 'ab:' + (j.jobUrl || j.title),
       title:        j.title,
       company:      source.company,
-      location:     j.locationName || (Array.isArray(j.secondaryLocations) ? j.secondaryLocations.map(s => s.locationName).join(', ') : '') || '',
+      // The posting API calls it `location`; older payloads used `locationName`.
+      location:     [j.location || j.locationName].concat(Array.isArray(j.secondaryLocations) ? j.secondaryLocations.map(s => s.location || s.locationName) : []).filter(Boolean).join(', '),
       source:       'ashby',
       atsCompany:   source.boardToken,
       url:          j.jobUrl || '',
       applyUrl:     j.applyUrl || j.jobUrl || '',
       postedAt:     j.publishedAt || j.updatedAt || null,
       updatedAt:    j.updatedAt || j.publishedAt || null,
-      description:  j.descriptionHtml || j.description || '',
-      department:   j.departmentName || '',
+      description:  j.descriptionPlain || j.descriptionHtml || j.description || '',
+      department:   j.department || j.departmentName || '',
       employmentType: j.employmentType || '',
       workplaceType:  j.workplaceType || (j.isRemote ? 'Remote' : ''),
-    }));
+    })), source);
     cache.set(cacheKey, out);
     return out;
   } catch (e) {
@@ -187,18 +206,20 @@ async function ashby(source, errorsOut) {
 async function workable(source, errorsOut) {
   if (!source || !source.boardToken) return [];
   const cacheKey = 'ats:workable:' + source.boardToken;
-  const cached = cache.get(cacheKey);
+  const cached = _cached(cacheKey, source);
   if (cached) return cached;
   // Workable public widget — returns an account profile + jobs array.
   const url = 'https://apply.workable.com/api/v1/widget/accounts/' + encodeURIComponent(source.boardToken);
   try {
     const data = await _fetchJson(url);
     const jobs = Array.isArray(data.jobs) ? data.jobs : [];
-    const out = jobs.map(j => _norm({
+    const out = _scope(jobs.map(j => _norm({
       id:           j.shortcode ? 'wk:' + j.shortcode : 'wk:' + (j.url || j.title),
       title:        j.title,
-      company:      data.name || source.company,
-      location:     j.location && (j.location.location_str || [j.location.city, j.location.country].filter(Boolean).join(', ')) || '',
+      company:      source.company || data.name,
+      // The widget payload carries city/country at the top level (older shape nested them under `location`).
+      location:     [j.city, j.country].filter(Boolean).join(', ')
+                    || (j.location && (j.location.location_str || [j.location.city, j.location.country].filter(Boolean).join(', '))) || '',
       source:       'workable',
       atsCompany:   source.boardToken,
       url:          j.url || j.application_url || '',
@@ -209,7 +230,7 @@ async function workable(source, errorsOut) {
       department:   j.department || '',
       employmentType: j.employment_type || '',
       workplaceType:  j.telecommuting ? 'Remote' : '',
-    }));
+    })), source);
     cache.set(cacheKey, out);
     return out;
   } catch (e) {
@@ -219,44 +240,95 @@ async function workable(source, errorsOut) {
 }
 
 // ─── smartrecruiters ───────────────────────────────────────────────────────
+// Large employers (hotels, engineering, delivery) with thousands of postings
+// worldwide, so we ask per supported country and page through (100 per page).
+const SR_PAGE = 100;
+const SR_MAX_PAGES = 6;
 async function smartrecruiters(source, errorsOut) {
   if (!source || !source.boardToken) return [];
   const cacheKey = 'ats:smartrecruiters:' + source.boardToken;
-  const cached = cache.get(cacheKey);
+  const cached = _cached(cacheKey, source);
   if (cached) return cached;
-  const url = 'https://api.smartrecruiters.com/v1/companies/' + encodeURIComponent(source.boardToken) + '/postings?limit=100';
+  const base = 'https://api.smartrecruiters.com/v1/companies/' + encodeURIComponent(source.boardToken) + '/postings?limit=' + SR_PAGE;
+  const out = [];
+  let failed = 0;
+  await Promise.all(COUNTRIES.map(async (c) => {
+    try {
+      for (let page = 0; page < SR_MAX_PAGES; page++) {
+        const data = await _fetchJson(base + '&country=' + c.code.toLowerCase() + '&offset=' + (page * SR_PAGE));
+        const jobs = Array.isArray(data.content) ? data.content : [];
+        for (const j of jobs) {
+          const loc = j.location || {};
+          const publicUrl = j.id ? 'https://jobs.smartrecruiters.com/' + encodeURIComponent(source.boardToken) + '/' + encodeURIComponent(j.id) : '';
+          out.push(_norm({
+            id:           j.id ? 'sr:' + j.id : 'sr:' + (j.refNumber || j.name),
+            title:        j.name,
+            company:      source.company || (j.company && j.company.name),
+            location:     [loc.city, countryNameFromCode(loc.country) || c.en].filter(Boolean).join(', '),
+            source:       'smartrecruiters',
+            atsCompany:   source.boardToken,
+            url:          publicUrl,
+            applyUrl:     publicUrl,
+            postedAt:     j.releasedDate || j.createdOn || null,
+            updatedAt:    j.releasedDate || null,
+            description:  '', // the list endpoint has no description
+            department:   (j.department && j.department.label) || (j.function && j.function.label) || '',
+            employmentType: (j.typeOfEmployment && j.typeOfEmployment.label) || '',
+            workplaceType:  loc.remote ? 'Remote' : '',
+          }));
+        }
+        if (jobs.length < SR_PAGE) break;
+      }
+    } catch (e) {
+      failed++;
+      if (errorsOut) errorsOut.push({ source: 'smartrecruiters', company: source.company, error: e.message });
+    }
+  }));
+  // Cache only a complete read, so one failed country is retried next time.
+  if (!failed) cache.set(cacheKey, out);
+  return out;
+}
+
+// ─── recruitee ─────────────────────────────────────────────────────────────
+async function recruitee(source, errorsOut) {
+  if (!source || !source.boardToken) return [];
+  const cacheKey = 'ats:recruitee:' + source.boardToken;
+  const cached = _cached(cacheKey, source);
+  if (cached) return cached;
+  const url = 'https://' + encodeURIComponent(source.boardToken) + '.recruitee.com/api/offers/';
   try {
     const data = await _fetchJson(url);
-    const jobs = Array.isArray(data.content) ? data.content : [];
-    const out = jobs.map(j => _norm({
-      id:           j.id ? 'sr:' + j.id : 'sr:' + (j.ref || j.name),
-      title:        j.name,
-      company:      (j.company && j.company.name) || source.company,
-      location:     (j.location && [j.location.city, j.location.region, j.location.country].filter(Boolean).join(', ')) || '',
-      source:       'smartrecruiters',
+    const jobs = Array.isArray(data.offers) ? data.offers : [];
+    const out = _scope(jobs.map(j => _norm({
+      id:           j.id ? 'rc:' + j.id : 'rc:' + (j.careers_url || j.title),
+      title:        j.title,
+      company:      source.company || j.company_name,
+      location:     [j.city, j.country].filter(Boolean).join(', ') || j.location || '',
+      source:       'recruitee',
       atsCompany:   source.boardToken,
-      url:          j.ref || j.refNumber || (j.applyUrl || ''),
-      applyUrl:     j.applyUrl || j.ref || '',
-      postedAt:     j.releasedDate || j.createdOn || null,
-      updatedAt:    j.releasedDate || null,
-      description:  '', // SmartRecruiters list endpoint omits description; details fetch elsewhere.
-      department:   (j.department && j.department.label) || '',
-      employmentType: (j.typeOfEmployment && j.typeOfEmployment.label) || '',
-      workplaceType:  '',
-    }));
+      url:          j.careers_url || '',
+      applyUrl:     j.careers_apply_url || j.careers_url || '',
+      postedAt:     j.published_at || j.created_at || null,
+      updatedAt:    j.updated_at || j.published_at || null,
+      description:  j.description || '',
+      department:   j.department || '',
+      employmentType: j.employment_type_code || '',
+      workplaceType:  j.remote ? 'Remote' : '',
+    })), source);
     cache.set(cacheKey, out);
     return out;
   } catch (e) {
-    if (errorsOut) errorsOut.push({ source: 'smartrecruiters', company: source.company, error: e.message });
+    if (errorsOut) errorsOut.push({ source: 'recruitee', company: source.company, error: e.message });
     return [];
   }
 }
 
-const ATSFetchers = { greenhouse, lever, ashby, workable, smartrecruiters };
+const ATSFetchers = { greenhouse, lever, ashby, workable, smartrecruiters, recruitee };
 
 // Run all sources concurrently (each respects its own timeout). Returns
 // { jobs, errors, sourcesUsed } — never throws.
-async function fetchAllSources(sources) {
+async function fetchAllSources(sources, opts) {
+  const force = !!(opts && opts.force);
   const errors = [];
   const sourcesUsed = [];
   if (!Array.isArray(sources) || !sources.length) return { jobs: [], errors, sourcesUsed };
@@ -266,7 +338,7 @@ async function fetchAllSources(sources) {
       errors.push({ source: s.ats, company: s.company, error: 'unknown_ats' });
       return [];
     }
-    const jobs = await fn(s, errors);
+    const jobs = await fn(force ? Object.assign({}, s, { _force: true }) : s, errors);
     if (jobs.length) sourcesUsed.push({ company: s.company, ats: s.ats, count: jobs.length });
     return jobs;
   });
@@ -284,4 +356,16 @@ async function fetchAllSources(sources) {
   return { jobs: out, errors, sourcesUsed };
 }
 
-module.exports = { ATSFetchers, fetchAllSources, _stripHtml, _snippet };
+// How many real open jobs sit in each supported country right now.
+function countByCountry(jobs) {
+  const out = {};
+  for (const c of COUNTRIES) out[c.code] = 0;
+  let other = 0;
+  for (const j of (jobs || [])) {
+    const code = countryOf(j.location);
+    if (code) out[code]++; else other++;
+  }
+  return { byCountry: out, other, total: (jobs || []).length };
+}
+
+module.exports = { ATSFetchers, fetchAllSources, countByCountry, _stripHtml, _snippet };

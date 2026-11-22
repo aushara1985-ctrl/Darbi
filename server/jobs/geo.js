@@ -1,4 +1,4 @@
-// ══════ Geo helper — GCC countries + cities (Arabic + English) ═════════════
+// ══════ Geo helper — Gulf + Egypt + Jordan + Syria (Arabic + English) ══════
 // Pure, no I/O. Used by searchProfile (normalise what the user picked),
 // ranker (location fit) and jobs/index.js (honest fallback links + country filter).
 // Saudi cities first, then the other GCC countries.
@@ -10,6 +10,9 @@ const COUNTRIES = [
   { code: 'QA', ar: 'قطر',       en: 'Qatar',   alias: ['qatar', 'قطر'] },
   { code: 'BH', ar: 'البحرين',   en: 'Bahrain', alias: ['bahrain', 'البحرين'] },
   { code: 'OM', ar: 'عُمان',     en: 'Oman',    alias: ['oman', 'عمان', 'عُمان', 'سلطنة عمان'] },
+  { code: 'EG', ar: 'مصر',       en: 'Egypt',   alias: ['egypt', 'مصر'] },
+  { code: 'JO', ar: 'الأردن',    en: 'Jordan',  alias: ['jordan', 'الاردن', 'الأردن'] },
+  { code: 'SY', ar: 'سوريا',     en: 'Syria',   alias: ['syria', 'syrian arab republic', 'سوريا', 'سورية'] },
 ];
 
 const CITIES = [
@@ -47,6 +50,33 @@ const CITIES = [
   { c: 'QA', ar: 'الدوحة', en: 'Doha' },
   { c: 'BH', ar: 'المنامة', en: 'Manama' },
   { c: 'OM', ar: 'مسقط', en: 'Muscat' },
+  { c: 'SA', ar: 'نيوم', en: 'NEOM' },
+  { c: 'AE', ar: 'العين', en: 'Al Ain' },
+  { c: 'AE', ar: 'الفجيرة', en: 'Fujairah' },
+  { c: 'KW', ar: 'حولي', en: 'Hawalli' },
+  { c: 'KW', ar: 'الأحمدي', en: 'Ahmadi', alias: ['al ahmadi'] },
+  { c: 'QA', ar: 'لوسيل', en: 'Lusail' },
+  { c: 'QA', ar: 'الريان', en: 'Al Rayyan' },
+  { c: 'BH', ar: 'المحرق', en: 'Muharraq' },
+  { c: 'OM', ar: 'صلالة', en: 'Salalah' },
+  { c: 'OM', ar: 'صحار', en: 'Sohar' },
+  // Egypt
+  { c: 'EG', ar: 'القاهرة', en: 'Cairo', alias: ['new cairo', 'القاهره', 'maadi', 'nasr city', 'heliopolis'] },
+  { c: 'EG', ar: 'الجيزة', en: 'Giza', alias: ['6th of october', 'sheikh zayed', 'الجيزه'] },
+  { c: 'EG', ar: 'الإسكندرية', en: 'Alexandria', alias: ['الاسكندريه', 'الاسكندرية'] },
+  { c: 'EG', ar: 'المنصورة', en: 'Mansoura' },
+  { c: 'EG', ar: 'شرم الشيخ', en: 'Sharm El Sheikh', alias: ['sharm el sheikh', 'sharm'] },
+  { c: 'EG', ar: 'الغردقة', en: 'Hurghada' },
+  // Jordan
+  { c: 'JO', ar: 'عمّان', en: 'Amman', alias: ['عمان الاردن'] },
+  { c: 'JO', ar: 'إربد', en: 'Irbid', alias: ['اربد'] },
+  { c: 'JO', ar: 'الزرقاء', en: 'Zarqa' },
+  { c: 'JO', ar: 'العقبة', en: 'Aqaba' },
+  // Syria
+  { c: 'SY', ar: 'دمشق', en: 'Damascus' },
+  { c: 'SY', ar: 'حلب', en: 'Aleppo' },
+  { c: 'SY', ar: 'حمص', en: 'Homs' },
+  { c: 'SY', ar: 'اللاذقية', en: 'Latakia', alias: ['lattakia'] },
 ];
 
 function _n(s) {
@@ -57,8 +87,8 @@ function _n(s) {
 
 const REMOTE_RE = /remote|work from home|wfh|hybrid anywhere|عن بعد|انترنت/;
 
-// Well-known non-GCC places: a job there is clearly not local for a Gulf seeker.
-const OTHER_RE = /(^| )(egypt|cairo|alexandria|jordan|amman|lebanon|beirut|pakistan|karachi|india|bangalore|london|united kingdom|uk|usa|united states|germany|berlin|turkey|istanbul|morocco|casablanca|nigeria|lagos|singapore)( |$)/;
+// Well-known places outside the supported countries: a job there is clearly not local.
+const OTHER_RE = /(^| )(lebanon|beirut|pakistan|karachi|india|bangalore|london|united kingdom|uk|usa|united states|germany|berlin|turkey|istanbul|morocco|casablanca|nigeria|lagos|singapore)( |$)/;
 
 function _country(code) { return COUNTRIES.find(c => c.code === code) || null; }
 
@@ -131,4 +161,20 @@ function jobLocationRelation(jobLocation, resolved) {
   return 'other';
 }
 
-module.exports = { COUNTRIES, CITIES, resolveLocation, jobLocationRelation };
+// Which supported country is a job's free-text location in? Returns the ISO
+// code ('SA', 'AE', ...) or null when it is elsewhere / unknown.
+function countryOf(jobLocation) {
+  const t = _n(jobLocation);
+  if (!t) return null;
+  for (const c of CITIES) if (_cityTokens(c).some(tok => _has(t, tok))) return c.c;
+  const hit = COUNTRIES.find(c => [c.en, c.ar].concat(c.alias || []).map(_n).some(tok => _has(t, tok)));
+  return hit ? hit.code : null;
+}
+
+// ISO 3166 alpha-2 code ('sa') -> English country name, for boards that only give the code.
+function countryNameFromCode(code) {
+  const c = _country(String(code || '').toUpperCase());
+  return c ? c.en : '';
+}
+
+module.exports = { COUNTRIES, CITIES, resolveLocation, jobLocationRelation, countryOf, countryNameFromCode };
