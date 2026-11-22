@@ -121,3 +121,14 @@ CREATE TABLE IF NOT EXISTS access_audit (
   created_at          TIMESTAMP DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_access_audit_user ON access_audit(user_id, created_at DESC);
+
+-- Per-user saved state (additive, 2026-11-23). One row per (user, kind): the CV, the written CV,
+-- the applications tracker, the diagnosis, practice results and the progress timeline. The browser
+-- keeps a local cache; this is what a person sees when they sign in on another device.
+CREATE TABLE IF NOT EXISTS user_state (
+  user_id          INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  kind             TEXT NOT NULL,
+  data             JSONB NOT NULL,
+  updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (user_id, kind)
+);

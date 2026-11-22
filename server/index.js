@@ -410,6 +410,9 @@ app.post('/api/darbi/resolve-intent', async (req, res) => {
 // Interview/assessment preparation program (/api/assess/*). authMiddleware, db, rateLimit, getIP are defined above.
 require('./assessments/routes')(app, { authMiddleware, db, rateLimit, getIP });
 
+// Per-user saved state (CV, tracker, diagnosis, practice, timeline): /api/darbi/state*. See ./userState.
+require('./userState').register(app, { authMiddleware, db, rateLimit });
+
 // ─── JOBS SEARCH (career-family-agnostic, hybrid ATS + aggregator) ───────────
 // Registration is delegated to ./jobs to keep this file lean. Two routes:
 //   GET  /api/jobs/sources   → public ATS sources + provider availability

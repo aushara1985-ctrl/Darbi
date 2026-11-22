@@ -2901,7 +2901,7 @@
     app.innerHTML = ''
       + '<div class="v2-card" style="line-height:1.9;font-size:14px">'
       + '<h3 style="margin:0 0 8px">الخصوصية</h3>'
-      + '<p>نحفظ بريدك وكلمة مرور مشفّرة. نص سيرتك وتشخيصك يُحفظان على جهازك، ويُرسل نص السيرة أو إجابات التدريب لخدمة الذكاء الاصطناعي فقط لتحليلها. ما نبيع بياناتك. الدفع يتم عبر Stripe ولا نحفظ بيانات البطاقة.</p>'
+      + '<p>نحفظ بريدك وكلمة مرور مشفّرة. لما تسجّل دخول نحفظ سيرتك وتشخيصك وتقديماتك ونتائج تدريبك في حسابك عشان تلقاها على أي جهاز، وتبقى نسخة منها على جهازك. بدون حساب تبقى على جهازك فقط. يُرسل نص السيرة أو إجابات التدريب لخدمة الذكاء الاصطناعي فقط لتحليلها أو كتابتها. ما نبيع بياناتك. الدفع يتم عبر Stripe ولا نحفظ بيانات البطاقة.</p>'
       + '<h3 style="margin:14px 0 8px">الشروط</h3>'
       + '<p>دربي أداة مساعدة: ما نضمن وظيفة أو رد من شركة. الوظائف المعروضة من لوحات توظيف عامة ومرتبطة بصفحاتها الأصلية، وروابط البحث مقترحة لك. الاشتراك الشهري يتجدد حتى تلغيه، وتلغيه بنفسك من «حسابي ← إدارة الاشتراك» وتنسحب صلاحيتك عند انتهائه. الدفعة الواحدة (Founder) لمرة وحدة.</p>'
       + '<p style="margin-top:14px"><a href="/terms">الشروط الكاملة</a> · <a href="/privacy">سياسة الخصوصية</a> · <a href="/terms#refund">الاسترداد والإلغاء</a> · <a href="/terms#contact">تواصل معنا</a></p><p style="font-size:12px;color:#565E5B">يُشغّل هذا المنتج من قبل inventive gaze, LLC · hala@inab.app</p>'
@@ -3448,7 +3448,7 @@
     var current = V2Draft.field('cvText') || '';
     app.innerHTML = ''
       + '<h2 class="v2-h1">ارفع <span class="v2-accent">سيرتك</span> أو الصقها</h2>'
-      + '<p class="v2-sub">دربي يقرأ النص الفعلي — مو اسم الملف. كل شي محفوظ محلياً على جهازك فقط حتى تكمّل التشخيص.</p>'
+      + '<p class="v2-sub">دربي يقرأ النص الفعلي — مو اسم الملف. يبقى على جهازك، ولما تسجّل دخول ينحفظ في حسابك.</p>'
       + '<div class="v2-upload-grid">'
       +   '<label for="v2CvFileInput" class="v2-upload-card" id="v2UploadCard">'
       +     '<div class="v2-upload-icon"></div>'
@@ -3850,7 +3850,7 @@
     var allDone = done === total;
     app.innerHTML = ''
       + '<h2 class="v2-h1">أسئلة <span class="v2-accent">سريعة</span></h2>'
-      + '<p class="v2-sub">عشان نعطيك تشخيص دقيق مو عام. جوابك يبقى محلياً على جهازك.</p>'
+      + '<p class="v2-sub">عشان نعطيك تشخيص دقيق مو عام. جوابك يبقى على جهازك، ولما تسجّل دخول ينحفظ في حسابك.</p>'
       + '<div class="v2-quiz-progress">'
       +   '<span>' + done + ' / ' + total + '</span>'
       +   '<div class="v2-quiz-progress-bar"><div class="v2-quiz-progress-fill" style="width:' + progressPct + '%"></div></div>'
@@ -5634,7 +5634,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
         + '<div class="v2-db-section" style="border-top:3px solid #0C6B4A;margin-top:18px">'
         +   '<div style="font-size:12px;font-weight:800;letter-spacing:.5px;opacity:.85;text-transform:uppercase;margin-bottom:6px">بعد ما تخلّص هنا</div>'
         +   '<div style="font-size:16px;font-weight:800;margin-bottom:5px;line-height:1.4">جاهز نوريك وظائف مناسبة لك؟</div>'
-        +   '<div style="font-size:13px;opacity:.92;line-height:1.65;margin-bottom:12px">احفظ سيرتك من الزر فوق ↑ (تتحفظ في متصفحك). بعدها روح للوظائف نلقي لك أقرب فرص واقعية بناءً على تشخيصك.</div>'
+        +   '<div style="font-size:13px;opacity:.92;line-height:1.65;margin-bottom:12px">احفظ سيرتك من الزر فوق ↑ (تنحفظ في حسابك لما تسجّل دخول). بعدها روح للوظائف نلقي لك أقرب فرص واقعية بناءً على تشخيصك.</div>'
         +   '<button class="v2-db-hero-cta" style="margin-left:8px" onclick="v2CvbSave();v2Go(\'#/jobs\')">احفظ + وريني الوظائف ←</button>'
         +   '<button class="v2-iv-btn" onclick="v2Go(\'#/jobs\')">تجاوز — للوظائف</button>'
         + '</div>'
@@ -8537,6 +8537,218 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'cv_pdf_export', payload: { template: cur.tplId, lang: cur.lang } });
     setTimeout(function(){ try { window.print(); } catch(e){} setTimeout(cleanup, 60000); }, 60);
   }
+  </script>
+  <!-- ════════════════════════════════════════════════════════════════════
+       DarbiSync — saves the person's data to their account (Postgres via
+       /api/darbi/state) and keeps the browser copy as a local cache, so
+       signing in on another device shows the same CV, tracker, diagnosis,
+       practice results and timeline. Guests stay local until they sign up.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+  /* eslint-disable */
+  var DarbiSync = (function(){
+    // kind (server) → localStorage key (the existing namespaces keep owning their keys)
+    var MAP = {
+      diagnosis: 'darbi_diagnosis', cv: 'darbi_cv_v2', cv_writer: 'darbi_cv_writer',
+      applications: 'darbi_applications', timeline: 'darbi_brain', journey: 'darbi_journey_state',
+      draft: 'darbi_v2_draft', interview_progress: 'darbi_interview_progress', interview_evals: 'darbi_interview_evals'
+    };
+    var META = 'darbi_sync_meta'; // { uid, kinds: { kind: { h: hash last synced, at: server time, localAt, lh } }, lastSyncAt, lastError }
+    var busy = false, timer = null, started = false;
+
+    function meta(){ try { var m = JSON.parse(localStorage.getItem(META) || 'null') || {}; if (!m.kinds) m.kinds = {}; return m; } catch(e){ return { kinds: {} }; } }
+    function saveMeta(m){ try { localStorage.setItem(META, JSON.stringify(m)); } catch(e){} }
+    function raw(kind){ try { return localStorage.getItem(MAP[kind]); } catch(e){ return null; } }
+    function hash(s){ var h = 5381, i = s.length; while (i) h = (h * 33) ^ s.charCodeAt(--i); return (h >>> 0).toString(36) + ':' + s.length; }
+    function parse(s){ try { return JSON.parse(s); } catch(e){ return null; } }
+    function isEmpty(kind, s){
+      if (s == null || s === '' || s === 'null') return true;
+      var o = parse(s);
+      if (o == null || typeof o !== 'object') return true;
+      if (Array.isArray(o)) return o.length === 0;
+      if (kind === 'timeline') return !(Array.isArray(o.events) && o.events.length);
+      return Object.keys(o).length === 0;
+    }
+    function ms(t){ var n = t ? Date.parse(t) : NaN; return isNaN(n) ? 0 : n; }
+    // When did this local copy last change, according to the data itself?
+    function embeddedAt(kind, o){
+      if (!o) return 0;
+      if (kind === 'applications' && Array.isArray(o)) return o.reduce(function(a, x){ return Math.max(a, ms(x && (x.updatedAt || x.createdAt))); }, 0);
+      if (kind === 'timeline') return ms(o.lastUpdated);
+      if (kind === 'diagnosis') return ms(o.createdAt);
+      return ms(o.updatedAt);
+    }
+    // Lists are merged (nothing is lost when two devices both added items); the rest is newest-wins.
+    function merge(kind, local, server){
+      if (kind === 'applications' && Array.isArray(local) && Array.isArray(server)) {
+        var by = {}, order = [];
+        server.concat(local).forEach(function(a){
+          if (!a || !a.id) return;
+          if (!by[a.id]) { by[a.id] = a; order.push(a.id); }
+          else if (ms(a.updatedAt) >= ms(by[a.id].updatedAt)) by[a.id] = a;
+        });
+        return order.map(function(id){ return by[id]; }).sort(function(a, b){ return ms(a.createdAt) - ms(b.createdAt); });
+      }
+      if (kind === 'timeline' && local && server && Array.isArray(local.events) && Array.isArray(server.events)) {
+        var seen = {}, ev = [];
+        server.events.concat(local.events).forEach(function(e){
+          if (!e || !e.type) return; var k = e.ts + '|' + e.type;
+          if (!seen[k]) { seen[k] = 1; ev.push(e); }
+        });
+        ev.sort(function(a, b){ return ms(a.ts) - ms(b.ts); });
+        return { events: ev.slice(-100), taskStatus: Object.assign({}, server.taskStatus || {}, local.taskStatus || {}), lastUpdated: new Date().toISOString() };
+      }
+      return null;
+    }
+    function loggedIn(){ return typeof V2User !== 'undefined' && V2User.isLoggedIn(); }
+    function wipeLocal(){
+      Object.keys(MAP).forEach(function(k){ try { localStorage.removeItem(MAP[k]); } catch(e){} });
+      try { localStorage.removeItem(META); } catch(e){}
+    }
+    function rerender(){ try { if (typeof v2RenderRoute === 'function') v2RenderRoute(location.hash || '#/dashboard'); } catch(e){} }
+
+    async function sendBatch(items, keepalive){
+      var r = await apiFetch('/api/darbi/state/batch', { method: 'POST', body: { items: items }, keepalive: !!keepalive });
+      if (r.status === 401) return { auth: false };
+      if (!r.ok) throw new Error('http_' + r.status);
+      return await r.json();
+    }
+
+    // Push every kind whose local copy differs from what was last synced.
+    async function push(keepalive){
+      if (!loggedIn() || busy) return false;
+      var m = meta(), items = {}, sent = {}, dels = [], now = new Date().toISOString();
+      Object.keys(MAP).forEach(function(kind){
+        var s = raw(kind), k = m.kinds[kind] || {};
+        if (s == null) { if (k.h) dels.push(kind); return; }          // cleared here after a sync: clear the account's copy too
+        if (isEmpty(kind, s) && !k.h) return;                          // empty and never saved: nothing to send
+        var h = hash(s);
+        if (h === k.h) return;
+        if (k.lh !== h) { k.lh = h; k.localAt = now; m.kinds[kind] = k; }
+        var o = parse(s); if (o == null) return;
+        items[kind] = o; sent[kind] = h;
+      });
+      saveMeta(m);
+      if (!Object.keys(items).length && !dels.length) return true;
+      busy = true;
+      try {
+        if (Object.keys(items).length) {
+          var d = await sendBatch(items, keepalive);
+          if (d && d.auth === false) { busy = false; return false; }
+          m = meta();
+          Object.keys((d && d.saved) || {}).forEach(function(kind){
+            var k = m.kinds[kind] || {}; k.h = sent[kind]; k.at = d.saved[kind]; m.kinds[kind] = k;
+          });
+          m.lastSyncAt = now; m.lastError = (d && d.errors && Object.keys(d.errors).length) ? 'partial' : '';
+          saveMeta(m);
+        }
+        for (var i = 0; i < dels.length; i++) {
+          var rr = await apiFetch('/api/darbi/state/' + dels[i], { method: 'DELETE', keepalive: !!keepalive });
+          if (rr.ok) { m = meta(); delete m.kinds[dels[i]]; m.lastSyncAt = now; saveMeta(m); }
+        }
+        busy = false; return true;
+      } catch(e) {
+        busy = false; m = meta(); m.lastError = 'offline'; saveMeta(m); return false;
+      }
+    }
+
+    // Read the account's copy and reconcile it with this browser's copy.
+    async function pull(){
+      if (!loggedIn()) return false;
+      var r, d;
+      try { r = await apiFetch('/api/darbi/state'); if (!r.ok) return false; d = await r.json(); } catch(e){ return false; }
+      if (!d || !d.success) return false;
+      var st = d.state || {}, m = meta(), changed = false;
+      Object.keys(MAP).forEach(function(kind){
+        var S = st[kind], s = raw(kind), k = m.kinds[kind] || {};
+        function adopt(data, at){
+          var str = JSON.stringify(data);
+          try { localStorage.setItem(MAP[kind], str); } catch(e){ return; }
+          m.kinds[kind] = { h: at ? hash(str) : null, at: at || null, localAt: at || new Date().toISOString(), lh: hash(str) };
+          changed = true;
+        }
+        if (!S) return;                                   // account has none: a later push sends the local copy
+        if (s == null || (isEmpty(kind, s) && !k.h)) { adopt(S.data, S.updatedAt); return; }
+        if (k.h && hash(s) === k.h) {                     // unchanged here since the last sync
+          if (S.updatedAt !== k.at) adopt(S.data, S.updatedAt);
+          return;
+        }
+        if (k.at && S.updatedAt === k.at) return;         // only this browser changed it: the push below sends it
+        var L = parse(s), merged = merge(kind, L, S.data);
+        if (merged) { adopt(merged, null); return; }      // merged copy differs from the account's: pushed next
+        var localAt = ms(k.localAt) || embeddedAt(kind, L);
+        if (ms(S.updatedAt) > localAt) adopt(S.data, S.updatedAt);
+      });
+      m.lastSyncAt = new Date().toISOString(); m.lastError = '';
+      saveMeta(m);
+      if (changed) rerender();
+      await push();
+      return true;
+    }
+
+    function tick(){ if (loggedIn() && !document.hidden) push(); }
+
+    return {
+      MAP: MAP,
+      // Called by namespaces after a save, to sync sooner than the periodic check.
+      touch: function(){ if (!loggedIn()) return; clearTimeout(timer); timer = setTimeout(function(){ push(); }, 900); },
+      // After sign-in / sign-up / page load with a token.
+      onLogin: function(user){
+        var m = meta();
+        if (user && user.id != null) {
+          if (m.uid != null && String(m.uid) !== String(user.id)) { wipeLocal(); m = meta(); }   // another account's cache: never mixed
+          m.uid = user.id; saveMeta(m);
+        }
+        return pull();
+      },
+      // Sign-out: save what is pending, then clear this browser's copy (it is in the account).
+      logout: async function(){
+        var ok = true;
+        try { ok = await push(); } catch(e){ ok = false; }
+        if (ok) wipeLocal();
+        return ok;
+      },
+      pull: pull, push: push,
+      status: function(){
+        var m = meta();
+        return { loggedIn: loggedIn(), lastSyncAt: m.lastSyncAt || null, error: m.lastError || '' };
+      },
+      start: function(){
+        if (started) return; started = true;
+        setInterval(tick, 5000);
+        document.addEventListener('visibilitychange', function(){ if (document.hidden && loggedIn()) push(true); });
+        window.addEventListener('pagehide', function(){ if (loggedIn()) push(true); });
+        if (loggedIn()) this.onLogin(V2User.user());
+      }
+    };
+  })();
+
+  // Hook sign-in and sign-out without touching the auth code paths.
+  (function(){
+    var _set = V2User.set;
+    V2User.set = function(token, user){ _set.call(V2User, token, user); try { DarbiSync.onLogin(user); } catch(e){} };
+    var _logout = window.v2Logout;
+    window.v2Logout = function(){
+      var done = function(){ _logout(); };
+      try { DarbiSync.logout().then(done, done); } catch(e){ done(); }
+    };
+    var _account = window.renderAccount;
+    if (typeof _account === 'function') {
+      window.renderAccount = function(app, route){
+        _account(app, route);
+        try {
+          var s = DarbiSync.status(); if (!s.loggedIn) return;
+          var when = s.lastSyncAt ? new Date(s.lastSyncAt).toLocaleString('ar-SA-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+          var el = document.createElement('div'); el.className = 'v2-card';
+          el.innerHTML = '<div style="font-weight:700;margin-bottom:4px">بياناتك محفوظة في حسابك</div>'
+            + '<div style="font-size:13.5px;color:#565E5B;line-height:1.75">سيرتك وتشخيصك وتقديماتك ونتائج تدريبك تنحفظ في حسابك، وتلقاها لما تدخل من أي جهاز.'
+            + (s.error === 'offline' ? ' <b style="color:#A3301F">آخر محاولة حفظ ما نجحت، ونعيدها تلقائياً.</b>' : (when ? ' آخر حفظ: ' + escapeHtml(when) + '.' : '')) + '</div>';
+          app.appendChild(el);
+        } catch(e){}
+      };
+    }
+    window.addEventListener('DOMContentLoaded', function(){ DarbiSync.start(); });
+  })();
   </script>
 </body>
 </html>
