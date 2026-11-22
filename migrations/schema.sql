@@ -20,6 +20,10 @@ CREATE TABLE IF NOT EXISTS users (
 -- Purchased plan: starter | pro | lifetime (set by the Stripe webhook / session verify; NULL when free).
 ALTER TABLE users ADD COLUMN IF NOT EXISTS plan TEXT;
 
+-- 7-day Pro trial for new signups (NULL for everyone who signed up before this). trial_emails holds per-user sent flags.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMP;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS trial_emails JSONB DEFAULT '{}'::jsonb;
+
 CREATE TABLE IF NOT EXISTS analyses (
   id               SERIAL PRIMARY KEY,
   user_id          INTEGER REFERENCES users(id),

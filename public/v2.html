@@ -1604,6 +1604,7 @@
         <span class="v2-stepno" id="v2StepNo"></span>
       </div>
     </header>
+    <div id="v2TrialBar" role="status" style="display:none;background:#fef3c7;color:#92400e;border-bottom:1px solid #fde68a;padding:8px 14px;text-align:center;font-size:14px;font-weight:600"></div>
 
     <!-- Menu sheet: same links as the header, filled by v2RenderNav() -->
     <div class="v2-sheet-overlay" id="v2SheetOverlay" onclick="v2ToggleSheet(false)"></div>
@@ -1988,13 +1989,15 @@
       },
       setUser: function(user){
         if (!user) return;
-        var u = { id: user.id, email: user.email, access_status: user.access_status, paid: user.paid === true || user.access_status === 'paid' };
+        var u = { id: user.id, email: user.email, access_status: user.access_status, paid: user.paid === true || user.access_status === 'paid', trial: user.trial || null };
         try { localStorage.setItem(KEY, JSON.stringify(u)); } catch(e){}
         currentUser = u;
+        if (typeof v2RenderTrialBar === 'function') v2RenderTrialBar();
       },
       clear: function(){
         try { localStorage.removeItem('darbi_token'); localStorage.removeItem(KEY); } catch(e){}
         currentUser = null;
+        if (typeof v2RenderTrialBar === 'function') v2RenderTrialBar();
       },
       refresh: function(){
         var self = this;
@@ -2007,6 +2010,16 @@
     };
   })();
   (function(){ var u = V2User.user(); if (u && V2User.token()) currentUser = u; })();
+
+  // Free-trial banner: days left, or the honest end-of-trial note (no data is ever removed).
+  function v2RenderTrialBar(){
+    var el = document.getElementById('v2TrialBar'); if (!el) return;
+    var u = V2User.token() ? V2User.user() : null, t = u && u.trial, msg = '';
+    if (t && t.active) msg = 'باقي ' + t.days_left + (t.days_left === 1 ? ' يوم' : ' أيام') + ' من تجربتك';
+    else if (t && t.expired && u.access_status === 'free') msg = 'انتهت تجربتك المجانية وبياناتك محفوظة. الدفع الإلكتروني يتفعّل قريباً — نبلغك أول ما يفتح';
+    el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+  }
+  v2RenderTrialBar();
 
   // ── Plans — Ali's prices (2026-11-18). Stripe is the only payment path.
   var V2_PLANS = [
@@ -2111,6 +2124,11 @@
   function renderPricing(app, route){
     var why = v2HashParam('why');
     var whyMsg = { apply: 'جهّزنا لك تقديمك الأول مجاناً. للتقديمات الباقية تحتاج خطة.', interview: 'جرّبت أول سؤالين من التدريب مجاناً. الأسئلة الباقية والتقييم الكامل في الخطط.' }[why] || '';
+    var _tu = V2User.user();
+    if (V2User.isPaid() && _tu && _tu.trial && _tu.trial.active) {
+      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">🎁</div><h3>تجربتك المجانية فعّالة</h3><p>باقي ' + _tu.trial.days_left + ' أيام وكل المميزات مفتوحة لك. الدفع الإلكتروني يتفعّل قريباً — نبلغك أول ما يفتح.</p><button class="v2-btn v2-btn-primary" onclick="v2Go('#/dashboard')">لوحتي ←</button></div>';
+      return;
+    }
     if (V2User.isPaid()) {
       app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">🎉</div><h3>خطتك مفعّلة</h3><p>كل المميزات مفتوحة لك.</p><button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/dashboard\')">لوحتي ←</button></div>';
       return;
@@ -2169,9 +2187,11 @@
       return;
     }
     var paid = V2User.isPaid();
-    app.innerHTML = banner
+    var onTrial = !!(u && u.trial && u.trial.active);
+    if (onTrial) paid = false;
+    app.innerHTML = (onTrial ? '<div class="v2-card" style="background:#fffbeb;border-color:#fde68a">تجربتك المجانية فعّالة: باقي ' + u.trial.days_left + ' أيام وكل المميزات مفتوحة لك.</div>' : '') + banner
       + '<div class="v2-card"><div class="v2-input-label">البريد</div><div dir="ltr" style="text-align:right;font-weight:700">' + escapeHtml((u && u.email) || '') + '</div>'
-      +   '<div class="v2-input-label" style="margin-top:14px">خطتك</div><div style="font-weight:700">' + (paid ? 'مدفوعة — كل المميزات مفتوحة' : 'مجانية — التشخيص والسيرة والوظائف + تقديم واحد + أول سؤالين تدريب') + '</div></div>'
+      +   '<div class="v2-input-label" style="margin-top:14px">خطتك</div><div style="font-weight:700">' + (onTrial ? 'تجربة مجانية — كل المميزات مفتوحة' : paid ? 'مدفوعة — كل المميزات مفتوحة' : 'مجانية — التشخيص والسيرة والوظائف + تقديم واحد + أول سؤالين تدريب') + '</div></div>'
       + (paid ? '<button class="v2-btn v2-btn-secondary" onclick="v2ManageBilling()">إدارة الاشتراك أو إلغاؤه</button><div id="v2BillMsg" class="v2-input-hint" style="text-align:center;min-height:18px" role="status"></div>' : '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/pricing\')">شوف الخطط ←</button>')
       + '<button class="v2-btn v2-btn-secondary" style="margin-top:10px" onclick="v2Logout()">تسجيل خروج</button>';
   }

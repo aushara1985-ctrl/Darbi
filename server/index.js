@@ -75,6 +75,7 @@ const db = new Pool({ connectionString: process.env.DATABASE_URL, ssl: _dbLocal 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
+const trial  = require('./trial');
 
 // Summarize an AI/OpenAI error into something safe to log AND safe to return
 // to the client. Never echoes raw response bodies, API keys, or full stack
@@ -158,6 +159,13 @@ app.post('/api/auth/signup', async (req, res) => {
       [email.toLowerCase(), hash, refCode]
     );
     if (!rows[0]) return res.status(409).json({ error: 'البريد الإلكتروني مسجّل مسبقاً' });
+    // 7-day Pro trial + welcome email (best effort; never blocks signup).
+    try {
+      await trial.startTrial(db, rows[0].id);
+      const fresh = await db.query('SELECT id, email, referral_code, access_status, trial_ends_at, created_at FROM users WHERE id = $1', [rows[0].id]);
+      if (fresh.rows[0]) rows[0] = trial.publicUser(fresh.rows[0]);
+      trial.sendOnce(db, rows[0].id, rows[0].email, 'welcome').catch(() => {});
+    } catch (e) { console.error('[trial] start failed:', e.message); }
     const token = jwt.sign({ id: rows[0].id, email: rows[0].email }, JWT_SECRET, { expiresIn: '30d' });
     res.json({ success: true, token, user: rows[0] });
   } catch (e) { res.status(500).json({ error: e.message }); }
@@ -171,15 +179,15 @@ app.post('/api/auth/login', async (req, res) => {
     const ok = await bcrypt.compare(password, rows[0].password_hash);
     if (!ok) return res.status(401).json({ error: 'البريد أو كلمة المرور غير صحيحة' });
     const token = jwt.sign({ id: rows[0].id, email: rows[0].email }, JWT_SECRET, { expiresIn: '30d' });
-    res.json({ success: true, token, user: { id: rows[0].id, email: rows[0].email, access_status: rows[0].access_status, referral_code: rows[0].referral_code, paid: rows[0].access_status === 'paid' } });
+    res.json({ success: true, token, user: trial.publicUser(rows[0]) });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.get('/api/darbi/me', authMiddleware, async (req, res) => {
   try {
-    const { rows } = await db.query('SELECT id, email, access_status, referral_code, created_at FROM users WHERE id = $1', [req.user.id]);
+    const { rows } = await db.query('SELECT id, email, access_status, referral_code, created_at, trial_ends_at FROM users WHERE id = $1', [req.user.id]);
     if (!rows[0]) return res.status(404).json({ error: 'User not found' });
-    res.json({ success: true, user: { ...rows[0], paid: rows[0].access_status === 'paid' } });
+    res.json({ success: true, user: trial.publicUser(rows[0]) });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -1179,9 +1187,9 @@ app.post('/api/training/evaluate', authMiddleware, async (req, res) => {
   const attemptCount = await getUserAttemptCount(user.id, trainingDay || 1);
 
   // Access gating
-  const userData = await db.query('SELECT access_status FROM users WHERE id=$1', [user.id]).catch(() => ({rows:[]}));
+  const userData = await db.query('SELECT access_status, trial_ends_at FROM users WHERE id=$1', [user.id]).catch(() => ({rows:[]}));
   const accessStatus = userData.rows[0]?.access_status || 'free';
-  const isPaid = accessStatus === 'paid';
+  const isPaid = accessStatus === 'paid' || (accessStatus === 'free' && trial.trialInfo(userData.rows[0]).active);
   const is24h  = accessStatus === 'ugc_24h';
 
   if (!isPaid && !is24h && attemptCount >= 1) {
@@ -1328,6 +1336,7 @@ async function bootstrapSchema() {
 }
 
 bootstrapSchema().finally(() => {
+  trial.startScheduler(db);
   app.listen(PORT, () => {
     console.log('[startup] darbi listening on port', PORT, '(NODE_ENV=' + (process.env.NODE_ENV || 'development') + ')');
   });
