@@ -2231,19 +2231,42 @@
     return ''
       + '<div class="v2-card"><div style="font-weight:800;font-size:16px;margin-bottom:10px" id="v2InvProg">' + escapeHtml(t.progress) + '</div>'
       +   '<div style="height:8px;background:#ececf4;border-radius:99px;overflow:hidden" aria-hidden="true"><div style="height:100%;width:' + pct + '%;background:#4338ca"></div></div>'
-      +   '<p style="margin:12px 0 0;font-size:13.5px;color:#475569;line-height:1.8">صديقين = 7 أيام Pro، وكل صديق بعدهم +3 أيام (الحد الأعلى ' + t.cap_days + ' يوم). الصديق يُحسب لما يسجّل من رابطك ويكمّل أول تشخيص.</p></div>'
+      +   '<p style="margin:12px 0 0;font-size:13.5px;color:#475569;line-height:1.8">صاحبين = أسبوع Pro، وكل صاحب زيادة = 3 أيام. الصاحب يُحسب لما يسجّل من رابطك ويكمّل أول تشخيص.</p></div>'
       + '<div class="v2-card"><div class="v2-input-label">رابطك الشخصي</div>'
       +   '<div dir="ltr" id="v2InvLink" style="text-align:left;font-weight:700;word-break:break-all;margin:6px 0 12px">' + escapeHtml(t.link) + '</div>'
       +   '<a class="v2-btn v2-btn-primary" id="v2InvWa" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent(t.share_text) + '" style="display:block;text-align:center;text-decoration:none">أرسل عبر واتساب</a>'
       +   '<button class="v2-btn v2-btn-secondary" style="margin-top:10px" onclick="v2InviteCopy()">نسخ الرابط</button>'
       +   '<div id="v2InvMsg" class="v2-input-hint" style="text-align:center;min-height:18px" role="status"></div></div>'
       + '<div class="v2-card"><div style="display:flex;justify-content:space-between;font-weight:800"><span>أيامك المكتسبة</span><span>' + t.days_earned + ' يوم</span></div>'
-      +   (t.capped ? '<div class="v2-input-hint">وصلت الحد الأعلى (' + t.cap_days + ' يوم).</div>' : '')
       +   '<div style="margin-top:12px;font-weight:700">أصدقاؤك</div>'
       +   (friends ? '<ul style="list-style:none;padding:0;margin:6px 0 0">' + friends + '</ul>' : '<div class="v2-input-hint">ما انضم أحد لين الحين.</div>')
       +   (t.waiting ? '<div class="v2-input-hint">' + t.waiting + ' سجّلوا وينتظرون يكمّلون أول تشخيص.</div>' : '')
       + '</div>'
+      + v2InviteGuide(t)
       + '<p class="v2-input-hint" style="text-align:center">الأيام تُضاف على تجربتك الحالية ولا تنقص أبداً.</p>';
+  }
+  // «كيف تجيب ناس»: ready texts with the user's own link and code (no results claimed, no income promised).
+  function v2InviteTexts(t){
+    return [
+      ['فكرة فيديو تيك توك / ريلز (٣ أسطر)', 'اللقطة 1: صوّر شاشتك وانت تفتح دربي وتسوي التشخيص.\nاللقطة 2: قول: «جرّبت موقع يرتّب لي سيرتي ويطلّع لي وظائف تناسبني».\nاللقطة 3: «الرابط في البايو، وأول أسبوع Pro مجاني».'],
+      ['نص جاهز لحالة الواتساب', 'جرّبت دربي لتجهيز سيرتي والتقديم على الوظائف، وفيه أسبوع Pro مجاني لأي حساب جديد: ' + t.link],
+      ['نص جاهز للستوري', 'تدوّر وظيفة؟ دربي يرتّب لك سيرتك ويطلّع لك وظائف. رابطي: ' + t.link + ' (كودي ' + t.code + ')']
+    ];
+  }
+  function v2InviteGuide(t){
+    var items = v2InviteTexts(t);
+    return '<div class="v2-card"><div style="font-weight:800;font-size:16px">كيف تجيب ناس</div>'
+      + '<div class="v2-input-hint">أفكار جاهزة برابطك. عدّلها بأسلوبك.</div>'
+      + items.map(function(it, i){
+          return '<div style="margin-top:12px;padding:12px;border:1px solid #ececf4;border-radius:12px"><div style="font-weight:700;margin-bottom:6px">' + escapeHtml(it[0]) + '</div>'
+            + '<div style="font-size:13.5px;color:#475569;line-height:1.9;white-space:pre-line">' + escapeHtml(it[1]) + '</div>'
+            + '<button class="v2-btn v2-btn-secondary" style="margin-top:8px" onclick="v2InviteCopyText(' + i + ')">نسخ</button></div>';
+        }).join('') + '</div>';
+  }
+  function v2InviteCopyText(i){
+    var t = _v2RefState; if (!t) return; var txt = v2InviteTexts(t)[i][1];
+    var msg = document.getElementById('v2InvMsg');
+    try { navigator.clipboard.writeText(txt).then(function(){ if (msg) msg.textContent = 'تم النسخ'; }, function(){ if (msg) msg.textContent = 'ما قدرنا ننسخ'; }); } catch(e){ if (msg) msg.textContent = 'ما قدرنا ننسخ'; }
   }
   function v2InviteCopy(){
     var t = _v2RefState; var msg = document.getElementById('v2InvMsg'); if (!t) return;

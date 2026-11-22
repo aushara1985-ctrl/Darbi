@@ -48,11 +48,11 @@ const mkUsers = () => [
 ];
 const rec = (db, id, extra = {}) => R.recordPending(db, { referredId: id, referredEmail: 'f' + id + '@x.com', rawCode: 'u-abc123', ip: '1.1.1.' + id, device: 'dev-' + id, salt: 's', ...extra });
 
-test('reward schedule: 2 friends = 7, then +3 each, capped at 60', () => {
+test('reward schedule: 2 friends = 7, then +3 each, capped at 30', () => {
   assert.deepStrictEqual([0, 1, 2, 3, 4].map(R.totalDaysFor), [0, 0, 7, 10, 13]);
-  assert.strictEqual(R.totalDaysFor(100), 60);
-  assert.strictEqual(R.totalDaysFor(19), 58);
-  assert.strictEqual(R.totalDaysFor(20), 60);
+  assert.strictEqual(R.totalDaysFor(100), 30);
+  assert.strictEqual(R.totalDaysFor(9), 28);
+  assert.strictEqual(R.totalDaysFor(10), 30);
 });
 
 test('link code parsing and masking', () => {
@@ -99,20 +99,20 @@ test('self referral, same email alias and same device are rejected and earn noth
   assert.strictEqual(db.state.users[0].trial_ends_at, null);
 });
 
-test('never reduces access: a longer existing trial is only extended; cap holds at 60', async () => {
+test('never reduces access: a longer existing trial is only extended; cap holds at 30', async () => {
   const users = mkUsers(); users[0].trial_ends_at = new Date(Date.now() + 20 * 864e5);
   const db = fakeDb(users);
   await rec(db, 2); await rec(db, 3);
   await R.qualify(db, 2); await R.qualify(db, 3);
   assert.ok(db.state.extended.every((e) => e.after > e.before));
   assert.ok((users[0].trial_ends_at.getTime() - Date.now()) / 864e5 > 26.9);
-  // 40 more friends: total earned stops at 60
+  // 40 more friends: total earned stops at 30
   for (let id = 100; id < 140; id++) { db.state.users.push({ id, email: 'g' + id + '@x.com', referral_code: 'G' + id }); await R.recordPending(db, { referredId: id, referredEmail: 'g' + id + '@x.com', rawCode: 'u-abc123', salt: 's', device: 'd' + id }); await R.qualify(db, id); }
   const earned = db.state.referrals.reduce((s, r) => s + r.reward_days, 0);
-  assert.strictEqual(earned, 60);
+  assert.strictEqual(earned, 30);
 });
 
 test('progress line is honest and plain', () => {
   assert.strictEqual(R.progressLine(1), 'دعيت 1 من 2 — باقي واحد وتاخذ أسبوع Pro');
-  assert.ok(!/\$|دولار|عمولة|ريال/.test(R.progressLine(5) + R.shareText('x')));
+  assert.ok(!/\$|دولار|عمولة|ريال|30|60/.test(R.progressLine(5) + R.shareText('x')));
 });

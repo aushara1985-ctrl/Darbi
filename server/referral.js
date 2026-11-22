@@ -3,7 +3,7 @@
 // Link: <site>/?ref=u-<code>. A friend counts only after (1) a real signup that came through the link and
 // (2) their first completed diagnosis (Darbi's auth does not verify email, so a real first action is the check).
 // Rewards extend users.trial_ends_at (the existing Pro-until field). Access is never reduced.
-//   2 friends = 7 days, every extra friend = +3 days, cap 60 days per user.
+//   2 friends = 7 days, every extra friend = +3 days, cap 30 days per user (never shown to users).
 // Idempotent: one reward per referred user (atomic claim of the pending row, under a per-referrer row lock).
 
 const crypto = require('crypto');
@@ -11,7 +11,7 @@ const crypto = require('crypto');
 const NEED = 2;        // friends needed for the first reward
 const BASE_DAYS = 7;   // reward for reaching NEED
 const EXTRA_DAYS = 3;  // per friend after NEED
-const CAP_DAYS = 60;   // max days earned per user
+const CAP_DAYS = 30;   // max days earned per user
 const APP_URL = (process.env.APP_URL || 'https://www.darbi.live').replace(/\/$/, '');
 
 // Total days a user should have earned once n friends have qualified.
@@ -165,8 +165,7 @@ async function tally(db, userId) {
   return {
     code, link,
     share_text: link ? shareText(link) : null,
-    qualified, waiting, days_earned: daysEarned, cap_days: CAP_DAYS,
-    capped: daysEarned >= CAP_DAYS,
+    qualified, waiting, days_earned: daysEarned,
     progress: progressLine(qualified),
     friends,
   };
