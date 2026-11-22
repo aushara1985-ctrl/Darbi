@@ -2500,10 +2500,17 @@
 
   // Digits: show Latin digits everywhere (prices are Latin; mixing with Arabic-Indic confused readers).
   (function(){
-    var re = /[٠-٩]/g, tst = /[٠-٩]/;
+    // \u escapes + never touch <script>/<style>/<textarea> text: the observer used to rewrite
+    // later inline scripts while the parser was still streaming them in, which turned the CV
+    // parser's Arabic-digit class into [0-9] (every CV digit became -1582…, years = -Infinity). 2026-11-22.
+    var re = /[\u0660-\u0669]/g, tst = /[\u0660-\u0669]/;
     function conv(s){ return s.replace(re, function(d){ return String(d.charCodeAt(0) - 0x0660); }); }
     function fix(n){
-      if (n.nodeType === 3) { if (tst.test(n.nodeValue)) n.nodeValue = conv(n.nodeValue); return; }
+      if (n.nodeType === 3) {
+        var p = n.parentNode && n.parentNode.nodeName;
+        if (p === 'SCRIPT' || p === 'STYLE' || p === 'TEXTAREA') return;
+        if (tst.test(n.nodeValue)) n.nodeValue = conv(n.nodeValue); return;
+      }
       if (n.nodeType !== 1) return;
       var t = n.tagName; if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEXTAREA') return;
       var ph = n.getAttribute && n.getAttribute('placeholder'); if (ph && tst.test(ph)) n.setAttribute('placeholder', conv(ph));
@@ -3235,7 +3242,7 @@
                 arrAmount: null, retentionPct: null };
     if (!cvText || cvText.length < 30) return out;
     // Arabic-Indic digits (١٠ سنوات) -> ASCII so years/ARR/dates are read like Latin digits.
-    var t = String(cvText).replace(/[٠-٩]/g, function(d){ return String(d.charCodeAt(0) - 0x0660); });
+    var t = String(cvText).replace(/[\u0660-\u0669]/g, function(d){ return String(d.charCodeAt(0) - 0x0660); });
     var tn = _arNormalize(t);
 
     // ── Personal contact info (used to auto-fill CV builder header) ──────
@@ -3335,7 +3342,10 @@
     ];
     var yrsCandidates = [];
     yrsPatterns.forEach(function(re){ var m = tn.match(re) || t.match(re); if (m && m[1]) yrsCandidates.push(parseInt(m[1], 10)); });
-    if (yrsCandidates.length) out.yearsExp = Math.max.apply(null, yrsCandidates.filter(function(n){ return n > 0 && n < 60; }));
+    // 2026-11-22: filter BEFORE Math.max — an all-filtered list gave -Infinity
+    // ("عندك -Infinity سنوات خبرة") and blocked the date-range fallback below.
+    var yrsValid = yrsCandidates.filter(function(n){ return n > 0 && n < 60; });
+    if (yrsValid.length) out.yearsExp = Math.max.apply(null, yrsValid);
     // Arabic alternates use NO \b — JS \b never fires around Arabic letters
     // (so "العربية"/"الإنجليزية" were silently dropped). Latin keeps \b.
     // Display in Arabic (the CV is Arabic) — العربية, not "Arabic".
