@@ -2346,13 +2346,13 @@
     };
   })();
 
-  // ── DarbiBrain (key: darbi_brain) — MINIMAL stub for V2
-  // V1's full brain has 339 LOC of nextAction/coach logic that V2 doesn't
-  // need (DarbiJourney is canonical). V2 keeps just the event log so
-  // Applications.add can still fire learn() events without crashing.
+  // ── DarbiBrain (key: darbi_brain) — the person's PROGRESS TIMELINE.
+  // A plain, dated log of what they did (diagnosis, CV written, jobs opened,
+  // applications, practice results). It makes no decisions and is not AI.
+  // Shown at #/timeline and on the dashboard; saved to the account by DarbiSync.
   var DarbiBrain = (function(){
     var KEY = 'darbi_brain';
-    var MAX_EVENTS = 100;
+    var MAX_EVENTS = 300;
     function read(){
       try {
         var s = JSON.parse(localStorage.getItem(KEY) || 'null') || {};
@@ -3034,6 +3034,7 @@
     '#/dashboard':    { title: 'لوحتي',                 step: 0, back: null,          render: 'renderDashboard' },
     '#/account':      { title: 'حسابي',                 step: 0, back: '#/dashboard', render: 'renderAccount' },
     '#/invites':      { title: 'دعواتي',                step: 0, back: '#/account',   render: 'renderInvites' },
+    '#/timeline':     { title: 'سجل تقدّمي',            step: 0, back: '#/dashboard', render: 'renderTimeline' },
     '#/legal':        { title: 'الخصوصية والشروط',      step: 0, back: '#/dashboard', render: 'renderLegal' },
     '#/signup':       { title: 'حساب جديد',             step: 0, back: '#/landing',   render: 'renderAuth', mode: 'signup' },
     '#/login':        { title: 'تسجيل الدخول',          step: 0, back: '#/landing',   render: 'renderAuth', mode: 'login' },
@@ -3115,7 +3116,7 @@
   // One navigation system (UX pass 2026-11-18): header links + labelled menu sheet + bottom tabs share v2NavModel().
   var V2_NO_TABBAR = { '#/landing':1, '#/signup':1, '#/login':1, '#/track':1, '#/dream':1, '#/location':1, '#/cv-upload':1, '#/cv-build':1, '#/quiz':1 };
   var V2_TAB_OF = { '#/dashboard':'#/dashboard', '#/diagnosis':'#/dashboard', '#/cv-output':'#/dashboard', '#/cv-writer':'#/dashboard', '#/cv-templates':'#/dashboard', '#/cv-builder':'#/dashboard',
-    '#/jobs':'#/jobs', '#/apply':'#/jobs', '#/tracker':'#/tracker', '#/interview':'#/interview', '#/account':'more', '#/invites':'more', '#/pricing':'more', '#/legal':'more' };
+    '#/jobs':'#/jobs', '#/apply':'#/jobs', '#/tracker':'#/tracker', '#/interview':'#/interview', '#/timeline':'#/dashboard', '#/account':'more', '#/invites':'more', '#/pricing':'more', '#/legal':'more' };
   var V2_TAB_ICONS = {
     '#/dashboard': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
     '#/jobs': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg>',
@@ -4653,6 +4654,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       answers.dreamRole = dreamRole;
       var diag = await buildDiagnosis(dreamRole, cvText, answers);
       Diagnosis.set(diag);
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'diagnosis_done', payload: { role: dreamRole, source: (diag.analysis && diag.analysis.source) || 'estimate', cv: diag.supportingScores && diag.supportingScores.cvStrength, fit: diag.supportingScores && diag.supportingScores.dreamMatch } });
       // V2 doesn't auto-mark Journey milestones here — diagnosis is the
       // canonical "diagnosis done" marker (DarbiJourney._hasDiag() reads it).
       _v2PaintDiagnosis(app, diag);
@@ -5642,7 +5644,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
         + '<div class="v2-cvb-edit-modal" id="v2CvbEditModal">'
         +   '<div class="v2-cvb-edit-card">'
         +     '<div class="v2-cvb-edit-h" id="v2CvbEditTitle">تعديل القسم</div>'
-        +     '<div class="v2-cvb-edit-hint">حرّر المحتوى. تقدر تستخدم HTML بسيط (<b>, <i>, <ul>, <li>). الأقواس [...] تحتاج تعبئة من بياناتك.</div>'
+        +     '<div class="v2-cvb-edit-hint">عدّل النص مباشرة. ابدأ السطر بعلامة - عشان يصير نقطة. الأقواس [...] تحتاج تعبئة من بياناتك.</div>'
         +     '<textarea class="v2-cvb-edit-textarea" id="v2CvbEditTextarea"></textarea>'
         +     '<div class="v2-cvb-edit-actions">'
         +       '<button class="v2-btn v2-btn-primary" onclick="v2CvbEditApply()">حفظ التعديل</button>'
@@ -5664,6 +5666,28 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     paint();
   }
 
+  // The section is stored as HTML, but the person edits plain text: bullets are lines that start with "-".
+  function _v2CvHtmlToText(html){
+    var src = String(html || '')
+      .replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|h[1-6]|ul|ol)>/gi, '\n')
+      .replace(/<li[^>]*>/gi, '- ').replace(/<\/li>/gi, '\n');
+    var text;
+    try { text = new DOMParser().parseFromString(src, 'text/html').body.textContent || ''; }   // inert document: nothing runs or loads
+    catch(e){ text = src.replace(/<[^>]+>/g, ''); }
+    return text.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').replace(/^\s+|\s+$/g, '');
+  }
+  function _v2CvTextToHtml(text){
+    var out = '', inList = false;
+    String(text || '').split('\n').forEach(function(line){
+      var t = line.trim();
+      if (!t) { if (inList) { out += '</ul>'; inList = false; } return; }
+      var m = t.match(/^[-•*·▪]\s*(.+)$/);
+      if (m) { if (!inList) { out += '<ul>'; inList = true; } out += '<li>' + escapeHtml(m[1]) + '</li>'; }
+      else { if (inList) { out += '</ul>'; inList = false; } out += '<p>' + escapeHtml(t) + '</p>'; }
+    });
+    if (inList) out += '</ul>';
+    return out;
+  }
   function v2CvbEditSection(sectionId){
     var s = window.__v2Cvb;
     if (!s) return;
@@ -5673,14 +5697,14 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     var current = (s.edits[sectionId] && s.edits[sectionId].html) || section.html;
     s.currentEditId = sectionId;
     document.getElementById('v2CvbEditTitle').textContent = 'تعديل: ' + section.title;
-    document.getElementById('v2CvbEditTextarea').value = current;
+    document.getElementById('v2CvbEditTextarea').value = _v2CvHtmlToText(current);   // plain text, not tags
     document.getElementById('v2CvbEditModal').classList.add('is-open');
   }
   function v2CvbEditApply(){
     var s = window.__v2Cvb;
     if (!s || !s.currentEditId) return;
-    var newHtml = document.getElementById('v2CvbEditTextarea').value || '';
-    s.edits[s.currentEditId] = { html: newHtml };
+    var newText = document.getElementById('v2CvbEditTextarea').value || '';
+    s.edits[s.currentEditId] = { html: _v2CvTextToHtml(newText), plain: newText.trim() };
     v2CvbEditCancel();
     s.repaint();
   }
@@ -5715,7 +5739,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       out = cv.sections.map(function(sec){
         var html = s.edits[sec.id] && s.edits[sec.id].html;
         var plain;
-        if (html != null) plain = html.replace(/<[^>]+>/g, '').replace(/\s+\n/g, '\n').trim();
+        if (html != null) plain = (s.edits[sec.id].plain != null) ? s.edits[sec.id].plain : _v2CvHtmlToText(html);
         else plain = sec.plain;
         return '== ' + sec.title + ' ==\n' + plain;
       }).join('\n\n');
@@ -7413,6 +7437,14 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     interview_prep_started:       { emoji:'', text:'بدأت تدريب مقابلة' },
     interview_session_completed:  { emoji:'', text:'خلّصت جلسة تدريب مقابلة' },
     accepted:                     { emoji:'', text:'تم قبولك' },
+    cv_written:                   { emoji:'', text:'كتب لك دربي سيرتك' },
+    cv_edited_with_assistant:     { emoji:'', text:'عدّلت سيرتك مع المساعد' },
+    cv_edited_by_hand:            { emoji:'', text:'عدّلت سيرتك بنفسك' },
+    cv_pdf_export:                { emoji:'', text:'حمّلت سيرتك PDF' },
+    cv_built_from_questions:      { emoji:'', text:'بنيت سيرتك من الأسئلة' },
+    job_opened:                   { emoji:'', text:'فتحت رابط وظيفة' },
+    assessment_submitted:         { emoji:'', text:'خلّصت اختبار جاهزية' },
+    signup:                       { emoji:'', text:'سوّيت حسابك' },
     rejected:                     { emoji:'', text:'سجّلت رفض — نتعلم منه' },
   };
 
@@ -7528,6 +7560,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
           + '<div class="v2-db-section">'
           +   '<div class="v2-db-section-h">نشاطك الأخير</div>'
           +   '<ul class="v2-db-activity">' + rows + '</ul>'
+          +   '<button type="button" class="v2-btn v2-btn-secondary" style="width:100%;margin-top:10px" onclick="v2Go(\'#/timeline\')">شوف سجل تقدّمي كامل ←</button>'
           + '</div>';
       }
     }
@@ -7924,6 +7957,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       try { sessionStorage.setItem('darbi_as_rep_' + run.sid, JSON.stringify({ report: r.d.report, readiness: r.d.readiness || null })); } catch(e){}
       if (run.kind === 'interview' && typeof DarbiJourney !== 'undefined' && DarbiJourney.markInterviewLogged) { try { DarbiJourney.markInterviewLogged(); } catch(e){} }
       AS.rep = { sid: run.sid, report: r.d.report, readiness: r.d.readiness || null };
+      try { if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'assessment_submitted', payload: { test: r.d.report.test, title: asT(r.d.report.title, 'ar'), pct: r.d.report.result && r.d.report.result.pct, evaluator: r.d.report.evaluator || null, readiness: r.d.readiness ? r.d.readiness.score : null } }); } catch(e){}
       AS.run = null;
       v2Go('#/interview?v=report&sid=' + run.sid, true);
     });
@@ -8608,7 +8642,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
           if (!seen[k]) { seen[k] = 1; ev.push(e); }
         });
         ev.sort(function(a, b){ return ms(a.ts) - ms(b.ts); });
-        return { events: ev.slice(-100), taskStatus: Object.assign({}, server.taskStatus || {}, local.taskStatus || {}), lastUpdated: new Date().toISOString() };
+        return { events: ev.slice(-300), taskStatus: Object.assign({}, server.taskStatus || {}, local.taskStatus || {}), lastUpdated: new Date().toISOString() };
       }
       return null;
     }
@@ -8761,6 +8795,65 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     }
     window.addEventListener('DOMContentLoaded', function(){ DarbiSync.start(); });
   })();
+  </script>
+  <!-- ════════════════════════════════════════════════════════════════════
+       PROGRESS TIMELINE (#/timeline) — the person's own dated log of what
+       they did in Darbi, read from DarbiBrain. A record, not AI: it shows
+       facts (what, when, and the score where there is one) and nothing else.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <style>
+    .tl-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+    .tl-stat{background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px 8px;text-align:center}
+    .tl-stat b{display:block;font-family:var(--display);font-size:22px;font-weight:700;color:var(--ink);line-height:1.2}
+    .tl-stat span{font-size:12px;color:var(--ink-2)}
+    .tl-day{font-family:var(--display);font-size:14px;font-weight:700;color:var(--ink);margin:16px 0 6px}
+    .tl-list{list-style:none;margin:0;padding:0;background:#fff;border:1px solid var(--line);border-radius:6px}
+    .tl-list li{display:flex;gap:10px;align-items:baseline;padding:11px 14px;border-bottom:1px solid var(--line);font-size:14px;line-height:1.6}
+    .tl-list li:last-child{border-bottom:none}
+    .tl-time{flex:none;font-size:12px;color:var(--ink-2);min-width:44px;font-variant-numeric:tabular-nums}
+    .tl-what{flex:1;min-width:0;color:var(--ink)}
+    .tl-what small{display:block;font-size:12.5px;color:var(--ink-2)}
+  </style>
+  <script>
+  /* eslint-disable */
+  function _tlDetail(e){
+    var p = e.payload || {};
+    if (e.type === 'assessment_submitted') return (p.title || '') + (p.pct != null ? ' · النتيجة ' + p.pct + '%' : '') + (p.evaluator === 'short' ? ' · التقييم المختصر' : '');
+    if (e.type === 'diagnosis_done') return (p.role || '') + (p.cv != null ? ' · قوة السيرة ' + p.cv + '%' : '') + (p.source === 'ai' ? '' : ' · تقدير مبدئي');
+    if (e.type === 'cv_written') return p.ai === false ? 'نسخة مرتّبة بدون ذكاء اصطناعي' : '';
+    if (e.type === 'jobs_searched') return (e.count != null || p.count != null) ? '' : '';
+    return '';
+  }
+  function renderTimeline(app, route){
+    var events = (typeof DarbiBrain !== 'undefined' && DarbiBrain.allEvents) ? DarbiBrain.allEvents() : [];
+    var shown = events.filter(function(e){ return V2_DB_EVENT_LABELS[e.type]; }).slice().reverse();
+    var h = '<h2 class="v2-h1">سجل <span class="v2-accent">تقدّمي</span></h2>'
+      + '<p class="v2-sub">كل خطوة سويتها في دربي بتاريخها. هذا سجل لك، مو تقييم ولا توقع.' + (V2User.isLoggedIn() ? ' محفوظ في حسابك.' : ' سجّل دخول عشان ينحفظ في حسابك.') + '</p>';
+    if (!shown.length) {
+      app.innerHTML = h + '<div class="v2-empty-state"><div class="v2-empty-emoji"></div><h3>ما فيه خطوات بعد</h3><p>ابدأ بالتشخيص، وكل خطوة تسويها تنكتب هنا.</p>'
+        + '<button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/track\')">ابدأ التشخيص ←</button></div>';
+      return;
+    }
+    var count = function(types){ return events.filter(function(e){ return types.indexOf(e.type) !== -1; }).length; };
+    var apps = (typeof Applications !== 'undefined' && Applications.stats) ? Applications.stats().total : count(['application_logged']);
+    var days = {}; events.forEach(function(e){ if (e.ts) days[String(e.ts).slice(0, 10)] = 1; });
+    h += '<div class="tl-stats">'
+      + '<div class="tl-stat"><b>' + Object.keys(days).length + '</b><span>أيام نشاط</span></div>'
+      + '<div class="tl-stat"><b>' + apps + '</b><span>تقديمات</span></div>'
+      + '<div class="tl-stat"><b>' + count(['assessment_submitted', 'interview_session_completed']) + '</b><span>تدريب مكتمل</span></div>'
+      + '</div>';
+    var lastDay = '';
+    shown.forEach(function(e, i){
+      var d = e.ts ? new Date(e.ts) : null;
+      var day = d ? d.toLocaleDateString('ar-SA-u-nu-latn-ca-gregory', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '';
+      if (day !== lastDay) { h += (i ? '</ul>' : '') + '<div class="tl-day">' + escapeHtml(day) + '</div><ul class="tl-list">'; lastDay = day; }
+      var detail = _tlDetail(e);
+      h += '<li><span class="tl-time">' + (d ? escapeHtml(d.toLocaleTimeString('ar-SA-u-nu-latn', { hour: '2-digit', minute: '2-digit' })) : '') + '</span>'
+        + '<span class="tl-what">' + escapeHtml(V2_DB_EVENT_LABELS[e.type].text) + (detail ? '<small>' + escapeHtml(detail) + '</small>' : '') + '</span></li>';
+    });
+    h += '</ul><p class="v2-input-hint" style="margin-top:12px">نحتفظ بآخر 300 خطوة.</p>';
+    app.innerHTML = h;
+  }
   </script>
 </body>
 </html>
