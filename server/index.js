@@ -62,6 +62,7 @@ app.get('/', (req, res) => {
 app.get('/v1', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
+require('./legal').mount(app);
 app.use(express.static(path.join(__dirname, '../public'), { index: false }));
 
 // ─── DB (PostgreSQL) ──────────────────────────────────────────────────────────
