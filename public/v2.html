@@ -2126,7 +2126,7 @@
     var whyMsg = { apply: 'جهّزنا لك تقديمك الأول مجاناً. للتقديمات الباقية تحتاج خطة.', interview: 'جرّبت أول سؤالين من التدريب مجاناً. الأسئلة الباقية والتقييم الكامل في الخطط.' }[why] || '';
     var _tu = V2User.user();
     if (V2User.isPaid() && _tu && _tu.trial && _tu.trial.active) {
-      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">🎁</div><h3>تجربتك المجانية فعّالة</h3><p>باقي ' + _tu.trial.days_left + ' أيام وكل المميزات مفتوحة لك. الدفع الإلكتروني يتفعّل قريباً — نبلغك أول ما يفتح.</p><button class="v2-btn v2-btn-primary" onclick="v2Go('#/dashboard')">لوحتي ←</button></div>';
+      app.innerHTML = '<div class="v2-empty-state"><div class="v2-empty-emoji">🎁</div><h3>تجربتك المجانية فعّالة</h3><p>باقي ' + _tu.trial.days_left + ' أيام وكل المميزات مفتوحة لك. الدفع الإلكتروني يتفعّل قريباً — نبلغك أول ما يفتح.</p><button class="v2-btn v2-btn-primary" onclick="v2Go(\'#/dashboard\')">لوحتي ←</button></div>';
       return;
     }
     if (V2User.isPaid()) {
