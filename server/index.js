@@ -421,6 +421,24 @@ try {
   console.error('[jobs] failed to register routes:', e.message);
 }
 
+// Reads the account from the Bearer token when one is sent; never rejects.
+// For public routes that give signed-in people a higher allowance.
+function optionalUser(req) {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    return token ? jwt.verify(token, JWT_SECRET) : null;
+  } catch { return null; }
+}
+
+// ─── CV WRITER (Darbi writes the stronger CV; nothing invented) ──────────────
+//   GET  /api/darbi/cv/templates · POST /api/darbi/cv/generate · POST /api/darbi/cv/edit
+try {
+  require('./cvWriter').register(app, { rateLimit, getIP, optionalUser, safeAiErrorSummary });
+  console.log('[cv-writer] routes registered');
+} catch (e) {
+  console.error('[cv-writer] failed to register routes:', e.message);
+}
+
 // ─── ANALYSIS ─────────────────────────────────────────────────────────────────
 app.post('/api/darbi/analyze', authMiddleware, async (req, res) => {
   const { targetRole, cvText, jobDescription = '' } = req.body;

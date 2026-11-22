@@ -3024,6 +3024,7 @@
     '#/quiz':         { title: 'أسئلة سريعة',          step: 1, back: '#/cv-upload',  render: 'renderQuiz' },
     '#/diagnosis':    { title: 'تشخيصك',                step: 2, back: '#/quiz',      render: 'renderDiagnosis' },
     '#/cv-output':    { title: 'سيرتك جاهزة',           step: 2, back: '#/diagnosis',     render: 'renderCvOutput' },
+    '#/cv-writer':    { title: 'دربي يكتب سيرتك',       step: 2, back: '#/dashboard',     render: 'renderCvWriter' },
     '#/cv-templates': { title: 'اختر قالب سيرتك',       step: 2, back: '#/diagnosis',     render: 'renderCvTemplates' },
     '#/cv-builder':   { title: 'بناء سيرتك',            step: 2, back: '#/cv-output',     render: 'renderCvBuilder' },
     '#/jobs':         { title: 'وظائف لك',              step: 3, back: '#/diagnosis', render: 'renderJobs' },
@@ -3042,7 +3043,7 @@
   // ── Map DarbiJourney.key → V2 route. Used when callers want to advance.
   var V2_ROUTE_FOR_KEY = {
     start_diagnosis: '#/track', // new users land on Track Picker first
-    cv_audit:        '#/cv-output',
+    cv_audit:        '#/cv-writer',
     job_matches:     '#/jobs',
     apply_package:   '#/jobs',
     apply_now:       '#/jobs',
@@ -3113,7 +3114,7 @@
   }
   // One navigation system (UX pass 2026-11-18): header links + labelled menu sheet + bottom tabs share v2NavModel().
   var V2_NO_TABBAR = { '#/landing':1, '#/signup':1, '#/login':1, '#/track':1, '#/dream':1, '#/location':1, '#/cv-upload':1, '#/cv-build':1, '#/quiz':1 };
-  var V2_TAB_OF = { '#/dashboard':'#/dashboard', '#/diagnosis':'#/dashboard', '#/cv-output':'#/dashboard', '#/cv-templates':'#/dashboard', '#/cv-builder':'#/dashboard',
+  var V2_TAB_OF = { '#/dashboard':'#/dashboard', '#/diagnosis':'#/dashboard', '#/cv-output':'#/dashboard', '#/cv-writer':'#/dashboard', '#/cv-templates':'#/dashboard', '#/cv-builder':'#/dashboard',
     '#/jobs':'#/jobs', '#/apply':'#/jobs', '#/tracker':'#/tracker', '#/interview':'#/interview', '#/account':'more', '#/invites':'more', '#/pricing':'more', '#/legal':'more' };
   var V2_TAB_ICONS = {
     '#/dashboard': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
@@ -3158,7 +3159,7 @@
       actHtml = m.logged
         ? v2NavLink('حسابي', '#/account', bare === '#/account', 'v2-act-link') + '<a href="#" class="v2-act-link v2-hide-md" onclick="v2Logout();return false;">خروج</a>'
         : v2NavLink('دخول', '#/login', false, 'v2-act-link') + '<a href="#/track" class="v2-hd-cta v2-hide-md" onclick="v2Go(\'#/track\');return false;">ابدأ مجاناً</a>';
-      var jr = [['لوحتي','#/dashboard'],['تشخيصي','#/diagnosis'],['سيرتي','#/cv-output'],['الوظائف','#/jobs'],['تقديماتي','#/tracker'],['المقابلة (جاهزية التوظيف)','#/interview']];
+      var jr = [['لوحتي','#/dashboard'],['تشخيصي','#/diagnosis'],['سيرتي','#/cv-writer'],['الوظائف','#/jobs'],['تقديماتي','#/tracker'],['المقابلة (جاهزية التوظيف)','#/interview']];
       var rest = [['الأسعار والخطط','#/pricing'],['دعواتي','#/invites'],['حسابي','#/account'],['الخصوصية والشروط','#/legal']];
       var lk = function(a){ return v2NavLink(a[0], a[1], bare === a[1]); };
       sheetBody = '<div class="v2-sheet-grp"><h2>رحلتي</h2>' + jr.map(lk).join('') + '</div>'
@@ -5389,7 +5390,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
     // ── Hero — calm, factual. NOT "اختر قالب".
     var heroHtml = ''
       + '<div class="v2-cvo-hero">'
-      +   '<div class="v2-cvo-hero-eyebrow">✓ سيرتك جاهزة</div>'
+      +   '<div class="v2-cvo-hero-eyebrow">مسودة سريعة</div>'
       +   '<div class="v2-cvo-hero-h">' + escapeHtml(dreamRole) + '</div>'
       +   '<div class="v2-cvo-hero-sub">صياغة من تشخيصك — قالب: <b>' + escapeHtml(templateAr) + '</b></div>'
       + '</div>';
@@ -5424,7 +5425,13 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       +   '<button class="v2-cvo-cta-btn" onclick="v2CvoSaveAndGoJobs()">اعرض الوظائف المناسبة ←</button>'
       + '</div>';
 
-    app.innerHTML = heroHtml + chipsHtml + copyHtml + honestHtml
+    var writerHtml = ''
+      + '<div class="v2-card" style="border:1.5px solid #0C6B4A">'
+      +   '<div style="font-family:var(--display);font-weight:700;font-size:16px;margin-bottom:4px">خل دربي يكتب لك سيرة أقوى</div>'
+      +   '<div style="font-size:13.5px;color:#565E5B;line-height:1.75;margin-bottom:12px">هذي مسودة سريعة من تشخيصك. الكاتب يسألك ٤ أسئلة عن هدفك ويكتب سيرة كاملة من معلوماتك، بالعربي والإنجليزي، بـ ٤ قوالب وتحميل PDF.</div>'
+      +   '<button type="button" class="v2-btn v2-btn-primary" onclick="v2Go(\'#/cv-writer\')">اكتب سيرتي مع دربي ←</button>'
+      + '</div>';
+    app.innerHTML = writerHtml + heroHtml + chipsHtml + copyHtml + honestHtml
       + '<div class="v2-cvo-preview">' + sectionsHtml + '</div>'
       + editHtml + ctaHtml
       // Missing-field modal (hidden until v2CvoOpenMissing is called)
@@ -8033,6 +8040,454 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       }
       el.innerHTML = h + '<div style="margin-top:14px"><button class="as-btn ghost" onclick="v2Go(\'#/interview\')">رجوع للخطة</button></div></div>';
     });
+  }
+  </script>
+  <!-- ════════════════════════════════════════════════════════════════════
+       CV WRITER (#/cv-writer) — Darbi writes the stronger CV from the
+       person's own information. 4 short questions → full CV (Arabic /
+       English) → 4 ATS templates → edit with the assistant or by hand →
+       PDF via the browser's print. Server: /api/darbi/cv/* (GPT-4o, with a
+       clearly labelled non-AI fallback). Nothing is invented.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <style>
+    .cvw-q{margin-bottom:16px}
+    .cvw-q:last-child{margin-bottom:0}
+    .cvw-q .v2-chip{font-size:13.5px;padding:9px 14px;min-height:40px;display:inline-flex;align-items:center}
+    .cvw-src{width:100%;min-height:170px;padding:13px 14px;border:1.5px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);font-size:14.5px;line-height:1.8;resize:vertical}
+    .cvw-src:focus{outline:none;border-color:var(--green)}
+    .cvw-note{font-size:13px;color:var(--ink-2);line-height:1.7;margin-top:8px}
+    .cvw-err{font-size:13.5px;color:#A3301F;font-weight:600;margin:10px 0;line-height:1.7}
+    .cvw-flag{border:1px solid var(--line);border-inline-start:3px solid var(--green);background:#fff;padding:12px 14px;border-radius:4px;font-size:13.5px;line-height:1.75;margin-bottom:12px;color:var(--ink)}
+    .cvw-flag.is-plain{border-inline-start-color:#B7791F;background:#FFFBF2}
+    .cvw-flag b{font-weight:700}
+    .cvw-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .cvw-tpls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+    .cvw-tpl{position:relative;text-align:start;background:#fff;border:1.5px solid var(--line);border-radius:6px;padding:11px 12px;min-height:76px;cursor:pointer}
+    .cvw-tpl.is-on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+    .cvw-tpl-n{font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--ink);display:block}
+    .cvw-tpl-d{font-size:12px;color:var(--ink-2);line-height:1.6;display:block;margin-top:3px}
+    .cvw-tpl-rec{display:inline-block;font-size:11px;font-weight:600;color:#fff;background:var(--green);border-radius:3px;padding:1px 7px;margin-bottom:4px}
+    .cvw-miss label{display:block;font-size:13.5px;font-weight:600;margin:10px 0 6px;color:var(--ink)}
+    .cvw-miss input{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:6px;background:#fff;font-size:14.5px}
+    .cvw-assist{display:flex;gap:8px;margin-top:8px}
+    .cvw-assist input{flex:1;min-width:0;padding:12px 13px;border:1.5px solid var(--line);border-radius:6px;background:#fff;font-size:14.5px}
+    .cvw-assist button{flex:none;min-height:46px;padding:0 18px;border-radius:6px;background:var(--ink);color:#fff;font-weight:700;font-size:14px}
+    .cvw-assist button:disabled{opacity:.5}
+    .cvw-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
+    .cvw-actions .v2-btn{width:100%;padding:12px 10px;font-size:14px;min-height:46px}
+    .cvw-sheetwrap{overflow-x:auto;margin:12px 0}
+
+    /* The CV sheet. One column of real text in every template (ATS-friendly). */
+    .cvw-paper{background:#fff;color:#14181A;border:1px solid var(--line);padding:26px 22px;font-family:var(--body);font-size:13.5px;line-height:1.75;text-align:start;word-break:break-word}
+    .cvw-paper[dir="ltr"]{font-family:'IBM Plex Sans Arabic','Segoe UI',system-ui,Arial,sans-serif}
+    .cvw-name{font-family:var(--display);font-size:24px;font-weight:700;line-height:1.3;color:#14181A}
+    .cvw-headline{font-size:14.5px;font-weight:600;color:#14181A;margin-top:2px}
+    .cvw-contact{font-size:12.5px;color:#565E5B;margin-top:5px}
+    .cvw-contact span+span::before{content:" · "}
+    .cvw-sec{margin-top:16px}
+    .cvw-sec-h{font-family:var(--display);font-size:13.5px;font-weight:700;color:#14181A;border-bottom:1.5px solid #14181A;padding-bottom:3px;margin-bottom:7px}
+    .cvw-item{margin-bottom:10px}
+    .cvw-item:last-child{margin-bottom:0}
+    .cvw-item-h{font-weight:700;color:#14181A}
+    .cvw-item-m{font-size:12.5px;color:#565E5B}
+    .cvw-paper ul{margin:4px 0 0;padding-inline-start:18px}
+    .cvw-paper li{margin-bottom:3px}
+    .cvw-inline{margin:0}
+    .cvw-paper [contenteditable]{outline:1px dashed #0C6B4A;outline-offset:2px;background:#F3F8F5;border-radius:2px;min-width:30px;display:inline-block}
+    .cvw-paper li[contenteditable],.cvw-paper p[contenteditable],.cvw-paper div[contenteditable]{display:block}
+    /* template: graduate — green section rules */
+    .cvw-t-graduate .cvw-name{color:#084C35}
+    .cvw-t-graduate .cvw-sec-h{color:#084C35;border-bottom:2px solid #0C6B4A}
+    /* template: skills-first — side-bar headings */
+    .cvw-t-skills .cvw-sec-h{border-bottom:none;border-inline-start:3px solid #0C6B4A;padding:0 8px;background:#F5F3EC;line-height:2}
+    .cvw-t-skills .cvw-head{border-bottom:1px solid var(--line);padding-bottom:10px}
+    /* template: executive — centred head, spaced headings */
+    .cvw-t-executive .cvw-head{text-align:center;border-bottom:3px double #14181A;padding-bottom:12px}
+    .cvw-t-executive .cvw-name{font-size:27px}
+    .cvw-t-executive .cvw-sec-h{text-align:center;border-bottom:1px solid #14181A;border-top:1px solid #14181A;padding:3px 0;font-size:13px}
+    @media (max-width:420px){ .cvw-paper{padding:20px 15px;font-size:13px} .cvw-name{font-size:21px} .cvw-tpls{grid-template-columns:1fr 1fr} }
+
+    #cvwPrintRoot{display:none}
+    @media print{
+      @page{size:A4;margin:13mm}
+      body.cvw-print{background:#fff!important}
+      body.cvw-print > *:not(#cvwPrintRoot){display:none!important}
+      body.cvw-print #cvwPrintRoot{display:block!important}
+      body.cvw-print .cvw-paper{border:none;padding:0;font-size:11.5pt;line-height:1.6}
+      body.cvw-print .cvw-item,body.cvw-print li{break-inside:avoid}
+      body.cvw-print .cvw-sec-h{break-after:avoid}
+      body.cvw-print .cvw-t-skills .cvw-sec-h{background:none}
+    }
+  </style>
+  <script>
+  /* eslint-disable */
+  var V2CvW = (function(){
+    var KEY = 'darbi_cv_writer'; // the written CV + the answers that produced it (also saved to the account)
+    function read(){ try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch(e){ return {}; } }
+    return {
+      KEY: KEY,
+      get: read,
+      set: function(patch){
+        var s = Object.assign(read(), patch || {}, { updatedAt: new Date().toISOString() });
+        try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){}
+        if (typeof DarbiSync !== 'undefined') DarbiSync.touch('cv_writer');
+        return s;
+      },
+      clear: function(){ try { localStorage.removeItem(KEY); } catch(e){} if (typeof DarbiSync !== 'undefined') DarbiSync.touch('cv_writer'); }
+    };
+  })();
+
+  var CVW_GOALS = [['new_grad','خريج جديد'],['promotion','ترقية'],['career_change','تغيير مجال'],['target_role','وظيفة محددة']];
+  var CVW_LANGS = [['ar','عربي'],['en','English'],['both','الاثنين']];
+  var CVW_TPLS = [
+    { id:'classic',   ar:'كلاسيكي',    desc:'الخبرة أول. الأنسب لأنظمة الفرز الآلي.', order:['summary','experience','education','skills','certifications','projects','languages'] },
+    { id:'graduate',  ar:'خريج',       desc:'التعليم والمشاريع أول. للخريج الجديد.', order:['summary','education','projects','experience','skills','certifications','languages'] },
+    { id:'skills',    ar:'مهارات أول', desc:'المهارات المنقولة أول. لتغيير المجال.', order:['summary','skills','experience','projects','education','certifications','languages'] },
+    { id:'executive', ar:'قيادي',      desc:'ملخص قوي ثم الإنجازات. للترقية.', order:['summary','experience','skills','education','certifications','languages','projects'] }
+  ];
+  var CVW_HEAD = {
+    ar: { summary:'الملخص المهني', experience:'الخبرات العملية', education:'التعليم', skills:'المهارات', certifications:'الشهادات والدورات', projects:'المشاريع', languages:'اللغات', present:'حتى الآن' },
+    en: { summary:'Professional Summary', experience:'Experience', education:'Education', skills:'Skills', certifications:'Certifications', projects:'Projects', languages:'Languages', present:'Present' }
+  };
+  var cvwBusy = false, cvwEditMode = false, cvwMsg = '', cvwErr = '';
+
+  function cvwTpl(id){ for (var i = 0; i < CVW_TPLS.length; i++) if (CVW_TPLS[i].id === id) return CVW_TPLS[i]; return CVW_TPLS[0]; }
+  function cvwE(s){ return escapeHtml(s == null ? '' : String(s)); }
+  // A text node the person can edit by hand: data-p is its path inside the CV object.
+  function cvwT(tag, path, text, cls){
+    return '<' + tag + (cls ? ' class="' + cls + '"' : '') + ' data-p="' + path + '"' + (cvwEditMode ? ' contenteditable="true" spellcheck="false"' : '') + '>' + cvwE(text) + '</' + tag + '>';
+  }
+
+  // ── CV object → HTML sheet (same markup for screen and print) ───────────
+  function cvwSheet(cv, lang, tplId){
+    var H = CVW_HEAD[lang] || CVW_HEAD.ar, tpl = cvwTpl(tplId), c = cv.contact || {}, h = '';
+    var contact = [['contact.city', c.city], ['contact.phone', c.phone], ['contact.email', c.email], ['contact.linkedin', c.linkedin]]
+      .filter(function(x){ return x[1] || cvwEditMode; })
+      .map(function(x){ return cvwT('span', x[0], x[1] || ''); }).join('');
+    h += '<div class="cvw-head">' + cvwT('div', 'name', cv.name || (cvwEditMode ? '' : ''), 'cvw-name')
+      + ((cv.headline || cvwEditMode) ? cvwT('div', 'headline', cv.headline, 'cvw-headline') : '')
+      + (contact ? '<div class="cvw-contact" dir="' + (lang === 'en' ? 'ltr' : 'rtl') + '">' + contact + '</div>' : '') + '</div>';
+    var sec = {
+      summary: function(){ return cv.summary ? cvwT('p', 'summary', cv.summary, 'cvw-inline') : ''; },
+      experience: function(){
+        return (cv.experience || []).map(function(e, i){
+          var meta = [e.company, e.location].filter(Boolean).join(' · ');
+          var dates = [e.start, e.end].filter(Boolean).join(' – ');
+          return '<div class="cvw-item">' + (e.title ? cvwT('div', 'experience.' + i + '.title', e.title, 'cvw-item-h') : '')
+            + ((meta || dates) ? '<div class="cvw-item-m">' + cvwE(meta) + (meta && dates ? ' · ' : '') + cvwE(dates) + '</div>' : '')
+            + ((e.bullets || []).length ? '<ul>' + e.bullets.map(function(b, j){ return cvwT('li', 'experience.' + i + '.bullets.' + j, b); }).join('') + '</ul>' : '')
+            + '</div>';
+        }).join('');
+      },
+      education: function(){
+        return (cv.education || []).map(function(e, i){
+          var meta = [e.school, e.year].filter(Boolean).join(' · ');
+          return '<div class="cvw-item">' + cvwT('div', 'education.' + i + '.degree', e.degree, 'cvw-item-h')
+            + (meta ? '<div class="cvw-item-m">' + cvwE(meta) + '</div>' : '')
+            + (e.details ? cvwT('div', 'education.' + i + '.details', e.details) : '') + '</div>';
+        }).join('');
+      },
+      skills: function(){ return (cv.skills || []).length ? '<p class="cvw-inline" data-list="skills"' + (cvwEditMode ? ' contenteditable="true" spellcheck="false"' : '') + '>' + cvwE(cv.skills.join(lang === 'en' ? ', ' : '، ')) + '</p>' : ''; },
+      languages: function(){ return (cv.languages || []).length ? '<p class="cvw-inline" data-list="languages"' + (cvwEditMode ? ' contenteditable="true" spellcheck="false"' : '') + '>' + cvwE(cv.languages.join(lang === 'en' ? ', ' : '، ')) + '</p>' : ''; },
+      certifications: function(){ return (cv.certifications || []).length ? '<ul>' + cv.certifications.map(function(x, i){ return cvwT('li', 'certifications.' + i, x); }).join('') + '</ul>' : ''; },
+      projects: function(){
+        return (cv.projects || []).map(function(p, i){
+          return '<div class="cvw-item">' + (p.name ? cvwT('div', 'projects.' + i + '.name', p.name, 'cvw-item-h') : '')
+            + ((p.bullets || []).length ? '<ul>' + p.bullets.map(function(b, j){ return cvwT('li', 'projects.' + i + '.bullets.' + j, b); }).join('') + '</ul>' : '') + '</div>';
+        }).join('');
+      }
+    };
+    tpl.order.forEach(function(k){
+      var body = sec[k] ? sec[k]() : '';
+      if (body) h += '<section class="cvw-sec"><h2 class="cvw-sec-h">' + H[k] + '</h2>' + body + '</section>';
+    });
+    return '<div class="cvw-paper cvw-t-' + tpl.id + '" id="cvwPaper" dir="' + (lang === 'en' ? 'ltr' : 'rtl') + '" lang="' + (lang === 'en' ? 'en' : 'ar') + '">' + h + '</div>';
+  }
+
+  // ── CV object → plain text (copy / paste into a job form) ───────────────
+  function cvwPlain(cv, lang, tplId){
+    var H = CVW_HEAD[lang] || CVW_HEAD.ar, tpl = cvwTpl(tplId), c = cv.contact || {}, out = [];
+    out.push(cv.name || ''); if (cv.headline) out.push(cv.headline);
+    var ct = [c.city, c.phone, c.email, c.linkedin].filter(Boolean).join(' | '); if (ct) out.push(ct);
+    var sec = {
+      summary: function(){ return cv.summary ? [cv.summary] : []; },
+      experience: function(){ var l = []; (cv.experience || []).forEach(function(e){ l.push([e.title, e.company, e.location, [e.start, e.end].filter(Boolean).join(' - ')].filter(Boolean).join(' | ')); (e.bullets || []).forEach(function(b){ l.push('- ' + b); }); }); return l; },
+      education: function(){ return (cv.education || []).map(function(e){ return [e.degree, e.school, e.year, e.details].filter(Boolean).join(' | '); }); },
+      skills: function(){ return (cv.skills || []).length ? [cv.skills.join(lang === 'en' ? ', ' : '، ')] : []; },
+      languages: function(){ return (cv.languages || []).length ? [cv.languages.join(lang === 'en' ? ', ' : '، ')] : []; },
+      certifications: function(){ return (cv.certifications || []).map(function(x){ return '- ' + x; }); },
+      projects: function(){ var l = []; (cv.projects || []).forEach(function(p){ if (p.name) l.push(p.name); (p.bullets || []).forEach(function(b){ l.push('- ' + b); }); }); return l; }
+    };
+    tpl.order.forEach(function(k){ var l = sec[k] ? sec[k]() : []; if (l.length) { out.push(''); out.push(H[k]); out = out.concat(l); } });
+    return out.filter(function(x, i){ return x !== '' || i > 0; }).join('\n');
+  }
+
+  function cvwSourceDefault(){
+    var s = V2CvW.get(); if (s.sourceText) return s.sourceText;
+    var d = (typeof Diagnosis !== 'undefined') ? Diagnosis.get() : null;
+    var dr = (typeof V2Draft !== 'undefined') ? V2Draft.get() : {};
+    return (d && d.cvText) || (dr && dr.cvText) || '';
+  }
+  function cvwCountryDefault(){
+    var s = V2CvW.get(); if (s.country) return s.country;
+    var dr = (typeof V2Draft !== 'undefined') ? V2Draft.get() : {};
+    var c = _v2CountryByCode((dr && dr.country) || 'SA'); return c ? c.ar : 'السعودية';
+  }
+  function cvwGoalDefault(){
+    var s = V2CvW.get(); if (s.goal) return s.goal;
+    var d = (typeof Diagnosis !== 'undefined') ? Diagnosis.get() : null;
+    var lvl = d && (d.seniorityLevel || (d.intent && d.intent.inferredSeniority));
+    if (lvl === 'fresh_grad') return 'new_grad';
+    return 'target_role';
+  }
+
+  // ── #/cv-writer ─────────────────────────────────────────────────────────
+  function renderCvWriter(app, route){
+    var s = V2CvW.get();
+    var view = v2HashParam('v');
+    if (s.result && s.result.cv && view !== 'setup') return cvwRenderResult(app, s);
+    cvwRenderSetup(app, s);
+  }
+
+  function cvwRenderSetup(app, s){
+    var d = (typeof Diagnosis !== 'undefined') ? Diagnosis.get() : null;
+    var goal = cvwGoalDefault(), lang = s.language || 'ar', country = cvwCountryDefault();
+    var role = s.targetRole != null ? s.targetRole : ((d && d.dreamRole) || '');
+    var chips = function(list, cur, fn){ return list.map(function(x){ return '<span class="v2-chip' + (x[0] === cur ? ' is-on' : '') + '" role="button" tabindex="0" onclick="' + fn + '(\'' + x[0] + '\')">' + x[1] + '</span>'; }).join(''); };
+    var countries = V2_COUNTRIES.map(function(c){ return [c.ar, c.ar]; });
+    app.innerHTML = ''
+      + '<h2 class="v2-h1">دربي يكتب <span class="v2-accent">سيرتك</span></h2>'
+      + '<p class="v2-sub">جاوب ٤ أسئلة قصيرة، ونكتب لك سيرة كاملة وأقوى من معلوماتك أنت. ما نخترع خبرة ولا أرقام، واللي ناقص نسألك عنه.</p>'
+      + '<div class="v2-card">'
+      +   '<div class="cvw-q"><div class="v2-input-label">١. وش هدفك من السيرة؟</div><div class="v2-chip-row" style="margin-top:0">' + chips(CVW_GOALS, goal, 'cvwPick_goal') + '</div></div>'
+      +   '<div class="cvw-q"><label class="v2-input-label" for="cvwRole">٢. الوظيفة اللي تستهدفها</label><input type="text" id="cvwRole" class="v2-input" placeholder="مثال: محاسب، مسؤول موارد بشرية، Software Engineer" value="' + cvwE(role) + '" /></div>'
+      +   '<div class="cvw-q"><div class="v2-input-label">٣. بلد البحث عن الوظيفة</div><div class="v2-chip-row" style="margin-top:0">' + chips(countries, country, 'cvwPick_country') + '</div></div>'
+      +   '<div class="cvw-q"><div class="v2-input-label">٤. لغة السيرة</div><div class="v2-chip-row" style="margin-top:0">' + chips(CVW_LANGS, lang, 'cvwPick_language') + '</div></div>'
+      + '</div>'
+      + '<div class="v2-card">'
+      +   '<label class="v2-input-label" for="cvwSrc">معلوماتك (نكتب السيرة منها فقط)</label>'
+      +   '<textarea id="cvwSrc" class="cvw-src" placeholder="الصق سيرتك الحالية، أو اكتب بكلامك: اسمك ومدينتك وطريقة التواصل، تعليمك، خبراتك أو تدريبك (وين، متى، وش سويت)، مهاراتك، دوراتك.">' + cvwE(cvwSourceDefault()) + '</textarea>'
+      +   '<div class="cvw-note">كل ما كتبت تفاصيل أكثر (تواريخ، أرقام حقيقية، أسماء الجهات) طلعت السيرة أقوى.</div>'
+      + '</div>'
+      + '<div id="cvwStatus">' + (cvwErr ? '<div class="cvw-err">' + cvwE(cvwErr) + '</div>' : '') + '</div>'
+      + '<button type="button" class="v2-btn v2-btn-primary" id="cvwGo" onclick="cvwGenerate()">اكتب سيرتي ←</button>'
+      + (s.result && s.result.cv ? '<div style="text-align:center;margin-top:10px"><a class="v2-link" href="#/cv-writer" onclick="v2Go(\'#/cv-writer\');return false;">رجوع لسيرتي المكتوبة</a></div>' : '');
+    if (!s.goal || !s.country) V2CvW.set({ goal: goal, country: country, language: lang });
+  }
+  function cvwKeep(){
+    var r = document.getElementById('cvwRole'), t = document.getElementById('cvwSrc'), p = {};
+    if (r) p.targetRole = r.value.trim(); if (t) p.sourceText = t.value;
+    V2CvW.set(p);
+  }
+  function cvwPick_goal(v){ cvwKeep(); V2CvW.set({ goal: v }); cvwRenderSetup(document.getElementById('v2-app'), V2CvW.get()); }
+  function cvwPick_country(v){ cvwKeep(); V2CvW.set({ country: v }); cvwRenderSetup(document.getElementById('v2-app'), V2CvW.get()); }
+  function cvwPick_language(v){ cvwKeep(); V2CvW.set({ language: v }); cvwRenderSetup(document.getElementById('v2-app'), V2CvW.get()); }
+
+  async function cvwCall(path, body){
+    var r = await apiFetch(path, { method: 'POST', body: body });
+    var d = await r.json().catch(function(){ return null; });
+    if (!d) d = { success: false, message: 'ما قدرنا نتصل. حاول بعد شوي.' };
+    return d;
+  }
+
+  async function cvwGenerate(answers){
+    if (cvwBusy) return;
+    cvwKeep();
+    var s = V2CvW.get();
+    if (!s.sourceText || s.sourceText.trim().length < 40) {
+      cvwErr = 'اكتب أو الصق معلوماتك أول (تعليمك، خبراتك أو تدريبك، مهاراتك). نكتب السيرة من كلامك فقط.';
+      return cvwRenderSetup(document.getElementById('v2-app'), s);
+    }
+    cvwErr = ''; cvwBusy = true;
+    var st = document.getElementById('cvwStatus'), btn = document.getElementById('cvwGo') || document.getElementById('cvwMissBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'نكتب سيرتك... (قد تأخذ نصف دقيقة)'; }
+    if (st) st.innerHTML = '<div class="cvw-note">نقرأ معلوماتك ونكتب السيرة منها فقط.</div>';
+    var allAnswers = (s.answers || []).concat(answers || []);
+    var d;
+    try {
+      d = await cvwCall('/api/darbi/cv/generate', { goal: s.goal, targetRole: s.targetRole, country: s.country, language: s.language || 'ar', sourceText: s.sourceText, answers: allAnswers });
+    } catch(e) { d = { success: false, message: 'ما قدرنا نتصل. حاول بعد شوي.' }; }
+    cvwBusy = false;
+    if (!d || !d.success || !d.cv) {
+      cvwErr = (d && d.message) || 'ما قدرنا نكتب السيرة الحين. حاول بعد شوي.';
+      if (document.getElementById('cvwSrc')) return cvwRenderSetup(document.getElementById('v2-app'), V2CvW.get());
+      cvwMsg = ''; return cvwRenderResult(document.getElementById('v2-app'), V2CvW.get());
+    }
+    var langs = d.languages || Object.keys(d.cv);
+    var s2 = V2CvW.set({
+      answers: allAnswers,
+      result: { cv: d.cv, languages: langs, ai: !!d.ai, label: d.label || '', missing: d.missing || [], warnings: d.warnings || [], recommendedTemplate: d.recommendedTemplate, recommendReason: d.recommendReason, at: new Date().toISOString() },
+      templateId: d.recommendedTemplate || 'classic', lang: langs[0], prev: null
+    });
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'cv_written', payload: { ai: !!d.ai, goal: s.goal, langs: langs } });
+    if (typeof DarbiJourney !== 'undefined' && DarbiJourney.markCvAuditDone) DarbiJourney.markCvAuditDone();
+    cvwMsg = ''; cvwEditMode = false;
+    if ((location.hash || '').indexOf('v=setup') !== -1) { v2Go('#/cv-writer'); return; }
+    cvwRenderResult(document.getElementById('v2-app'), s2);
+  }
+
+  function cvwRenderResult(app, s){
+    var r = s.result, lang = (r.cv[s.lang] ? s.lang : (r.languages || Object.keys(r.cv))[0]), cv = r.cv[lang];
+    var tplId = s.templateId || r.recommendedTemplate || 'classic';
+    var recTpl = cvwTpl(r.recommendedTemplate);
+    var h = '<h2 class="v2-h1">سيرتك <span class="v2-accent">جاهزة</span></h2>';
+    h += r.ai
+      ? '<div class="cvw-flag">كتبها دربي بالذكاء الاصطناعي من معلوماتك فقط، بدون اختراع خبرة أو أرقام. <b>راجعها قبل الإرسال.</b></div>'
+      : '<div class="cvw-flag is-plain"><b>بدون ذكاء اصطناعي.</b> ' + cvwE(r.label || '') + '</div>';
+    (r.warnings || []).forEach(function(w){ h += '<div class="cvw-flag is-plain">' + cvwE(w) + '</div>'; });
+    if (cvwErr) h += '<div class="cvw-err">' + cvwE(cvwErr) + '</div>';
+
+    if ((r.missing || []).length) {
+      h += '<div class="v2-card cvw-miss"><div class="v2-input-label" style="margin-bottom:0">ناقصنا ' + r.missing.length + ' معلومة عشان السيرة تكمل</div>'
+        + '<div class="cvw-note" style="margin-top:4px">جاوب اللي تعرفه واترك الباقي فاضي. ما نخمّن عنك.</div>'
+        + r.missing.map(function(q, i){ return '<label for="cvwM' + i + '">' + cvwE(q) + '</label><input type="text" id="cvwM' + i + '" data-q="' + cvwE(q) + '" />'; }).join('')
+        + '<button type="button" class="v2-btn v2-btn-secondary" id="cvwMissBtn" style="width:100%;margin-top:12px" onclick="cvwAnswerMissing()">حدّث السيرة بإجاباتي</button></div>';
+    }
+
+    h += '<div class="v2-card"><div class="v2-input-label" style="margin-bottom:2px">القالب</div>'
+      + '<div class="cvw-note" style="margin-top:0"><b>الأنسب لهدفك: ' + cvwE(recTpl.ar) + '.</b> ' + cvwE(r.recommendReason || '') + '</div>'
+      + '<div class="cvw-tpls">' + CVW_TPLS.map(function(t){
+          return '<button type="button" class="cvw-tpl' + (t.id === tplId ? ' is-on' : '') + '" aria-pressed="' + (t.id === tplId) + '" onclick="cvwSetTpl(\'' + t.id + '\')">'
+            + (t.id === r.recommendedTemplate ? '<span class="cvw-tpl-rec">موصى به لك</span>' : '')
+            + '<span class="cvw-tpl-n">' + t.ar + '</span><span class="cvw-tpl-d">' + t.desc + '</span></button>';
+        }).join('') + '</div>';
+    if ((r.languages || []).length > 1) {
+      h += '<div class="v2-input-label" style="margin:14px 0 6px">اللغة</div><div class="cvw-row">'
+        + r.languages.map(function(l){ return '<span class="v2-chip' + (l === lang ? ' is-on' : '') + '" role="button" tabindex="0" onclick="cvwSetLang(\'' + l + '\')">' + (l === 'en' ? 'English' : 'عربي') + '</span>'; }).join('') + '</div>';
+    }
+    h += '</div>';
+
+    h += '<div class="cvw-sheetwrap">' + cvwSheet(cv, lang, tplId) + '</div>';
+
+    h += '<div class="v2-card"><div class="v2-input-label" style="margin-bottom:2px">عدّل مع المساعد</div>'
+      + '<div class="cvw-note" style="margin-top:0">اكتب طلبك بكلامك، مثل: «خله أقصر»، «غيّر السطر الأول في الخبرة»، «أضف أني أتكلم إنجليزي بطلاقة».</div>'
+      + '<div class="cvw-assist"><input type="text" id="cvwAsk" placeholder="وش تبي نغيّر؟" onkeydown="if(event.key===\'Enter\')cvwAssist()" /><button type="button" id="cvwAskBtn" onclick="cvwAssist()">نفّذ</button></div>'
+      + '<div class="v2-chip-row">' + ['خله أقصر','خل الملخص أقوى','رتّب النقاط حسب الأهمية للوظيفة','صحّح الأخطاء الإملائية'].map(function(x){ return '<span class="v2-chip" role="button" tabindex="0" onclick="cvwAssist(\'' + x + '\')">' + x + '</span>'; }).join('') + '</div>'
+      + '<div id="cvwAskMsg" class="cvw-note">' + cvwE(cvwMsg) + (s.prev ? ' <a class="v2-link" style="padding:0 4px" href="#" onclick="cvwUndo();return false;">تراجع عن آخر تعديل</a>' : '') + '</div>'
+      + '<div class="cvw-row" style="margin-top:8px"><button type="button" class="v2-btn v2-btn-secondary" style="width:100%" onclick="cvwToggleEdit()">' + (cvwEditMode ? 'حفظ تعديلاتي ✓' : 'عدّل بنفسك (اضغط على أي سطر)') + '</button></div>'
+      + (cvwEditMode ? '<div class="cvw-note">اضغط على أي سطر في السيرة فوق وعدّله. امسح السطر كامل لحذفه. تعديلك هو المعتمد.</div>' : '')
+      + '</div>';
+
+    h += '<div class="cvw-actions">'
+      + '<button type="button" class="v2-btn v2-btn-primary" onclick="cvwPrint()">حمّل PDF</button>'
+      + '<button type="button" class="v2-btn v2-btn-secondary" id="cvwCopyBtn" onclick="cvwCopy()">انسخ النص</button>'
+      + '</div>'
+      + '<div class="cvw-note" style="margin-top:-6px">«حمّل PDF» يفتح نافذة الطباعة: اختر «حفظ كـ PDF».</div>'
+      + '<button type="button" class="v2-btn v2-btn-primary" style="margin-top:14px" onclick="v2Go(\'#/jobs\')">اعرض الوظائف المناسبة ←</button>'
+      + '<div style="text-align:center;margin-top:8px"><a class="v2-link" href="#/cv-writer?v=setup" onclick="v2Go(\'#/cv-writer?v=setup\');return false;">غيّر إجاباتي واكتبها من جديد</a></div>';
+    app.innerHTML = h;
+    cvwErr = '';
+  }
+
+  function cvwSetTpl(id){ if (cvwEditMode) cvwCollectEdits(); V2CvW.set({ templateId: id }); cvwRenderResult(document.getElementById('v2-app'), V2CvW.get()); }
+  function cvwSetLang(l){ if (cvwEditMode) cvwCollectEdits(); V2CvW.set({ lang: l }); cvwRenderResult(document.getElementById('v2-app'), V2CvW.get()); }
+
+  function cvwAnswerMissing(){
+    var ans = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.cvw-miss input[data-q]'), function(i){
+      if (i.value.trim()) ans.push({ question: i.getAttribute('data-q'), answer: i.value.trim() });
+    });
+    if (!ans.length) { cvwErr = 'اكتب إجابة وحدة على الأقل، أو كمّل بدونها.'; return cvwRenderResult(document.getElementById('v2-app'), V2CvW.get()); }
+    cvwGenerate(ans);
+  }
+
+  function cvwCurrent(){
+    var s = V2CvW.get(), r = s.result; if (!r || !r.cv) return null;
+    var lang = r.cv[s.lang] ? s.lang : (r.languages || Object.keys(r.cv))[0];
+    return { s: s, r: r, lang: lang, cv: r.cv[lang], tplId: s.templateId || r.recommendedTemplate || 'classic' };
+  }
+  function cvwStoreCv(cur, cv, keepPrev){
+    var r = JSON.parse(JSON.stringify(cur.r));
+    var prev = keepPrev ? { lang: cur.lang, cv: cur.cv } : cur.s.prev || null;
+    r.cv[cur.lang] = cv;
+    return V2CvW.set({ result: r, prev: prev });
+  }
+
+  async function cvwAssist(preset){
+    if (cvwBusy) return;
+    if (cvwEditMode) { cvwCollectEdits(); cvwEditMode = false; }
+    var cur = cvwCurrent(); if (!cur) return;
+    var input = document.getElementById('cvwAsk');
+    var instruction = (preset || (input && input.value) || '').trim();
+    if (!instruction) { cvwMsg = 'اكتب وش تبي نغيّر.'; return cvwRenderResult(document.getElementById('v2-app'), cur.s); }
+    cvwBusy = true;
+    var btn = document.getElementById('cvwAskBtn'), msg = document.getElementById('cvwAskMsg');
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+    if (msg) msg.textContent = 'ننفّذ طلبك...';
+    var d;
+    try { d = await cvwCall('/api/darbi/cv/edit', { cv: cur.cv, lang: cur.lang, instruction: instruction, sourceText: cur.s.sourceText || '' }); }
+    catch(e) { d = { success: false, message: 'ما قدرنا نتصل. حاول بعد شوي.' }; }
+    cvwBusy = false;
+    if (d && d.success && d.cv) {
+      cvwStoreCv(cur, d.cv, d.changed);
+      cvwMsg = (d.note || 'تم التعديل.') + ((d.warnings || []).length ? ' ' + d.warnings.join(' ') : '');
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'cv_edited_with_assistant' });
+    } else {
+      cvwMsg = (d && d.message) || 'ما قدرنا ننفّذ التعديل الحين.';
+    }
+    cvwRenderResult(document.getElementById('v2-app'), V2CvW.get());
+  }
+  function cvwUndo(){
+    var s = V2CvW.get(); if (!s.prev || !s.result) return;
+    var r = JSON.parse(JSON.stringify(s.result)); r.cv[s.prev.lang] = s.prev.cv;
+    V2CvW.set({ result: r, prev: null }); cvwMsg = 'رجّعنا النسخة السابقة.';
+    cvwRenderResult(document.getElementById('v2-app'), V2CvW.get());
+  }
+
+  // Read the hand edits from the sheet back into the CV object. The person's text wins as typed.
+  function cvwCollectEdits(){
+    var cur = cvwCurrent(), paper = document.getElementById('cvwPaper'); if (!cur || !paper) return;
+    var cv = JSON.parse(JSON.stringify(cur.cv));
+    Array.prototype.forEach.call(paper.querySelectorAll('[data-p]'), function(el){
+      var path = el.getAttribute('data-p').split('.'), val = (el.textContent || '').replace(/\s+/g, ' ').trim(), o = cv;
+      for (var i = 0; i < path.length - 1; i++) { if (o == null) return; o = o[path[i]]; }
+      if (o != null) o[path[path.length - 1]] = val;
+    });
+    Array.prototype.forEach.call(paper.querySelectorAll('[data-list]'), function(el){
+      cv[el.getAttribute('data-list')] = (el.textContent || '').split(/[،,]/).map(function(x){ return x.trim(); }).filter(Boolean);
+    });
+    var clean = function(a){ return (a || []).filter(function(x){ return x && String(x).trim(); }); };
+    (cv.experience || []).forEach(function(e){ e.bullets = clean(e.bullets); });
+    (cv.projects || []).forEach(function(p){ p.bullets = clean(p.bullets); });
+    cv.certifications = clean(cv.certifications);
+    if (JSON.stringify(cv) !== JSON.stringify(cur.cv)) {
+      cvwStoreCv(cur, cv, true);
+      cvwMsg = 'حفظنا تعديلاتك.';
+      if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'cv_edited_by_hand' });
+    }
+  }
+  function cvwToggleEdit(){
+    if (cvwEditMode) cvwCollectEdits();
+    cvwEditMode = !cvwEditMode;
+    cvwRenderResult(document.getElementById('v2-app'), V2CvW.get());
+    if (cvwEditMode) { var p = document.getElementById('cvwPaper'); if (p && p.scrollIntoView) p.scrollIntoView({ block: 'start' }); }
+  }
+
+  function cvwCopy(){
+    if (cvwEditMode) cvwCollectEdits();
+    var cur = cvwCurrent(); if (!cur) return;
+    var text = cvwPlain(cur.cv, cur.lang, cur.tplId), btn = document.getElementById('cvwCopyBtn');
+    var done = function(ok){ if (btn) { btn.textContent = ok ? 'تم النسخ ✓' : 'ما قدرنا ننسخ'; setTimeout(function(){ if (btn) btn.textContent = 'انسخ النص'; }, 1800); } };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ done(true); }).catch(function(){ done(false); });
+    else done(false);
+  }
+
+  // PDF: the browser prints only the CV sheet (print CSS above), A4, real selectable text.
+  function cvwPrint(){
+    if (cvwEditMode) { cvwCollectEdits(); cvwEditMode = false; cvwRenderResult(document.getElementById('v2-app'), V2CvW.get()); }
+    var cur = cvwCurrent(); if (!cur) return;
+    var root = document.getElementById('cvwPrintRoot');
+    if (!root) { root = document.createElement('div'); root.id = 'cvwPrintRoot'; document.body.appendChild(root); }
+    var was = cvwEditMode; cvwEditMode = false;
+    root.innerHTML = cvwSheet(cur.cv, cur.lang, cur.tplId).replace('id="cvwPaper"', '');
+    cvwEditMode = was;
+    var prevTitle = document.title;
+    document.title = ((cur.cv.name || 'CV') + ' - CV').replace(/[\\/:*?"<>|]/g, ' ');
+    document.body.classList.add('cvw-print');
+    var cleanup = function(){ document.body.classList.remove('cvw-print'); document.title = prevTitle; window.removeEventListener('afterprint', cleanup); };
+    window.addEventListener('afterprint', cleanup);
+    if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'cv_pdf_export', payload: { template: cur.tplId, lang: cur.lang } });
+    setTimeout(function(){ try { window.print(); } catch(e){} setTimeout(cleanup, 60000); }, 60);
   }
   </script>
 </body>
