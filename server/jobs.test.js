@@ -166,6 +166,9 @@ test('ranker: field-relevant titles pass, unrelated titles never do', () => {
   const eng = buildSearchProfile({ dreamRole: 'مهندس مدني', location: 'الرياض', cvText: '' });
   assert.strictEqual(eng.functionFamily, 'engineering');
   assert.strictEqual(buildSearchProfile({ dreamRole: 'Software Engineer', cvText: '' }).functionFamily, 'software');
+  // the diagnosis could not classify the role: the jobs layer still detects it from the words
+  assert.strictEqual(buildSearchProfile({ dreamRole: 'مهندس مدني', cvText: '', hintFamily: 'unknown' }).functionFamily, 'engineering');
+  assert.strictEqual(buildSearchProfile({ dreamRole: 'anything', cvText: '', hintFamily: 'sales' }).functionFamily, 'sales');
 });
 
 test('search: country filter, source + apply link on every job, honest fallback when nothing matches', async () => {

@@ -72,9 +72,9 @@ test('bank: sequences recomputed', () => {
   assert.equal(key('log12'), String(6 * 2 - 2));
 });
 
-test('bank: interview has all 20 families + general, 3 questions each, bilingual, track blueprints', () => {
+test('bank: interview has all 21 families (incl. engineering) + general, 3 questions each, bilingual, track blueprints', () => {
   for (const f of engine.FAMILIES) assert.equal(iv.roles[f].q.length, 3, f);
-  assert.equal(engine.FAMILIES.length, 20);
+  assert.equal(engine.FAMILIES.length, 21);
   for (const q of Object.values(iv.roles).flatMap((r) => r.q)) assert.ok(q.en && q.ar);
   for (const q of iv.competency) assert.ok(q.en && q.ar && iv.competencies[q.c]);
   for (const t of engine.TRACKS) assert.ok(iv.mockBlueprint[t].total >= 15 && iv.mockBlueprint[t].total <= 20);

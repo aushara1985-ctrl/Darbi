@@ -460,7 +460,8 @@ function _norm(s) {
 // Detect career family from {dreamRole, cvText, hintFamily}. hintFamily
 // (from /api/darbi/resolve-intent) wins when supplied and valid.
 function detectFamily({ dreamRole, cvText, hintFamily }) {
-  if (hintFamily && FAMILIES[hintFamily]) {
+  // An 'unknown' hint is not a hint: fall through and detect from the words.
+  if (hintFamily && hintFamily !== 'unknown' && FAMILIES[hintFamily]) {
     return { family: hintFamily, confidence: 95, source: 'hint' };
   }
   const dn = _norm(dreamRole);

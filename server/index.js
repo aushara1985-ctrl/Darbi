@@ -472,7 +472,8 @@ app.post('/api/darbi/training/answer', authMiddleware, async (req, res) => {
   if (!answerText) return res.status(400).json({ error: 'Missing answer' });
 
   if (!process.env.OPENAI_API_KEY) {
-    return res.json({ success: true, evaluation: localEvaluate(answerText, evalCtx), local: true });
+    return res.json({ success: true, evaluation: localEvaluate(answerText, evalCtx), local: true, evaluator: 'short', evaluatorLabel: 'التقييم المختصر',
+      evaluatorNote: 'التقييم المختصر: يفحص الطول والأرقام والبنية فقط، لأن التقييم الكامل بالذكاء الاصطناعي غير متاح الحين.' });
   }
 
   try {
@@ -513,10 +514,11 @@ app.post('/api/darbi/training/answer', authMiddleware, async (req, res) => {
       ).catch(() => {});
     }
 
-    res.json({ success: true, evaluation });
+    res.json({ success: true, evaluation, evaluator: 'ai' });
   } catch (e) {
     console.error('[training/answer] AI error:', safeAiErrorSummary(e));
-    res.json({ success: true, evaluation: localEvaluate(answerText, evalCtx), local: true });
+    res.json({ success: true, evaluation: localEvaluate(answerText, evalCtx), local: true, evaluator: 'short', evaluatorLabel: 'التقييم المختصر',
+      evaluatorNote: 'التقييم المختصر: يفحص الطول والأرقام والبنية فقط، لأن التقييم الكامل بالذكاء الاصطناعي ما اشتغل الحين. جرّب مرة ثانية بعد شوي.' });
   }
 });
 

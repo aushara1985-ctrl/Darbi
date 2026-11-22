@@ -131,6 +131,11 @@
       { "id": "rl-lo1", "en": "A shipment is delayed. Who do you tell and what do you do?", "ar": "شحنة تأخرت. من تبلغ وماذا تفعل؟" },
       { "id": "rl-lo2", "en": "How do you keep stock records accurate?", "ar": "كيف تحافظ على دقة سجلات المخزون؟" },
       { "id": "rl-lo3", "en": "What safety rules matter most in a warehouse, and why?", "ar": "ما أهم قواعد السلامة في المستودع ولماذا؟" } ] },
+    "engineering": { "kw": ["drawing", "site", "safety", "specification", "schedule", "inspection", "contractor", "quantity", "مخطط", "موقع", "سلامة", "مواصفات", "جدول", "فحص", "مقاول"], "q": [
+      { "id": "rl-en1", "en": "Describe a problem you found on site or in a design, and how you dealt with it.", "ar": "صف مشكلة لقيتها في الموقع أو في التصميم، وكيف تعاملت معها." },
+      { "id": "rl-en2", "en": "How do you make sure work matches the drawings and specifications?", "ar": "كيف تتأكد أن العمل مطابق للمخططات والمواصفات؟" },
+      { "id": "rl-en3", "en": "A task is behind schedule and safety must not be compromised. What do you do?", "ar": "مهمة متأخرة عن الجدول والسلامة ما تقبل التنازل. وش تسوي؟" }
+    ] },
     "healthcare_admin": { "kw": ["patient", "appointment", "confidential", "record", "clinic", "insurance", "مريض", "موعد", "سرية", "سجل", "عيادة", "تأمين"], "q": [
       { "id": "rl-hc1", "en": "A patient is upset about a long wait. What do you say and do?", "ar": "مريض منزعج من الانتظار الطويل. ماذا تقول وماذا تفعل؟" },
       { "id": "rl-hc2", "en": "Why is patient confidentiality important and how do you protect it?", "ar": "لماذا تعدّ سرية بيانات المريض مهمة وكيف تحميها؟" },

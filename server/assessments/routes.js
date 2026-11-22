@@ -11,6 +11,7 @@ const crypto = require('crypto');
 const engine = require('./engine');
 const S = require('./scoring');
 const { memoryStore, pgStore } = require('./store');
+const aiInterview = require('./aiInterview');
 const { tracksCfg } = engine;
 
 const TIER_ORDER = { free: 0, starter: 1, pro: 2 };
@@ -23,6 +24,9 @@ module.exports = function mountAssessments(app, opts = {}) {
   if (!app || typeof authMiddleware !== 'function') throw new Error('assessments: app and authMiddleware are required');
   const store = opts.store || (db ? pgStore(db) : memoryStore());
   const base = opts.base || '/api/assess';
+  // Interview answers are read by GPT-4o. opts.interviewChat overrides the client (tests);
+  // without a key the report is the structural check, labelled «التقييم المختصر».
+  const interviewChat = () => (opts.interviewChat !== undefined ? opts.interviewChat : aiInterview.chatFromEnv());
 
   // Plan tier. Default: paid -> 'starter' (Darbi stores only free/paid today), unless users.plan exists.
   // Pass opts.getTier(req) => 'free'|'starter'|'pro' to override.
@@ -159,7 +163,15 @@ module.exports = function mountAssessments(app, opts = {}) {
     const usedSec = Math.round((Date.now() - new Date(s.startedAt).getTime()) / 1000);
     const overtime = !!(s.timeLimitSec && usedSec > s.timeLimitSec + 15);
     const result = engine.grade(s, merged, { usedSec });
+    if (result.kind === 'interview') {
+      await aiInterview.applyToResult(s, merged, result, {
+        chat: interviewChat(),
+        role: String(s.family || '').replace(/_/g, ' '),
+        onError: (e) => console.error('[assess] interview AI error:', String((e && e.message) || e).replace(/sk-[A-Za-z0-9_-]{10,}/g, 'sk-***').slice(0, 160)),
+      });
+    }
     const report = engine.buildReport(s, result);
+    if (result.kind === 'interview') { report.evaluator = result.evaluator; report.honestyNote = result.evaluatorNote; }
     report.timing = { usedSec, limitSec: s.timeLimitSec, overtime };
     const pct = typeof result.pct === 'number' ? result.pct : null;
     await store.update(s.id, { status: 'submitted', answers: merged, result, report, submittedAt: nowIso(), pct, overtime });

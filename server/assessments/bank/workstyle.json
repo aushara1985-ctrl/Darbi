@@ -93,7 +93,7 @@
   },
   "roleProfiles": {
     "client_facing": { "families": ["customer_success", "customer_service", "sales", "hospitality", "retail", "marketing"], "target": { "C": [45, 85], "S": [55, 95], "A": [55, 95], "X": [50, 95], "O": [35, 85] } },
-    "analytical": { "families": ["finance", "accounting", "data", "it_cyber", "software"], "target": { "C": [60, 95], "S": [45, 90], "A": [35, 85], "X": [20, 75], "O": [45, 95] } },
+    "analytical": { "families": ["finance", "accounting", "data", "it_cyber", "software", "engineering"], "target": { "C": [60, 95], "S": [45, 90], "A": [35, 85], "X": [20, 75], "O": [45, 95] } },
     "operations_detail": { "families": ["operations", "admin_office", "logistics", "healthcare_admin", "hr", "education"], "target": { "C": [60, 95], "S": [50, 95], "A": [50, 95], "X": [30, 85], "O": [30, 80] } },
     "creative_product": { "families": ["design", "product"], "target": { "C": [40, 85], "S": [45, 90], "A": [45, 90], "X": [40, 90], "O": [60, 100] } },
     "general": { "families": ["general_entry", "unknown"], "target": { "C": [50, 90], "S": [45, 90], "A": [50, 90], "X": [30, 85], "O": [35, 85] } }

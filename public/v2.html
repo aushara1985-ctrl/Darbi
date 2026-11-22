@@ -2996,7 +2996,7 @@
         + (weak ? '<ul class="v2-iv-q-focus" style="margin-top:8px">' + weak + '</ul>' : '')
         + (ev.oneFix ? '<div style="margin-top:6px;font-size:13.5px"><b>إصلاح واحد:</b> ' + escapeHtml(ev.oneFix) + '</div>' : '')
         + improved
-        + (d.local ? '<div class="v2-input-hint" style="margin-top:8px">تقييم مبدئي سريع (طول، أرقام، هيكل). التقييم الذكي الكامل يتفعّل قريباً.</div>' : '')
+        + (d.local ? '<div class="v2-input-hint" style="margin-top:8px"><b>التقييم المختصر.</b> ' + escapeHtml(d.evaluatorNote || 'يفحص الطول والأرقام والبنية فقط، لأن التقييم الكامل بالذكاء الاصطناعي غير متاح الحين.') + '</div>' : '')
         + '</div>';
       if (typeof DarbiBrain !== 'undefined') DarbiBrain.learn({ type: 'interview_answer_evaluated', payload: { id: appId, qIdx: qIdx, score: ev.overallScore } });
     } catch(e) {
@@ -6877,7 +6877,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       +   (worst.length ? '<div style="margin-top:4px"><b>' + (weakCount[worst[0]] >= 2 ? 'أكثر شي يتكرر:' : 'نقاط التحسين:') + '</b> ' + worst.map(escapeHtml).join(' — ') + '</div>' : '')
       +   (lowest && ev[lowest.id].fix ? '<div style="margin-top:4px"><b>ابدأ بهذا:</b> ' + escapeHtml(ev[lowest.id].fix) + '</div>' : '')
       + '</div>'
-      + (anyLocal ? '<div class="v2-input-hint" style="margin-top:10px">التقييم مبدئي سريع (طول، أرقام، هيكل، ومناسبة الإجابة للسؤال). مو بديل عن محاور حقيقي.</div>' : '')
+      + (anyLocal ? '<div class="v2-input-hint" style="margin-top:10px"><b>التقييم المختصر</b> في بعض الإجابات: يفحص الطول والأرقام والبنية فقط. مو بديل عن محاور حقيقي.</div>' : '')
       + '</div>';
   }
   // Average of the user's REAL answer evaluations; before any training there is no number to show.
@@ -7915,7 +7915,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
   function asSubmit(auto){
     var run = AS.run; if (!run) return; if (!auto) asSaveText();
     asStopTimer();
-    var btn = document.getElementById('asSubmit'); if (btn) { btn.disabled = true; btn.textContent = 'نحسب نتيجتك...'; }
+    var btn = document.getElementById('asSubmit'); if (btn) { btn.disabled = true; btn.textContent = 'نحسب نتيجتك... (قد تأخذ نصف دقيقة)'; }
     var body = { answers: {} };
     run.items.forEach(function(it){ var a = run.answers[it.id]; if (a == null) return; if (it.type === 'interview') { var t = typeof a === 'string' ? a : a.text; if (t && t.trim()) body.answers[it.id] = { text: t, seconds: (typeof a === 'object' && a.seconds) || run.secs[it.id] || undefined }; } else if (it.type === 'sjt') { if (a.most != null && a.least != null) body.answers[it.id] = a; } else body.answers[it.id] = a; });
     asApi('/session/' + encodeURIComponent(run.sid) + '/submit', { method: 'POST', body: body }).then(function(r){
@@ -8015,12 +8015,15 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
   function asMcqReport(res, rep, items, L){
     var h = '<section class="as-card"><h2>راجع كل سؤال</h2>';
     var ex = rep.explanations || {};
-    (res.detail || []).forEach(function(d, i){
+    var missed = (res.detail || []).filter(function(d){ return !d.ok; }).length;
+    if (missed) h += '<p class="as-muted" style="margin-bottom:8px">أخطاؤك أول (' + missed + ')، ومع كل سؤال شرح الحل الصحيح.</p>';
+    // keep the original question numbers, show the missed ones first
+    (res.detail || []).map(function(d, i){ return { d: d, i: i }; }).sort(function(a, b){ return (a.d.ok ? 1 : 0) - (b.d.ok ? 1 : 0) || a.i - b.i; }).forEach(function(w){ var d = w.d, i = w.i;
       var it = items[d.id], opts = it && it.opts ? (it.opts[L] || it.opts.ar) : null;
       h += '<div class="as-rev"><div><b>سؤال ' + (i + 1) + '</b> · ' + (d.ok ? '<span class="ok">صحيحة</span>' : '<span class="no">' + (d.given == null ? 'بلا إجابة' : 'خاطئة') + '</span>') + '</div>';
       if (it) h += '<p class="' + (L === 'en' ? 'as-en ' : '') + 'as-muted" style="margin:6px 0;color:var(--ink);font-weight:600">' + asE(asT(it, L)) + '</p>';
       if (opts) h += '<p class="as-muted ' + (L === 'en' ? 'as-en' : '') + '">إجابتك: <b>' + (d.given == null ? '—' : asE(opts[d.given])) + '</b>' + (d.ok ? '' : ' · الصحيحة: <b>' + asE(opts[d.correct]) + '</b>') + '</p>';
-      if (ex[d.id]) h += '<div class="as-expl ' + (L === 'en' ? 'as-en' : '') + '">' + asXtext(ex[d.id], L) + '</div>';
+      if (ex[d.id]) h += '<div class="as-expl ' + (L === 'en' ? 'as-en' : '') + '">' + (d.ok ? '' : '<b>' + (L === 'en' ? 'Why: ' : 'الشرح: ') + '</b>') + asXtext(ex[d.id], L) + '</div>';
       h += '</div>';
     });
     return h + '</section>';
@@ -8043,6 +8046,10 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
   }
   function asIvReport(res, rep, readiness){
     var s = res.summary || {}, L = res.lang || 'ar', h = '';
+    // Say plainly who produced the numbers: the AI reading, or the short structural check.
+    if (res.evaluator === 'ai') h += '<div class="as-info"><b>تقييم دربي بالذكاء الاصطناعي.</b> كل إجابة انقرأت مقابل سؤالها، ومعها نقاط القوة والتحسين ونسخة أقوى من كلامك.</div>';
+    else if (res.evaluator === 'short') h += '<div class="as-note"><b>التقييم المختصر.</b> ' + asE(asT(res.evaluatorNote, 'ar')) + '</div>';
+    if (readiness && readiness.score != null && rep.test !== 'mock_final') h += '<section class="as-card"><h2>جاهزيتك الحين: ' + readiness.score + ' من 100 <span class="as-badge ok">' + asE(AS_BAND[readiness.band] || '') + '</span></h2><p class="as-muted">محسوبة من محاولاتك الفعلية فقط' + (readiness.provisional ? '، وتغطي ' + readiness.coverage + '% من المطلوب (نتيجة مبدئية).' : '.') + '</p></section>';
     if (readiness && rep.test === 'mock_final') h += '<section class="as-card" style="border-color:var(--ind)"><h2>جاهزيتك للتوظيف: ' + readiness.score + ' من 100 <span class="as-badge ok">' + asE(AS_BAND[readiness.band] || '') + '</span></h2><p class="as-muted">' + asE(asT(readiness.note, 'ar')) + '</p></section>';
     h += '<section class="as-card"><div class="as-stats"><div class="as-stat"><b>' + Math.round(s.avg || 0) + '</b><span>متوسط التقييم</span></div><div class="as-stat"><b>' + Math.round(s.answeredPct || 0) + '%</b><span>أسئلة أجبتها</span></div><div class="as-stat"><b>' + (s.count || 0) + '</b><span>أسئلة</span></div></div>';
     if ((s.strongest && s.strongest.length) || (s.weakest && s.weakest.length)) {
@@ -8061,7 +8068,12 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
         if (x.paceWpm) h += '<p class="as-muted">سرعة الكلام التقريبية: ' + Math.round(x.paceWpm) + ' كلمة بالدقيقة.</p>';
         if (x.wrongLanguage) h += '<p class="as-muted" style="color:var(--bad)">لغة الإجابة ما تطابق لغة الجلسة.</p>';
       }
-      if (x.tips && x.tips.length) h += '<ul class="as-steps" style="margin-top:8px">' + x.tips.map(function(t){ return '<li>' + asE(asT(t, 'ar')) + '</li>'; }).join('') + '</ul>';
+      if (x.ai) {
+        if (x.ai.verdict) h += '<p class="as-muted" style="margin-top:6px;color:var(--ink)">' + asE(x.ai.verdict) + '</p>';
+        if (x.ai.strengths && x.ai.strengths.length) h += '<p class="as-muted" style="margin-top:8px"><b>نقاط قوة</b></p><ul class="as-steps">' + x.ai.strengths.map(function(t){ return '<li>' + asE(t) + '</li>'; }).join('') + '</ul>';
+        if (x.ai.improve && x.ai.improve.length) h += '<p class="as-muted" style="margin-top:8px"><b>وش تحسّن</b></p><ul class="as-steps">' + x.ai.improve.map(function(t){ return '<li>' + asE(t) + '</li>'; }).join('') + '</ul>';
+        if (x.ai.betterAnswer) h += '<p class="as-muted" style="margin-top:8px"><b>نسخة أقوى من كلامك</b> (عبّي اللي بين الأقواس بمعلومتك الفعلية)</p><div class="as-expl ' + (L === 'en' ? 'as-en' : '') + '">' + asE(x.ai.betterAnswer) + '</div>';
+      } else if (x.tips && x.tips.length) h += '<ul class="as-steps" style="margin-top:8px">' + x.tips.map(function(t){ return '<li>' + asE(asT(t, 'ar')) + '</li>'; }).join('') + '</ul>';
       h += '</div>';
     });
     return h + '</section>';
