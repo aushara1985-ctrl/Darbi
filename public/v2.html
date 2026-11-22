@@ -4261,7 +4261,9 @@
     if (/led|managed|built|launched|grew|improved|delivered|قاد|أدار|طوّر/i.test(cv)) cvStrength += 10;
     if (cv.length > 1500) cvStrength += 8;
     if (cv.length > 3000) cvStrength += 5;
-    if (/customer success|churn|retention|health score|playbook|renewal|onboarding/i.test(cv)) cvStrength += 12;
+    // Neutral evidence only (dates and education), the same for every field.
+    if (/\b(19|20)\d{2}\b/.test(cv)) cvStrength += 6;
+    if (/bachelor|master|diploma|university|بكالوريوس|ماجستير|دبلوم|جامعة/i.test(cv)) cvStrength += 6;
     if (seniority === 'experienced') cvStrength += 15;
     cvStrength = Math.min(Math.max(cvStrength, 15), 92);
     // jobFit = cvStrength biased + keyword overlap with the dream role.
@@ -4273,7 +4275,7 @@
     return {
       cvStrengthScore: Math.round(cvStrength),
       jobFitScore:     Math.round(jobFit),
-      interviewReadinessScore: 25,
+      interviewReadinessScore: null, // measured only from real practice answers
       readinessScore:  Math.round((cvStrength * 0.5 + jobFit * 0.5)),
     };
   }
@@ -4324,7 +4326,30 @@
   }
 
   // ── buildDiagnosis (verbatim from V1, but uses v2AnalyzeCareerFit) ─────
+  // Real CV analysis from the server (GPT-4o; a labelled neutral estimate when the AI is unavailable).
+  // One call per (role + CV): rebuilding the diagnosis with another direction reuses it.
+  var _v2AnalysisCache = { key: null, value: null };
+  async function v2FetchAnalysis(dreamRole, cvText){
+    var key = (dreamRole || '') + '|' + (cvText || '').length + '|' + (cvText || '').slice(0, 200);
+    if (_v2AnalysisCache.key === key && _v2AnalysisCache.value) return _v2AnalysisCache.value;
+    if (!dreamRole || (cvText || '').trim().length < 30) return null;
+    var controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var to = setTimeout(function(){ if (controller) controller.abort(); }, 25000);
+    try {
+      var country = '';
+      try { var c = _v2CountryByCode(V2Draft.field('country')); country = c ? c.ar : ''; } catch(e){}
+      var r = await apiFetch('/api/darbi/analyze', { method: 'POST', body: { targetRole: dreamRole, cvText: cvText, country: country }, signal: controller ? controller.signal : undefined });
+      if (!r.ok) return null;
+      var d = await r.json();
+      if (!d || !d.success || !d.result) return null;
+      _v2AnalysisCache = { key: key, value: d };
+      return d;
+    } catch(e) { return null; }
+    finally { clearTimeout(to); }
+  }
+
   async function buildDiagnosis(dreamRole, cvText, answers, intentOverride){
+    var analysisP = v2FetchAnalysis(dreamRole, cvText);
     var intent = intentOverride || await resolveDreamIntent({ dreamRole: dreamRole, cvText: cvText, quizAnswers: answers });
     var family = intent.family || 'unknown';
     var confidentFamily = (intent.confidence || 0) >= 60 && family !== 'unknown';
@@ -4562,10 +4587,15 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
 
     // scores
     var pathClarity = branch === 'A' ? 80 : (branch === 'B' && lib ? 65 : (branch === 'C' ? 70 : 35));
+    var srv = await analysisP;
+    var analysis = srv
+      ? { source: srv.source === 'ai' ? 'ai' : 'estimate', label: srv.label || '', strengths: srv.result.strengths || [], gaps: srv.result.gaps || [],
+          whyNotGetting: srv.result.whyNotGetting || '', topFix: srv.result.topFix || '', missingKeywords: srv.result.missingKeywords || [] }
+      : { source: 'estimate', label: 'تقدير مبدئي بدون ذكاء اصطناعي: ما قدرنا نوصل للتحليل الكامل الحين.', strengths: [], gaps: [], whyNotGetting: '', topFix: '', missingKeywords: [] };
     var sup = {
-      cvStrength: rec.cvStrengthScore || 30,
-      dreamMatch: Math.min(rec.jobFitScore || 30, branch === 'C' ? 80 : (branch === 'B' ? 55 : 70)),
-      interviewReadiness: rec.interviewReadinessScore || 25,
+      cvStrength: srv ? srv.result.cvStrengthScore : (rec.cvStrengthScore || 30),
+      dreamMatch: srv ? srv.result.jobFitScore : Math.min(rec.jobFitScore || 30, branch === 'C' ? 80 : (branch === 'B' ? 55 : 70)),
+      interviewReadiness: null, // shown from real practice answers (_v2IvReadinessText)
       pathClarity: pathClarity,
     };
 
@@ -4584,6 +4614,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       bridgePlan: bridgePlan, firstFix: firstFix, interpretation: interpretation,
       isSeniorOverride: !!seniorOverrideFires,
       supportingScores: sup,
+      analysis: analysis,
       interviewPrep: lib ? lib.interviewPrep : 'ليش هذا المسار؟ + موقف يثبت قدراتك',
       cvFacts: facts, cvText: cvText, createdAt: new Date().toISOString(),
     };
@@ -4615,7 +4646,7 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       + '<div class="v2-dx-loading">'
       +   '<div class="v2-dx-loading-spin"></div>'
       +   '<div class="v2-dx-loading-text">نحلل سيرتك مع حلمك...</div>'
-      +   '<div class="v2-dx-loading-sub">يستغرق ثواني — نسأل دربي عن المسار الصح</div>'
+      +   '<div class="v2-dx-loading-sub">يستغرق ثواني: نقرأ سيرتك مقابل الوظيفة اللي تبيها</div>'
       + '</div>';
     try {
       // Inject dreamRole into answers for determineBranch's simple-job check.
@@ -4725,16 +4756,33 @@ var _isCsLeader = (family === 'customer_success' || family === 'customer_service
       +     (d.bridgePlan || []).map(function(s){ return '<li style="margin-bottom:5px">' + escapeHtml(s) + '</li>'; }).join('')
       +   '</ol>'
       + '</div>'
+      + _v2DxAnalysisCard(d)
       + '<div class="v2-dx-card">'
-      +   '<div class="v2-dx-card-h">قياس مبدئي</div>'
+      +   '<div class="v2-dx-card-h">' + ((d.analysis && d.analysis.source === 'ai') ? 'قياس من تحليل سيرتك' : 'قياس مبدئي') + '</div>'
       +   '<div class="v2-dx-scores">'
       +     '<div class="v2-dx-score"><div class="v2-dx-score-label">قوة السيرة</div><div class="v2-dx-score-val">' + (sup.cvStrength || 0) + '%</div></div>'
       +     '<div class="v2-dx-score"><div class="v2-dx-score-label">مطابقة الحلم</div><div class="v2-dx-score-val">' + (sup.dreamMatch || 0) + '%</div></div>'
       +     '<div class="v2-dx-score"><div class="v2-dx-score-label">جاهزية المقابلة</div><div class="v2-dx-score-val">' + _v2IvReadinessText() + '</div></div>'
       +     '<div class="v2-dx-score"><div class="v2-dx-score-label">وضوح الطريق</div><div class="v2-dx-score-val">' + (sup.pathClarity || 0) + '%</div></div>'
       +   '</div>'
-      +   '<div class="v2-input-hint" style="margin-top:8px">تقدير تقريبي من سيرتك وإجاباتك، مو حكم نهائي. جاهزية المقابلة تظهر بعد ما تتدرب وتقيّم إجاباتك.</div>'
+      +   '<div class="v2-input-hint" style="margin-top:8px">' + ((d.analysis && d.analysis.source === 'ai')
+            ? 'قوة السيرة ومطابقة الحلم من تحليل دربي بالذكاء الاصطناعي لنص سيرتك مقابل الوظيفة اللي تبيها. مو حكم نهائي. جاهزية المقابلة تظهر بعد ما تتدرب وتتقيّم إجاباتك.'
+            : escapeHtml((d.analysis && d.analysis.label) || 'تقدير مبدئي بدون ذكاء اصطناعي.') + ' جاهزية المقابلة تظهر بعد ما تتدرب وتتقيّم إجاباتك.') + '</div>'
       + '</div>';
+  }
+
+  // What the real analysis found in the CV (shown only when it came from the AI reading).
+  function _v2DxAnalysisCard(d){
+    var a = d && d.analysis;
+    if (!a || a.source !== 'ai') return '';
+    var li = function(arr){ return (arr || []).map(function(x){ return '<li style="margin-bottom:5px">' + escapeHtml(x) + '</li>'; }).join(''); };
+    var h = '<div class="v2-dx-card"><div class="v2-dx-card-h">وش يقول تحليل دربي عن سيرتك</div>';
+    if (a.whyNotGetting) h += '<div class="v2-dx-card-body" style="margin-bottom:10px">' + escapeHtml(a.whyNotGetting) + '</div>';
+    if ((a.strengths || []).length) h += '<div class="v2-input-label" style="margin:8px 0 4px">نقاط قوة موجودة</div><ul style="padding-right:18px;font-size:14px;line-height:1.8;margin:0">' + li(a.strengths) + '</ul>';
+    if ((a.gaps || []).length) h += '<div class="v2-input-label" style="margin:10px 0 4px">فجوات مقابل الوظيفة</div><ul style="padding-right:18px;font-size:14px;line-height:1.8;margin:0">' + li(a.gaps) + '</ul>';
+    if (a.topFix) h += '<div class="v2-input-label" style="margin:10px 0 4px">أهم تعديل اليوم</div><div class="v2-dx-card-body">' + escapeHtml(a.topFix) + '</div>';
+    if ((a.missingKeywords || []).length) h += '<div class="v2-input-label" style="margin:10px 0 4px">كلمات يتوقعها مسؤول التوظيف وما تظهر في سيرتك</div><div class="v2-dx-roles">' + a.missingKeywords.map(function(k){ return '<span class="v2-dx-role">' + escapeHtml(k) + '</span>'; }).join('') + '</div><div class="v2-input-hint" style="margin-top:6px">أضفها فقط إذا كانت فعلاً من خبرتك.</div>';
+    return h + '</div>';
   }
 
   // ════════════════════════════════════════════════════════════════════════

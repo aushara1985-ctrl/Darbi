@@ -224,7 +224,7 @@ const INTENT_FAMILIES = [
 const FAMILY_CONCEPTS = {
   marketing:        ['تسويق','marketing','social media','content','حملات','seo','إعلانات','digital marketing','رقمي','محتوى'],
   hr:               ['موارد بشرية','hr','recruitment','توظيف','talent','استقطاب','تنمية بشرية','people'],
-  accounting:       ['محاسبة','accounting','محاسب','finance','مالية','audit','بنوك','banking','تدقيق'],
+  accounting:       ['محاسبة','accounting','accountant','محاسب','finance','مالية','audit','بنوك','banking','تدقيق'],
   sales:            ['مبيعات','sales','بيع','مندوب','telesales','account executive'],
   customer_service: ['خدمه','عملاء','customer service','customer support','customer care','call center','كول سنتر','عنايه','دعم','client services','تواصل'],
   it_cyber:         ['it','تقنيه','cybersecurity','امن سيبراني','helpdesk','soc','شبكات','networking','it support'],
@@ -440,91 +440,15 @@ try {
 }
 
 // ─── ANALYSIS ─────────────────────────────────────────────────────────────────
-app.post('/api/darbi/analyze', authMiddleware, async (req, res) => {
-  const { targetRole, cvText, jobDescription = '' } = req.body;
-  if (!targetRole || !cvText) return res.status(400).json({ error: 'Missing fields' });
-
-  console.log('[DARBI_ANALYZE_ACTIVE]', {
-    route: '/api/darbi/analyze',
-    parserVersion: 'v2_fixed_parser',
-    timestamp: new Date().toISOString(),
-    targetRole,
-    hasJD: !!jobDescription,
-  });
-
-  if (!process.env.OPENAI_API_KEY) {
-    // Heuristic fallback
-    const score = computeHeuristicScore(cvText, targetRole, jobDescription);
-    return res.json({ success: true, result: score });
-  }
-
-  try {
-    const OpenAI = require('openai');
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-    const prompt = `أنت محلل سيرة ذاتية خبير للسوق السعودي والعالمي.
-
-الوظيفة المستهدفة: ${targetRole}
-${jobDescription ? `وصف الوظيفة:\n${jobDescription.substring(0, 1500)}` : ''}
-
-السيرة الذاتية:
-${cvText.substring(0, 3000)}
-
-مهم جداً:
-1. لا تخلط قوة السيرة مع المتطلبات الإلزامية
-2. سيرة قوية مع مدير CS ذو خبرة 10+ سنين يجب أن تحصل على cv_strength >= 70
-3. المتطلبات الإلزامية (ألماني/تصريح عمل) تؤثر على job_fit فقط وليس cv_strength
-4. لا تستخرج كلمات عامة مثل please/position/requires كـ keywords
-
-أرجع JSON فقط:
-{
-  "cvStrengthScore": 75,
-  "jobFitScore": 60,
-  "hardRequirementStatus": "pass|missing|unknown",
-  "hardRequirementIssues": ["German fluency not shown"],
-  "interviewReadinessScore": 25,
-  "readinessScore": 68,
-  "readinessRange": "70-80%",
-  "confidence": "high",
-  "seniority": "executive|senior|mid|junior",
-  "whyNotGetting": "تفسير واضح",
-  "problems": [{"title": "المشكلة", "desc": "التفاصيل", "quote": null, "fix": "الحل"}],
-  "improvedSummary": "ملخص محسّن مناسب للمستوى",
-  "recommendedKeywords": ["health scoring", "segmentation", "gross retention"],
-  "matchedSkills": ["customer success leadership", "retention"],
-  "missingKeywords": ["German fluency", "work authorization Germany"],
-  "careerPath": [
-    {"role": "Head of CS", "readinessNeeded": 35, "daysFromNow": 0, "isCurrent": true, "isTarget": false},
-    {"role": "Director CS", "readinessNeeded": 55, "daysFromNow": 14, "isCurrent": false, "isTarget": false},
-    {"role": "VP Customer Success", "readinessNeeded": 70, "daysFromNow": 30, "isCurrent": false, "isTarget": true}
-  ],
-  "jobMatches": [{"role": "VP CS في شركات خليجية", "type": "best", "why": "سيرتك قوية بدون قيود جغرافية", "action": "قدّم هذا الأسبوع"}]
-}`;
-
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
-      response_format: { type: 'json_object' },
-      max_tokens: 1500,
-      temperature: 0.3,
-    });
-
-    const result = JSON.parse(response.choices[0].message.content);
-
-    // Save to DB
-    await db.query(
-      `INSERT INTO analyses (user_id, target_role, cv_text, readiness_score, result_json, created_at)
-       VALUES ($1, $2, $3, $4, $5, NOW())`,
-      [req.user.id, targetRole, cvText.substring(0, 5000), result.readinessScore, JSON.stringify(result)]
-    );
-
-    res.json({ success: true, result });
-  } catch (e) {
-    console.error('[analyze] AI error:', safeAiErrorSummary(e));
-    const score = computeHeuristicScore(cvText, targetRole, jobDescription);
-    res.json({ success: true, result: score, fallback: true });
-  }
-});
+// POST /api/darbi/analyze — the real CV diagnosis (GPT-4o, any career family).
+// Lives in ./diagnosis: neutral labelled estimate when the AI is unavailable,
+// and no guessed interview-readiness number. optionalUser is hoisted (declared below).
+try {
+  require('./diagnosis').register(app, { rateLimit, getIP, optionalUser, safeAiErrorSummary, db });
+  console.log('[analyze] route registered');
+} catch (e) {
+  console.error('[analyze] failed to register route:', e.message);
+}
 
 // ─── TRAINING ─────────────────────────────────────────────────────────────────
 app.post('/api/darbi/training/start', authMiddleware, async (req, res) => {
