@@ -59,8 +59,17 @@ app.use((req, res, next) => (_isStripeWebhook(req) ? next() : _urlParser(req, re
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/v2.html'));
 });
-app.get('/v1', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+// V1 (public/index.html) is retired and must not be reachable: it carried a dev unlock
+// and links to a domain that is not ours. Every old V1 address goes to the landing.
+// Middleware (not a route) so odd spellings (//index.html, %69ndex.html, INDEX.HTML) cannot slip
+// past it into express.static below.
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  let p = req.path;
+  try { p = decodeURIComponent(p); } catch (e) { return res.redirect(301, '/'); }
+  p = p.replace(/\\/g, '/').replace(/\/+/g, '/').toLowerCase();
+  if (p === '/v1' || p === '/v1/' || /(^|\/)index\.html?\/?$/.test(p)) return res.redirect(301, '/');
+  next();
 });
 require('./legal').mount(app);
 app.use(express.static(path.join(__dirname, '../public'), { index: false }));
