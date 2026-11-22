@@ -73,6 +73,16 @@ CREATE TABLE IF NOT EXISTS referrals (
   UNIQUE(referrer_id, referred_id)
 );
 
+-- Referral program (additive). status: pending (signed up via link) | qualified (first diagnosis done, reward granted once) | rejected (self/same device/same email).
+ALTER TABLE referrals ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending';
+ALTER TABLE referrals ADD COLUMN IF NOT EXISTS qualified_at TIMESTAMP;
+ALTER TABLE referrals ADD COLUMN IF NOT EXISTS reward_days INTEGER DEFAULT 0;
+ALTER TABLE referrals ADD COLUMN IF NOT EXISTS reject_reason TEXT;
+ALTER TABLE referrals ADD COLUMN IF NOT EXISTS referred_ip_hash TEXT;
+ALTER TABLE referrals ADD COLUMN IF NOT EXISTS referred_device_hash TEXT;
+CREATE INDEX IF NOT EXISTS referrals_referred_idx ON referrals (referred_id);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS device_hash TEXT;
+
 CREATE TABLE IF NOT EXISTS user_roadmaps (
   id               SERIAL PRIMARY KEY,
   user_id          INTEGER NOT NULL UNIQUE,

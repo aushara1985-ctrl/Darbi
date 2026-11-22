@@ -67,6 +67,7 @@ app.use(express.static(path.join(__dirname, '../public'), { index: false }));
 
 // ─── DB (PostgreSQL) ──────────────────────────────────────────────────────────
 const { Pool } = require('pg');
+const referral = require('./referral');
 // SSL only for remote databases (Railway). A local/test Postgres on 127.0.0.1 does not speak SSL.
 const _dbUrl = process.env.DATABASE_URL || '';
 const _dbLocal = /@(localhost|127\.0\.0\.1|\[::1\])[:\/]/.test(_dbUrl);
@@ -146,7 +147,7 @@ function authMiddleware(req, res, next) {
 
 // ─── AUTH ROUTES ──────────────────────────────────────────────────────────────
 app.post('/api/auth/signup', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, ref, device } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
   try {
     const hash = await bcrypt.hash(password, 10);
@@ -166,6 +167,11 @@ app.post('/api/auth/signup', async (req, res) => {
       if (fresh.rows[0]) rows[0] = trial.publicUser(fresh.rows[0]);
       trial.sendOnce(db, rows[0].id, rows[0].email, 'welcome').catch(() => {});
     } catch (e) { console.error('[trial] start failed:', e.message); }
+    // Referral: remember who brought this account (pending only; the reward comes after the first diagnosis).
+    try {
+      if (device) await db.query('UPDATE users SET device_hash = $2 WHERE id = $1', [rows[0].id, referral.hashSignal(device, JWT_SECRET)]);
+      if (ref) await referral.recordPending(db, { referredId: rows[0].id, referredEmail: rows[0].email, rawCode: ref, ip: getIP(req), device, salt: JWT_SECRET });
+    } catch (e) { console.error('[referral] record failed:', e.message); }
     const token = jwt.sign({ id: rows[0].id, email: rows[0].email }, JWT_SECRET, { expiresIn: '30d' });
     res.json({ success: true, token, user: rows[0] });
   } catch (e) { res.status(500).json({ error: e.message }); }
@@ -713,20 +719,26 @@ app.post('/api/darbi/outcomes', authMiddleware, async (req, res) => {
 });
 
 // ─── REFERRAL ─────────────────────────────────────────────────────────────────
-app.post('/api/darbi/referral/apply', authMiddleware, async (req, res) => {
-  const { code } = req.body;
-  if (!code) return res.json({ success: false });
+// Invite page data: personal link, share text, progress, masked friends, days earned.
+app.get('/api/darbi/referral/me', authMiddleware, async (req, res) => {
   try {
-    const { rows } = await db.query('SELECT id FROM users WHERE referral_code = $1', [code]);
-    if (rows[0] && rows[0].id !== req.user.id) {
-      await db.query(
-        `INSERT INTO referrals (referrer_id, referred_id, created_at) VALUES ($1, $2, NOW()) ON CONFLICT DO NOTHING`,
-        [rows[0].id, req.user.id]
-      );
-    }
-    res.json({ success: true });
-  } catch (e) { res.json({ success: false }); }
+    const dev = String(req.headers['x-darbi-device'] || '').slice(0, 64);
+    if (dev) await db.query('UPDATE users SET device_hash = COALESCE(device_hash, $2) WHERE id = $1', [req.user.id, referral.hashSignal(dev, JWT_SECRET)]).catch(() => {});
+    res.json({ success: true, referral: await referral.tally(db, req.user.id) });
+  } catch (e) { res.status(500).json({ error: 'تعذّر تحميل دعواتي' }); }
 });
+
+// The friend finished their first diagnosis: this is what makes the referral count (idempotent).
+app.post('/api/darbi/referral/activate', authMiddleware, async (req, res) => {
+  try {
+    const r = await referral.qualify(db, req.user.id);
+    res.json({ success: true, counted: !!(r && r.qualified) });
+  } catch (e) { console.error('[referral] qualify failed:', e.message); res.json({ success: false }); }
+});
+
+// Legacy V1 endpoint, kept so the old page does not error. Referrals now only count when the code
+// is sent with the signup itself (see /api/auth/signup), so this records nothing.
+app.post('/api/darbi/referral/apply', authMiddleware, (req, res) => res.json({ success: true }));
 
 // ─── FEEDBACK ─────────────────────────────────────────────────────────────────
 app.post('/api/darbi/feedback', async (req, res) => {
