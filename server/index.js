@@ -705,56 +705,8 @@ app.post('/api/darbi/feedback', async (req, res) => {
 // ─── HEALTH ───────────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ ok: true, ts: new Date().toISOString() }));
 
-// ─── DEBUG ENDPOINT ───────────────────────────────────────────────────────────
-app.get('/api/debug/analysis-version', (req, res) => {
-  res.json({
-    parserVersion: 'v2_fixed_parser',
-    analysisEngineName: 'computeHeuristicScore -> parseJD + detectSeniority + 4-score',
-    activeAnalyzeRoute: 'POST /api/darbi/analyze',
-    stoplistSize: JD_STOPLIST.size,
-    sampleStoplistWords: [...JD_STOPLIST].slice(0, 10),
-    deployedAt: new Date().toISOString(),
-    note: 'Keywords are NEVER raw words — only structured categories from parseJD()',
-  });
-});
-
-// ─── FORCE TEST ───────────────────────────────────────────────────────────────
-app.get('/api/debug/test-vp-cs', (req, res) => {
-  const sampleCV = `VP Customer Success | 12 years experience
-Led CS org managing 80M SAR ARR portfolio across 100+ enterprise accounts.
-Built health scoring framework, playbooks, and segmentation model.
-Improved gross retention from 78% to 92% over 18 months.
-Led team of 15 CSMs and 3 managers. Presented to board quarterly.
-Managed renewals, expansion, and VOC loop into product roadmap.
-Tools: Salesforce, Gainsight, Tableau.`;
-  
-  const sampleJD = `VP of Customer Success (m/f/d) at Voize GmbH
-Please note that this position requires work authorization for Germany.
-Language: English - Fluent, German - Fluent
-Build and lead the Customer Success & Support org (CX)
-Customer health: measurement philosophy, signals, early-warning system
-Onboarding & rollouts from pilots to multi-site deployments
-Gross retention: protecting the base through deep product usage
-Voice of the customer: feedback loop into product, engineering, and GTM
-Scale org from today team to 50+ FTE across CS, Implementation, Support
-Manager of managers. Present to the board quarterly. GTM leadership team.`;
-
-  const result = computeHeuristicScore(sampleCV, 'VP Customer Success', sampleJD);
-  
-  const tests = {
-    'cv_strength >= 70': result.cvStrengthScore >= 70,
-    'job_fit 45-65': result.jobFitScore >= 45 && result.jobFitScore <= 65,
-    'interview_readiness 20-35': result.interviewReadinessScore >= 20 && result.interviewReadinessScore <= 35,
-    'hard_req = missing': result.hardRequirementStatus === 'missing',
-    'no garbage keywords': !result.missingKeywords.some(k => ['about','customer','success','position','requires','voize','mfd'].includes(k.toLowerCase())),
-    'career path has Head of CS': result.careerPath && result.careerPath[0].role.includes('Head'),
-    'career path has Director': result.careerPath && result.careerPath[1].role.includes('Director'),
-    'career path target = VP': result.careerPath && result.careerPath[2].isTarget,
-  };
-
-  const passed = Object.values(tests).filter(Boolean).length;
-  res.json({ passed: passed + '/' + Object.keys(tests).length, tests, result });
-});
+// ─── DEBUG ENDPOINTS REMOVED (P0 security 2026-11-23) ──────────────────────────
+// /api/debug/* used to be public (leaked engine internals). Do not re-add without admin auth.
 
 // SPA fallback is registered at the very bottom of this file, AFTER all
 // /api/* routes — Express matches in registration order and a top-level
