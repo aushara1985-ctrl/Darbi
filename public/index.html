@@ -785,6 +785,7 @@ button.diag-role-chip-pick:active{transform:translateY(0)}
 .bp-cta-secondary:hover{background:#fafafe;border-color:#c7d2fe}
 .bp-cta-tertiary{background:#fafafe;color:#4f46e5;border:1px dashed #c7d2fe}
 .bp-cta-tertiary:hover{background:#f0f0ff}
+.pp-tg{display:inline-flex;gap:0;border:1px solid #cbd5d0;border-radius:999px;padding:2px;background:#fff;margin:0 0 10px;font-family:inherit}.pp-tg button{border:0;background:transparent;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:700;color:#565E5B;cursor:pointer;font-family:inherit;line-height:1.3}.pp-tg button.on{background:#0C6B4A;color:#fff}.pp-note{font-size:13px;color:#565E5B;margin-top:4px;line-height:1.6}
 .bp-cta-founder{background:#fbbf24;color:#0f172a}
 .bp-cta-founder:hover{background:#f59e0b}
 .bp-empty{background:#fff;border:1px solid #ececf4;border-radius:18px;padding:40px 22px;text-align:center}
@@ -1406,7 +1407,9 @@ img,video,iframe{max-width:100%}
       <div class="lp-access-card">
         <span class="lp-access-tag">للجادّين قليلاً</span>
         <h3>Starter</h3>
-        <div class="lp-access-price">$9<span style="font-size:14px;color:#6b7280;font-weight:600">/شهر</span></div>
+        <div data-pp-toggle></div>
+        <div class="lp-access-price"><span data-pp-n="starter">$7</span><span style="font-size:14px;color:#6b7280;font-weight:600">/شهر</span></div>
+        <div class="pp-note" data-pp-note="starter">تُدفع $84 مرة وحدة بالسنة · توفر 22%</div>
         <div class="lp-access-sub">للباحث النشط: عدة وظائف بنفس الوقت.</div>
         <ul class="lp-access-list">
           <li>تشخيصات متعددة بالشهر</li>
@@ -1414,14 +1417,16 @@ img,video,iframe{max-width:100%}
           <li>تدريب مقابلات بمعدّل أعلى</li>
           <li>كل المزايا المجانية</li>
         </ul>
-        <button class="lp-btn lp-btn-s" onclick="triggerCheckout('starter')">اشترك — $9</button>
+        <button class="lp-btn lp-btn-s" data-pp-btn="starter" onclick="triggerCheckout(priceKey('starter'))">اشترك — $84 سنوياً</button>
       </div>
 
       <!-- 3. Pro Unlimited — visually recommended per spec. -->
       <div class="lp-access-card is-hot">
         <span class="lp-access-tag" style="background:#eef2ff;color:#4338ca">الأكثر مناسبة للباحث الجاد</span>
         <h3>Pro Unlimited</h3>
-        <div class="lp-access-price">$19<span style="font-size:14px;color:#6b7280;font-weight:600">/شهر</span></div>
+        <div data-pp-toggle></div>
+        <div class="lp-access-price"><span data-pp-n="pro">$15</span><span style="font-size:14px;color:#6b7280;font-weight:600">/شهر</span></div>
+        <div class="pp-note" data-pp-note="pro">تُدفع $180 مرة وحدة بالسنة · توفر 21%</div>
         <div class="lp-access-sub">للي يبحث بجدية ويحتاج يستخدم دربي بدون حدود شهرية مزعجة.</div>
         <ul class="lp-access-list">
           <li>تشخيص بدون حد</li>
@@ -1429,25 +1434,10 @@ img,video,iframe{max-width:100%}
           <li>أولوية في الدعم</li>
           <li>كل مزايا Starter</li>
         </ul>
-        <button class="lp-btn lp-btn-p" onclick="triggerCheckout('pro')">اشترك — $19</button>
+        <button class="lp-btn lp-btn-p" data-pp-btn="pro" onclick="triggerCheckout(priceKey('pro'))">اشترك — $180 سنوياً</button>
         <div class="lp-access-fineprint">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
       </div>
 
-      <!-- 4. Founder Lifetime — exact spec copy. -->
-      <div class="lp-access-card">
-        <span class="lp-access-tag" style="background:#fef3c7;color:#92400e">دفعة واحدة</span>
-        <h3>Founder Lifetime</h3>
-        <div class="lp-access-price">$199<span style="font-size:14px;color:#6b7280;font-weight:600"> · مرة واحدة</span></div>
-        <div class="lp-access-sub">ادفع مرة واحدة. بدون اشتراك شهري.</div>
-        <ul class="lp-access-list">
-          <li>كل مزايا Pro طوال رحلة البحث</li>
-          <li>وصول للقوالب والميزات الجديدة</li>
-          <li>دعم مباشر للمؤسسين</li>
-          <li>قفل سعر — حتى لو رفعنا الاشتراك</li>
-        </ul>
-        <button class="lp-btn lp-btn-s" onclick="triggerCheckout('lifetime')">فعّل Founder — $199</button>
-        <div class="lp-access-fineprint">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
-      </div>
     </div>
   </section>
 
@@ -1627,9 +1617,9 @@ img,video,iframe{max-width:100%}
 
     <div class="pw-opt" id="opt-pay" onclick="selectPay('pay')">
       <div class="pw-opt-icon">💳</div>
-      <div class="pw-opt-title">وصول مدى الحياة</div>
+      <div class="pw-opt-title">Pro — وصول كامل</div>
       <div class="pw-opt-sub">تحميل CV، تدريب غير محدود، كل التحديثات</div>
-      <div class="pw-opt-price">199 ريال</div>
+      <div class="pw-opt-price"><span data-pp-n="pro">$15</span>/شهر</div>
     </div>
     <div class="pw-opt" id="opt-ugc" onclick="selectPay('ugc')">
       <div class="pw-opt-icon">🎥</div>
@@ -1638,12 +1628,10 @@ img,video,iframe{max-width:100%}
       <div class="pw-opt-price" style="color:#16a34a">مجاناً</div>
     </div>
 
-    <div class="urgency">🔥 عرض المؤسسين — <b>127 مقعد متبقٍ</b></div>
-    <div class="seats-bar"><div class="seats-fill"></div></div>
-
     <div id="pay-action" style="display:none;margin-top:14px">
-      <button class="btn btn-p btn-full" style="padding:14px;font-size:16px;margin-bottom:9px" onclick="triggerCheckout('lifetime')">ادفع الآن — $199</button>
-      <div style="font-size:12px;color:#aaa">دفعة واحدة · بدون اشتراك شهري · وصول مدى الحياة</div>
+      <div data-pp-toggle></div>
+      <button class="btn btn-p btn-full" style="padding:14px;font-size:16px;margin-bottom:9px" data-pp-btn="pro" data-pp-pre="ادفع الآن" onclick="triggerCheckout(priceKey('pro'))">ادفع الآن — $180 سنوياً</button>
+      <div class="pp-note" data-pp-note="pro">تُدفع $180 مرة وحدة بالسنة · توفر 21%</div>
     </div>
     <div id="ugc-action" style="display:none;margin-top:14px">
       <button class="btn btn-full" style="background:#0f172a;color:#fff;padding:14px;font-size:15px;border-radius:12px;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:700" onclick="goScreen('s-ugc')">ابدأ تسجيل الفيديو →</button>
@@ -1725,8 +1713,8 @@ img,video,iframe{max-width:100%}
   </div>
 
   <div id="downloadNote" class="card" style="padding:14px;text-align:center;font-size:13px;color:#666;display:none">
-    🔒 تحميل السيرة الذاتية النهائية متاح فقط للمشتركين مدى الحياة
-    <div style="margin-top:9px"><button class="btn btn-p" style="font-size:13px;padding:9px 18px" onclick="triggerCheckout('lifetime')">ترقية للوصول الكامل</button></div>
+    🔒 تحميل السيرة الذاتية النهائية متاح فقط للمشتركين
+    <div style="margin-top:9px"><button class="btn btn-p" style="font-size:13px;padding:9px 18px" onclick="triggerCheckout(priceKey('pro'))">ترقية للوصول الكامل</button></div>
   </div>
 
 </div></div>
@@ -1853,7 +1841,7 @@ img,video,iframe{max-width:100%}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-p" style="flex:1;min-width:140px;padding:11px;font-size:13px" onclick="copyCV('all')">📋 نسخ كل الأقسام</button>
-        <button class="btn btn-s" data-pay-cta style="flex:1;min-width:140px;padding:11px;font-size:13px" onclick="triggerCheckout('lifetime')">⭐ Premium — تحميل PDF نظيف</button>
+        <button class="btn btn-s" data-pay-cta style="flex:1;min-width:140px;padding:11px;font-size:13px" onclick="triggerCheckout(priceKey('pro'))">⭐ Pro — تحميل PDF نظيف</button>
       </div>
     </div>
 
@@ -2111,9 +2099,8 @@ img,video,iframe{max-width:100%}
         <div style="font-size:13px;color:#7f1d1d;margin-bottom:11px;line-height:1.6">تقدر تكمل بنسخ محدود من نتائجك، أو ترفع وصولك بإحدى الخطط:</div>
         <div class="dbv2-expired-tiers">
           <button class="dbv2-btn dbv2-btn-s" onclick="diagOpenShareCard()" style="font-size:12.5px;padding:8px 12px">Free — شارك +24h</button>
-          <button class="dbv2-btn dbv2-btn-s" data-pay-cta onclick="triggerCheckout('starter')" style="font-size:12.5px;padding:8px 12px">Starter — $9</button>
-          <button class="dbv2-btn dbv2-btn-p" data-pay-cta onclick="triggerCheckout('pro')" style="font-size:12.5px;padding:8px 12px">Pro — $19 ★</button>
-          <button class="dbv2-btn dbv2-btn-s" data-pay-cta onclick="triggerCheckout('lifetime')" style="font-size:12.5px;padding:8px 12px">Founder — $199</button>
+          <button class="dbv2-btn dbv2-btn-s" data-pay-cta data-pp-btn="starter" data-pp-pre="Starter" onclick="triggerCheckout(priceKey('starter'))" style="font-size:12.5px;padding:8px 12px">Starter — $84 سنوياً</button>
+          <button class="dbv2-btn dbv2-btn-p" data-pay-cta data-pp-btn="pro" data-pp-pre="Pro ★" onclick="triggerCheckout(priceKey('pro'))" style="font-size:12.5px;padding:8px 12px">Pro ★ — $180 سنوياً</button>
         </div>
         <div style="font-size:11.5px;color:#9ca3af;margin-top:8px">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
       </div>
@@ -2501,25 +2488,21 @@ img,video,iframe{max-width:100%}
 
     <!-- Starter -->
     <div class="diag-unlock-opt" data-pay-cta>
-      <div class="dut-row"><h4>Starter</h4><span class="dut-price">$9<span class="dut-mo">/شهر</span></span></div>
+      <div class="dut-row"><h4>Starter</h4><span class="dut-price"><span data-pp-n="starter">$7</span><span class="dut-mo">/شهر</span></span></div>
+      <div data-pp-toggle></div>
+      <div class="pp-note" data-pp-note="starter">تُدفع $84 مرة وحدة بالسنة · توفر 22%</div>
       <p>للباحث النشط: تشخيصات متعددة + تتبع تقديماتك + تدريب أعلى.</p>
-      <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="triggerCheckout('starter')">اشترك Starter — $9</button>
+      <button class="diag-unlock-btn diag-unlock-btn-pay" data-pp-btn="starter" data-pp-pre="اشترك Starter" onclick="triggerCheckout(priceKey('starter'))">اشترك Starter — $84 سنوياً</button>
     </div>
 
     <!-- Pro — recommended -->
     <div class="diag-unlock-opt is-recommended" data-pay-cta>
       <div class="dut-badge">الأكثر مناسبة للباحث الجاد</div>
-      <div class="dut-row"><h4>Pro Unlimited</h4><span class="dut-price">$19<span class="dut-mo">/شهر</span></span></div>
+      <div class="dut-row"><h4>Pro Unlimited</h4><span class="dut-price"><span data-pp-n="pro">$15</span><span class="dut-mo">/شهر</span></span></div>
+      <div data-pp-toggle></div>
+      <div class="pp-note" data-pp-note="pro">تُدفع $180 مرة وحدة بالسنة · توفر 21%</div>
       <p>للي يبحث بجدية ويحتاج يستخدم دربي بدون حدود شهرية مزعجة.</p>
-      <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="triggerCheckout('pro')">اشترك Pro — $19</button>
-      <div class="dut-fine">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
-    </div>
-
-    <!-- Founder Lifetime -->
-    <div class="diag-unlock-opt" data-pay-cta>
-      <div class="dut-row"><h4>Founder Lifetime</h4><span class="dut-price">$199<span class="dut-mo"> · مرة واحدة</span></span></div>
-      <p>ادفع مرة واحدة. بدون اشتراك شهري.</p>
-      <button class="diag-unlock-btn diag-unlock-btn-pay" onclick="triggerCheckout('lifetime')">فعّل Founder — $199</button>
+      <button class="diag-unlock-btn diag-unlock-btn-pay" data-pp-btn="pro" data-pp-pre="اشترك Pro" onclick="triggerCheckout(priceKey('pro'))">اشترك Pro — $180 سنوياً</button>
       <div class="dut-fine">الاستخدام العادل مطبق لحماية جودة الخدمة.</div>
     </div>
   </div>
@@ -2584,10 +2567,10 @@ img,video,iframe{max-width:100%}
           <span>شارك خطتي وخذ وقت إضافي</span>
           <span>+24 ساعة</span>
         </button>
-        <!-- Founder LTD — payment path, hidden while PAY_ENABLED=false. -->
+        <!-- Pro yearly — payment path, hidden while PAY_ENABLED=false. -->
         <button class="bp-cta bp-cta-founder" onclick="diagTriggerFounderLTD()" id="bpFounderCta" data-pay-cta>
-          <span>افتح الخطة كاملة — Founder LTD</span>
-          <span>$199</span>
+          <span>افتح الخطة كاملة — Pro</span>
+          <span data-pp-btn="pro" data-pp-pre="">$180 سنوياً</span>
         </button>
       </div>
     </div>
@@ -2841,19 +2824,21 @@ img,video,iframe{max-width:100%}
 
 <div class="modal-bg" id="upgradeModal">
   <div class="modal">
-    <div class="modal-head"><h2>فعّل Premium وابدأ اليوم</h2><p>دفعة واحدة — لا اشتراك شهري أبداً</p></div>
+    <div class="modal-head"><h2>فعّل Pro وابدأ اليوم</h2><p>اشتراك سنوي بخصم — وتلغيه وقت ما تبي</p></div>
     <div class="modal-body">
       <div class="mf"><div class="mf-chk"><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#166534" stroke-width="1.5"/></svg></div>تحميل CV غير محدود</div>
       <div class="mf"><div class="mf-chk"><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#166534" stroke-width="1.5"/></svg></div>تدريب يومي كامل</div>
       <div class="mf"><div class="mf-chk"><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#166534" stroke-width="1.5"/></svg></div>مقابلة محاكاة كاملة</div>
-      <div class="mf"><div class="mf-chk"><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#166534" stroke-width="1.5"/></svg></div>دعم مدى الحياة</div>
+      <div class="mf"><div class="mf-chk"><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="#166534" stroke-width="1.5"/></svg></div>أولوية في الدعم</div>
       <div style="display:flex;align-items:baseline;gap:5px;margin:14px 0">
-        <div class="modal-price-n">199</div>
-        <div class="modal-price-s">ريال — مرة واحدة فقط</div>
+        <div class="modal-price-n" data-pp-n="pro">$15</div>
+        <div class="modal-price-s">/شهر</div>
       </div>
+      <div data-pp-toggle></div>
+      <div class="pp-note" data-pp-note="pro">تُدفع $180 مرة وحدة بالسنة · توفر 21%</div>
     </div>
     <div class="modal-foot" style="flex-direction:column;gap:8px">
-      <button class="btn btn-p btn-full" onclick="triggerCheckout('lifetime')">فعّل Premium — $199</button>
+      <button class="btn btn-p btn-full" data-pp-btn="pro" data-pp-pre="فعّل Pro" onclick="triggerCheckout(priceKey('pro'))">فعّل Pro — $180 سنوياً</button>
       <button class="btn btn-s btn-full" onclick="closeModal()">متابعة المعاينة</button>
     </div>
   </div>
@@ -7077,7 +7062,7 @@ function giResetSession(){
 // Founder LTD CTA on the unlock card. Reuses the existing Stripe path.
 function diagTriggerFounderLTD(){
   if (typeof triggerCheckout === 'function') {
-    triggerCheckout('lifetime');
+    triggerCheckout(priceKey('pro'));
   } else {
     showNotif('الدفع غير متاح', '', PAY_GENERIC_MSG);
   }
@@ -8351,6 +8336,34 @@ if (typeof window !== 'undefined') {
   }
 }
 
+// Pricing period (yearly default). One state for every price card on the page.
+var PP_PRICES = { starter: { m: 9, y: 84 }, pro: { m: 19, y: 180 } };
+window.__darbiPeriod = window.__darbiPeriod || 'year';
+function priceKey(tier){ return window.__darbiPeriod === 'month' ? tier : tier + '_yearly'; }
+function ppSave(t){ var p = PP_PRICES[t]; return Math.round((1 - p.y / (p.m * 12)) * 100); }
+function ppRender(){
+  var yr = window.__darbiPeriod !== 'month';
+  [].forEach.call(document.querySelectorAll('[data-pp-n]'), function(el){
+    var p = PP_PRICES[el.getAttribute('data-pp-n')]; el.textContent = '$' + (yr ? p.y / 12 : p.m);
+  });
+  [].forEach.call(document.querySelectorAll('[data-pp-per]'), function(el){ el.textContent = '/شهر'; });
+  [].forEach.call(document.querySelectorAll('[data-pp-note]'), function(el){
+    var t = el.getAttribute('data-pp-note'), p = PP_PRICES[t];
+    el.textContent = yr ? ('تُدفع $' + p.y + ' مرة وحدة بالسنة · توفر ' + ppSave(t) + '%') : 'تتجدد كل شهر · تلغي وقت ما تبي';
+  });
+  [].forEach.call(document.querySelectorAll('[data-pp-btn]'), function(el){
+    var t = el.getAttribute('data-pp-btn'), p = PP_PRICES[t], pre = el.getAttribute('data-pp-pre'); if (pre === null) pre = 'اشترك';
+    el.textContent = (pre ? pre + ' — ' : '') + '$' + (yr ? p.y + ' سنوياً' : p.m + ' شهرياً');
+  });
+  [].forEach.call(document.querySelectorAll('.pp-tg'), function(tg){
+    [].forEach.call(tg.querySelectorAll('button'), function(b){ b.classList.toggle('on', (b.getAttribute('data-p') === 'year') === yr); });
+  });
+}
+function ppSet(p){ window.__darbiPeriod = (p === 'month') ? 'month' : 'year'; ppRender(); }
+function ppToggleHtml(){ return '<div class="pp-tg" role="group" aria-label="مدة الاشتراك"><button type="button" data-p="year" onclick="ppSet(\'year\')">سنوي</button><button type="button" data-p="month" onclick="ppSet(\'month\')">شهري</button></div>'; }
+function ppInitToggles(){ [].forEach.call(document.querySelectorAll('[data-pp-toggle]'), function(el){ if(!el.firstChild) el.innerHTML = ppToggleHtml(); }); ppRender(); }
+window.addEventListener('DOMContentLoaded', ppInitToggles);
+
 function triggerCheckout(plan){
   if(!isLoggedIn()){
     requireAuth(function(){ triggerCheckout(plan); }, 'سجّل دخولك عشان تكمل الدفع');
@@ -8373,7 +8386,7 @@ function triggerCheckout(plan){
   });
 }
 
-function simulatePay(){ triggerCheckout('lifetime'); }
+function simulatePay(){ triggerCheckout(priceKey('pro')); }
 
 function devUnlock(){
   if(!isLoggedIn()){
@@ -8947,7 +8960,7 @@ function applyGuide(){
 }
 
 function downloadCV(type){
-  if(!isPaid){ triggerCheckout('lifetime'); return; }
+  if(!isPaid){ triggerCheckout(priceKey('pro')); return; }
   // Real PDF download - requires backend
   showNotif('قريباً','','تحميل PDF سيكون متاحاً بعد ربط الباك-إند. الآن انسخ النص.');
 }
@@ -9647,7 +9660,7 @@ var LEGAL_MODAL_CONTENT = {
     html:
       '<p><b>الاستخدام:</b> دربي أداة إرشادية للباحثين عن عمل. النصائح والتشخيصات اجتهادية، مو ضمانات. القرار النهائي بشغلك يرجع لك.</p>' +
       '<p><b>الاستخدام العادل:</b> الخطط المدفوعة لها حدود معقولة لحماية جودة الخدمة (مثلاً عدد تشخيصات شهرية وتدريبات يومية). نحتفظ بحقّ مراجعة الاستخدام لو خرج عن المعقول.</p>' +
-      '<p><b>الاسترداد:</b> Founder Lifetime — استرداد كامل خلال ٧ أيام لو ما استخدمت الخدمة. اشتراك Starter/Pro — إلغاء وقت ما تبي، بدون استرداد للشهر الجاري.</p>' +
+      '<p><b>الاسترداد:</b> اشتراك Starter/Pro (شهري أو سنوي) — استرداد كامل لأول دفعة خلال ٧ أيام. بعدها إلغاء وقت ما تبي ويوقف التجديد، بدون استرداد للفترة الجارية.</p>' +
       '<p><b>الإطلاق التجريبي:</b> دربي حالياً في مرحلة إطلاق ناعم. الخطط المدفوعة قد تكون غير مفعّلة مؤقتاً. لو ضغطت زر دفع وما اشتغل، نعتذر — تواصل معنا وراح نفعّل وصولك يدوياً.</p>' +
       '<p><b>المحتوى:</b> ما ترفع محتوى ما يخصك (سيرة شخص ثاني بدون إذنه). أي خرق يلغي حسابك.</p>' +
       '<p style="color:#9ca3af;font-size:12.5px;margin-top:14px">آخر تحديث: مايو ٢٠٢٦.</p>',
@@ -10652,7 +10665,7 @@ function getLocalSupportAnswer(q){
   var ql = q.toLowerCase();
   if(/نسب|score|جاهزية|منخفض/i.test(ql)) return 'النسبة تعتمد على: أرقام في إنجازاتك، كلمات مطابقة للوظيفة، وهيكل السيرة. أضف وصف الوظيفة للتحليل الأدق.';
   if(/تدريب|إجابة|سؤال/i.test(ql)) return 'إجابتك تحتاج: موقف حقيقي + دورك تحديداً + خطوات اتخذتها + نتيجة بأرقام. هذا هو الفرق بين إجابة متوسطة وقوية.';
-  if(/دفع|سعر|premium|مجاني/i.test(ql)) return 'المجاني: تحليل CV + معاينة. Premium ($199 مرة): تدريب كامل + تحميل + تتبع. أو شارك فيديو للحصول على 24 ساعة.';
+  if(/دفع|سعر|premium|مجاني/i.test(ql)) return 'المجاني: تحليل CV + معاينة. Starter ($84 بالسنة أو $9 بالشهر) وPro ($180 بالسنة أو $19 بالشهر): تدريب كامل + تحميل + تتبع. أو شارك فيديو للحصول على 24 ساعة.';
   if(/star|هيكل|بنية/i.test(ql)) return 'STAR = الموقف (S) + المهمة (T) + الإجراء (A) + النتيجة (R). هذا الهيكل يخلي كل إجابة قوية ومقنعة.';
   if(/كلمات|ats|مفتاحية/i.test(ql)) return 'الكلمات المفتاحية هي كلمات من وصف الوظيفة. نظام ATS يبحث عنها — إذا ما وجدها يحذف سيرتك تلقائياً.';
   return 'سؤال كويس! للإجابة الأدق سجّل دخولك وأنا أشوف وضعك الفعلي وأساعدك أكثر.';
