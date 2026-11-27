@@ -4039,9 +4039,10 @@
     out.leadershipEvidence = (function(){
       var hits = 0;
       if (/\bled\b|قاد|قدت|قاده|قيادة|قياده/i.test(t)) hits++;
-      if (/\bmanaged\b|ادار|أدار|إدارة|اداره/i.test(t)) hits++;
+      // 'عرضها على الإدارة' (reporting to management) is not leadership: only the verb or 'إدارة فريق/قسم'.
+      if (/\bmanaged\b|(^|[\s،,.])(أدرت|ادرت|أدار|ادار)(?=[\s،,.]|$)|(إدارة|ادارة|اداره)\s+(فريق|قسم|موظف)/i.test(t)) hits++;
       if (/team.*\d+|\d+.*team|فريق.*\d+|\d+.*فريق/i.test(t)) hits++;
-      if (/\bmentored|coach(ed)?|درّبت|درب/i.test(t)) hits++;
+      if (/\bmentored|coach(ed)?|درّبت|دربت/i.test(t)) hits++;
       if (/\bsupervisor|manager|head of|director|lead\b/i.test(t)) hits++;
       return hits >= 1;
     })();
@@ -4409,11 +4410,12 @@
       var bFamAr = lib ? lib.familyAr : (intent.family || 'مجالك');
       currentReality = 'أنت في بداية مسار ' + bFamAr + '. سيرتك ما تثبت بعد الدليل المطلوب لدور متخصص كامل، لكن الهدف ممكن.' + bMods;
     } else {
-      var cMods = '';
-      if (facts && facts.yearsExp) cMods = ' (شفنا ' + facts.yearsExp + ' سنوات خبرة في سيرتك)';
-      if (facts && facts.leadershipEvidence) cMods += '، وفي إشارات قيادة';
+      // The years are the CV's years, not years in the dream family: an accountant
+      // switching to data must not read 'عندك خبرة في تحليل البيانات'.
       var cFamAr = lib ? lib.familyAr : (intent.family || 'مجالك');
-      currentReality = 'عندك خبرة في ' + cFamAr + cMods + '. السيرة موجودة، لكن لا تطابق لغة الإعلانات بسرعة كافية، أو تستهدف أدوار أعلى من أقرب مدخل.';
+      var cHead = (facts && facts.yearsExp) ? ('عندك ' + facts.yearsExp + ' سنوات خبرة في سيرتك') : 'عندك خبرة في سيرتك';
+      if (facts && facts.leadershipEvidence) cHead += ' وفيها إشارات قيادة';
+      currentReality = cHead + '، وهدفك مسار ' + cFamAr + '. السيرة موجودة، لكن لا تطابق لغة الإعلانات بسرعة كافية، أو تستهدف أدوار أعلى من أقرب مدخل.';
     }
 
     // biggestGap

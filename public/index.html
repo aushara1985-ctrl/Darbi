@@ -1704,7 +1704,7 @@ img,video,iframe{max-width:100%}
     </div>
     <p style="font-size:12px;color:#666;margin-bottom:10px;line-height:1.55">صديقك يبدأ بتحليل مجاني، وأنت تحصل على وقت إضافي بعد ما يكمل أول تحليل.</p>
     <div class="ref-link-box">
-      <span class="ref-link-txt" id="refLinkText">darbi.ai/join/USER123</span>
+      <span class="ref-link-txt" id="refLinkText">darbi-production.up.railway.app/?ref=…</span>
       <button class="ref-copy-btn" onclick="copyRef()">نسخ</button>
     </div>
   </div>
@@ -2291,7 +2291,7 @@ img,video,iframe{max-width:100%}
         <div class="dbv2-ref-h">شارك دربي واحصل على وقت إضافي</div>
         <div class="dbv2-ref-sub">+24 ساعة وصول لكل صديق يسجّل برابطك.</div>
         <div class="dbv2-ref-row">
-          <span class="dbv2-ref-link" id="dbRefLink">darbi.ai/join/—</span>
+          <span class="dbv2-ref-link" id="dbRefLink">darbi-production.up.railway.app/?ref=—</span>
           <button class="dbv2-ref-copy" onclick="copyRef()">نسخ</button>
         </div>
         <div class="dbv2-ref-stats" id="dbRefStats">—</div>
@@ -7210,7 +7210,7 @@ var isBaseline = tReadiness === 0;
       tReadiness = sk.interviewReadiness||0;
     }
     if(refCode) { document.getElementById('refBanner').style.display='block'; await API.applyReferral(refCode); }
-    if(userState.user.referralCode){ var el=document.getElementById('refLinkText'); if(el) el.textContent='darbi.ai/join/'+userState.user.referralCode; }
+    if(userState.user.referralCode){ var el=document.getElementById('refLinkText'); if(el) el.textContent=location.host+'/?ref='+userState.user.referralCode; }
   } else {
     // Fallback: localStorage (demo / not logged in)
     isPaid = localStorage.getItem('darbi_paid')==='true';
@@ -8477,7 +8477,7 @@ function setupAccess(lifetime){
   var rid = (currentUser && currentUser.referral_code) || 'USER'+Math.random().toString(36).substr(2,6).toUpperCase();
   if(!currentUser){ currentUser = loadUser() || {}; }
   if(!currentUser.referral_code){ currentUser.referral_code = rid; saveUser(currentUser); }
-  var el = document.getElementById('refLinkText'); if(el) el.textContent='darbi.ai/join/'+rid;
+  var el = document.getElementById('refLinkText'); if(el) el.textContent=location.host+'/?ref='+rid;
   if(lifetime){
     document.getElementById('wcTitle').textContent='وصول مدى الحياة مفعّل ✓';
     document.getElementById('wcSub').textContent='يمكنك تحسين سيرتك وتحميلها والتدرب بلا حدود';
@@ -10469,7 +10469,7 @@ function renderDashboard(){
 
   // ── 7. Referral (compact) ────────────────────────────────────────────
   var refCode3 = u.referral_code || 'XXXXX';
-  document.getElementById('dbRefLink').textContent = 'darbi.ai/join/' + refCode3;
+  document.getElementById('dbRefLink').textContent = location.host+'/?ref=' + refCode3;
   var refs = [];
   try { refs = JSON.parse(localStorage.getItem('darbi_referrals')||'[]') || []; } catch(e){}
   document.getElementById('dbRefStats').textContent = refs.length > 0
@@ -10478,7 +10478,7 @@ function renderDashboard(){
 
   // Mirror to access screen ref display (if present elsewhere)
   var rl = document.getElementById('refLinkText');
-  if(rl) rl.textContent = 'darbi.ai/join/' + refCode3;
+  if(rl) rl.textContent = location.host+'/?ref=' + refCode3;
 
   // Refresh the Guided Session card (state-driven label + status).
   if (typeof dbv2RenderGuidedCard === 'function') dbv2RenderGuidedCard();
