@@ -2,13 +2,18 @@
 // Plan bookkeeping for Stripe events. Pure functions plus DB helpers that take `db` (pg Pool) as an argument,
 // so they can be unit-tested with a fake. The raw-body webhook itself stays in server/index.js.
 
+// 'lifetime' is no longer sold but existing buyers keep it. Yearly checkouts (starter_yearly / pro_yearly)
+// grant the same stored plan as monthly: 'starter' / 'pro'.
 const VALID = ['starter', 'pro', 'lifetime'];
-const AMOUNT_TO_PLAN = { 900: 'starter', 1900: 'pro', 19900: 'lifetime' };
+const YEARLY_ALIAS = { starter_yearly: 'starter', pro_yearly: 'pro' };
+const AMOUNT_TO_PLAN = { 900: 'starter', 1900: 'pro', 8400: 'starter', 18000: 'pro', 19900: 'lifetime' };
 
 function priceMap(env = process.env) {
   const m = {};
   if (env.STRIPE_PRICE_STARTER_MONTHLY) m[env.STRIPE_PRICE_STARTER_MONTHLY] = 'starter';
   if (env.STRIPE_PRICE_PRO_MONTHLY) m[env.STRIPE_PRICE_PRO_MONTHLY] = 'pro';
+  if (env.STRIPE_PRICE_STARTER_YEARLY) m[env.STRIPE_PRICE_STARTER_YEARLY] = 'starter';
+  if (env.STRIPE_PRICE_PRO_YEARLY) m[env.STRIPE_PRICE_PRO_YEARLY] = 'pro';
   if (env.STRIPE_PRICE_FOUNDER_LIFETIME) m[env.STRIPE_PRICE_FOUNDER_LIFETIME] = 'lifetime';
   return m;
 }
@@ -26,6 +31,7 @@ function priceIdOf(obj) {
 function resolvePlan(obj, env = process.env) {
   const meta = obj && obj.metadata && obj.metadata.plan;
   if (VALID.includes(meta)) return meta;
+  if (YEARLY_ALIAS[meta]) return YEARLY_ALIAS[meta];
   const pid = priceIdOf(obj);
   const byPrice = pid && priceMap(env)[pid];
   if (byPrice) return byPrice;

@@ -149,3 +149,29 @@ test('wiring: webhook keeps express.raw + Stripe signature check; confirm path u
   const schema = fs.readFileSync(path.join(__dirname, '..', '..', 'migrations', 'schema.sql'), 'utf8');
   assert.match(schema, /ALTER TABLE users ADD COLUMN IF NOT EXISTS plan TEXT/);
 });
+
+test('yearly plans grant starter / pro (metadata, price id, amount)', async () => {
+  assert.equal(P.resolvePlan({ metadata: { plan: 'starter_yearly' } }, {}), 'starter');
+  assert.equal(P.resolvePlan({ metadata: { plan: 'pro_yearly' } }, {}), 'pro');
+  const env = { STRIPE_PRICE_STARTER_YEARLY: 'price_sy', STRIPE_PRICE_PRO_YEARLY: 'price_py' };
+  assert.equal(P.resolvePlan({ line_items: { data: [{ price: { id: 'price_sy' } }] } }, env), 'starter');
+  assert.equal(P.resolvePlan({ items: { data: [{ price: { id: 'price_py' } }] } }, env), 'pro');
+  assert.equal(P.resolvePlan({ amount_total: 8400 }, {}), 'starter');
+  assert.equal(P.resolvePlan({ amount_total: 18000 }, {}), 'pro');
+  for (const [key, plan] of [['starter_yearly', 'starter'], ['pro_yearly', 'pro']]) {
+    const db = fakeDb({ 1: { email: 'a@x.com', access_status: 'free', plan: null } });
+    await P.handleEvent(db, checkout(1, key), { log: quiet });
+    assert.equal(db.users[1].access_status, 'paid');
+    assert.equal(db.users[1].plan, plan);
+    assert.equal(db.audit[0].note, 'plan:' + plan);
+  }
+});
+
+test('existing lifetime buyer is still honoured: not downgraded by a yearly checkout or cancelled subscription', async () => {
+  const db = fakeDb({ 1: { email: 'a@x.com', access_status: 'paid', plan: 'lifetime' } });
+  await P.handleEvent(db, checkout(1, 'pro_yearly'), { log: quiet });
+  assert.equal(db.users[1].plan, 'lifetime');
+  await P.handleEvent(db, subEvent('customer.subscription.deleted', 1), { log: quiet });
+  assert.equal(db.users[1].access_status, 'paid');
+  assert.equal(db.users[1].plan, 'lifetime');
+});
