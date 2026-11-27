@@ -538,13 +538,15 @@ app.post('/api/darbi/training/finalize', authMiddleware, async (req, res) => {
 });
 
 // ─── PAYMENT (Stripe — the ONLY payment path) ────────────────────────────────
-// Ali's prices (2026-11-18): starter $9/month, pro $19/month, lifetime (Founder) $199 one-time.
+// Ali's prices (2026-11-27): starter $9/month or $84/year, pro $19/month or $180/year. Founder Lifetime is no longer sold
+// (existing lifetime buyers are still honoured in billing/plans.js; checkout rejects 'lifetime' for new purchases).
 // If Ali creates Stripe Prices he sets STRIPE_PRICE_STARTER_MONTHLY / STRIPE_PRICE_PRO_MONTHLY /
-// STRIPE_PRICE_FOUNDER_LIFETIME (price_...). Otherwise the amounts below are sent inline.
+// STRIPE_PRICE_STARTER_YEARLY / STRIPE_PRICE_PRO_YEARLY (price_...). Otherwise the amounts below are sent inline.
 const PLANS = {
   starter:  { name: 'Darbi Starter — Monthly',    amount: 900,   recurring: true,  env: 'STRIPE_PRICE_STARTER_MONTHLY' },
   pro:      { name: 'Darbi Pro — Monthly',        amount: 1900,  recurring: true,  env: 'STRIPE_PRICE_PRO_MONTHLY' },
-  lifetime: { name: 'Darbi Founder — Lifetime',   amount: 19900, recurring: false, env: 'STRIPE_PRICE_FOUNDER_LIFETIME' },
+  starter_yearly: { name: 'Darbi Starter — Yearly', amount: 8400,  recurring: true, interval: 'year', env: 'STRIPE_PRICE_STARTER_YEARLY' },
+  pro_yearly:     { name: 'Darbi Pro — Yearly',     amount: 18000, recurring: true, interval: 'year', env: 'STRIPE_PRICE_PRO_YEARLY' },
 };
 app.get('/api/payment/config', (req, res) => {
   res.json({
@@ -557,7 +559,9 @@ app.post('/api/payment/checkout', authMiddleware, async (req, res) => {
     return res.status(503).json({ error: 'Stripe not configured' });
   }
   const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-  const planKey = PLANS[req.body && req.body.plan] ? req.body.plan : 'lifetime';
+  const reqPlan = req.body && req.body.plan;
+  if (reqPlan === 'lifetime') return res.status(400).json({ error: 'plan_not_available' }); // Founder Lifetime is no longer sold
+  const planKey = Object.prototype.hasOwnProperty.call(PLANS, reqPlan) ? reqPlan : 'starter_yearly';
   const P = PLANS[planKey];
   const baseUrl = process.env.APP_URL || 'http://localhost:3000';
 
@@ -569,7 +573,7 @@ app.post('/api/payment/checkout', authMiddleware, async (req, res) => {
             currency: 'usd',
             product_data: { name: P.name },
             unit_amount: P.amount,
-            recurring: P.recurring ? { interval: 'month' } : undefined,
+            recurring: P.recurring ? { interval: P.interval || 'month' } : undefined,
           },
           quantity: 1,
         };
@@ -581,7 +585,7 @@ app.post('/api/payment/checkout', authMiddleware, async (req, res) => {
       cancel_url: `${baseUrl}/#/pricing`,
       customer_email: req.user.email,
       metadata: { userId: req.user.id, plan: planKey },
-      // Monthly plans: carry the user id on the subscription itself so the
+      // Subscription plans (monthly or yearly): carry the user id on the subscription itself so the
       // subscription.deleted / updated webhooks can find the account again.
       ...(P.recurring ? { subscription_data: { metadata: { userId: String(req.user.id), plan: planKey } } } : {}),
     });
